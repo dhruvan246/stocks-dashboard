@@ -7,99 +7,61 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body{ font-feature-settings:"tnum" 1; }
-  /* pills (range + group filters + rotation periods) */
-  .segbtn{ font-size:12px; font-weight:700; padding:5px 12px; border-radius:var(--radius-sm); color:var(--text-muted);
-    border:1px solid var(--border); background:var(--surface-2); cursor:pointer; transition:var(--tr); }
-  .segbtn:hover{ color:var(--text); border-color:var(--border-strong); }
-  .segbtn.on{ color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 4px 12px -4px var(--glow); }
-
-  /* ---- pulse cards ---- */
-  .pulse .p-lb{ display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:11px;
-    font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--text-faint); }
-  .pulse .p-v{ font-size:22px; font-weight:800; letter-spacing:-.02em; color:var(--text); margin-top:3px; }
-  .p-chip{ font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:var(--radius-sm); border:1px solid var(--border); color:var(--text-muted); white-space:nowrap; }
-  .p-chip.pos{ color:var(--pos); background:color-mix(in srgb,var(--pos) 12%,transparent); border-color:color-mix(in srgb,var(--pos) 28%,transparent); }
-  .p-chip.neg{ color:var(--neg); background:color-mix(in srgb,var(--neg) 12%,transparent); border-color:color-mix(in srgb,var(--neg) 28%,transparent); }
-  .p-rail{ position:relative; height:4px; border-radius:999px; margin-top:8px;
-    background:linear-gradient(90deg, color-mix(in srgb,var(--accent) 30%,transparent), color-mix(in srgb,var(--accent) 8%,transparent)); }
-  .p-rail i{ position:absolute; top:50%; width:9px; height:9px; border-radius:50%; transform:translate(-50%,-50%);
-    background:var(--accent); border:2px solid var(--surface); box-shadow:0 0 0 1px var(--border); }
-  .p-cap{ font-size:10px; color:var(--text-faint); margin-top:6px; }
-
-  /* ---- chart tiles ---- */
-  .tile{ padding:14px 14px 11px; }
-  .t-name{ font-size:13px; font-weight:800; color:var(--text); letter-spacing:-.01em; }
-  .t-sub{ font-size:10.5px; color:var(--text-faint); margin-top:1px; }
-  .gtag{ display:inline-block; font-size:9px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
-    padding:1px 6px; border-radius:5px; margin-right:6px; vertical-align:1px;
-    color:var(--accent); background:color-mix(in srgb,var(--accent) 10%,transparent); border:1px solid color-mix(in srgb,var(--accent) 22%,transparent); }
-  .t-val{ font-size:16px; font-weight:800; color:var(--text); letter-spacing:-.01em; }
-  .t-foot{ display:flex; align-items:center; gap:12px; margin-top:7px; font-size:10.5px; color:var(--text-faint); flex-wrap:wrap; }
-  .t-foot b{ color:var(--text-muted); font-weight:700; }
-  .t-pct{ margin-left:auto; font-weight:700; color:var(--text-muted); }
-  .ch{ margin-top:8px; min-height:150px; }
-  .ch-dates{ display:flex; justify-content:space-between; font-size:9.5px; color:var(--text-faint); margin-top:2px; }
-
-  /* ---- shared tooltip ---- */
-  .mac-tip{ position:fixed; pointer-events:none; z-index:70; background:var(--surface); border:1px solid var(--border-strong);
-    border-radius:var(--radius); box-shadow:var(--shadow-lg); padding:7px 10px; font-size:12px; color:var(--text); opacity:0; transition:opacity .1s; max-width:240px; }
-  .mac-tip b{ color:var(--text); } .mac-tip .d{ color:var(--text-faint); font-size:11px; }
-
-  .secttl{ font-size:15px; font-weight:800; letter-spacing:-.01em; color:var(--text); }
-  .sectsub{ font-size:11.5px; color:var(--text-faint); margin-top:1px; }
-
-  /* ---- quarterly heat grid (CSS grid, NOT a table — keeps mobile cardify away) ---- */
-  .hm-scroll{ overflow-x:auto; }
-  .hm{ display:grid; grid-template-columns:minmax(168px,1.4fr) repeat(var(--hm-cols,12),minmax(62px,1fr)); min-width:940px; }
-  .hm > div{ padding:7px 8px; font-size:11.5px; text-align:right; border-bottom:1px solid var(--border); white-space:nowrap; }
-  .hm .h{ font-size:9.5px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--text-faint); }
-  .hm .lft{ text-align:left; position:sticky; left:0; background:var(--surface); z-index:2;
-    font-weight:700; color:var(--text); font-size:12px; box-shadow:2px 0 0 var(--border); }
-  .hm .lft .s{ display:block; font-size:9.5px; color:var(--text-faint); font-weight:500; }
-  .hm .cell{ font-variant-numeric:tabular-nums; color:var(--text); }
-
-  /* ---- sector rotation bars ---- */
-  .rot-row{ display:grid; grid-template-columns:158px 1fr 62px; align-items:center; gap:10px; padding:4px 0; border-bottom:1px dashed var(--border); }
-  .rot-row:last-child{ border-bottom:none; }
-  .rot-lb{ font-size:12px; font-weight:600; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .rot-row.nifty .rot-lb{ color:var(--text); font-weight:800; }
-  .rot-track{ position:relative; height:16px; }
-  .rot-zero{ position:absolute; top:0; bottom:0; width:1px; background:var(--border-strong); }
-  .rot-nmark{ position:absolute; top:-2px; bottom:-2px; width:0; border-left:1.5px dashed var(--accent); opacity:.6; }
-  .rot-bar{ position:absolute; top:3px; height:10px; border-radius:3px; min-width:2px; }
-  .rot-bar.pos{ background:color-mix(in srgb,var(--pos) 72%,transparent); }
-  .rot-bar.neg{ background:color-mix(in srgb,var(--neg) 72%,transparent); }
-  .rot-row.nifty .rot-bar{ background:linear-gradient(135deg,var(--accent),var(--accent-2)); }
-  .rot-v{ font-size:12px; font-weight:700; text-align:right; font-variant-numeric:tabular-nums; }
-
-  /* ---- regime gauge + weekly movers ---- */
-  .rg-head{ display:flex; align-items:baseline; gap:10px; margin-top:6px; }
-  .rg-score{ font-size:34px; font-weight:800; letter-spacing:-.02em; color:var(--text); }
-  .rg-band{ font-size:13px; font-weight:800; }
-  .rg-meter{ position:relative; height:8px; border-radius:999px; margin:10px 0 4px;
-    background:linear-gradient(90deg, color-mix(in srgb,var(--neg) 55%,transparent), color-mix(in srgb,var(--text-faint) 28%,transparent) 50%, color-mix(in srgb,var(--pos) 55%,transparent)); }
-  .rg-meter i{ position:absolute; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%;
-    background:var(--surface); border:3px solid var(--accent); box-shadow:var(--shadow-lg); }
-  .rg-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
-  .rg-chip{ font-size:11px; font-weight:700; padding:3px 9px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); }
-  .rg-chip b{ color:var(--text); }
-  .mv-row{ display:flex; align-items:center; gap:8px; padding:5px 0; border-bottom:1px dashed var(--border); font-size:12.5px; }
-  .mv-row:last-child{ border-bottom:none; }
-  .mv-lb{ font-weight:600; color:var(--text-muted); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .mv-val{ font-weight:700; color:var(--text); }
-  @media (max-width:640px){
-    .rot-row{ grid-template-columns:104px 1fr 54px; gap:7px; }
-    .rot-lb{ font-size:11px; }
-    .tile{ padding:12px 12px 10px; }
-  }
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(290px,350px) minmax(260px,310px) minmax(0,1fr)}
+  #pL.ind #lHead,#pL.ind .lr{grid-template-columns:minmax(0,1fr) 76px 64px}
+  #pL.q #lHead,#pL.q .lr{grid-template-columns:minmax(0,1fr) 76px}
+  #pL.rot #lHead,#pL.rot .lr{grid-template-columns:minmax(0,1.1fr) minmax(50px,1fr) 60px}
+  #lList{position:relative}
+  .lr .n small{color:var(--text-faint);font-weight:400;margin-left:6px}
+  .lgrp{padding:5px 12px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);background:var(--surface-2);border-bottom:1px solid var(--border)}
+  .p-chip{font-size:11.5px;color:var(--text-muted);white-space:nowrap} .p-chip.pos{color:var(--pos)} .p-chip.neg{color:var(--neg)}
+  .pos{color:var(--pos)} .neg{color:var(--neg)}
+  .dst{grid-template-columns:repeat(2,minmax(0,1fr));border-top:0;border-bottom:1px solid var(--border)}
+  .dst div:nth-child(2n){border-right:0} .dst div{border-bottom:1px solid var(--border)} .dst div:nth-last-child(-n+2){border-bottom:0}
+  .dst b small{display:block;margin:2px 0 0;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dh{padding:7px 12px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);background:var(--surface-2);border-bottom:1px solid var(--border);border-top:1px solid var(--border)}
+  .dh:first-child{border-top:0}
+  .dp{padding:8px 12px;font-size:12px;color:var(--text-muted);line-height:1.5;border-bottom:1px solid var(--border)}
+  .dr{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:0 12px;min-height:31px;font-size:12.5px;border-bottom:1px solid var(--border)}
+  .dr .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-muted)} .dr .n small{color:var(--text-faint);margin-left:6px}
+  .dr b{font-weight:600;color:var(--text)} .dr.go{cursor:pointer} .dr.go:hover{background:var(--surface-2)}
+  .rgs{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+  /* sector-rotation bar inside a list row (the old bar track, flat) */
+  .rot-track{position:relative;height:14px}
+  .rot-zero{position:absolute;top:0;bottom:0;width:1px;background:var(--border-strong)}
+  .rot-nmark{position:absolute;top:-2px;bottom:-2px;width:0;border-left:1.5px dashed var(--accent);opacity:.6}
+  .rot-bar{position:absolute;top:3px;height:8px;min-width:2px}
+  .rot-bar.pos{background:color-mix(in srgb,var(--pos) 72%,transparent)} .rot-bar.neg{background:color-mix(in srgb,var(--neg) 72%,transparent)}
+  .lr.nifty .n{font-weight:700} .lr.nifty .rot-bar{background:var(--accent)}
+  /* twelve-quarter grid (CSS grid, not a table) */
+  #hmBox{display:none;border-top:1px solid var(--border);overflow:auto;flex:1 1 auto;min-height:0}
+  #pC.q #hmBox{display:block} #pC.q .os-chartwrap{flex:0 0 230px;min-height:230px}
+  .hm{display:grid;grid-template-columns:minmax(150px,1.4fr) repeat(var(--hm-cols,12),minmax(54px,1fr));min-width:810px}
+  .hm > div{padding:6px 8px;font-size:11.5px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer}
+  .hm .h{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);background:var(--surface-2);cursor:default;position:sticky;top:0;z-index:3}
+  .hm .lft{text-align:left;position:sticky;left:0;background:var(--surface);z-index:2;font-weight:600;color:var(--text);font-size:12px;box-shadow:1px 0 0 var(--border)}
+  .hm .lft.h{z-index:4;background:var(--surface-2)}
+  .hm .lft .s{display:block;font-size:10px;color:var(--text-faint);font-weight:400}
+  .hm .lft.on{box-shadow:inset 3px 0 0 var(--accent),1px 0 0 var(--border)}
+  .hm .cell{color:var(--text)}
+  .qv{padding:2px 8px;min-width:64px;text-align:right;display:inline-block}
+  #pC .os-chartwrap{min-height:260px}
+  #pC .os-legend{right:10px} .os-legend b{font-weight:600}
+  .os-ps input{width:100%}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55} #how summary{cursor:pointer;color:var(--text-muted)}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(250px,290px) minmax(230px,270px) minmax(0,1fr)} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #pD .os-list{max-height:none !important} #pC .os-legend div{white-space:normal}
+    #pC.q #hmBox{max-height:420px} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -108,64 +70,60 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6 w-full">
-  <div class="mb-4">
-    <h1 class="text-xl font-bold text-slate-900">Macro Pulse</h1>
-    <p class="text-sm text-slate-500 mt-0.5 max-w-2xl">India's market, valuation, rates, economy and flows — every indicator drawn live, with its position in history. Hover any chart. <span id="updated" class="text-slate-400"></span></p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Macro Pulse</h1>
+    <div class="os-vtabs" id="views" role="tablist" aria-label="View">
+      <button type="button" data-v="ind" title="Every indicator: latest reading, its place in history, and its chart">Indicators</button>
+      <button type="button" data-v="q" title="Twelve quarters at a glance">Twelve quarters</button>
+      <button type="button" data-v="rot" title="NSE sector and thematic indices ranked by return">Sector rotation</button>
+    </div>
+    <div class="os-asof" id="asof"></div>
   </div>
-
-  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading macro data…</div>
+  <div id="status" class="os-empty">Loading macro data…</div>
 
   <div id="content" class="hidden">
-    <!-- pulse strip -->
-    <div id="pulse" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5"></div>
+    <div class="os-bar">
+      <div class="os-sg" id="grpseg" role="group" aria-label="Indicator group"></div>
+      <div class="os-sg hidden" id="rotseg" role="group" aria-label="Return period"></div>
+      <div class="os-sg" id="seg" role="group" aria-label="Chart range"></div>
+      <span class="sp"></span>
+      <span class="os-hint keys" id="keys"></span>
+    </div>
+    <div id="lede" class="os-hint" style="white-space:normal;margin:-2px 0 10px;line-height:1.5"></div>
 
-    <!-- regime gauge + weekly movers -->
-    <div class="card p-4 mb-5" id="regimeCard" data-jump="Regime" style="display:none">
-      <div class="grid md:grid-cols-2 gap-x-8 gap-y-5">
-        <div id="regime"></div>
-        <div id="movers"></div>
-      </div>
+    <div class="os-grid" id="grid">
+      <section class="os-pane ind" id="pL" aria-label="List">
+        <div class="os-ph"><span class="ttl" id="lTitle"></span><span class="r" id="lNote"></span></div>
+        <div class="os-ps" id="lSearchBox"><input id="lSearch" type="search" placeholder="Find an indicator" autocomplete="off" aria-label="Find an indicator" /></div>
+        <div class="os-ch" id="lHead"></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="List"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Figures">
+        <div class="os-ph"><span class="ttl" id="dTitle"></span></div>
+        <div class="os-list" id="dBody"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span class="sym" id="cSym"></span><span class="nm" id="cName"></span>
+          <span class="r"><button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-note" id="cNote"></div>
+        <div id="hmBox"><div class="hm" id="hm"></div></div>
+      </section>
     </div>
 
-    <!-- controls -->
-    <div class="flex items-center justify-between gap-3 flex-wrap mb-4" data-jump="Indicators">
-      <div id="grpseg" class="flex items-center gap-1.5 flex-wrap"></div>
-      <div id="seg" class="flex items-center gap-1.5 flex-wrap"></div>
-    </div>
-
-    <!-- chart tiles -->
-    <div id="tiles" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5"></div>
-
-    <!-- quarterly heat grid -->
-    <div class="card p-4 mt-5" data-jump="Quarters">
-      <div class="mb-3">
-        <div class="secttl">Twelve quarters at a glance</div>
-        <div class="sectsub">Each row shaded against its own 12-quarter range — green favourable, red adverse (CPI inverted: cooling inflation reads green). Blank = no reading that quarter. GDP feed paused Nov-24.</div>
-      </div>
-      <div class="hm-scroll"><div class="hm" id="hm"></div></div>
-    </div>
-
-    <!-- sector rotation -->
-    <div class="card p-4 mt-5" data-jump="Rotation">
-      <div class="mb-3 flex items-start justify-between gap-3 flex-wrap">
-        <div>
-          <div class="secttl">Sector rotation</div>
-          <div class="sectsub">NSE sector &amp; thematic indices, price returns from monthly closes. Dashed line = Nifty 50 — bars past it are beating the market.</div>
-        </div>
-        <div id="rotseg" class="flex items-center gap-1.5"></div>
-      </div>
-      <div id="rot"></div>
-    </div>
-
-    <p class="text-[11px] text-slate-500 mt-5 leading-relaxed" id="sources"></p>
+    <details id="how"><summary>How these numbers are made</summary>
+    <p>India's market, valuation, rates, economy and flows — every indicator with its position in history. The small change beside each reading is coloured green when the move is favourable and red when adverse (for VIX, USD/INR, inflation and crude a fall is the favourable direction). Flow and breadth indicators are shown as monthly bars (current month = month to date). Percentile = share of the indicator's whole history at or below the latest reading.</p>
+    <p><b>Twelve quarters:</b> each row shaded against its own 12-quarter range — green favourable, red adverse (CPI inverted: cooling inflation reads green). Blank = no reading that quarter. GDP feed paused Nov-24.</p>
+    <p><b>Sector rotation:</b> NSE sector &amp; thematic indices, price returns from monthly closes. Dashed line = Nifty 50 — bars past it are beating the market.</p>
+    <p>Sources: NSE (Nifty, FII/DII cash &amp; derivatives, breadth) · niftyindices (Nifty PE/PB/dividend yield) · RBI via mql5 economic calendar (repo, deposits, M3, forex, bank credit) · MOSPI via mql5 (CPI, WPI, IIP, GDP, trade) · S&amp;P Global PMIs, US Fed rate &amp; US CPI via mql5 · Yahoo Finance (yields, USD/INR, dollar index, global indices, Brent, gold, silver, copper) · FRED (India 10Y). Breadth, earnings pulse (median YoY from our quarterly-results data), market-cap÷GDP and all ratio/derived panels computed in-house. The regime score is a simple percentile blend — a compass, not investment advice.</p>
+    </details>
   </div>
 </main>
 
-<div class="mac-tip" id="tip"></div>
-
 <script>
 'use strict';
+const K = window.OSKit;
 const $ = id => document.getElementById(id);
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const RANGE_MONTHS = { '6M':6, '1Y':12, '3Y':36, '5Y':60, '10Y':120, 'MAX':1e9 };
@@ -261,7 +219,9 @@ function downsample(pts, target){
   return out;
 }
 
-/* ================= LOAD ================= */
+
+/* ================= LOAD (data assembly unchanged from the old page) ================= */
+let MACRO=null, IDX=null, LIVEON=false;
 async function load(){
   let macro, vix, nifty, breadth, fii, bank, idx, fo, rs, liveq;
   try{
@@ -444,27 +404,11 @@ async function load(){
     'earnrev','earnop','earnpat',
     'crude','cruderu','gold','silver','copper','goldnifty','forex'];
   ORDER.length=0; TILE_ORDER.forEach(k=>{ if(S[k]) ORDER.push(k); });
-  $('updated').textContent = '· updated '+ (macro.updated? macro.updated.slice(0,10) : '');
-  if(liveOn) $('updated').innerHTML += ' · <span style="color:var(--pos);font-weight:800">● LIVE</span> Nifty &amp; VIX (Yahoo, ~15-min delay)';
-  $('sources').innerHTML = 'Sources: NSE (Nifty, FII/DII cash &amp; derivatives, breadth) · niftyindices (Nifty PE/PB/dividend yield) · RBI via mql5 economic calendar (repo, deposits, M3, forex, bank credit) · MOSPI via mql5 (CPI, WPI, IIP, GDP, trade) · S&amp;P Global PMIs, US Fed rate &amp; US CPI via mql5 · Yahoo Finance (yields, USD/INR, dollar index, global indices, Brent, gold, silver, copper) · FRED (India 10Y). Breadth, earnings pulse (median YoY from our quarterly-results data), market-cap÷GDP and all ratio/derived panels computed in-house. The regime score is a simple percentile blend — a compass, not investment advice.';
-
-  buildPulse();
-  buildRegime();
-  buildMovers();
-  buildPills();
-  buildTiles();
-  buildHeat();
-  buildRotation(idx);
-  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  MACRO=macro; IDX=idx; LIVEON=liveOn;
+  boot();
 }
 
-/* ================= SHARED TOOLTIP ================= */
-const tip = { el:null,
-  show(html, x, y){ this.el.innerHTML=html; this.el.style.opacity='1';
-    this.el.style.left=Math.min(window.innerWidth-150, x+14)+'px'; this.el.style.top=Math.max(8,y-12)+'px'; },
-  hide(){ this.el.style.opacity='0'; } };
-
-/* ================= PULSE STRIP ================= */
+/* ================= ported arithmetic: change chip, regime, weekly movers, quarters, rotation ================= */
 function sinceYear(arr){ return arr.length? arr[0][0].slice(0,4) : ''; }
 function deltaChip(cfg, cur, prev){
   if(cur==null||prev==null) return '';
@@ -477,65 +421,33 @@ function deltaChip(cfg, cur, prev){
     : (d>=0?'+':'−')+Math.abs(d).toFixed(cfg.fmt==='n1'?1:2);
   return '<span class="p-chip '+cls+'">'+txt+'</span>';
 }
-function pulseCard(key, opts){
-  const cfg=S[key]; if(!cfg) return '';
-  const a=cfg.arr, t=a[a.length-1], p=a[a.length-2];
-  const val = (opts&&opts.val!=null)? opts.val : t[1];
-  const chip = (opts&&opts.chip!=null)? opts.chip : deltaChip(cfg,t?t[1]:null,p?p[1]:null);
-  const pct = percentile(a, val);
-  const sparkArr = a.slice(-Math.min(a.length, 130));
-  const spark = sparkline(sparkArr, cfg);
-  return '<div class="card p-3.5 pulse">'+
-    '<div class="p-lb"><span>'+(opts&&opts.label||cfg.label)+'</span>'+chip+'</div>'+
-    '<div class="p-v">'+((opts&&opts.vtxt)||fmtVal(cfg,val))+(cfg.unit==='%'?'<span style="font-size:13px;color:var(--text-faint)">%</span>':'')+'</div>'+
-    spark+
-    (pct!=null? '<div class="p-rail"><i style="left:'+pct+'%"></i></div>'+
-      '<div class="p-cap">'+ord(pct)+' pctile since '+sinceYear(a)+' · '+fmtDate(t[0])+'</div>'
-      : '<div class="p-cap">'+fmtDate(t[0])+'</div>')+
-    '</div>';
-}
-function sparkline(pts, cfg){
-  pts = downsample(pts.filter(p=>p[1]!=null&&!isNaN(p[1])), 80);
-  if(pts.length<2) return '<div style="height:30px"></div>';
-  const W=100,H=28;
-  const vals=pts.map(p=>p[1]); let mn=Math.min(...vals), mx=Math.max(...vals); if(mn===mx){mn-=1;mx+=1;}
-  const xs=i=>(W*i/(pts.length-1)).toFixed(1), ys=v=>(2+(H-4)*(1-(v-mn)/(mx-mn))).toFixed(1);
-  let d=''; pts.forEach((p,i)=>{ d+=(i?'L':'M')+xs(i)+' '+ys(p[1]); });
-  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="30" preserveAspectRatio="none" style="margin-top:6px;display:block">'+
-    '<path d="'+d+'" fill="none" style="stroke:var(--accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>';
-}
-function buildPulse(){
-  const c=[];
-  c.push(pulseCard('nifty'));
-  c.push(pulseCard('vix'));
-  c.push(pulseCard('niftype', {label:'Nifty PE'}));
-  c.push(pulseCard('india10y', {label:'India 10Y'}));
-  c.push(pulseCard('usdinr', {label:'USD/INR'}));
-  if(S.fii){ const a=S.fii.arr, t5=sum(a.slice(-5).map(x=>x[1]));
-    c.push('<div class="card p-3.5 pulse">'+
-      '<div class="p-lb"><span>FII net · 5D</span></div>'+
-      '<div class="p-v '+(t5>=0?'pos':'neg')+'">'+flow(t5)+'<span style="font-size:13px;color:var(--text-faint)"> Cr</span></div>'+
-      sparkBars(a.slice(-30))+
-      '<div class="p-cap">last 5 sessions · daily bars below</div></div>');
+function headline(k){                       // the reading and change the old tile showed in its top-right corner
+  const cfg=S[k], a=cfg.arr, t=a[a.length-1], p=a[a.length-2];
+  if(cfg.kind==='bars'){
+    const m=monthlyAgg(a,cfg.agg), lm=m[m.length-1], pm=m[m.length-2];
+    return { v:lm?lm[1]:null, chip:deltaChip(cfg, lm?lm[1]:null, pm?pm[1]:null), when:lm?labMonth(lm[0]):'' };
   }
-  $('pulse').innerHTML = c.filter(Boolean).join('');
+  return { v:t?t[1]:null, chip:deltaChip(cfg,t?t[1]:null,p?p[1]:null), when:t?fmtDate(t[0]):'' };
 }
-function sparkBars(pts){
-  pts = pts.filter(p=>p[1]!=null&&!isNaN(p[1]));
-  if(!pts.length) return '<div style="height:30px"></div>';
-  const W=100,H=28, mx=Math.max(...pts.map(p=>Math.abs(p[1])))||1;
-  const bw=Math.max(1.2, W/pts.length-0.8), zero=H/2;
-  let r='';
-  pts.forEach((p,i)=>{ const h=Math.max(0.8,(Math.abs(p[1])/mx)*(H/2-1));
-    const x=(W*i/pts.length).toFixed(1), y=p[1]>=0? zero-h : zero;
-    r+='<rect x="'+x+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="0.6" style="fill:var(--'+(p[1]>=0?'pos':'neg')+')" opacity="0.85"/>'; });
-  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="30" preserveAspectRatio="none" style="margin-top:6px;display:block">'+
-    '<line x1="0" y1="'+zero+'" x2="'+W+'" y2="'+zero+'" style="stroke:var(--border)" stroke-width="0.6"/>'+r+'</svg>';
+function winStats(cfg){                     // the old tile's window: points in the chosen range, and its Lo / Med / Hi
+  const cut=rangeCut();
+  if(cfg.kind==='bars'){
+    let m=monthlyAgg(cfg.arr.filter(p=>p[0]>=cut), cfg.agg), fellBack=false;
+    if(m.length<2){ m=monthlyAgg(cfg.arr, cfg.agg); fellBack=true; }
+    const vals=m.map(p=>p[1]);
+    return { m, n:m.length, fellBack, lo:m.length?Math.min(...vals):null, med:median(vals), hi:m.length?Math.max(...vals):null };
+  }
+  let pts=cfg.arr.filter(p=>p[0]>=cut && p[1]!=null && !isNaN(p[1]));
+  let fellBack=false;
+  if(pts.length<2){ pts=cfg.arr.filter(p=>p[1]!=null&&!isNaN(p[1])); fellBack=true; }
+  if(pts.length<2) return { pts, n:pts.length, fellBack, lo:null, med:null, hi:null };
+  const winVals=pts.map(p=>p[1]);
+  return { pts, n:pts.length, fellBack, lo:Math.min(...winVals), hi:Math.max(...winVals), med:median(winVals) };
 }
 
-/* ================= REGIME GAUGE + WEEKLY MOVERS ================= */
 function pctOf(key){ const c=S[key]; if(!c||!c.arr||c.arr.length<60) return null; return percentile(c.arr, c.arr[c.arr.length-1][1]); }
-function buildRegime(){
+let REG=null, MOV=[], FII5=null;
+function calcRegime(){
   const comps=[];
   const pe=pctOf('niftype'); if(pe!=null) comps.push(['Valuation', 100-pe, 'cheaper vs its own history = higher']);
   const br=pctOf('pct200'); if(br!=null) comps.push(['Breadth', br, 'percentile of % stocks above 200 DMA']);
@@ -554,16 +466,9 @@ function buildRegime(){
   if(comps.length<3) return;
   const score=Math.round(comps.reduce((s,c)=>s+c[1],0)/comps.length);
   const band= score>=70?['Risk-on','pos']: score>=55?['Constructive','pos']: score>=45?['Neutral','']: score>=30?['Cautious','neg']: ['Risk-off','neg'];
-  $('regime').innerHTML =
-    '<div class="secttl">Market regime</div>'+
-    '<div class="sectsub">Our blend of five percentile gauges — a compass, not investment advice.</div>'+
-    '<div class="rg-head"><span class="rg-score">'+score+'</span><span class="rg-band '+band[1]+'">'+band[0]+'</span><span class="sectsub">/ 100</span></div>'+
-    '<div class="rg-meter"><i style="left:'+score+'%"></i></div>'+
-    '<div class="flex justify-between sectsub"><span>Risk-off</span><span>Risk-on</span></div>'+
-    '<div class="rg-chips">'+comps.map(c=>'<span class="rg-chip" title="'+c[2]+'">'+c[0]+' <b>'+Math.round(c[1])+'</b></span>').join('')+'</div>';
-  $('regimeCard').style.display='';
+  REG={ score, band, comps };
 }
-function buildMovers(){
+function calcMovers(){
   let ref='0'; for(const k in S){ const a=S[k].arr; if(a&&a.length && a[a.length-1][0]>ref) ref=a[a.length-1][0]; }
   const refFresh=new Date(ref); refFresh.setDate(refFresh.getDate()-14);
   const freshCut=refFresh.toISOString().slice(0,10);
@@ -577,188 +482,13 @@ function buildMovers(){
     if(past==null) continue;
     const d1=percentile(a,last[1]), d0=percentile(a,past);
     if(d1==null||d0==null||d1===d0) continue;
-    rows.push({lb:c.label, cur:last[1], cfg:c, d:d1-d0});
+    rows.push({k:k, lb:c.label, cur:last[1], cfg:c, d:d1-d0});
   }
   rows.sort((a,b)=>Math.abs(b.d)-Math.abs(a.d));
-  const top=rows.slice(0,6);
-  if(!top.length) return;
-  $('movers').innerHTML =
-    '<div class="secttl">What moved this week</div>'+
-    '<div class="sectsub" style="margin-bottom:4px">'+"Biggest 7-day jumps in each indicator's percentile-in-history."+'</div>'+
-    top.map(r=>{
-      const good=r.cfg.inv? r.d<0 : r.d>0;
-      return '<div class="mv-row"><span class="mv-lb">'+r.lb+'</span>'+
-        '<span class="mv-val">'+fmtVal(r.cfg,r.cur)+(r.cfg.unit==='%'?'%':'')+'</span>'+
-        '<span class="p-chip '+(good?'pos':'neg')+'">'+(r.d>0?'+':'−')+Math.abs(r.d)+' pctl</span></div>';
-    }).join('');
-  $('regimeCard').style.display='';
+  MOV=rows.slice(0,6);
 }
 
-/* ================= PILLS ================= */
-function buildPills(){
-  $('seg').innerHTML = Object.keys(RANGE_MONTHS).map(k=>
-    '<button class="segbtn'+(k===RANGE?' on':'')+'" data-r="'+k+'">'+k+'</button>').join('');
-  $('seg').querySelectorAll('.segbtn').forEach(b=>b.addEventListener('click',()=>{
-    RANGE=b.getAttribute('data-r');
-    $('seg').querySelectorAll('.segbtn').forEach(x=>x.classList.toggle('on', x===b));
-    rerenderTiles();
-  }));
-  $('grpseg').innerHTML = GROUPS.map(([k,lb])=>
-    '<button class="segbtn'+(k===GRP?' on':'')+'" data-g="'+k+'">'+lb+'</button>').join('');
-  $('grpseg').querySelectorAll('.segbtn').forEach(b=>b.addEventListener('click',()=>{
-    GRP=b.getAttribute('data-g');
-    $('grpseg').querySelectorAll('.segbtn').forEach(x=>x.classList.toggle('on', x===b));
-    document.querySelectorAll('#tiles .tile').forEach(t=>{
-      t.style.display = (GRP==='all'||t.getAttribute('data-grp')===GRP)?'':'none';
-    });
-    rerenderTiles();   // newly shown tiles may not be drawn yet
-  }));
-}
-
-/* ================= CHART TILES ================= */
-const drawn = new Set();
-let io=null;
-function buildTiles(){
-  const html = ORDER.filter(k=>S[k]).map(k=>{
-    const cfg=S[k], a=cfg.arr, t=a[a.length-1], p=a[a.length-2];
-    let vhtml, chip;
-    if(cfg.kind==='bars'){
-      const m=monthlyAgg(a,cfg.agg), lm=m[m.length-1], pm=m[m.length-2];
-      vhtml=fmtVal(cfg,lm?lm[1]:null); chip=deltaChip(cfg, lm?lm[1]:null, pm?pm[1]:null);
-    } else {
-      vhtml=fmtVal(cfg,t?t[1]:null)+(cfg.unit==='%'?'<span style="font-size:11px;color:var(--text-faint)">%</span>':'');
-      chip=deltaChip(cfg,t?t[1]:null,p?p[1]:null);
-    }
-    return '<div class="card tile" data-grp="'+cfg.grp+'" data-key="'+k+'">'+
-      '<div class="flex items-start justify-between gap-2">'+
-        '<div><div class="t-name"><span class="gtag">'+GLABEL[cfg.grp]+'</span>'+cfg.label+'</div>'+
-        '<div class="t-sub">'+cfg.sub+'</div></div>'+
-        '<div class="text-right shrink-0"><div class="t-val">'+vhtml+'</div><div style="margin-top:2px">'+chip+'</div></div>'+
-      '</div>'+
-      '<div class="ch" data-key="'+k+'"></div>'+
-      '<div class="t-foot" data-foot="'+k+'"></div>'+
-    '</div>';
-  }).join('');
-  $('tiles').innerHTML = html;
-  io = new IntersectionObserver(es=>{
-    es.forEach(e=>{ if(e.isIntersecting){ io.unobserve(e.target); drawTile(e.target.getAttribute('data-key')); } });
-  }, {rootMargin:'400px'});
-  document.querySelectorAll('#tiles .ch').forEach(el=>io.observe(el));
-  // safety net: some webviews never tick IntersectionObserver — draw whatever it hasn't reached
-  setTimeout(()=>{ ORDER.forEach(k=>{ if(!drawn.has(k)) drawTile(k); }); }, 900);
-}
-function rerenderTiles(){ drawn.forEach(k=>{ const el=tileVisible(k); if(el) drawTile(k); }); }
-function tileVisible(k){
-  const t=document.querySelector('#tiles .tile[data-key="'+k+'"]');
-  return (t && t.style.display!=='none') ? t.querySelector('.ch') : null;
-}
-function drawTile(k){
-  const cfg=S[k]; const el=document.querySelector('#tiles .ch[data-key="'+k+'"]');
-  if(!cfg||!el) return;
-  drawn.add(k); if(io) io.unobserve(el);
-  if(el.parentElement.style.display==='none') return;
-  if(cfg.kind==='bars') barChart(el, cfg); else lineChart(el, cfg);
-}
-
-function lineChart(el, cfg){
-  const cut=rangeCut();
-  let pts=cfg.arr.filter(p=>p[0]>=cut && p[1]!=null && !isNaN(p[1]));
-  let fellBack=false;
-  if(pts.length<2){ pts=cfg.arr.filter(p=>p[1]!=null&&!isNaN(p[1])); fellBack=true; }
-  if(pts.length<2){ el.innerHTML='<div class="sectsub" style="padding:24px 0">'+(cfg.note||'Not enough data yet.')+'</div>'; return; }
-  const winVals=pts.map(p=>p[1]);
-  const lo=Math.min(...winVals), hi=Math.max(...winVals), med=median(winVals);
-  pts=downsample(pts);
-  const W=Math.max(280, el.clientWidth||el.parentElement.clientWidth-28), H=150, PL=6, PR=6, PT=10, PB=6;
-  let mn=lo, mx=hi; if(mn===mx){mn-=1;mx+=1;} const pad=(mx-mn)*0.08; mn-=pad; mx+=pad;
-  const xs=i=>PL+(W-PL-PR)*(i/(pts.length-1));
-  const ys=v=>PT+(H-PT-PB)*(1-(v-mn)/(mx-mn));
-  let dL=''; pts.forEach((p,i)=>{ dL+=(i?'L':'M')+xs(i).toFixed(1)+' '+ys(p[1]).toFixed(1); });
-  const dA=dL+'L'+xs(pts.length-1).toFixed(1)+' '+(H-PB)+'L'+xs(0).toFixed(1)+' '+(H-PB)+'Z';
-  const gid='g_'+cfg.label.replace(/\W/g,'');
-  const lastP=pts[pts.length-1];
-  const grid=[0.25,0.5,0.75].map(f=>{ const y=(PT+(H-PT-PB)*f).toFixed(1);
-    return '<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" style="stroke:var(--border)" stroke-width="1" stroke-dasharray="1 5" opacity="0.7"/>'; }).join('');
-  const medY=ys(med).toFixed(1);
-  const svg =
-  '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" style="overflow:visible;display:block">'+
-    '<defs><linearGradient id="'+gid+'" x1="0" y1="0" x2="0" y2="1">'+
-      '<stop offset="0%" style="stop-color:var(--accent)" stop-opacity="0.22"/>'+
-      '<stop offset="100%" style="stop-color:var(--accent)" stop-opacity="0"/></linearGradient></defs>'+
-    grid+
-    '<path d="'+dA+'" fill="url(#'+gid+')"/>'+
-    '<line x1="'+PL+'" y1="'+medY+'" x2="'+(W-PR)+'" y2="'+medY+'" style="stroke:var(--text-faint)" stroke-width="1" stroke-dasharray="2 4" opacity="0.5"/>'+
-    '<path d="'+dL+'" fill="none" style="stroke:var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+
-    '<circle cx="'+xs(pts.length-1).toFixed(1)+'" cy="'+ys(lastP[1]).toFixed(1)+'" r="3.2" style="fill:var(--accent);stroke:var(--surface)" stroke-width="1.5"/>'+
-    '<line class="gl" x1="0" y1="'+PT+'" x2="0" y2="'+(H-PB)+'" style="stroke:var(--accent)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>'+
-    '<circle class="gd" r="3.5" style="fill:var(--accent);stroke:var(--surface)" stroke-width="1.5" opacity="0"/>'+
-    '<rect class="hit" x="0" y="0" width="'+W+'" height="'+H+'" fill="transparent"/>'+
-  '</svg>';
-  el.innerHTML = svg + '<div class="ch-dates"><span>'+fmtDate(pts[0][0])+(fellBack?' (full history)':'')+'</span><span>'+fmtDate(lastP[0])+'</span></div>';
-  const foot=document.querySelector('[data-foot="'+cfg2key(cfg)+'"]');
-  if(foot){ const pct=percentile(cfg.arr, cfg.arr[cfg.arr.length-1][1]);
-    foot.innerHTML='<span>Lo <b>'+fmtVal(cfg,lo)+'</b></span><span>Med <b>'+fmtVal(cfg,med)+'</b></span><span>Hi <b>'+fmtVal(cfg,hi)+'</b></span>'+
-      (pct!=null? '<span class="t-pct">'+ord(pct)+' pctile since '+sinceYear(cfg.arr)+'</span>':''); }
-  hoverLine(el, cfg, pts, xs, ys);
-}
-function cfg2key(cfg){ for(const k in S) if(S[k]===cfg) return k; return ''; }
-function hoverLine(el, cfg, pts, xs, ys){
-  const svg=el.querySelector('svg'), gl=el.querySelector('.gl'), gd=el.querySelector('.gd'), hit=el.querySelector('.hit');
-  function move(ev){
-    const r=svg.getBoundingClientRect();
-    const cx=(ev.touches?ev.touches[0].clientX:ev.clientX), cy=(ev.touches?ev.touches[0].clientY:ev.clientY);
-    const frac=Math.max(0,Math.min(1,(cx-r.left)/r.width)); const i=Math.round(frac*(pts.length-1));
-    const x=xs(i), y=ys(pts[i][1]);
-    gl.setAttribute('x1',x); gl.setAttribute('x2',x); gl.setAttribute('opacity','.5');
-    gd.setAttribute('cx',x); gd.setAttribute('cy',y); gd.setAttribute('opacity','1');
-    tip.show('<b>'+fmtVal(cfg,pts[i][1])+(cfg.unit==='%'?'%':'')+'</b><div class="d">'+fmtDate(pts[i][0])+'</div>', cx, cy);
-  }
-  function out(){ gl.setAttribute('opacity','0'); gd.setAttribute('opacity','0'); tip.hide(); }
-  hit.addEventListener('mousemove',move); hit.addEventListener('mouseleave',out);
-  hit.addEventListener('touchmove',move,{passive:true}); hit.addEventListener('touchend',out);
-}
-function barChart(el, cfg){
-  const cut=rangeCut();
-  let m=monthlyAgg(cfg.arr.filter(p=>p[0]>=cut), cfg.agg);
-  if(m.length<2) m=monthlyAgg(cfg.arr, cfg.agg);
-  if(!m.length){ el.innerHTML='<div class="sectsub" style="padding:24px 0">Not enough data yet.</div>'; return; }
-  const W=Math.max(280, el.clientWidth||el.parentElement.clientWidth-28), H=150, PT=10, PB=6;
-  const mx=Math.max(...m.map(p=>Math.abs(p[1])))||1;
-  const plotH=H-PT-PB, zero=PT+plotH*(Math.max(...m.map(p=>p[1]))<=0?0.06: Math.min(...m.map(p=>p[1]))>=0?0.94:
-    (Math.max(...m.map(p=>p[1]))/(Math.max(...m.map(p=>p[1]))-Math.min(...m.map(p=>p[1])))));
-  const scale=Math.max(1e-9, Math.max(Math.max(...m.map(p=>p[1])),0)/Math.max(1e-9,(zero-PT)) ,
-                        Math.max(-Math.min(...m.map(p=>p[1])),0)/Math.max(1e-9,(H-PB-zero)));
-  const bw=Math.max(2, (W-8)/m.length-2);
-  let bars='';
-  m.forEach((p,i)=>{ const v=p[1]; if(v==null) return;
-    const h=Math.max(1, Math.abs(v)/scale);
-    const x=4+((W-8)*i/m.length), y=v>=0? zero-h : zero;
-    bars+='<rect data-i="'+i+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="1.5" style="fill:var(--'+(v>=0?'pos':'neg')+')" opacity="0.82"/>'; });
-  el.innerHTML =
-  '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" style="display:block">'+
-    '<line x1="0" y1="'+zero.toFixed(1)+'" x2="'+W+'" y2="'+zero.toFixed(1)+'" style="stroke:var(--border-strong)" stroke-width="1"/>'+
-    bars+'<rect class="hit" x="0" y="0" width="'+W+'" height="'+H+'" fill="transparent"/>'+
-  '</svg>'+
-  '<div class="ch-dates"><span>'+labMonth(m[0][0])+'</span><span>'+labMonth(m[m.length-1][0])+'</span></div>';
-  const svg=el.querySelector('svg'), hit=el.querySelector('.hit');
-  const rects=[...svg.querySelectorAll('rect[data-i]')];
-  function move(ev){
-    const r=svg.getBoundingClientRect();
-    const cx=(ev.touches?ev.touches[0].clientX:ev.clientX), cy=(ev.touches?ev.touches[0].clientY:ev.clientY);
-    const i=Math.max(0,Math.min(m.length-1, Math.floor((cx-r.left)/r.width*m.length)));
-    rects.forEach(rc=>rc.setAttribute('opacity', +rc.getAttribute('data-i')===i?'1':'0.45'));
-    tip.show('<b>'+fmtVal(cfg,m[i][1])+'</b><div class="d">'+labMonth(m[i][0])+(cfg.agg==='avg'?' · avg/day':'')+'</div>', cx, cy);
-  }
-  function out(){ rects.forEach(rc=>rc.setAttribute('opacity','0.82')); tip.hide(); }
-  hit.addEventListener('mousemove',move); hit.addEventListener('mouseleave',out);
-  hit.addEventListener('touchmove',move,{passive:true}); hit.addEventListener('touchend',out);
-  const foot=document.querySelector('[data-foot="'+cfg2key(cfg)+'"]');
-  if(foot){ const vals=m.map(p=>p[1]);
-    foot.innerHTML='<span>Lo <b>'+fmtVal(cfg,Math.min(...vals))+'</b></span><span>Med <b>'+fmtVal(cfg,median(vals))+'</b></span><span>Hi <b>'+fmtVal(cfg,Math.max(...vals))+'</b></span>'+
-      '<span class="t-pct">'+m.length+' '+(cfg.bucket||'months')+'</span>'; }
-}
-
-/* ================= QUARTERLY HEAT GRID ================= */
+/* quarterly grid */
 function colVal(cfg, colDate, prevQEnd, mode){
   if(mode==='level') return nearestLE(cfg.arr, colDate);
   const vals=bucketVals(cfg.arr, prevQEnd, colDate);
@@ -766,7 +496,8 @@ function colVal(cfg, colDate, prevQEnd, mode){
   if(mode==='qlast') return vals.length? vals[vals.length-1] : null;
   return mean(vals);
 }
-function buildHeat(){
+let HEAT={q:[],rows:[]};
+function calcHeat(){
   let ref='0'; for(const k in S){ const a=S[k].arr; if(a.length && a[a.length-1][0]>ref) ref=a[a.length-1][0]; }
   const q=quarterEnds(ref, 12).reverse();          // oldest → newest, reading order
   const nfty=window.__nifty||[];
@@ -786,41 +517,31 @@ function buildHeat(){
     S.depyoy && { label:'Deposits', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.depyoy,qe,prev,'qlast') },
     S.m3yoy && { label:'M3', s:'y/y %', fmt:v=>nf(v,1), get:(qe,prev)=>colVal(S.m3yoy,qe,prev,'qlast') },
   ].filter(Boolean);
-  const el=$('hm'); el.style.setProperty('--hm-cols', q.length);
-  let h='<div class="lft h" style="border-bottom:1px solid var(--border)">Indicator</div>';
-  q.forEach(qe=>{ h+='<div class="h">'+labQ(qe)+'</div>'; });
+  const rows=[];
   ROWS.forEach(row=>{
     const vals=q.map((qe,i)=>row.get(qe, i? q[i-1] : '2000-01-01'));
-    if(vals.filter(v=>v!=null).length<2) return;   // hide rows whose feed window hasn't grown yet (FII/DII start Jun'26)
+    if(vals.filter(v=>v!=null).length<2) return;   // hide rows whose feed window hasn't grown yet
     const base=row.base||0;
     const amax=Math.max(...vals.filter(v=>v!=null).map(v=>Math.abs(v-base)), 1e-9);
-    h+='<div class="lft">'+row.label+'<span class="s">'+row.s+'</span></div>';
-    vals.forEach((v,i)=>{
-      let bg='transparent';
-      if(v!=null){
-        // sign-anchored: positive→pos hue, negative→neg hue (CPI: shade vs row median instead of zero)
-        let s, hue;
-        if(row.inv){ const med0=median(vals.filter(x=>x!=null)); const dev=v-med0; hue=dev<=0?'pos':'neg'; s=Math.min(1,Math.abs(dev)/Math.max(1e-9,amax-Math.abs(med0))||0); }
-        else { const dev=v-base; hue=dev>=0?'pos':'neg'; s=Math.min(1,Math.abs(dev)/amax); }
-        bg='color-mix(in srgb, var(--'+hue+') '+(8+Math.round(30*s))+'%, transparent)';
-      }
-      h+='<div class="cell" data-r="'+row.label+'" data-q="'+labQ(q[i])+'" data-v="'+(v==null?'':row.fmt(v))+'" style="background:'+bg+'">'+(v==null?'<span style="color:var(--text-faint)">·</span>':row.fmt(v))+'</div>';
-    });
+    rows.push({ row, vals, base, amax });
   });
-  el.innerHTML=h;
-  el.addEventListener('mousemove', ev=>{
-    const c=ev.target.closest('.cell'); if(!c||!c.getAttribute('data-v')){ tip.hide(); return; }
-    tip.show('<b>'+c.getAttribute('data-v')+'</b><div class="d">'+c.getAttribute('data-r')+' · '+c.getAttribute('data-q')+'</div>', ev.clientX, ev.clientY);
-  });
-  el.addEventListener('mouseleave', ()=>tip.hide());
+  HEAT={ q, rows };
+}
+function shade(R, v){                       // the old cell shading rule, unchanged
+  if(v==null) return null;
+  const row=R.row, vals=R.vals, base=R.base, amax=R.amax;
+  let s, hue;
+  if(row.inv){ const med0=median(vals.filter(x=>x!=null)); const dev=v-med0; hue=dev<=0?'pos':'neg'; s=Math.min(1,Math.abs(dev)/Math.max(1e-9,amax-Math.abs(med0))||0); }
+  else { const dev=v-base; hue=dev>=0?'pos':'neg'; s=Math.min(1,Math.abs(dev)/amax); }
+  return { hue, bg:'color-mix(in srgb, var(--'+hue+') '+(8+Math.round(30*s))+'%, transparent)' };
 }
 
-/* ================= SECTOR ROTATION (bars) ================= */
+/* sector rotation */
 let ROTP='3M';
 const ROT_N={'1M':1,'3M':3,'6M':6,'1Y':12};
 let ROTDATA=null;
-function buildRotation(idx){
-  if(!idx||!idx.indices){ $('rot').closest('.card').style.display='none'; return; }
+function calcRotation(idx){
+  if(!idx||!idx.indices){ ROTDATA=null; return; }
   const live=idx.live||{};
   function series(ix){
     const out=[]; const cl=ix.closes||{};
@@ -832,56 +553,325 @@ function buildRotation(idx){
   const nifty=idx.indices.find(i=>i.key==='NIFTY 50'); const nser=nifty?series(nifty):[];
   const rows=idx.indices.filter(i=>i.grp==='sector'||i.grp==='theme').map(i=>{
     const s=series(i);
-    return { label:i.label, r:{ '1M':retN(s,1),'3M':retN(s,3),'6M':retN(s,6),'1Y':retN(s,12) } };
+    return { label:i.label, key:i.key, ser:s, r:{ '1M':retN(s,1),'3M':retN(s,3),'6M':retN(s,6),'1Y':retN(s,12) } };
   });
-  rows.push({ label:'Nifty 50', isNifty:true, r:{ '1M':retN(nser,1),'3M':retN(nser,3),'6M':retN(nser,6),'1Y':retN(nser,12) } });
+  rows.push({ label:'Nifty 50', key:'NIFTY 50', ser:nser, isNifty:true, r:{ '1M':retN(nser,1),'3M':retN(nser,3),'6M':retN(nser,6),'1Y':retN(nser,12) } });
   ROTDATA=rows;
-  $('rotseg').innerHTML=Object.keys(ROT_N).map(k=>
-    '<button class="segbtn'+(k===ROTP?' on':'')+'" data-p="'+k+'">'+k+'</button>').join('');
-  $('rotseg').querySelectorAll('.segbtn').forEach(b=>b.addEventListener('click',()=>{
-    ROTP=b.getAttribute('data-p');
-    $('rotseg').querySelectorAll('.segbtn').forEach(x=>x.classList.toggle('on', x===b));
-    renderRotation();
-  }));
-  renderRotation();
-}
-function renderRotation(){
-  const rows=(ROTDATA||[]).filter(r=>r.r[ROTP]!=null).sort((a,b)=>b.r[ROTP]-a.r[ROTP]);
-  if(!rows.length){ $('rot').innerHTML='<div class="sectsub">No data.</div>'; return; }
-  const vals=rows.map(r=>r.r[ROTP]);
-  const mn=Math.min(0,...vals), mx=Math.max(0,...vals), span=(mx-mn)||1;
-  const X=v=>((v-mn)/span*100);
-  const nrow=rows.find(r=>r.isNifty); const nx=nrow? X(nrow.r[ROTP]) : null;
-  $('rot').innerHTML = rows.map(r=>{
-    const v=r.r[ROTP], x0=X(0), xv=X(v);
-    const left=Math.min(x0,xv), wd=Math.max(0.4,Math.abs(xv-x0));
-    return '<div class="rot-row'+(r.isNifty?' nifty':'')+'" data-lb="'+r.label+'">'+
-      '<div class="rot-lb">'+r.label+'</div>'+
-      '<div class="rot-track">'+
-        '<span class="rot-zero" style="left:'+x0+'%"></span>'+
-        (nx!=null&&!r.isNifty? '<span class="rot-nmark" style="left:'+nx+'%"></span>':'')+
-        '<span class="rot-bar '+(v>=0?'pos':'neg')+'" style="left:'+left+'%;width:'+wd+'%"></span>'+
-      '</div>'+
-      '<div class="rot-v '+(v>0?'pos':v<0?'neg':'')+'">'+fmtPct(v)+'</div>'+
-    '</div>';
-  }).join('');
-  const nv=nrow? nrow.r[ROTP] : null;
-  $('rot').querySelectorAll('.rot-row').forEach(el=>{
-    el.addEventListener('mousemove', ev=>{
-      const r=(ROTDATA||[]).find(x=>x.label===el.getAttribute('data-lb')); if(!r) return;
-      const vs=(nv!=null&&r.r[ROTP]!=null&&!r.isNifty)? '<div class="d">vs Nifty ('+ROTP+'): '+fmtPct(r.r[ROTP]-nv)+'</div>':'';
-      tip.show('<b>'+r.label+'</b><div class="d">1M '+fmtPct(r.r['1M'])+' · 3M '+fmtPct(r.r['3M'])+' · 6M '+fmtPct(r.r['6M'])+' · 1Y '+fmtPct(r.r['1Y'])+'</div>'+vs, ev.clientX, ev.clientY);
-    });
-    el.addEventListener('mouseleave', ()=>tip.hide());
-  });
 }
 
-/* ================= boot ================= */
-let rsT=null;
-window.addEventListener('resize', ()=>{ if(rsT)clearTimeout(rsT); rsT=setTimeout(()=>rerenderTiles(), 220); });
-document.addEventListener('DOMContentLoaded', ()=>{ tip.el=$('tip'); });
-tip.el=$('tip');
+/* ================= one-screen state ================= */
+const esc=K.esc;
+let view='ind', selK=null, selQ=0, selR=null, lQ='', VIS=[];
+const stat=(t,val,sub,cls)=>'<div><span>'+t+'</span><b class="'+(cls||'')+'">'+val+'<small>'+(sub||'&nbsp;')+'</small></b></div>';
+const unitOf=cfg=>cfg.unit==='%'?'%':'';
+function sg(el, items, cur, fn){
+  el.innerHTML=items.map(it=>'<button type="button" data-k="'+it[0]+'" class="'+(it[0]===cur?'on':'')+'">'+it[1]+'</button>').join('');
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>fn(b.getAttribute('data-k')));
+}
+function setRange(r){ RANGE=r; render(); }
+function setGrp(g){ GRP=g; render(); }
+function setRotP(p){ ROTP=p; render(); }
+function setView(v){ if(v==='rot'&&!ROTDATA) v='ind'; view=v; if($('grid').classList.contains('focus')) toggleFocus(); render(); }
+function selId(){ return view==='ind'?selK : view==='q'?String(selQ) : selR; }
+
+function writeHash(){
+  let h='v='+view;
+  if(view==='ind'){ if(selK) h+='&k='+encodeURIComponent(selK); if(GRP!=='all') h+='&g='+GRP; if(RANGE!=='5Y') h+='&r='+RANGE; }
+  else if(view==='q'){ const R=HEAT.rows[selQ]; if(R) h+='&k='+encodeURIComponent(R.row.label); }
+  else { if(selR) h+='&k='+encodeURIComponent(selR); if(ROTP!=='3M') h+='&p='+ROTP; if(RANGE!=='5Y') h+='&r='+RANGE; }
+  try{ history.replaceState(null,'','#'+h); }catch(e){}
+}
+function readHash(){
+  let h; try{ h=new URLSearchParams(location.hash.replace(/^#/,'')); }catch(e){ return; }
+  const v=h.get('v'), k=h.get('k'), g=h.get('g'), r=h.get('r'), p=h.get('p');
+  if(v==='q'||v==='rot'||v==='ind') view=v;
+  if(view==='rot'&&!ROTDATA) view='ind';
+  if(g&&GLABEL[g]) GRP=g;
+  if(r&&RANGE_MONTHS[r]) RANGE=r;
+  if(p&&ROT_N[p]) ROTP=p;
+  if(k){
+    if(view==='ind'&&S[k]){ selK=k; if(GRP!=='all'&&S[k].grp!==GRP) GRP='all'; }
+    else if(view==='q'){ const i=HEAT.rows.findIndex(R=>R.row.label===k); if(i>=0) selQ=i; }
+    else if(view==='rot'&&ROTDATA.some(x=>x.label===k)) selR=k;
+  }
+}
+
+function render(){
+  $('views').querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.getAttribute('data-v')===view));
+  $('pL').className='os-pane '+view;
+  $('pC').classList.toggle('q', view==='q');
+  $('grpseg').classList.toggle('hidden', view!=='ind');
+  $('rotseg').classList.toggle('hidden', view!=='rot');
+  $('seg').classList.toggle('hidden', view==='q');
+  $('lSearchBox').classList.toggle('hidden', view!=='ind');
+  sg($('grpseg'), GROUPS, GRP, setGrp);
+  sg($('seg'), Object.keys(RANGE_MONTHS).map(k=>[k,k]), RANGE, setRange);
+  sg($('rotseg'), Object.keys(ROT_N).map(k=>[k,k]), ROTP, setRotP);
+  $('keys').innerHTML = view==='ind' ? '<b>↑↓</b> indicator · <b>←→</b> range · <b>/</b> find · <b>F</b> focus'
+    : view==='rot' ? '<b>↑↓</b> index · <b>←→</b> period · <b>F</b> focus' : '<b>↑↓</b> row · <b>F</b> focus';
+  $('lede').innerHTML = view==='ind' ? "India's market, valuation, rates, economy and flows — every indicator's latest reading, its position in history, and its chart."
+    : view==='q' ? 'Each row shaded against its own 12-quarter range — green favourable, red adverse (CPI inverted: cooling inflation reads green). Blank = no reading that quarter. GDP feed paused Nov-24.'
+    : 'NSE sector &amp; thematic indices, price returns from monthly closes. Dashed line = Nifty 50 — bars past it are beating the market.';
+  renderList(); renderDetail(); drawChart(); writeHash();
+  K.fitGrid($('grid'));
+}
+
+/* ---------------- pane 1: the list ---------------- */
+function renderList(){
+  let html='';
+  if(view==='ind'){
+    const q=lQ.trim().toLowerCase();
+    VIS=ORDER.filter(k=>(GRP==='all'||S[k].grp===GRP) && (!q||S[k].label.toLowerCase().indexOf(q)>=0||GLABEL[S[k].grp].toLowerCase().indexOf(q)>=0));
+    if(VIS.indexOf(selK)<0) selK=VIS.length?VIS[0]:null;
+    let lastG=null;
+    VIS.forEach(k=>{ const cfg=S[k], h=headline(k);
+      if(GRP==='all'&&cfg.grp!==lastG){ lastG=cfg.grp; html+='<div class="lgrp">'+GLABEL[cfg.grp]+'</div>'; }
+      html+='<div class="os-row lr'+(k===selK?' on':'')+'" role="option" data-i="'+esc(k)+'" title="'+esc(cfg.sub)+'"><span class="n">'+esc(cfg.label)+'</span>'
+        +'<span class="v">'+fmtVal(cfg,h.v)+unitOf(cfg)+'</span><span class="m">'+(h.chip||'<span class="p-chip">·</span>')+'</span></div>'; });
+    if(!VIS.length) html='<div class="os-empty">No indicator matches “'+esc(lQ)+'”.</div>';
+    $('lTitle').innerHTML='Indicators <i>'+VIS.length+'</i>'; $('lNote').textContent=GRP==='all'?'all groups':GLABEL[GRP];
+    $('lHead').innerHTML='<span>Indicator</span><span style="text-align:right">Latest</span><span style="text-align:right">Change</span>';
+  } else if(view==='q'){
+    VIS=HEAT.rows.map((R,i)=>String(i));
+    if(selQ>=HEAT.rows.length) selQ=0;
+    HEAT.rows.forEach((R,i)=>{ let lv=null; for(let j=R.vals.length-1;j>=0;j--){ if(R.vals[j]!=null){ lv=j; break; } }
+      html+='<div class="os-row lr'+(i===selQ?' on':'')+'" role="option" data-i="'+i+'"><span class="n">'+esc(R.row.label)+'<small>'+esc(R.row.s)+'</small></span>'
+        +'<span class="v" title="'+(lv==null?'':labQ(HEAT.q[lv]))+'">'+(lv==null?'·':R.row.fmt(R.vals[lv]))+'</span></div>'; });
+    if(!HEAT.rows.length) html='<div class="os-empty">No quarterly readings yet.</div>';
+    $('lTitle').innerHTML='Rows <i>'+HEAT.rows.length+'</i>'; $('lNote').textContent=HEAT.q.length?labQ(HEAT.q[0])+' → '+labQ(HEAT.q[HEAT.q.length-1]):'';
+    $('lHead').innerHTML='<span>Indicator</span><span style="text-align:right">Latest qtr</span>';
+  } else {
+    const rows=(ROTDATA||[]).filter(r=>r.r[ROTP]!=null).sort((a,b)=>b.r[ROTP]-a.r[ROTP]);
+    VIS=rows.map(r=>r.label);
+    if(VIS.indexOf(selR)<0) selR=VIS.length?VIS[0]:null;
+    if(rows.length){
+      const vals=rows.map(r=>r.r[ROTP]);
+      const mn=Math.min(0,...vals), mx=Math.max(0,...vals), span=(mx-mn)||1;
+      const X=v=>((v-mn)/span*100);
+      const nrow=rows.find(r=>r.isNifty); const nx=nrow? X(nrow.r[ROTP]) : null;
+      rows.forEach(r=>{ const v=r.r[ROTP], x0=X(0), xv=X(v);
+        const left=Math.min(x0,xv), wd=Math.max(0.4,Math.abs(xv-x0));
+        html+='<div class="os-row lr'+(r.isNifty?' nifty':'')+(r.label===selR?' on':'')+'" role="option" data-i="'+esc(r.label)+'"><span class="n">'+esc(r.label)+'</span>'
+          +'<span class="rot-track"><span class="rot-zero" style="left:'+x0+'%"></span>'
+          +(nx!=null&&!r.isNifty? '<span class="rot-nmark" style="left:'+nx+'%"></span>':'')
+          +'<span class="rot-bar '+(v>=0?'pos':'neg')+'" style="left:'+left+'%;width:'+wd+'%"></span></span>'
+          +'<span class="v '+(v>0?'pos':v<0?'neg':'')+'">'+fmtPct(v)+'</span></div>'; });
+    } else html='<div class="os-empty">No data.</div>';
+    $('lTitle').innerHTML='Sector &amp; thematic indices <i>'+rows.length+'</i>'; $('lNote').textContent='best first';
+    $('lHead').innerHTML='<span>Index</span><span>vs Nifty 50 (dashed)</span><span style="text-align:right">'+ROTP+'</span>';
+  }
+  $('lList').innerHTML=html;
+  $('lList').querySelectorAll('.lr').forEach(el=>el.onclick=()=>pick(el.getAttribute('data-i')));
+  seeRow();
+}
+function seeRow(){ const box=$('lList'), on=box.querySelector('.lr.on'); if(!on) return;
+  if(on.offsetTop<box.scrollTop || on.offsetTop+on.offsetHeight>box.scrollTop+box.clientHeight) box.scrollTop=Math.max(0,on.offsetTop-box.clientHeight/2); }
+function pick(id, see){
+  if(id==null||VIS.indexOf(String(id))<0) return;
+  if(view==='ind') selK=id; else if(view==='q') selQ=+id; else selR=id;
+  $('lList').querySelectorAll('.lr').forEach(el=>el.classList.toggle('on', el.getAttribute('data-i')===String(id)));
+  if(see) seeRow();
+  renderDetail(); drawChart(); writeHash();
+}
+
+/* ---------------- pane 2: the chosen item's figures ---------------- */
+function renderDetail(){
+  let h='';
+  if(view==='ind'){
+    const cfg=S[selK];
+    if(!cfg){ $('dTitle').textContent=''; $('dBody').innerHTML='<div class="os-empty">Pick an indicator.</div>'; return; }
+    const hd=headline(selK), w=winStats(cfg), u=unitOf(cfg), rl=w.fellBack?'full history':RANGE;
+    const per=cfg.kind==='bars' ? (cfg.bucket==='quarters'?'quarter':'month') : 'reading';
+    $('dTitle').innerHTML=esc(cfg.label)+' <i>'+GLABEL[cfg.grp]+'</i>';
+    h+='<div class="os-stats dst">'
+      +stat('Latest', fmtVal(cfg,hd.v)+u, hd.when)
+      +stat('Change', hd.chip||'—', 'vs previous '+per)
+      +stat('Low · '+rl, w.lo==null?'—':fmtVal(cfg,w.lo)+u, '')
+      +stat('High · '+rl, w.hi==null?'—':fmtVal(cfg,w.hi)+u, '')
+      +stat('Median · '+rl, w.med==null?'—':fmtVal(cfg,w.med)+u, '');
+    if(cfg.kind==='bars') h+=stat('Bars shown', w.n, cfg.bucket||'months'+(cfg.agg==='avg'?' · avg/day':''));
+    else { const pct=percentile(cfg.arr, cfg.arr[cfg.arr.length-1][1]);
+      h+=stat('Percentile', pct==null?'—':ord(pct), pct==null?'':'of its history since '+sinceYear(cfg.arr)); }
+    h+='</div><div class="dp">'+esc(cfg.sub)+(cfg.note?'<br>'+esc(cfg.note):'')+'</div>';
+    if(REG){
+      h+='<div class="dh">Market regime</div>'
+        +'<div class="dr"><span class="n">Score</span><span class="rgs">'+REG.score+'</span><b class="'+REG.band[1]+'">'+REG.band[0]+' <span style="font-weight:400;color:var(--text-faint)">/ 100</span></b></div>'
+        +REG.comps.map(c=>'<div class="dr"><span class="n">'+c[0]+'<small>'+c[2]+'</small></span><span></span><b>'+Math.round(c[1])+'</b></div>').join('')
+        +'<div class="dp">Our blend of five percentile gauges — a compass, not investment advice. 0 = risk-off, 100 = risk-on.</div>';
+    }
+    if(MOV.length){
+      h+='<div class="dh">What moved this week</div>'
+        +MOV.map(r=>{ const good=r.cfg.inv? r.d<0 : r.d>0;
+          return '<div class="dr go" data-k="'+esc(r.k)+'" title="Open this indicator"><span class="n">'+esc(r.lb)+'</span><b>'+fmtVal(r.cfg,r.cur)+unitOf(r.cfg)+'</b>'
+            +'<span class="p-chip '+(good?'pos':'neg')+'">'+(r.d>0?'+':'−')+Math.abs(r.d)+' pctl</span></div>'; }).join('')
+        +'<div class="dp">'+"Biggest 7-day jumps in each indicator's percentile-in-history."+'</div>';
+    }
+    if(FII5!=null) h+='<div class="dh">FII net · 5D</div><div class="dr"><span class="n">last 5 sessions</span><span></span><b class="'+(FII5>=0?'pos':'neg')+'">'+flow(FII5)+' Cr</b></div>';
+    $('dBody').innerHTML=h;
+    $('dBody').querySelectorAll('.dr.go').forEach(el=>el.onclick=()=>{ const k=el.getAttribute('data-k'); if(!S[k]) return;
+      if(GRP!=='all'&&S[k].grp!==GRP) GRP='all'; lQ=''; $('lSearch').value=''; selK=k; render(); });
+  } else if(view==='q'){
+    const R=HEAT.rows[selQ];
+    if(!R){ $('dTitle').textContent=''; $('dBody').innerHTML='<div class="os-empty">No quarterly readings yet.</div>'; return; }
+    $('dTitle').innerHTML=esc(R.row.label)+' <i>'+esc(R.row.s)+'</i>';
+    for(let i=HEAT.q.length-1;i>=0;i--){ const v=R.vals[i], sh=shade(R,v);
+      h+='<div class="dr"><span class="n">'+labQ(HEAT.q[i])+'</span><span></span><b class="qv" style="background:'+(sh?sh.bg:'transparent')+'">'+(v==null?'<span style="color:var(--text-faint)">·</span>':R.row.fmt(v))+'</b></div>'; }
+    h+='<div class="dp">Quarter ending in the month shown, newest first. Shade is relative to this row’s own twelve quarters.</div>';
+    $('dBody').innerHTML=h;
+  } else {
+    const r=(ROTDATA||[]).find(x=>x.label===selR);
+    if(!r){ $('dTitle').textContent=''; $('dBody').innerHTML='<div class="os-empty">No data.</div>'; return; }
+    const nrow=ROTDATA.find(x=>x.isNifty);
+    $('dTitle').innerHTML=esc(r.label);
+    h+='<div class="os-stats dst">'+Object.keys(ROT_N).map(p=>{ const v=r.r[p], nv=nrow?nrow.r[p]:null;
+      return stat(p+' return', fmtPct(v), (nv!=null&&v!=null&&!r.isNifty)?'vs Nifty: '+fmtPct(v-nv):(r.isNifty?'the benchmark':''), v>0?'pos':v<0?'neg':''); }).join('')+'</div>';
+    const rk=VIS.indexOf(r.label);
+    h+='<div class="dr"><span class="n">Rank over '+ROTP+'</span><span></span><b>'+(rk<0?'—':(rk+1)+' of '+VIS.length)+'</b></div>'
+      +'<div class="dp">Price returns from monthly closes; the latest month uses the live index value where one is on file.</div>';
+    $('dBody').innerHTML=h;
+  }
+}
+
+/* ---------------- pane 3: the chart ---------------- */
+let LC_=null, CH=null, chartTok=0;
+const BARS={};                                                    // index key -> daily closes [[iso, close]] or null
+function killChart(){ if(CH){ try{ CH.chart.remove(); }catch(e){} CH=null; } }
+function theme(){ const cs=getComputedStyle(document.documentElement), v=n=>cs.getPropertyValue(n).trim();
+  return {pos:v('--pos')||'#15803d', neg:v('--neg')||'#b91c1c', bd:v('--border')||'#e2e8f0', mut:v('--text-muted')||'#64748b', acc:v('--accent-text')||'#0f766e', faint:v('--text-faint')||'#94a3b8'}; }
+function uniq(pts){ const out=[]; pts.forEach(p=>{ const n=out.length; if(n&&out[n-1][0]===p[0]) out[n-1]=p; else if(!n||p[0]>out[n-1][0]) out.push(p); }); return out; }
+function plot(o){                                                 // o = {pts:[[iso,value]], bars, hue(v,i), fmt(v), median, info(i), empty}
+  killChart(); $('cMsg').textContent=''; $('cLegend').innerHTML='';
+  LC_=window.LightweightCharts;
+  if(!LC_){ $('cMsg').textContent='Chart library did not load — the figures are in the lists.'; return; }
+  const pts=uniq(o.pts||[]);
+  if(pts.filter(p=>p[1]!=null).length<(o.bars?1:2)){ $('cMsg').textContent=o.empty||'Not enough data yet.'; return; }
+  const T=theme();
+  const chart=LC_.createChart($('cChart'),{ autoSize:true,
+    layout:{background:{color:'transparent'},textColor:T.mut,fontSize:11,fontFamily:getComputedStyle(document.body).fontFamily},
+    grid:{vertLines:{visible:false},horzLines:{color:T.bd}}, rightPriceScale:{borderColor:T.bd,scaleMargins:{top:.16,bottom:.08}},
+    timeScale:{borderColor:T.bd,rightOffset:2,minBarSpacing:0.01}, crosshair:{mode:0}, handleScroll:true, handleScale:true });
+  const pf={type:'custom',minMove:0.01,formatter:o.fmt};
+  let s;
+  if(o.bars){ s=chart.addSeries(LC_.HistogramSeries,{priceFormat:pf,priceLineVisible:false,lastValueVisible:false});
+    s.setData(pts.map((p,i)=>p[1]==null?{time:p[0]}:{time:p[0],value:p[1],color:(o.hue(p[1],i)==='neg'?T.neg:T.pos)+'d0'})); }
+  else { s=chart.addSeries(LC_.AreaSeries,{lineColor:T.acc,topColor:T.acc+'22',bottomColor:T.acc+'05',lineWidth:2,priceFormat:pf,priceLineVisible:false,lastValueVisible:true});
+    s.setData(pts.map(p=>({time:p[0],value:p[1]})));
+    if(o.median!=null) s.createPriceLine({price:o.median,color:T.faint,lineWidth:1,lineStyle:2,axisLabelVisible:false,title:'median'}); }
+  CH={chart:chart,T:T,pts:pts,info:o.info,tIdx:new Map(pts.map((p,i)=>[p[0],i]))};
+  chart.timeScale().fitContent();
+  chart.subscribeCrosshairMove(p=>{ legend((p&&p.time!=null)?CH.tIdx.get(p.time):null); });
+  legend(null);
+}
+function legend(i){ if(!CH) return; if(i==null||i<0||i>=CH.pts.length){ i=CH.pts.length-1; while(i>0&&CH.pts[i][1]==null) i--; } $('cLegend').innerHTML=CH.info(i, CH.pts[i]); }
+
+function drawChart(){
+  chartTok++;
+  if(view==='ind') return chartInd();
+  if(view==='q') return chartQ();
+  return chartRot();
+}
+function chartInd(){
+  const cfg=S[selK];
+  if(!cfg){ killChart(); $('cSym').textContent=''; $('cName').textContent=''; $('cNote').textContent=''; $('cLegend').innerHTML=''; $('cMsg').textContent='Pick an indicator.'; return; }
+  const w=winStats(cfg), u=unitOf(cfg), rl=w.fellBack?'full history'+(RANGE==='MAX'?'':' (too few readings in '+RANGE+')'):RANGE;
+  $('cSym').textContent=cfg.label; $('cName').textContent=cfg.sub;
+  const lmh=w.lo==null?'':'Lo <b>'+fmtVal(cfg,w.lo)+u+'</b> · Med <b>'+fmtVal(cfg,w.med)+u+'</b> · Hi <b>'+fmtVal(cfg,w.hi)+u+'</b> over '+rl;
+  if(cfg.kind==='bars'){
+    const per=cfg.bucket==='quarters';
+    $('cNote').innerHTML=lmh+' · one bar per '+(per?'quarter':'month')+(cfg.agg==='avg'?' (average per day)':'')+' · green above zero, red below';
+    plot({ bars:true, pts:w.m.map(p=>[p[0]+'-01',p[1]]), hue:v=>v>=0?'pos':'neg', fmt:v=>fmtVal(cfg,v),
+      info:(i,p)=>'<div><b>'+esc(cfg.label)+'</b></div><div><b>'+fmtVal(cfg,p[1])+u+'</b> <span class="mut">· '+labMonth(p[0].slice(0,7))+(cfg.agg==='avg'?' · avg/day':'')+'</span></div>' });
+  } else {
+    $('cNote').innerHTML=lmh+(w.lo==null?'':' · dashed line = median of the range');
+    plot({ pts:w.pts, median:w.med, fmt:v=>fmtVal(cfg,v)+u, empty:cfg.note||'Not enough data yet.',
+      info:(i,p)=>'<div><b>'+esc(cfg.label)+'</b></div><div><b>'+fmtVal(cfg,p[1])+u+'</b> <span class="mut">· '+fmtDate(p[0])+'</span></div>' });
+  }
+}
+function chartQ(){
+  const R=HEAT.rows[selQ];
+  renderHm();
+  if(!R){ killChart(); $('cSym').textContent=''; $('cName').textContent=''; $('cNote').textContent=''; $('cMsg').textContent='No quarterly readings yet.'; return; }
+  $('cSym').textContent=R.row.label+' · twelve quarters'; $('cName').textContent=R.row.s;
+  $('cNote').textContent='Bars use the same green / red rule as the grid below. Click any row or cell of the grid to open it.';
+  plot({ bars:true, pts:HEAT.q.map((qe,i)=>[qe,R.vals[i]]), hue:v=>shade(R,v).hue, fmt:v=>R.row.fmt(v),
+    info:(i,p)=>'<div><b>'+esc(R.row.label)+'</b></div><div><b>'+(p[1]==null?'·':R.row.fmt(p[1]))+'</b> <span class="mut">· quarter to '+labQ(p[0])+'</span></div>' });
+}
+function renderHm(){
+  const el=$('hm'), q=HEAT.q; el.style.setProperty('--hm-cols', q.length);
+  let h='<div class="lft h">Indicator</div>';
+  q.forEach(qe=>{ h+='<div class="h">'+labQ(qe)+'</div>'; });
+  HEAT.rows.forEach((R,ri)=>{ const row=R.row;
+    h+='<div class="lft'+(ri===selQ?' on':'')+'" data-ri="'+ri+'">'+esc(row.label)+'<span class="s">'+esc(row.s)+'</span></div>';
+    R.vals.forEach((v,i)=>{ const sh=shade(R,v);
+      h+='<div class="cell" data-ri="'+ri+'" data-qi="'+i+'" style="background:'+(sh?sh.bg:'transparent')+'">'+(v==null?'<span style="color:var(--text-faint)">·</span>':row.fmt(v))+'</div>'; });
+  });
+  el.innerHTML=h;
+}
+function hmRead(c){ const ri=+c.getAttribute('data-ri'), qi=c.getAttribute('data-qi'), R=HEAT.rows[ri]; if(!R||qi==null) return;
+  const v=R.vals[+qi]; if(v==null) return;
+  $('cNote').innerHTML='<b>'+R.row.fmt(v)+'</b> · '+esc(R.row.label)+' · '+labQ(HEAT.q[+qi]); }
+async function chartRot(){
+  const r=(ROTDATA||[]).find(x=>x.label===selR), tok=chartTok;
+  if(!r){ killChart(); $('cSym').textContent=''; $('cName').textContent=''; $('cNote').textContent=''; $('cMsg').textContent='No data.'; return; }
+  $('cSym').textContent=r.label; $('cName').textContent='index level';
+  if(!(r.key in BARS)){
+    killChart(); $('cLegend').innerHTML=''; $('cMsg').textContent='Loading daily history…';
+    try{ const d=await K.loadIndexBars(r.key); BARS[r.key]=uniq(d.bars.filter(b=>b.c>0).map(b=>[K.tsISO(b.ts), b.c])); }
+    catch(e){ BARS[r.key]=null; }
+    if(tok!==chartTok) return;
+  }
+  let all=BARS[r.key], src='daily closes';
+  if(!all||all.length<2){ src='month-end closes (latest month = latest value on file)';
+    all=r.ser.map(p=>{ const y=Math.floor(p[0]/12), m=p[0]%12+1; return [y+'-'+d2(m)+'-'+d2(lastDay(y,m)), p[1]]; }); }
+  const cut=rangeCut(); let pts=all.filter(p=>p[0]>=cut), fell=false;
+  if(pts.length<2){ pts=all; fell=true; }
+  const cfg={fmt:'int'}, first=pts.length?pts[0][1]:null;
+  $('cNote').innerHTML='Chart: '+src+' over '+(fell?'full history':RANGE)+'. The returns in the list are measured on monthly closes, so they can differ slightly from the chart.';
+  plot({ pts:pts, fmt:v=>fmtVal(cfg,v), empty:'No history on file for this index.',
+    info:(i,p)=>'<div><b>'+esc(r.label)+'</b></div><div><b>'+fmtVal(cfg,p[1])+'</b> <span class="mut">· '+fmtDate(p[0])+'</span></div>'
+      +(first?'<div class="mut">'+fmtPct((p[1]/first-1)*100)+' since '+fmtDate(pts[0][0])+'</div>':'') });
+}
+
+/* ---------------- keys, focus, boot ---------------- */
+function toggleFocus(){ const on=$('grid').classList.toggle('focus'); $('cFocus').classList.toggle('on',on); }
+function onKey(e){
+  if(e.ctrlKey||e.metaKey||e.altKey) return;
+  const t=e.target, typing=t&&(t.tagName==='INPUT'||t.tagName==='SELECT'||t.tagName==='TEXTAREA');
+  if(e.key==='Escape'){
+    if(typing){ if(t.id==='lSearch'&&t.value){ t.value=''; lQ=''; renderList(); renderDetail(); drawChart(); } t.blur(); }
+    else if($('grid').classList.contains('focus')) toggleFocus();
+    return; }
+  if(typing) return;
+  if(e.key==='/'&&view==='ind'){ e.preventDefault(); $('lSearch').focus(); return; }
+  if(e.key==='f'||e.key==='F'){ toggleFocus(); return; }
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault();
+    const i=VIS.indexOf(String(selId())), j=Math.max(0,Math.min(VIS.length-1,i+(e.key==='ArrowDown'?1:-1)));
+    if(j!==i&&VIS.length) pick(VIS[j], true); return; }
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+    if(view==='q') return; e.preventDefault();
+    const ks=Object.keys(view==='ind'?RANGE_MONTHS:ROT_N), cur=ks.indexOf(view==='ind'?RANGE:ROTP), j=Math.max(0,Math.min(ks.length-1,cur+(e.key==='ArrowRight'?1:-1)));
+    if(j!==cur){ if(view==='ind') setRange(ks[j]); else setRotP(ks[j]); } }
+}
+function boot(){
+  calcRegime(); calcMovers(); calcHeat(); calcRotation(IDX);
+  if(S.fii) FII5=sum(S.fii.arr.slice(-5).map(x=>x[1]));
+  $('asof').innerHTML='updated '+(MACRO.updated? MACRO.updated.slice(0,10) : '')
+    +(LIVEON?' · <span class="os-dot on"></span> LIVE Nifty &amp; VIX (Yahoo, ~15-min delay)':'');
+  if(!ROTDATA) $('views').querySelector('[data-v="rot"]').classList.add('hidden');
+  readHash();
+  $('views').querySelectorAll('button').forEach(b=>b.onclick=()=>setView(b.getAttribute('data-v')));
+  $('lSearch').oninput=()=>{ lQ=$('lSearch').value; renderList(); renderDetail(); drawChart(); writeHash(); };
+  $('cFocus').onclick=toggleFocus;
+  $('hm').addEventListener('click', ev=>{ const c=ev.target.closest('[data-ri]'); if(!c) return; pick(c.getAttribute('data-ri'), true); if(c.classList.contains('cell')) hmRead(c); });
+  $('hm').addEventListener('mousemove', ev=>{ const c=ev.target.closest('.cell'); if(c) hmRead(c); });
+  document.addEventListener('keydown', onKey);
+  window.addEventListener('resize', ()=>K.fitGrid($('grid')));
+  new MutationObserver(()=>{ if(LC_) drawChart(); }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  render();
+}
 load();
+
 </script>
 </body>
 </html>
