@@ -9,152 +9,136 @@
   <link rel="stylesheet" href="./theme.css" />
   <script src="./theme.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="./os-kit.js"></script>
   <style>
-    main { width: 100%; }   /* body is a flex column: without this, main shrinks-to-fit its widest table and the page scrolls sideways (runbook §... index-chart precedent) */
-    .muted { color: var(--text-muted); }
-    .card { background: var(--surface-2); border: 1px solid var(--border); border-radius:var(--radius-lg); padding: 16px; }
-    .pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius:var(--radius-sm); border: 1px solid var(--border); margin: 0 4px 4px 0; white-space: nowrap; }
-    .pill.b { border-color: #16a34a66; color: var(--pos); } .pill.s { border-color: #dc262666; color: var(--neg); }
-    .pos { color: var(--pos); } .neg { color: var(--neg); }
-    table.sw { width: 100%; font-size: 13px; border-collapse: collapse; }
-    table.sw th, table.sw td { padding: 5px 8px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
-    table.sw th { color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer; user-select: none; }
-    table.sw th.on { color: var(--accent); }
-    table.sw td.num, table.sw th.num { text-align: right; font-variant-numeric: tabular-nums; }
-    table.sw tr.row { cursor: pointer; } table.sw tr.row:hover td { background: color-mix(in srgb, var(--accent) 8%, transparent); }
-    .seg button { font-size: 12px; padding: 4px 10px; border: 1px solid var(--border); background: var(--surface-2); }
-    .seg button:first-child { border-radius: 8px 0 0 8px; } .seg button:last-child { border-radius: 0 8px 8px 0; }
-    .seg button.on { background: var(--accent); color:#fff; border-color: var(--accent); }
-    input.ctl, select.ctl { font-size: 13px; padding: 5px 8px; border: 1px solid var(--border); border-radius:var(--radius); background: var(--surface-2); color: var(--text); }
-    #search { font-size: 15px; padding: 10px 14px; }
-    #results { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; max-height: 420px; overflow: auto; background: var(--surface-2); border: 1px solid var(--border); border-radius:var(--radius); box-shadow: 0 10px 30px #0004; }
-    #results div { padding: 7px 12px; font-size: 13px; cursor: pointer; border-bottom: 1px solid var(--border); }
-    #results div:hover, #results div.on { background: color-mix(in srgb, var(--accent) 12%, transparent); }
-    #results .k { font-size: 11px; color: var(--text-muted); margin-right: 6px; }
-    .chart { height: 300px; width: 100%; }
-    #tabs { position: sticky; top: 56px; z-index: 20; padding: 8px 0; margin-bottom: 12px; }
-    #tabs button { margin-bottom: 4px; }
-    #tabs button:first-child { border-radius: 8px 0 0 8px; } #tabs button:last-child { border-radius: 0 8px 8px 0; }
-    main section { scroll-margin-top: 110px; }
-    .disc { font-size: 12px; color: var(--text-muted); border-left: 3px solid var(--border); padding-left: 10px; }
-    .sig { border-left: 4px solid var(--border); }
-    .sig.up { border-left-color: #16a34a; } .sig.down { border-left-color: #dc2626; }
-    .sig ul { list-style: disc; padding-left: 1.2rem; }
-    .sym { font-weight: 600; text-decoration: none; }
-    .sym:hover { text-decoration: underline; }
-    details summary { cursor: pointer; }
+    body{font-feature-settings:"tnum" 1}
+    .muted{color:var(--text-muted)} .pos{color:var(--pos)} .neg{color:var(--neg)}
+    #grid{grid-template-columns:minmax(300px,370px) minmax(270px,330px) minmax(0,1fr)}
+    #lHead,.lr{grid-template-columns:minmax(0,1fr) 78px 70px}
+    #pL.two #lHead,#pL.two .lr{grid-template-columns:minmax(0,1fr) 96px}
+    #lList{position:relative}
+    .lr .n small{color:var(--text-faint);font-weight:400;margin-left:6px}
+    .lr .n .kd{display:inline-block;min-width:44px;font-size:10px;font-weight:600;letter-spacing:.04em;color:var(--text-faint)}
+    .lr .n .mk{color:var(--text-faint);font-size:11px;margin-left:4px}
+    .lr .m{font-size:12px}
+    .lgrp{padding:5px 12px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);background:var(--surface-2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px}
+    .lgrp span{font-weight:400;text-transform:none;letter-spacing:0;white-space:nowrap}
+    .lmore{padding:9px 12px;font-size:12.5px;color:var(--accent-text);cursor:pointer;border-bottom:1px solid var(--border)} .lmore:hover{background:var(--surface-2)}
+    .dh{padding:7px 12px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);background:var(--surface-2);border-bottom:1px solid var(--border);border-top:1px solid var(--border)}
+    .dh:first-child{border-top:0}
+    .dp{padding:8px 12px;font-size:12px;color:var(--text-muted);line-height:1.5;border-bottom:1px solid var(--border)}
+    .dp.go{cursor:pointer;color:var(--text)} .dp.go:hover{background:var(--surface-2)}
+    .dp ul{list-style:disc;padding-left:1.1rem} .dp b{color:var(--text)}
+    .kv{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 12px;min-height:31px;font-size:12.5px;border-bottom:1px solid var(--border)}
+    .kv > span:first-child{color:var(--text-muted);min-width:0} .kv > b{font-weight:600;color:var(--text);text-align:right}
+    .xn{padding:7px 12px;font-size:12px;line-height:1.45;color:var(--text-muted);border-bottom:1px solid var(--border)}
+    .xn a{font-weight:700;margin-right:6px;text-decoration:none} .xn a:hover{text-decoration:underline} .xn b{color:var(--text);font-weight:600}
+    .xn a.b{color:var(--pos)} .xn a.s{color:var(--neg)}
+    #cCtl{padding:8px 10px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    #cCtl:empty{display:none}
+    #cCtl .os-sg{max-width:100%;overflow-x:auto}
+    #pC .os-chartwrap{min-height:250px}
+    #pC .os-legend{right:10px} .os-legend b{font-weight:600}
+    #tBox{flex:0 1 auto;max-height:34%;min-height:0;overflow:auto;border-top:1px solid var(--border)}
+    #tBox:empty{display:none}
+    table.tb{width:100%;font-size:12px;border-collapse:collapse}
+    table.tb th,table.tb td{padding:5px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+    table.tb th{position:sticky;top:0;background:var(--surface-2);color:var(--text-faint);font-weight:600;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;z-index:1}
+    table.tb td.num,table.tb th.num{text-align:right}
+    .tnote{padding:8px 12px;font-size:11.5px;color:var(--text-faint);line-height:1.45}
+    html[data-theme] .ctl{font-size:12.5px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);min-height:0;height:auto;box-shadow:none}
+    .ctlb{font-size:12.5px;color:var(--text-muted);white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+    .os-ps input{width:100%}
+    #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55} #how summary{cursor:pointer;color:var(--text-muted)} #how p{margin-top:6px}
+    @media (max-width:1180px){ #grid{grid-template-columns:minmax(250px,300px) minmax(230px,280px) minmax(0,1fr)} }
+    @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #pD .os-list{max-height:none !important} #pC .os-legend div{white-space:normal}
+      #tBox{max-height:340px} .os-vtabs{overflow-x:auto;max-width:100%} }
   </style>
 </head>
-<body>
+<body class="bg-slate-50 min-h-screen text-slate-800">
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="font-bold tracking-tight">SW · STOCKSWORLD</a>
     <nav></nav>
   </div>
 </header>
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-  <div class="flex flex-wrap items-end justify-between gap-3 mb-3">
-    <div>
-      <h1 class="text-2xl font-bold">Commodity Watch</h1>
-      <p class="muted text-sm">Product prices for every 8-digit HS code India imports or exports (monthly unit price and volume), 697 wholesale-price-index items (monthly) and global spot prices (daily), each mapped to the listed companies that benefit or suffer when the price moves.</p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Commodity Watch</h1>
+    <div class="os-vtabs" id="views" role="tablist" aria-label="View">
+      <button type="button" data-v="map" title="Which listed names ride which price">Beneficiary map</button>
+      <button type="button" data-v="sig" title="Commodity groups on the move, strongest first">Signals</button>
+      <button type="button" data-v="hs" title="Product price movers by 8-digit HS code">Movers (HS codes)</button>
+      <button type="button" data-v="spot" title="Global spot prices, daily">Spot (daily)</button>
+      <button type="button" data-v="ind" title="Indian domestic prices, in rupees">India spot</button>
+      <button type="button" data-v="te" title="Global proxies from Trading Economics">Global</button>
+      <button type="button" data-v="wpi" title="Wholesale Price Index items, monthly">WPI (monthly)</button>
     </div>
-    <div id="meta" class="text-sm muted"></div>
+    <div class="os-asof" id="asof"></div>
   </div>
-  <p class="disc mb-4">Unit prices are value divided by quantity for the month, so a single unusual shipment can move a small code a lot. Rows flagged <i>thin</i> shipped under 30% of their usual quantity. Signals are hypotheses for research, not calls.</p>
+  <div id="status" class="os-empty">Loading commodity data…</div>
 
-  <div class="relative mb-6">
-    <input id="search" class="ctl w-full" type="text" placeholder="Search a product, HS code, WPI item or spot commodity — e.g. copper cathode, 28070010, sulphuric acid, electrodes" autocomplete="off" />
-    <div id="results" class="hidden"></div>
-  </div>
+  <div id="content" class="hidden">
+    <div class="os-bar" id="bar">
+      <span id="hsCtl" class="hidden" style="display:contents">
+        <div class="os-sg" id="side" role="group" aria-label="Trade side"><button type="button" data-v="imp">Imports</button><button type="button" data-v="exp">Exports</button></div>
+        <div class="os-sg" id="win" role="group" aria-label="Window"><button type="button" data-v="1">1 month</button><button type="button" data-v="3">3 months</button><button type="button" data-v="12">12 months</button><button type="button" data-v="sy">3-mo vs year-ago</button></div>
+        <div class="os-sg" id="dir" role="group" aria-label="Direction"><button type="button" data-v="up">Rising</button><button type="button" data-v="down">Falling</button></div>
+        <label class="ctlb">min US$ mn/month <input id="minval" class="ctl" style="width:70px" type="number" value="5" min="0" step="1" /></label>
+        <select id="chapter" class="ctl" style="max-width:190px" aria-label="Chapter"><option value="">All chapters</option></select>
+        <label class="ctlb"><input id="nos" type="checkbox" /> count-based units (NOS, PRS…)</label>
+        <label class="ctlb"><input id="thin" type="checkbox" /> thin months</label>
+        <input id="filter" class="ctl" style="width:150px" type="text" placeholder="filter by text" aria-label="Filter movers by text" />
+        <label class="ctlb">sort <select id="hsSort" class="ctl" aria-label="Sort movers">
+          <option value="">chosen window</option><option value="hs">HS code</option><option value="d">Product</option><option value="u">Unit</option><option value="v">US$ mn</option><option value="q">Qty</option><option value="p">US$/unit</option>
+          <option value="p1">1m</option><option value="p3">3m</option><option value="p12">12m</option><option value="sy">3-mo y/y</option><option value="q12">Qty y/y</option><option value="v12">Value y/y</option></select></label>
+        <button type="button" class="os-btn" id="hsAsc" title="Flip the sort order">↓ high first</button>
+      </span>
+      <span id="wpiCtl" class="hidden" style="display:contents">
+        <div class="os-sg" id="wsort" role="group" aria-label="Sort WPI items"></div>
+        <label class="ctlb"><input id="wpi-groups" type="checkbox" /> include group rows</label>
+        <input id="wpi-filter" class="ctl" style="width:170px" type="text" placeholder="filter items" aria-label="Filter WPI items" />
+      </span>
+      <span class="sp"></span>
+      <span class="os-hint keys" id="keys"></span>
+    </div>
+    <div id="lede" class="os-hint" style="white-space:normal;margin:-2px 0 10px;line-height:1.5"></div>
 
-  <div id="tabs" class="seg flex flex-wrap" role="tablist" aria-label="Sections">
-    <button data-t="map" class="on">Beneficiary map</button><button data-t="signals">Signals</button><button data-t="movers">Movers (HS codes)</button><button data-t="spot">Spot (daily)</button><button data-t="india">India spot</button><button data-t="global">Global</button><button data-t="wpi">WPI (monthly)</button><button data-t="method">Sources &amp; method</button>
-  </div>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pL" aria-label="List">
+        <div class="os-ph"><span class="ttl" id="lTitle"></span><span class="r" id="lNote"></span></div>
+        <div class="os-ps"><input id="search" type="search" placeholder="Search everything — copper cathode, 28070010, sulphuric acid, electrodes" autocomplete="off" aria-label="Search a product, HS code, WPI item or spot commodity" /></div>
+        <div class="os-ch" id="lHead"></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="List"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Figures and exposed names">
+        <div class="os-ph"><span class="ttl" id="dTitle"></span></div>
+        <div class="os-list" id="dBody"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span class="sym" id="cSym"></span><span class="nm" id="cName"></span>
+          <span class="r"><button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div id="cCtl"></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-note" id="cNote"></div>
+        <div id="tBox"></div>
+      </section>
+    </div>
 
-  <section id="detail" class="mb-8 hidden"></section>
-
-  <section id="map" class="mb-8">
-    <details class="card" open><summary class="font-semibold">Beneficiary map — which listed names ride which price</summary>
-      <p class="muted text-xs mt-1 mb-2">Curated starting hypotheses (docs/ideas/commodity_map.json). Every name here must be verified from the company's own filings — share of revenue, pricing terms, inventory — before it becomes an idea.</p>
-      <div id="map-list" class="grid gap-2 md:grid-cols-2 text-sm"></div>
+    <details id="how"><summary>Sources and method</summary>
+      <p>Product prices for every 8-digit HS code India imports or exports (monthly unit price and volume), 697 wholesale-price-index items (monthly) and global spot prices (daily), each mapped to the listed companies that benefit or suffer when the price moves.</p>
+      <p>Unit prices are value divided by quantity for the month, so a single unusual shipment can move a small code a lot. Rows flagged <i>thin</i> shipped under 30% of their usual quantity. Signals are hypotheses for research, not calls.</p>
+      <p><b>HS trade panel.</b> Ministry of Commerce MEIDB (tradestat.commerce.gov.in), commodity-wise monthly imports and exports at 8-digit HS, value in US$ million and quantity in the code's unit, from January 2018; a month is published about 45 days after it ends. Unit price = value ÷ quantity. The movers list ranks unit-price changes; the "3-mo vs year-ago" window compares the last three months' aggregate price with the same three months a year earlier and is the least noisy.</p>
+      <p><b>WPI items.</b> Office of the Economic Adviser (eaindustry.nic.in) monthly index, base 2011-12 = 100, from April 2012, item level (697 items) plus group rows.</p>
+      <p><b>Spot.</b> LME cash settlements and London gold/silver via Westmetall (with history), and a daily snapshot of about 30 global futures from Markets Insider that accumulates its own history from 22 Sep 2026.</p>
+      <p><b>Signals.</b> For each commodity group in the beneficiary map, every wired series is scored against a threshold (spot +5% in a week, +10% in a month, +20% in a quarter; WPI +3% / +8% / +15% over 1 / 3 / 12 months; trade unit price +10% / +15% / +30% over 1 month / 3 months / smoothed year-on-year, trade sides under US$3 mn a month ignored, one-month jumps only when the quarter agrees). Strength 1.0 = exactly at threshold. The daily research run reads this file first.</p>
     </details>
-  </section>
-
-  <section id="signals" class="mb-8">
-    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-      <h2 class="text-lg font-semibold">Signals — commodities on the move, and who is exposed</h2>
-      <span class="muted text-xs w-full">The badge is strength: the group's biggest move ÷ its alert threshold (1.0× = at threshold; 10× = ten times it). Hover the badge for the thresholds.</span>
-      <span id="signals-meta" class="muted text-xs"></span>
-    </div>
-    <div id="signals-list" class="grid gap-3 md:grid-cols-2"></div>
-  </section>
-
-  <section id="movers" class="mb-8">
-    <h2 class="text-lg font-semibold mb-2">Product price movers (HS codes)</h2>
-    <div class="flex flex-wrap items-center gap-2 mb-3 text-sm">
-      <span class="seg" id="side"><button data-v="imp" class="on">Imports</button><button data-v="exp">Exports</button></span>
-      <span class="seg" id="win"><button data-v="1">1 month</button><button data-v="3" class="on">3 months</button><button data-v="12">12 months</button><button data-v="sy">3-mo vs year-ago</button></span>
-      <span class="seg" id="dir"><button data-v="up" class="on">Rising</button><button data-v="down">Falling</button></span>
-      <label class="muted">min US$ mn/month <input id="minval" class="ctl w-20" type="number" value="5" min="0" step="1" /></label>
-      <select id="chapter" class="ctl"><option value="">All chapters</option></select>
-      <label class="muted"><input id="nos" type="checkbox" /> include count-based units (NOS, PRS…)</label>
-      <label class="muted"><input id="thin" type="checkbox" /> include thin months</label>
-      <input id="filter" class="ctl w-48" type="text" placeholder="filter by text" />
-    </div>
-    <p id="movers-summary" class="muted text-xs mb-2"></p>
-    <div class="card overflow-x-auto"><table class="sw" id="movers-table"><thead></thead><tbody></tbody></table></div>
-    <div class="mt-2"><button id="more" class="pill">Show more</button></div>
-  </section>
-
-  <section id="spot" class="mb-8">
-    <h2 class="text-lg font-semibold mb-2">Spot prices (daily)</h2>
-    <p id="spot-summary" class="muted text-xs mb-2"></p>
-    <div class="card overflow-x-auto"><table class="sw" id="spot-table"><thead></thead><tbody></tbody></table></div>
-  </section>
-
-  <section id="india" class="mb-8">
-    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-      <h2 class="text-lg font-semibold">India spot (daily, in rupees)</h2>
-      <span id="india-meta" class="muted text-xs"></span>
-    </div>
-    <p class="muted text-sm mb-3">The domestic prints the newspapers quote: steel and metals by city from MetalBook (its data comes from SteelMint), IBJA's bullion fix, the Rubber Board, sugar spot by city, PPAC's metro fuel prices and NMDC's iron ore. Each price is dated the day its source set it: MetalBook reprices items on their own schedule, often days apart, so read the Priced column. Click any row for its history.</p>
-    <div id="india-blocks" class="grid gap-4 md:grid-cols-2"></div>
-  </section>
-
-  <section id="global" class="mb-8">
-    <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-      <h2 class="text-lg font-semibold">Global proxies (daily, Trading Economics)</h2>
-      <span id="global-meta" class="muted text-xs"></span>
-    </div>
-    <p class="muted text-sm mb-3">Futures and contract-for-difference series, so they give direction rather than the Indian price: their "steel" is Shanghai rebar in yuan and HRC is a US benchmark. Sorted by one-month change.</p>
-    <div class="card overflow-x-auto"><table class="sw" id="global-table"><thead><tr><th>Commodity</th><th class="num">Last</th><th>Unit</th><th>As of</th><th class="num">1d</th><th class="num">1m</th><th class="num">1y</th><th>Exposed names</th></tr></thead><tbody></tbody></table></div>
-  </section>
-
-  <section id="wpi" class="mb-8">
-    <div class="flex flex-wrap items-center gap-2 mb-2">
-      <h2 class="text-lg font-semibold">Wholesale Price Index items (monthly)</h2>
-      <input id="wpi-filter" class="ctl w-48" type="text" placeholder="filter items" />
-      <label class="muted text-sm"><input id="wpi-groups" type="checkbox" /> include group rows</label>
-    </div>
-    <p id="wpi-summary" class="muted text-xs mb-2"></p>
-    <div class="card overflow-x-auto"><table class="sw" id="wpi-table"><thead></thead><tbody></tbody></table></div>
-    <div class="mt-2"><button id="wpi-more" class="pill">Show more</button></div>
-  </section>
-
-  <section id="method" class="mb-8">
-    <details class="card"><summary class="font-semibold">Sources and method</summary>
-      <div class="text-sm mt-2 space-y-2">
-        <p><b>HS trade panel.</b> Ministry of Commerce MEIDB (tradestat.commerce.gov.in), commodity-wise monthly imports and exports at 8-digit HS, value in US$ million and quantity in the code's unit, from January 2018; a month is published about 45 days after it ends. Unit price = value ÷ quantity. The movers table ranks unit-price changes; the "3-mo vs year-ago" window compares the last three months' aggregate price with the same three months a year earlier and is the least noisy.</p>
-        <p><b>WPI items.</b> Office of the Economic Adviser (eaindustry.nic.in) monthly index, base 2011-12 = 100, from April 2012, item level (697 items) plus group rows.</p>
-        <p><b>Spot.</b> LME cash settlements and London gold/silver via Westmetall (with history), and a daily snapshot of about 30 global futures from Markets Insider that accumulates its own history from 22 Sep 2026.</p>
-        <p><b>Signals.</b> For each commodity group in the beneficiary map, every wired series is scored against a threshold (spot +5% in a week, +10% in a month, +20% in a quarter; WPI +3% / +8% / +15% over 1 / 3 / 12 months; trade unit price +10% / +15% / +30% over 1 month / 3 months / smoothed year-on-year, trade sides under US$3 mn a month ignored, one-month jumps only when the quarter agrees). Strength 1.0 = exactly at threshold. The daily research run reads this file first.</p>
-      </div>
-    </details>
-  </section>
+  </div>
 </main>
 <script>
 (async function () {
   const $ = (s) => document.querySelector(s);
+  const K = window.OSKit;
   let SW_OWNER = false; try { SW_OWNER = !!localStorage.getItem('bt_owner_key'); } catch (e) {}
   if (!SW_OWNER) {
     document.querySelector('main').innerHTML =
@@ -163,6 +147,7 @@
       '<p class="text-sm muted">It\'s a personal research tool of the site owner. The rest of the site is open — head back to the <a class="font-semibold hover:underline" style="color:var(--accent)" href="./index.html">home page</a>.</p></div>';
     return;
   }
+  /* ---------- formatting and loading: unchanged from the old page ---------- */
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt = (x, d = 1) => (x == null || isNaN(x)) ? '—' : Number(x).toLocaleString('en-IN', { maximumFractionDigits: d });
   const fmtP = (x) => { if (x == null || isNaN(x)) return '—'; const a = Math.abs(x); return fmt(x, a >= 100 ? 2 : a >= 1 ? 3 : 4); };
@@ -185,39 +170,12 @@
     safe('./ideas/trade/meta.json'), safe('./ideas/signals.json'), safe('./ideas/spot.json'), safe('./ideas/spot_series.json'), safe('./ideas/commodity_map.json'), safe('./ideas/india_spot.json')]);
   const [index, wpi] = await Promise.all([safe('./ideas/trade/index.json.gz'), safe('./ideas/wpi.json.gz')]);
   const CH = meta && meta.chapters || {};
-  $('#meta').innerHTML = [
+  $('#asof').innerHTML = [
     index ? `Trade month <b>${esc(index.latest)}</b> (${fmt(index.n, 0)} HS codes, ${esc(index.months_from)} → ${esc(index.months_to)})` : 'trade panel unavailable',
     wpi ? `WPI to <b>${esc(wpi.months[wpi.months.length - 1])}</b>` : 'WPI unavailable',
     spot ? `Spot <b>${esc(spot.updated)}</b>` : 'spot unavailable'].join(' · ');
 
-
-  // ---- section tabs: click = jump to the section; the active tab follows the scroll position ----
-  const tabs = $('#tabs');
-  const tabIds = [...tabs.querySelectorAll('button')].map(b => b.dataset.t);
-  const paintTabs = () => { tabs.style.background = getComputedStyle(document.body).backgroundColor; };
-  paintTabs();
-  new MutationObserver(paintTabs).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
-  const setActive = (id) => tabs.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === id));
-  tabs.addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
-    const sec = document.getElementById(b.dataset.t); if (!sec) return;
-    const d = sec.querySelector('details'); if (d) d.open = true;
-    setActive(b.dataset.t); scrollLock = Date.now() + 800;
-    // instant jump: theme.css sets html{scroll-behavior:smooth}, and a smooth glide over a 15,000 px page takes seconds
-    try { sec.scrollIntoView({ behavior: 'instant', block: 'start' }); } catch (e) { sec.scrollIntoView(true); }
-  });
-  let scrollLock = 0, ticking = false;
-  document.addEventListener('scroll', () => {
-    if (ticking || Date.now() < scrollLock) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      ticking = false;
-      let cur = tabIds[0];
-      for (const id of tabIds) { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top - 120 <= 0) cur = id; }
-      setActive(cur);
-    });
-  }, { passive: true, capture: true });
-  // ---- beneficiary map lookup by HS prefix / spot name / wpi term ----
+  /* ---------- beneficiary map lookup by HS prefix / spot name / wpi term: unchanged ---------- */
   const groups = cmap && cmap.groups || [];
   const groupsForHS = (hs) => groups.filter(g => (g.hs || []).some(p => hs.startsWith(p)));
   const groupsForSpot = (name) => groups.filter(g => (g.spot || []).includes(name));
@@ -229,65 +187,82 @@
     if (r.stats) indiaStats[r.name] = r.stats;
   }));
   const groupsForWPI = (name) => { const n = name.toLowerCase(); return groups.filter(g => (g.wpi || []).some(t => n.includes(t))); };
-  const chips = (gs, max = 6) => {
+  const groupsForTE = (slug) => groups.filter(g => (g.te || []).includes(slug));
+  // the names the old "Exposed names" column showed for a row (same de-duplication, same cap)
+  const exposed = (gs, max = 6) => {
     const b = [], s = [];
     gs.forEach(g => { (g.benefit || []).forEach(x => b.push(x)); (g.suffer || []).forEach(x => s.push(x)); });
     const uniq = (arr) => { const seen = new Set(); return arr.filter(x => !seen.has(x.symbol) && seen.add(x.symbol)); };
-    const mk = (arr, cls) => uniq(arr).slice(0, max).map(x => `<a class="pill ${cls}" href="${stockLink(x.symbol)}" title="${esc(x.name)}: ${esc(x.why)}">${esc(x.symbol)}</a>`).join('');
-    return mk(b, 'b') + mk(s, 's');
+    return { b: uniq(b).slice(0, max), s: uniq(s).slice(0, max) };
   };
+  const mark = (gs) => { const e = exposed(gs, 99), n = e.b.length + e.s.length; return n ? `<span class="mk" title="${n} exposed name${n === 1 ? '' : 's'} mapped: ${esc(e.b.concat(e.s).map(x => x.symbol).join(', '))}">◆${n}</span>` : ''; };
   const chipsFull = (g) => {
-    const mk = (arr, label, cls) => arr && arr.length ? `<div class="mt-1"><span class="muted text-xs">${label}:</span> ${arr.map(x => `<a class="pill ${cls}" href="${stockLink(x.symbol)}" title="${esc(x.why)}">${esc(x.symbol)}</a>`).join('')}</div>` +
-      `<ul class="text-xs muted">${arr.map(x => `<li><b>${esc(x.name)}</b> — ${esc(x.why)}</li>`).join('')}</ul>` : '';
+    const mk = (arr, label, cls) => arr && arr.length ? `<div class="dh">${esc(g.name)} · ${label} <span style="font-weight:400">${arr.length}</span></div>` +
+      arr.map(x => `<div class="xn"><a class="${cls}" href="${stockLink(x.symbol)}" title="Open ${esc(x.symbol)}">${esc(x.symbol)}</a><b>${esc(x.name)}</b> — ${esc(x.why)}</div>`).join('') : '';
     return mk(g.benefit, 'Benefit', 'b') + mk(g.suffer, 'Suffer', 's');
   };
+  const namesBlock = (gs, none) => gs.length ? gs.map(g => chipsFull(g) || `<div class="dh">${esc(g.name)}</div><div class="dp">No listed names mapped.</div>`).join('') : (none ? `<div class="dh">Exposed names</div><div class="dp">${none}</div>` : '');
 
-  // ---- charts (Lightweight Charts v5) ----
+  /* ---------- chart (Lightweight Charts v5): the old drawChart, drawn into the chart pane, plus a readout ---------- */
   const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  const charts = [];
+  let CHT = null;
+  function killChart() { if (CHT) { try { CHT.chart.remove(); } catch (e) {} CHT = null; } }
   function chartOpts() {
-    return { layout: { background: { type: 'solid', color: 'transparent' }, textColor: cssVar('--text-muted') || '#888', attributionLogo: false },
+    return { layout: { background: { type: 'solid', color: 'transparent' }, textColor: cssVar('--text-muted') || '#888', attributionLogo: false, fontSize: 11, fontFamily: getComputedStyle(document.body).fontFamily },
       grid: { vertLines: { color: 'transparent' }, horzLines: { color: cssVar('--border') || '#ddd' } },
-      rightPriceScale: { borderColor: cssVar('--border') || '#ddd' }, timeScale: { borderColor: cssVar('--border') || '#ddd', timeVisible: false },
+      rightPriceScale: { borderColor: cssVar('--border') || '#ddd', scaleMargins: { top: 0.16, bottom: 0.08 } }, timeScale: { borderColor: cssVar('--border') || '#ddd', timeVisible: false, minBarSpacing: 0.01 },
       crosshair: { mode: 0 }, handleScroll: true, handleScale: true, autoSize: true };
   }
-  function drawChart(el, line, bars, opts) {
-    // line: [{time:'YYYY-MM-DD', value}], bars: same (nullable). Returns the chart.
-    el.innerHTML = '';
+  function drawChart(line, bars, opts) {
+    // line: [{time:'YYYY-MM-DD', value}], bars: same (nullable).
+    opts = opts || {};
+    killChart(); $('#cMsg').textContent = ''; $('#cLegend').innerHTML = '';
+    const el = $('#cChart');
     const LC = window.LightweightCharts;
-    if (!LC) { el.innerHTML = '<p class="muted text-sm">chart library not loaded</p>'; return null; }
-    const chart = LC.createChart(el, chartOpts());
-    const mk = (last) => chart.addSeries(LC.LineSeries, { color: cssVar('--accent') || '#2563eb', lineWidth: 2, priceLineVisible: false, lastValueVisible: last, priceFormat: { type: 'price', precision: opts && opts.precision != null ? opts.precision : 2, minMove: 0.0001 }, ...(opts && opts.step ? { lineType: 1 } : {}) });
+    if (!LC) { $('#cMsg').textContent = 'Chart library did not load — the figures are in the panes beside it.'; return null; }
     // opts.segments: continuous stretches drawn as separate lines of one colour, so a hole in the data stays a hole
     // (this library version drops whitespace points and would join the line straight across missing months)
-    const segs = (opts && opts.segments && opts.segments.length) ? opts.segments : [line];
-    const all = segs.map((seg, i) => {
+    const segs = (opts.segments && opts.segments.length) ? opts.segments : [line];
+    const barPts = (bars || []).filter(p => p.value != null);
+    if (!segs.some(seg => seg.some(p => p.value != null)) && !barPts.length) { $('#cMsg').textContent = opts.empty || 'No readings on file to chart.'; return null; }
+    const acc = cssVar('--accent-text') || cssVar('--accent') || '#2563eb';
+    const chart = LC.createChart(el, chartOpts());
+    const mk = (last) => chart.addSeries(LC.LineSeries, { color: acc, lineWidth: 2, priceLineVisible: false, lastValueVisible: last, priceFormat: { type: 'price', precision: opts.precision != null ? opts.precision : 2, minMove: 0.0001 }, ...(opts.step ? { lineType: 1 } : {}) });
+    const lineMap = new Map(); let lastT = null;
+    segs.forEach((seg, i) => {
       const pts_ = seg.filter(p => p.value != null);
       const s = mk(i === segs.length - 1);
       if (pts_.length === 1) s.applyOptions({ pointMarkersVisible: true });   // a lone reading between two holes is a dot
-      s.setData(pts_); return s;
+      s.setData(pts_); pts_.forEach(p => { lineMap.set(p.time, p.value); lastT = p.time; });
     });
     el.dataset.segments = String(segs.length);
-    const ls = all[all.length - 1], extra = all.slice(0, -1);
-    if (bars && bars.length) {
-      const hs = chart.addSeries(LC.HistogramSeries, { priceScaleId: 'vol', color: (cssVar('--accent') || '#2563eb') + '55', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false });
+    const barMap = new Map();
+    if (barPts.length) {
+      const hs = chart.addSeries(LC.HistogramSeries, { priceScaleId: 'vol', color: acc + '55', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false });
       hs.priceScale().applyOptions({ scaleMargins: { top: 0.75, bottom: 0 } });
-      hs.setData(bars.filter(p => p.value != null));
+      hs.setData(barPts); barPts.forEach(p => barMap.set(p.time, p.value));
+      if (lastT == null) lastT = barPts[barPts.length - 1].time;
     }
     chart.timeScale().fitContent();
-    charts.push({ chart, ls, extra });
+    const prec = opts.precision != null ? opts.precision : 2;
+    const read = (t) => {
+      if (t == null || (!lineMap.has(t) && !barMap.has(t))) t = lastT;
+      const lv = lineMap.get(t), bv = barMap.get(t);
+      $('#cLegend').innerHTML = `<div><b>${esc(opts.title || '')}</b></div><div><b>${lv == null ? '—' : fmt(lv, prec)}</b>${opts.unit ? ' ' + esc(opts.unit) : ''} <span class="mut">· ${esc(opts.monthly ? String(t).slice(0, 7) : t)}</span></div>`
+        + (bars ? `<div class="mut">${esc(opts.barLabel || 'bars')} ${bv == null ? '—' : fmt(bv, 2)}</div>` : '');
+    };
+    chart.subscribeCrosshairMove(p => read(p && p.time != null ? p.time : null));
+    read(null);
+    CHT = { chart, points: lineMap.size, segments: segs.length };
     return chart;
   }
-  new MutationObserver(() => { charts.forEach(c => { try { c.chart.applyOptions(chartOpts()); [c.ls, ...(c.extra || [])].forEach(s => s.applyOptions({ color: cssVar('--accent') || '#2563eb' })); } catch (e) {} }); })
-    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
   const mTime = (m) => m + '-01';
   function rangeFrom(months, key) {
     const n = { '6m': 6, '1y': 12, '3y': 36, '5y': 60, 'max': 9999 }[key] || 9999;
     return Math.max(0, months.length - n);
   }
 
-  // ---- detail panel ----
-  const detail = $('#detail');
+  /* ---------- the three panes: shared plumbing ---------- */
   const chCache = {};
   async function chapterData(ch) {
     if (!chCache[ch]) chCache[ch] = await safe(`./ideas/trade/ch/${ch}.json.gz`);
@@ -295,94 +270,196 @@
   }
   const idxCols = index ? index.cols : []; const ci = {}; idxCols.forEach((c, i) => ci[c] = i);
   const idxByHS = {}; (index ? index.rows : []).forEach(r => idxByHS[r[0]] = r);
-  function showDetail(html) { detail.innerHTML = html; detail.classList.remove('hidden'); detail.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  const closeBtn = '<button id="dclose" class="pill">✕ close</button>';
+  const kv = (k, v) => `<div class="kv"><span>${k}</span><b>${v}</b></div>`;
+  const VIEWS = ['map', 'sig', 'hs', 'spot', 'ind', 'te', 'wpi'];
+  let view = 'map', Q = '', VIS = [], SEL = null, CUR = null, selTok = 0, lastPainted = '';
+  const SELV = {};
+  const keyOf = (s) => s ? s.k + ':' + s.id : '';
+  const selOf = (key) => { const i = key.indexOf(':'); return { k: key.slice(0, i), id: key.slice(i + 1) }; };
+  function setURL(qs) { try { history.replaceState(null, '', (qs || location.pathname) + '#v=' + view); } catch (e) {} }
+  // o = {key, title, tag, sub, body, ctl:[{items:[[k,label,title]], cur, on}], note, table, chart(), msg, ranges, range, setRange, url}
+  function paint(o) {
+    const same = lastPainted === o.key, top = same ? $('#dBody').scrollTop : 0, ttop = same ? $('#tBox').scrollTop : 0;
+    lastPainted = o.key;
+    $('#dTitle').innerHTML = esc(o.title) + (o.tag ? ' <i>' + o.tag + '</i>' : '');
+    $('#dBody').innerHTML = o.body || ''; $('#dBody').scrollTop = top;
+    $('#cSym').textContent = o.title || ''; $('#cName').textContent = o.sub || '';
+    const ctl = (o.ctl || []).filter(c => c.items && c.items.length);
+    $('#cCtl').innerHTML = ctl.map((c, i) => `<div class="os-sg" data-c="${i}" role="group">${c.items.map(it => `<button type="button" data-k="${esc(it[0])}" class="${String(it[0]) === String(c.cur) ? 'on' : ''}"${it[2] ? ` title="${esc(it[2])}"` : ''}>${it[1]}</button>`).join('')}</div>`).join('')
+      + (o.ctlNote ? `<span class="os-hint" style="white-space:normal">${o.ctlNote}</span>` : '');
+    $('#cCtl').querySelectorAll('.os-sg').forEach(g => g.querySelectorAll('button').forEach(b => b.onclick = () => ctl[+g.dataset.c].on(b.dataset.k)));
+    $('#cNote').innerHTML = o.note || ''; $('#cNote').style.display = o.note ? '' : 'none';
+    $('#tBox').innerHTML = o.table || ''; $('#tBox').scrollTop = ttop;
+    CUR = o;
+    if (o.chart) o.chart(); else { killChart(); $('#cLegend').innerHTML = ''; $('#cMsg').textContent = o.msg || ''; }
+    if (o.url !== undefined) setURL(o.url);
+  }
+  const rangeCtl = (keys, cur, on) => ({ items: keys.map(k => [k, k]), cur, on });
 
-  async function openHS(hs) {
+  /* ---------- pane 2 + 3 for each kind of thing (figures and arithmetic unchanged from the old detail panel) ---------- */
+  async function openHS(hs, st) {
+    const tok = selTok;
     const r = idxByHS[hs];
     const ch = await chapterData(hs.slice(0, 2));
+    if (tok !== selTok) return;
     const rec = ch && ch.codes[hs];
-    if (!rec) { showDetail(`<div class="card">${closeBtn}<p class="mt-2">No series for HS ${esc(hs)}.</p></div>`); return; }
+    if (!rec) { paint({ key: 'HS:' + hs, title: 'HS ' + hs, body: `<div class="os-empty">No series for HS ${esc(hs)}.</div>`, msg: `No series for HS ${hs}.`, url: '?hs=' + hs }); return; }
     const gs = groupsForHS(hs);
-    let side = (r && (r[ci.iv] || 0) < (r[ci.ev] || 0)) ? 'exp' : 'imp', range = '3y';
-    showDetail(`<div class="card">
-      <div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold">${esc(rec.d)}</h2><div class="muted text-sm">HS ${esc(hs)} · chapter ${esc(hs.slice(0, 2))} ${esc(CH[hs.slice(0, 2)] || '')} · unit ${esc(rec.u || '?')} · unit price in US$ per ${esc(rec.u || 'unit')}</div></div>${closeBtn}</div>
-      <div class="flex flex-wrap items-center gap-2 my-3 text-sm">
-        <span class="seg" id="dside"><button data-v="imp" class="${side === 'imp' ? 'on' : ''}">Imports</button><button data-v="exp" class="${side === 'exp' ? 'on' : ''}">Exports</button></span>
-        <span class="seg" id="drange">${['6m', '1y', '3y', '5y', 'max'].map(k => `<button data-v="${k}" class="${k === range ? 'on' : ''}">${k}</button>`).join('')}</span>
-        <span class="muted text-xs">line = unit price, bars = US$ mn traded</span>
-      </div>
-      <div id="dchart" class="chart"></div>
-      <div id="dstats" class="grid gap-x-6 gap-y-1 text-sm mt-3" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))"></div>
-      <div class="overflow-x-auto mt-3"><table class="sw" id="dtable"></table></div>
-      <div class="mt-3">${gs.length ? gs.map(g => `<div class="mb-2"><b>${esc(g.name)}</b>${chipsFull(g)}</div>`).join('') : '<span class="muted text-sm">No listed beneficiaries mapped for this code yet — add the HS prefix to docs/ideas/commodity_map.json.</span>'}</div>
-    </div>`);
-    const render = () => {
-      const vf = side === 'imp' ? 'i' : 'e', qf = side === 'imp' ? 'p' : 'q';
-      const from = rangeFrom(ch.months, range);
-      const line = [], bars = [];
-      for (let i = from; i < ch.months.length; i++) {
-        const v = rec[vf][i], q = rec[qf][i];
-        line.push({ time: mTime(ch.months[i]), value: (v != null && q && v >= 0.05) ? v * 1e6 / q : null });
-        bars.push({ time: mTime(ch.months[i]), value: v });
-      }
-      const vals = line.map(p => p.value).filter(x => x != null);
-      const mx = vals.length ? Math.max(...vals) : 1;
-      drawChart($('#dchart'), line, bars, { precision: mx >= 100 ? 1 : mx >= 1 ? 3 : 4 });
-      if (r) {
-        const p = side === 'imp' ? 'i' : 'e';
-        $('#dstats').innerHTML = [
-          ['Latest month', index.latest], ['Value', 'US$ ' + fmt(r[ci[p + 'v']], 2) + ' mn'], ['Quantity', fmt(r[ci[p + 'q']], 0) + ' ' + esc(rec.u)],
-          ['Unit price', 'US$ ' + fmtP(r[ci[p + 'p']]) + '/' + esc(rec.u)], ['vs 1 month', pct(r[ci[p + 'p1']])], ['vs 3 months', pct(r[ci[p + 'p3']])],
-          ['vs 12 months', pct(r[ci[p + 'p12']])], ['3-mo vs year-ago', pct(r[ci[p + 'sy']])], ['Quantity y/y', pct(r[ci[p + 'q12']])], ['Value y/y', pct(r[ci[p + 'v12']])],
-          ['Thin month', r[ci[p + 'thin']] ? '<span class="neg">yes</span>' : 'no']]
-          .map(([k, v]) => `<div><span class="muted">${k}</span> <b>${v}</b></div>`).join('');
-      }
-      const rows = [];
-      for (let i = ch.months.length - 1; i >= Math.max(0, ch.months.length - 25); i--) {
-        const v = rec[vf][i], q = rec[qf][i];
-        rows.push(`<tr><td>${esc(ch.months[i])}</td><td class="num">${fmt(v, 2)}</td><td class="num">${fmt(q, 0)}</td><td class="num">${(v != null && q && v >= 0.05) ? fmtP(v * 1e6 / q) : '—'}</td></tr>`);
-      }
-      $('#dtable').innerHTML = `<thead><tr><th>Month</th><th class="num">US$ mn</th><th class="num">Qty (${esc(rec.u)})</th><th class="num">US$/${esc(rec.u)}</th></tr></thead><tbody>${rows.join('')}</tbody>`;
-    };
-    render();
-    detail.querySelector('#dside').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; side = b.dataset.v; detail.querySelectorAll('#dside button').forEach(x => x.classList.toggle('on', x === b)); render(); });
-    detail.querySelector('#drange').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; range = b.dataset.v; detail.querySelectorAll('#drange button').forEach(x => x.classList.toggle('on', x === b)); render(); });
-    history.replaceState(null, '', '?hs=' + hs);
+    st = st || { side: (r && (r[ci.iv] || 0) < (r[ci.ev] || 0)) ? 'exp' : 'imp', range: '3y' };
+    const side = st.side, range = st.range;
+    const vf = side === 'imp' ? 'i' : 'e', qf = side === 'imp' ? 'p' : 'q';
+    let stats = '';
+    if (r) {
+      const p = side === 'imp' ? 'i' : 'e';
+      stats = [
+        ['Latest month', index.latest], ['Value', 'US$ ' + fmt(r[ci[p + 'v']], 2) + ' mn'], ['Quantity', fmt(r[ci[p + 'q']], 0) + ' ' + esc(rec.u)],
+        ['Unit price', 'US$ ' + fmtP(r[ci[p + 'p']]) + '/' + esc(rec.u)], ['vs 1 month', pct(r[ci[p + 'p1']])], ['vs 3 months', pct(r[ci[p + 'p3']])],
+        ['vs 12 months', pct(r[ci[p + 'p12']])], ['3-mo vs year-ago', pct(r[ci[p + 'sy']])], ['Quantity y/y', pct(r[ci[p + 'q12']])], ['Value y/y', pct(r[ci[p + 'v12']])],
+        ['Thin month', r[ci[p + 'thin']] ? '<span class="neg">yes</span>' : 'no']]
+        .map(([k, v]) => kv(k, v)).join('');
+    }
+    const rows = [];
+    for (let i = ch.months.length - 1; i >= Math.max(0, ch.months.length - 25); i--) {
+      const v = rec[vf][i], q = rec[qf][i];
+      rows.push(`<tr><td>${esc(ch.months[i])}</td><td class="num">${fmt(v, 2)}</td><td class="num">${fmt(q, 0)}</td><td class="num">${(v != null && q && v >= 0.05) ? fmtP(v * 1e6 / q) : '—'}</td></tr>`);
+    }
+    const re = (patch) => openHSre(hs, Object.assign({}, st, patch));
+    paint({ key: 'HS:' + hs, title: rec.d, tag: 'HS ' + esc(hs),
+      sub: `HS ${hs} · chapter ${hs.slice(0, 2)} ${CH[hs.slice(0, 2)] || ''} · unit ${rec.u || '?'} · unit price in US$ per ${rec.u || 'unit'}`,
+      body: `<div class="dh">${side === 'imp' ? 'Imports' : 'Exports'} · HS ${esc(hs)}</div>` + (stats || '<div class="dp">This code is not in the latest month\'s index.</div>')
+        + `<div class="dp">Chapter ${esc(hs.slice(0, 2))} ${esc(CH[hs.slice(0, 2)] || '')} · unit ${esc(rec.u || '?')} · unit price in US$ per ${esc(rec.u || 'unit')}</div>`
+        + namesBlock(gs, 'No listed beneficiaries mapped for this code yet — add the HS prefix to docs/ideas/commodity_map.json.'),
+      ctl: [{ items: [['imp', 'Imports'], ['exp', 'Exports']], cur: side, on: k => re({ side: k }) }, rangeCtl(['6m', '1y', '3y', '5y', 'max'], range, k => re({ range: k }))],
+      ranges: ['6m', '1y', '3y', '5y', 'max'], range, setRange: k => re({ range: k }),
+      note: 'Line = unit price, bars = US$ mn traded. The table lists the latest 25 months.',
+      table: `<table class="tb"><thead><tr><th>Month</th><th class="num">US$ mn</th><th class="num">Qty (${esc(rec.u)})</th><th class="num">US$/${esc(rec.u)}</th></tr></thead><tbody>${rows.join('')}</tbody></table>`,
+      chart: () => {
+        const from = rangeFrom(ch.months, range);
+        const line = [], bars = [];
+        for (let i = from; i < ch.months.length; i++) {
+          const v = rec[vf][i], q = rec[qf][i];
+          line.push({ time: mTime(ch.months[i]), value: (v != null && q && v >= 0.05) ? v * 1e6 / q : null });
+          bars.push({ time: mTime(ch.months[i]), value: v });
+        }
+        const vals = line.map(p => p.value).filter(x => x != null);
+        const mx = vals.length ? Math.max(...vals) : 1;
+        drawChart(line, bars, { precision: mx >= 100 ? 1 : mx >= 1 ? 3 : 4, title: rec.d, unit: 'US$/' + (rec.u || 'unit'), barLabel: 'US$ mn', monthly: true });
+      },
+      url: '?hs=' + hs });
   }
-  function openWPI(code) {
+  function openHSre(hs, st) { selTok++; openHS(hs, st); }
+
+  // ---- WPI: arithmetic unchanged ----
+  function wpiStats(it) {
+    const v = it.v; let li = -1; for (let i = v.length - 1; i >= 0; i--) if (v[i] != null) { li = i; break; }
+    if (li < 0) return {};
+    const at = (n) => li - n >= 0 ? v[li - n] : null; const ch = (b) => b ? +((v[li] / b - 1) * 100).toFixed(1) : null;
+    return { month: wpi.months[li], last: v[li], c1: ch(at(1)), c3: ch(at(3)), c12: ch(at(12)), c36: ch(at(36)) };
+  }
+  function openWPI(code, range) {
     const it = wpi && wpi.items.find(x => x.c === code);
-    if (!it) return;
+    if (!it) { paint({ key: 'WPI:' + code, title: 'WPI item ' + code, body: '<div class="os-empty">No such WPI item on file.</div>', msg: 'No such WPI item on file.' }); return; }
     const gs = groupsForWPI(it.n);
-    let range = '5y';
-    showDetail(`<div class="card"><div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold">${esc(it.n)}</h2><div class="muted text-sm">WPI item ${esc(it.c)} · weight ${fmt(it.w, 3)} · index, base 2011-12 = 100</div></div>${closeBtn}</div>
-      <div class="flex flex-wrap items-center gap-2 my-3 text-sm"><span class="seg" id="drange">${['1y', '3y', '5y', 'max'].map(k => `<button data-v="${k}" class="${k === range ? 'on' : ''}">${k}</button>`).join('')}</span></div>
-      <div id="dchart" class="chart"></div><div id="dstats" class="grid gap-x-6 gap-y-1 text-sm mt-3" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))"></div>
-      <div class="mt-3">${gs.length ? gs.map(g => `<div class="mb-2"><b>${esc(g.name)}</b>${chipsFull(g)}</div>`).join('') : '<span class="muted text-sm">No listed beneficiaries mapped for this item yet.</span>'}</div></div>`);
-    const render = () => {
-      const from = rangeFrom(wpi.months, range);
-      drawChart($('#dchart'), wpi.months.slice(from).map((m, i) => ({ time: mTime(m), value: it.v[from + i] })), null, { precision: 1 });
-      const st = wpiStats(it);
-      $('#dstats').innerHTML = [['Latest', st.month + ' · ' + fmt(st.last, 1)], ['vs 1 month', pct(st.c1)], ['vs 3 months', pct(st.c3)], ['vs 12 months', pct(st.c12)], ['vs 36 months', pct(st.c36)]]
-        .map(([k, v]) => `<div><span class="muted">${k}</span> <b>${v}</b></div>`).join('');
-    };
-    render();
-    detail.querySelector('#drange').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; range = b.dataset.v; detail.querySelectorAll('#drange button').forEach(x => x.classList.toggle('on', x === b)); render(); });
-    history.replaceState(null, '', '?wpi=' + code);
+    range = range || '5y';
+    const st = wpiStats(it);
+    paint({ key: 'WPI:' + code, title: it.n, tag: 'WPI', sub: `WPI item ${it.c} · weight ${fmt(it.w, 3)} · index, base 2011-12 = 100`,
+      body: [['Latest', st.month + ' · ' + fmt(st.last, 1)], ['vs 1 month', pct(st.c1)], ['vs 3 months', pct(st.c3)], ['vs 12 months', pct(st.c12)], ['vs 36 months', pct(st.c36)]].map(([k, v]) => kv(k, v)).join('')
+        + `<div class="dp">WPI item ${esc(it.c)} · weight ${fmt(it.w, 3)} · index, base 2011-12 = 100${it.leaf ? '' : ' · a group row'}</div>`
+        + namesBlock(gs, 'No listed beneficiaries mapped for this item yet.'),
+      ctl: [rangeCtl(['1y', '3y', '5y', 'max'], range, k => openWPI(code, k))], ranges: ['1y', '3y', '5y', 'max'], range, setRange: k => openWPI(code, k),
+      chart: () => { const from = rangeFrom(wpi.months, range);
+        drawChart(wpi.months.slice(from).map((m, i) => ({ time: mTime(m), value: it.v[from + i] })), null, { precision: 1, title: it.n, unit: 'index', monthly: true }); },
+      url: '?wpi=' + code });
   }
   function openSpot(name) {
     const r = spot && spot.rows[name]; const ser = spotSeries && spotSeries[name] || [];
-    if (!r) return;
+    if (!r) { paint({ key: 'SPOT:' + name, title: name, body: '<div class="os-empty">No such spot commodity on file.</div>', msg: 'No such spot commodity on file.' }); return; }
     const gs = groupsForSpot(name);
-    showDetail(`<div class="card"><div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold capitalize">${esc(name)}</h2><div class="muted text-sm">${esc(r.source)} · ${esc(r.unit)} · ${esc(r.date)}</div></div>${closeBtn}</div>
-      <div id="dchart" class="chart mt-3"></div>
-      <div class="grid gap-x-6 gap-y-1 text-sm mt-3" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-        ${[['Last', fmt(r.last, 2) + ' ' + esc(r.unit)], ['1 day', pct(r.chg_1d)], ['1 week', pct(r.chg_1w)], ['1 month', pct(r.chg_1m)], ['3 months', pct(r.chg_3m)], ['6 months', pct(r.chg_6m)], ['52-week range', fmt(r.lo, 2) + ' – ' + fmt(r.hi, 2) + (r.pos != null ? ` (at ${r.pos}%)` : '')], ['History points', r.n]].map(([k, v]) => `<div><span class="muted">${k}</span> <b>${v}</b></div>`).join('')}
-      </div>
-      <div class="mt-3">${gs.length ? gs.map(g => `<div class="mb-2"><b>${esc(g.name)}</b>${chipsFull(g)}</div>`).join('') : '<span class="muted text-sm">No listed beneficiaries mapped for this commodity yet.</span>'}</div></div>`);
-    drawChart($('#dchart'), ser.map(([d, v]) => ({ time: d, value: v })), null, { precision: 2 });
-    history.replaceState(null, '', '?spot=' + encodeURIComponent(name));
+    const title = name.charAt(0).toUpperCase() + name.slice(1);
+    paint({ key: 'SPOT:' + name, title, tag: 'spot', sub: `${r.source} · ${r.unit} · ${r.date}`,
+      body: [['Last', fmt(r.last, 2) + ' ' + esc(r.unit)], ['1 day', pct(r.chg_1d)], ['1 week', pct(r.chg_1w)], ['1 month', pct(r.chg_1m)], ['3 months', pct(r.chg_3m)], ['6 months', pct(r.chg_6m)], ['52-week range', fmt(r.lo, 2) + ' – ' + fmt(r.hi, 2) + (r.pos != null ? ` (at ${r.pos}%)` : '')], ['History points', r.n]].map(([k, v]) => kv(k, v)).join('')
+        + `<div class="dp">${esc(r.source)} · ${esc(r.unit)} · ${esc(r.date)}</div>`
+        + namesBlock(gs, 'No listed beneficiaries mapped for this commodity yet.'),
+      note: `${ser.length} daily reading${ser.length === 1 ? '' : 's'} on file${ser.length ? ' since ' + esc(ser[0][0]) : ''}.`,
+      chart: () => drawChart(ser.map(([d, v]) => ({ time: d, value: v })), null, { precision: 2, title, unit: r.unit }),
+      url: '?spot=' + encodeURIComponent(name) });
   }
+
+  /* ---- India spot blocks + Trading Economics table: the old column definitions, kept as data ---- */
+  const BLOCKS = [], ROWAT = {};
+  const sinceCell = (r) => {
+    const st = indiaStats[`${r.market || ''} ${r.name}`.trim()];
+    if (!st || !st.deep) return '<span class="muted">—</span>';
+    return st.at_series_high ? `<b>highest of all ${st.n}</b>` : esc(st.high_since);
+  };
+  if (india && india.sources) {
+    const S = india.sources;
+    // lst = [label, value, third column] for the list row; idOf = the item this row opens
+    const block = (title, srcKey, cols, rows, note, lst, idOf, view_) => {
+      const src = S[srcKey];
+      if (!src || !rows.length) return;
+      const b = { title, src, srcKey, cols, rows, note, lst, view: view_ || 'ind', keys: [] };
+      rows.forEach(r => { const key = idOf ? idOf(r) : (r.key ? 'IH:' + srcKey + '|' + r.key : ''); b.keys.push(key); if (key) ROWAT[key] = { b, r }; });
+      BLOCKS.push(b);
+    };
+    const mb = (S.metalbook && S.metalbook.rows) || [];
+    const mbCity = (city) => mb.filter(r => r.city === city).sort((a, b) => a.name.localeCompare(b.name));
+    ['Mumbai', 'Delhi', 'Raipur', 'Hyderabad', 'Bangalore'].forEach(city => block(`Steel & metals — ${city}`, 'metalbook',
+      [['Product', r => esc(r.name)], ['₹/kg', r => fmt(r.price, 1), 1], ['vs prev', r => pct(r.chg_prev), 1], ['Priced', r => `<span class="muted text-xs">${esc((r.date || '').slice(5))}</span>`]], mbCity(city), '',
+      r => [esc(r.name), fmt(r.price, 1), pct(r.chg_prev)]));
+    // the official monthly figure: the one Indian finished-steel price with years of dated history
+    block('Steel — Mumbai retail, monthly (Ministry of Steel)', 'minsteel', [['Product', r => esc(r.name)], ['₹/tonne', r => fmt(r.price, 0), 1],
+      ['vs prev month', r => pct(r.chg_prev), 1], ['Month-end', r => `<span class="muted text-xs">${esc(r.date || '')}</span>`]],
+      (S.minsteel && S.minsteel.rows) || [], 'The price the Ministry of Steel reports for the Mumbai market as on each month-end, including GST. It is the official series and goes back to November 2021; a month with no report is a gap, not a zero.',
+      r => [esc(r.name), fmt(r.price, 0), pct(r.chg_prev)]);
+    block('Bullion (IBJA)', 'ibja', [['Series', r => esc(r.name)], ['AM', r => fmt(r.am, 0), 1], ['PM', r => fmt(r.pm, 0), 1], ['Unit', r => esc(r.unit)]], (S.ibja && S.ibja.rows) || [], '',
+      r => [esc(r.name) + ` <small>${esc(r.unit)}</small>`, fmt(r.pm, 0), `<span class="muted" title="AM fix">${fmt(r.am, 0)}</span>`]);
+    block('Natural rubber (Rubber Board)', 'rubber', [['Market', r => esc(r.market)], ['Grade', r => esc(r.name)], ['₹/100 kg', r => fmt(r.price, 0), 1], ['US$/100 kg', r => fmt(r.usd_per_100kg, 2), 1]], (S.rubber && S.rubber.rows) || [], '',
+      r => [esc(r.market) + ' · ' + esc(r.name), fmt(r.price, 0), `<span class="muted" title="US$ per 100 kg">$${fmt(r.usd_per_100kg, 2)}</span>`]);
+    block('Sugar spot (Chinimandi)', 'sugar', [['City', r => esc(r.city)], ['Grade', r => esc(r.grade)], ['₹/quintal', r => fmt(r.price, 2), 1], ['Change', r => fmt(r.chg_1d, 2), 1]], (S.sugar && S.sugar.rows) || [], '',
+      r => [esc(r.city) + ' · ' + esc(r.grade), fmt(r.price, 2), `<span class="muted" title="Change, as the source states it">${fmt(r.chg_1d, 2)}</span>`]);
+    block('Petrol & diesel (PPAC)', 'fuel', [['Fuel', r => esc(r.name)], ['City', r => esc(r.city)], ['₹/litre', r => fmt(r.price, 2), 1]], (S.fuel && S.fuel.rows) || [], '',
+      r => [esc(r.city) + ' ' + esc(r.name), fmt(r.price, 2), '']);
+    // NMDC administers the Indian iron-ore price and files every revision with BSE, so unlike the other
+    // Indian prints this one arrives with its own history - 2019 to today - and can answer "highest since".
+    const nmdcNote = (() => {
+      const r = ((S.nmdc && S.nmdc.rows) || [])[0]; if (!r) return '';
+      const st = indiaStats[`${r.market || ''} ${r.name}`.trim()];
+      const span = st ? `${st.n} revisions since ${esc(st.first)}` : 'the filings read so far';
+      return `Set by NMDC, not a market print: it changes only when NMDC files a revision. History covers ${span}; `
+        + `"highest since" is measured against that span, not against all time. This price ${esc(r.basis || 'states its own tax basis per filing')} `
+        + `- and that basis changed between eras, so values either side of a change are not like for like.`;
+    })();
+    block('Iron ore — NMDC administered price', 'nmdc', [['Grade', r => esc(r.name)], ['₹/tonne', r => fmt(r.price, 0), 1],
+      ['w.e.f.', r => esc(r.wef || '')], ['vs prev revision', r => pct(r.chg_rev), 1], ['Highest since', r => sinceCell(r)]],
+      (S.nmdc && S.nmdc.rows) || [], nmdcNote, r => [esc(r.name), fmt(r.price, 0), pct(r.chg_rev)], r => 'NMDC:' + (/lump/i.test(r.name) ? 'lump' : 'fines'));
+    // MOIL: like NMDC, an administered price filed with BSE each month; its ore letters state % changes, so the ore rows are indices
+    block('Manganese ore — MOIL administered (monthly letters)', 'moil', [['Series', r => esc(r.name)], ['Value', r => fmt(r.price, r.price > 1000 ? 0 : 2), 1], ['Unit', r => `<span class="muted text-xs">${esc(r.unit)}</span>`],
+      ['w.e.f.', r => esc(r.wef || '')], ['Last revision', r => pct(r.chg_rev), 1]],
+      (S.moil && S.moil.rows) || [], 'MOIL files a price letter with BSE every month. For ore it states only the % change on the previous month, so the ore rows are an index chained from those stated changes (100 = the month before the unbroken run of letters starts); EMD is stated in rupees.',
+      r => [esc(r.name), fmt(r.price, r.price > 1000 ? 0 : 2), pct(r.chg_rev)]);
+    block('Cotton spot — Cotton Association of India', 'cai', [['Growth', r => esc(r.market)], ['Grade', r => esc(r.name.replace(/^Cotton /, ''))], ['Season', r => esc((r.grade || '').replace('season ', ''))], ['₹/candy', r => fmt(r.price, 0), 1]],
+      (S.cai && S.cai.rows) || [], 'CAI official spot rates, ₹ per candy of 356 kg, ex-gin, excluding tax, by growth area and grade; both the current and the previous cotton season are quoted.',
+      r => [esc(r.market) + ' · ' + esc(r.name.replace(/^Cotton /, '')) + ` <small>${esc((r.grade || '').replace('season ', ''))}</small>`, fmt(r.price, 0), '']);
+    block('Spices — Spices Board (cardamom auctions, pepper)', 'spices', [['Spice', r => esc(r.name)], ['Market / auctioneer', r => esc(r.market || '')], ['Grade', r => esc(r.grade || '')], ['₹/kg', r => fmt(r.price, 2), 1], ['Date', r => `<span class="muted text-xs">${esc(r.date || '')}</span>`]],
+      (S.spices && S.spices.rows) || [], 'Small cardamom: average price of each e-auction. Each row carries the date the Spices Board states.',
+      r => [esc(r.name) + ` <small>${esc(r.market || '')}${r.grade ? ' · ' + esc(r.grade) : ''}</small>`, fmt(r.price, 2), `<span class="muted">${esc((r.date || '').slice(0, 6))}</span>`]);
+    block('Chemicals — China domestic quotes (Guidechem, CNY/t)', 'guidechem', [['Chemical', r => `${esc(r.name)}${r.caveat ? ' <span title="' + esc(r.caveat) + '" style="color:var(--warn,#b45309)">⚠</span>' : ''}`], ['CNY/t', r => fmt(r.price, 0), 1], ['1d', r => pct(r.chg_1d), 1],
+      ['3M avg', r => fmt(r.avg_3m, 0), 1], ['Updated', r => `<span class="muted text-xs">${esc(r.date || '')}</span>`], ['Quote row', r => `<span class="muted text-xs">${esc([r.market, r.grade].filter(Boolean).join(' · ').slice(0, 60))}</span>`]],
+      ((S.guidechem && S.guidechem.rows) || []).slice().sort((a, b) => a.name.localeCompare(b.name)),
+      'Supplier and market quotes inside China collected by Guidechem, an aggregator: direction data, not an assessed benchmark and not the Indian price. Each row is dated by Guidechem\'s own "Updated" (some are weeks or months old). ⚠ = a caution on that row.',
+      r => [`${esc(r.name)}${r.caveat ? ' <span title="' + esc(r.caveat) + '" style="color:var(--warn,#b45309)">⚠</span>' : ''}`, fmt(r.price, 0), pct(r.chg_1d)]);
+    const te = (S.te && S.te.rows) || [];
+    block('Global proxies (daily, Trading Economics)', 'te', [['Commodity', r => `<b>${esc(r.name)}</b>`], ['Last', r => fmt(r.price, 2), 1], ['Unit', r => esc(r.unit)], ['As of', r => `<span class="muted">${esc(r.date)}</span>`], ['1d', r => pct(r.chg_1d), 1], ['1m', r => pct(r.chg_1m), 1], ['1y', r => pct(r.chg_1y), 1]],
+      te.slice().sort((a, b) => (b.chg_1m || 0) - (a.chg_1m || 0)),
+      'Futures and contract-for-difference series, so they give direction rather than the Indian price: their "steel" is Shanghai rebar in yuan and HRC is a US benchmark.',
+      r => [esc(r.name) + ` <small>${esc(r.unit)}</small>` + mark(groupsForTE(r.slug)), fmt(r.price, 2), pct(r.chg_1m)], null, 'te');
+  }
+  const listedBlock = (key) => { const at = ROWAT[key]; if (!at) return '';
+    const b = at.b, r = at.r;
+    return `<div class="dh">As listed · ${esc(b.title)}</div>` + b.cols.map(c => kv(esc(c[0]), c[1](r))).join('')
+      + `<div class="dp">${esc(b.src.date || b.src.fetched || '')} · <a class="hover:underline" href="${esc(b.src.url)}" target="_blank" rel="noopener">${esc(b.src.source.split('(')[0].trim())}</a>${b.note ? '<br>' + b.note : ''}</div>`; };
+
   // NMDC's iron-ore price: the history is the price letters NMDC filed with BSE
   // (docs/ideas/nmdc_history.json), read on first open and kept for the session.
   let nmdcHist = null;
@@ -391,11 +468,13 @@
     : /GET failed|404|not a PDF/i.test(e) ? 'BSE no longer serves the attachment (all pre-2019)'
     : /no readable price/i.test(e) ? 'the filing is a scan with no text layer'
     : 'unexplained';
-  async function openNMDC(grade) {
+  async function openNMDC(grade, range) {
+    const tok = selTok;
     grade = grade === 'fines' ? 'fines' : 'lump';
     const row = (((india && india.sources && india.sources.nmdc) || {}).rows || []).find(r => /lump/i.test(r.name) === (grade === 'lump'));
-    if (!row) return;
+    if (!row) { paint({ key: 'NMDC:' + grade, title: 'NMDC iron ore ' + grade, body: '<div class="os-empty">No NMDC price on file.</div>', msg: 'No NMDC price on file.' }); return; }
     if (!nmdcHist) nmdcHist = await safe('./ideas/nmdc_history.json');
+    if (tok !== selTok) return;
     const all = (nmdcHist && Array.isArray(nmdcHist.filings)) ? nmdcHist.filings : [];
     const key = f => f.wef || f.date;
     const priced = all.filter(f => f[grade] != null && !f.dup_of).sort((a, b) => key(a) < key(b) ? -1 : 1);
@@ -406,36 +485,31 @@
     const gs = groupsForIndia('nmdc');
     const rows = priced.map((f, i) => ({ f, d: i ? (f[grade] / priced[i - 1][grade] - 1) * 100 : null,
       flip: i > 0 && f.basis && priced[i - 1].basis && f.basis !== priced[i - 1].basis })).reverse();
-    let range = 'max';
-    showDetail(`<div class="card"><div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold">${esc(row.name)}</h2><div class="muted text-sm">NMDC administered price · ₹ per tonne · w.e.f. ${esc(row.wef || '')} · ${esc(row.basis || 'tax basis not stated')}</div></div>${closeBtn}</div>
-      <div class="flex flex-wrap items-center gap-2 my-3 text-sm"><span class="seg" id="drange">${['1y', '3y', '5y', 'max'].map(k => `<button data-v="${k}" class="${k === range ? 'on' : ''}">${k}</button>`).join('')}</span>
-        <span class="muted text-xs">one step per revision NMDC filed; the price holds flat between them</span></div>
-      <div id="dchart" class="chart"></div>
-      <div class="grid gap-x-6 gap-y-1 text-sm mt-3" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-        ${[['Latest', '₹' + fmt(row.price, 0) + ' w.e.f. ' + esc(row.wef || '')], ['vs previous revision', pct(row.chg_rev)],
+    range = range || 'max';
+    const re = k => { selTok++; openNMDC(grade, k); };
+    paint({ key: 'NMDC:' + grade, title: row.name, tag: 'NMDC', sub: `NMDC administered price · ₹ per tonne · w.e.f. ${row.wef || ''} · ${row.basis || 'tax basis not stated'}`,
+      body: [['Latest', '₹' + fmt(row.price, 0) + ' w.e.f. ' + esc(row.wef || '')], ['vs previous revision', pct(row.chg_rev)],
            ...[['1 month', 'chg_1m'], ['3 months', 'chg_3m'], ['6 months', 'chg_6m'], ['1 year', 'chg_1y']].map(([l, k]) => [l, pct(st && st[k]) + (st && st.basis_break && st.basis_break[k] ? ' <span class="muted text-xs" title="The earlier price was stated on a different tax basis">· across a basis change</span>' : '')]),
            ['Range held', st ? '₹' + fmt(st.lo, 0) + ' – ₹' + fmt(st.hi, 0) : '—'],
            ['Highest since', st && st.deep ? (st.at_series_high ? 'highest of all ' + st.n : esc(st.high_since) + (st.basis_break && st.basis_break.high_since ? ' <span class="muted text-xs">· that price was on a different tax basis</span>' : '')) : '—'],
-           ['Revisions', priced.length ? priced.length + ' since ' + esc(key(priced[0])) : '—']].map(([k, v]) => `<div><span class="muted">${k}</span> <b>${v}</b></div>`).join('')}
-      </div>
-      <div class="overflow-x-auto mt-3" style="max-height:360px;overflow-y:auto"><table class="sw">
-        <thead><tr><th>w.e.f.</th><th class="num">₹/tonne</th><th class="num">vs previous</th><th>Tax basis stated</th></tr></thead>
-        <tbody>${rows.map(({ f, d, flip }) => `<tr><td>${esc(key(f))}</td><td class="num">${fmt(f[grade], 0)}</td><td class="num">${pct(d == null ? null : Math.round(d * 10) / 10)}</td><td class="text-xs ${flip ? '' : 'muted'}">${flip ? '<b>basis changed</b> → ' : ''}${esc(f.basis || '—')}</td></tr>`).join('')}</tbody>
-      </table></div>
-      <p class="muted text-xs mt-2">${priced.length} revisions carry a ${grade} price, read from NMDC's own letters filed with BSE.
+           ['Revisions', priced.length ? priced.length + ' since ' + esc(key(priced[0])) : '—']].map(([k, v]) => kv(k, v)).join('')
+        + `<div class="dp">NMDC administered price · ₹ per tonne · w.e.f. ${esc(row.wef || '')} · ${esc(row.basis || 'tax basis not stated')}</div>`
+        + `<div class="dp">${priced.length} revisions carry a ${grade} price, read from NMDC's own letters filed with BSE.
         ${unread.length ? unread.length + ' more filings sit in BSE\'s index with no readable price: ' + Object.entries(why).map(([k, n]) => `${n} ${esc(k)}`).join('; ') + '.' : ''}
         ${refiled ? refiled + (refiled === 1 ? ' re-filing repeats' : ' re-filings repeat') + ' an earlier letter and is counted once, under the original.' : ''}
-        A move across a change in the tax basis is a definition change, not a price move.</p>
-      <div class="mt-3">${gs.length ? gs.map(g => `<div class="mb-2"><b>${esc(g.name)}</b>${chipsFull(g)}</div>`).join('') : ''}</div></div>`);
-    const render = () => {
-      const last = priced.length ? key(priced[priced.length - 1]) : '';
-      const yrs = { '1y': 1, '3y': 3, '5y': 5 }[range];
-      const cut = yrs && last ? (Number(last.slice(0, 4)) - yrs) + last.slice(4) : '';
-      drawChart($('#dchart'), priced.filter(f => !cut || key(f) >= cut).map(f => ({ time: key(f), value: f[grade] })), null, { precision: 0, step: true });
-    };
-    render();
-    detail.querySelector('#drange').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; range = b.dataset.v; detail.querySelectorAll('#drange button').forEach(x => x.classList.toggle('on', x === b)); render(); });
-    history.replaceState(null, '', '?nmdc=' + grade);
+        A move across a change in the tax basis is a definition change, not a price move.</div>`
+        + listedBlock('NMDC:' + grade) + namesBlock(gs, ''),
+      ctl: [rangeCtl(['1y', '3y', '5y', 'max'], range, re)], ranges: ['1y', '3y', '5y', 'max'], range, setRange: re,
+      note: 'One step per revision NMDC filed; the price holds flat between them.',
+      table: `<table class="tb"><thead><tr><th>w.e.f.</th><th class="num">₹/tonne</th><th class="num">vs previous</th><th>Tax basis stated</th></tr></thead>
+        <tbody>${rows.map(({ f, d, flip }) => `<tr><td>${esc(key(f))}</td><td class="num">${fmt(f[grade], 0)}</td><td class="num">${pct(d == null ? null : Math.round(d * 10) / 10)}</td><td class="text-xs ${flip ? '' : 'muted'}">${flip ? '<b>basis changed</b> → ' : ''}${esc(f.basis || '—')}</td></tr>`).join('')}</tbody></table>`,
+      chart: () => {
+        const last = priced.length ? key(priced[priced.length - 1]) : '';
+        const yrs = { '1y': 1, '3y': 3, '5y': 5 }[range];
+        const cut = yrs && last ? (Number(last.slice(0, 4)) - yrs) + last.slice(4) : '';
+        drawChart(priced.filter(f => !cut || key(f) >= cut).map(f => ({ time: key(f), value: f[grade] })), null, { precision: 0, step: true, title: row.name, unit: '₹/tonne' });
+      },
+      url: '?nmdc=' + grade });
   }
   // Every Indian print and every global proxy opens here, like any other commodity on the page. The history is
   // india_history.json.gz: what this site has recorded daily since 2026-09-22, plus any older print recovered
@@ -444,14 +518,16 @@
   let ihist = null;
   const groupsForRow = (src, r) => groups.filter(g => src === 'te' ? (g.te || []).includes(r.slug)
     : (g.india || []).some(m => { if (m[0] !== src) return false; try { return new RegExp(m[1], 'i').test(r.name || r.grade || ''); } catch (e) { return false; } }));
-  async function openSeries(id) {
-    const cut = String(id).indexOf('|'); if (cut < 1) return;
-    const src = id.slice(0, cut), key = id.slice(cut + 1);
+  async function openSeries(id, range) {
+    const tok = selTok;
+    const cut = String(id).indexOf('|');
+    const src = cut < 1 ? '' : id.slice(0, cut), key = id.slice(cut + 1);
     const S0 = (india && india.sources) || {};
     const row = ((S0[src] || {}).rows || []).find(r => r.key === key);
-    if (!row) return;
+    if (!row) { paint({ key: 'IH:' + id, title: id, body: '<div class="os-empty">No such price row on file.</div>', msg: 'No such price row on file.' }); return; }
     if (src === 'nmdc') return openNMDC(/lump/i.test(row.name) ? 'lump' : 'fines');
     if (!ihist) ihist = await safe('./ideas/india_history.json.gz');
+    if (tok !== selTok) return;
     const h = ihist && ihist.series ? ihist.series[id] : null;
     const pts = (h && h.p) || [], st = h && h.stats;
     const via = (h && h.via) || [], viaAt = i => Array.isArray(via) ? via[i] : via;   // one label for the whole series, or one per point
@@ -465,82 +541,95 @@
     const viaLabel = v => v === 'recorded' ? 'recorded by this site' : /^wayback/i.test(v) ? 'archived copy · ' + v.replace(/^wayback\s*/i, '') : v;
     const rowsAll = pts.map((p, i) => ({ d: p[0], v: p[1], ch: i ? (p[1] / pts[i - 1][1] - 1) * 100 : null, via: viaAt(i) || '' })).reverse();
     const SHOW = 400, rowsT = rowsAll.slice(0, SHOW);   // the chart holds every reading; the table lists the latest
-    let range = 'max';
-    showDetail(`<div class="card"><div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold">${esc(title)}</h2>
-        <div class="muted text-sm">${esc(srcName)} · ${esc(row.unit || '')}${row.date ? ' · as of ' + esc(row.date) : ''}</div></div>${closeBtn}</div>
-      <div class="flex flex-wrap items-center gap-2 my-3 text-sm"><span class="seg" id="drange">${['3m', '1y', '3y', 'max'].map(k => `<button data-v="${k}" class="${k === range ? 'on' : ''}">${k}</button>`).join('')}</span>
-        <span class="muted text-xs">${pts.length} dated reading${pts.length === 1 ? '' : 's'}${pts.length ? ' since ' + esc(pts[0][0]) : ''}${archived ? ' · ' + archived + ' recovered from archived copies of the source page' : ''}${row.history_via ? ' · from the ' + esc(row.history_via) + 's' : ''}</span></div>
-      <div id="dchart" class="chart"></div>
-      <div class="grid gap-x-6 gap-y-1 text-sm mt-3" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
-        ${[['Latest', fmt(row.price, 2) + ' ' + esc(row.unit || '')],
+    range = range || 'max';
+    const re = k => { selTok++; openSeries(id, k); };
+    paint({ key: 'IH:' + id, title, tag: src === 'te' ? 'global' : 'India', sub: `${srcName} · ${row.unit || ''}${row.date ? ' · as of ' + row.date : ''}`,
+      body: [['Latest', fmt(row.price, 2) + ' ' + esc(row.unit || '')],
            ...stated.map(([l, v]) => [l + ' <span class="muted text-xs">(stated by source)</span>', pct(v)]),
-           ...held.map(([l, v]) => [l + ' <span class="muted text-xs">(from the readings below)</span>', pct(v)]),
+           ...held.map(([l, v]) => [l + ' <span class="muted text-xs">(from the readings)</span>', pct(v)]),
            ['Range in the readings', st ? fmt(st.lo, 2) + ' – ' + fmt(st.hi, 2) : '—'],
            ['Highest since', st && st.deep ? (st.at_series_high ? 'highest of all ' + st.n : esc(st.high_since)) : '<span class="muted">needs 60 days and 6 readings</span>']
-          ].map(([k, v]) => `<div><span class="muted">${k}</span> <b>${v}</b></div>`).join('')}
-      </div>
-      <div class="overflow-x-auto mt-3" style="max-height:320px;overflow-y:auto"><table class="sw">
-        <thead><tr><th>Date</th><th class="num">Price</th><th class="num">vs previous</th><th>Read from</th></tr></thead>
-        <tbody>${rowsT.map(t => `<tr><td>${esc(t.d)}</td><td class="num">${fmt(t.v, 2)}</td><td class="num">${pct(t.ch == null ? null : Math.round(t.ch * 10) / 10)}</td><td class="muted text-xs">${esc(viaLabel(t.via))}</td></tr>`).join('')}</tbody>
-      </table></div>${rowsAll.length > SHOW ? `<p class="muted text-xs mt-1">The table lists the latest ${SHOW} of ${rowsAll.length} readings; the chart holds all of them.</p>` : ''}
-      ${row.caveat ? `<p class="text-sm mt-2" style="color:var(--warn,#b45309)"><b>Caution:</b> ${esc(row.caveat)}</p>` : ''}
-      <p class="muted text-xs mt-2">${src === 'te' ? 'A futures or CFD proxy for the global benchmark, not the Indian price: read it for direction. ' : ''}${src === 'guidechem' ? 'A Chinese domestic quote collected by an aggregator (Guidechem) from suppliers and markets, in CNY: read it for direction, not as an assessed benchmark or the Indian price. The series is named by the market row the headline came from. ' : ''}${src === 'moil' && /index/i.test(row.name) ? 'MOIL states each month only the % change on the previous month, so this is an index chained from those stated changes; it starts after the last month whose letter is missing. ' : ''}${row.history ? 'Every change here is measured on the readings listed. A window with no reading near its start shows a dash rather than borrowing the nearest older one.' : `Figures marked "stated by source" are the source's own. The rest are measured on the readings listed, which this site has taken daily since ${esc((h && h.recorded_from) || '2026-09-22')}${archived ? ', plus older prints read from archived copies of the source page' : ''}; they fill in as the record grows.`}</p>
-      <div class="mt-3">${gs.length ? gs.map(g => `<div class="mb-2"><b>${esc(g.name)}</b>${chipsFull(g)}</div>`).join('') : '<span class="muted text-sm">No listed names mapped to this price yet.</span>'}</div></div>`);
-    const render = () => {
-      const last = pts.length ? pts[pts.length - 1][0] : '';
-      const days = { '3m': 91, '1y': 365, '3y': 1096 }[range];
-      const from = days && last ? new Date(Date.parse(last) - days * 864e5).toISOString().slice(0, 10) : '';
-      const data = pts.filter(p => !from || p[0] >= from).map(p => ({ time: p[0], value: p[1] }));
-      // a hole longer than ~4 usual spacings (at least 45 days) is drawn as a hole, not a straight line across it
-      const sp = data.slice(1).map((p, i) => (Date.parse(p.time) - Date.parse(data[i].time)) / 864e5).sort((a, b) => a - b);
-      const lim = Math.max(45, 4 * (sp.length ? sp[Math.floor(sp.length / 2)] : 0));
-      const segments = [[]];
-      data.forEach((p, i) => {
-        if (i && (Date.parse(p.time) - Date.parse(data[i - 1].time)) / 864e5 > lim) segments.push([]);
-        segments[segments.length - 1].push(p);
-      });
-      drawChart($('#dchart'), data, null, { precision: 2, segments });
-    };
-    render();
-    detail.querySelector('#drange').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; range = b.dataset.v; detail.querySelectorAll('#drange button').forEach(x => x.classList.toggle('on', x === b)); render(); });
-    history.replaceState(null, '', '?ih=' + encodeURIComponent(id));
+          ].map(([k, v]) => kv(k, v)).join('')
+        + `<div class="dp">${esc(srcName)} · ${esc(row.unit || '')}${row.date ? ' · as of ' + esc(row.date) : ''}</div>`
+        + (row.caveat ? `<div class="dp" style="color:var(--warn,#b45309)"><b style="color:inherit">Caution:</b> ${esc(row.caveat)}</div>` : '')
+        + `<div class="dp">${src === 'te' ? 'A futures or CFD proxy for the global benchmark, not the Indian price: read it for direction. ' : ''}${src === 'guidechem' ? 'A Chinese domestic quote collected by an aggregator (Guidechem) from suppliers and markets, in CNY: read it for direction, not as an assessed benchmark or the Indian price. The series is named by the market row the headline came from. ' : ''}${src === 'moil' && /index/i.test(row.name) ? 'MOIL states each month only the % change on the previous month, so this is an index chained from those stated changes; it starts after the last month whose letter is missing. ' : ''}${row.history ? 'Every change here is measured on the readings listed. A window with no reading near its start shows a dash rather than borrowing the nearest older one.' : `Figures marked "stated by source" are the source's own. The rest are measured on the readings listed, which this site has taken daily since ${esc((h && h.recorded_from) || '2026-09-22')}${archived ? ', plus older prints read from archived copies of the source page' : ''}; they fill in as the record grows.`}</div>`
+        + listedBlock('IH:' + id) + namesBlock(gs, 'No listed names mapped to this price yet.'),
+      ctl: [rangeCtl(['3m', '1y', '3y', 'max'], range, re)], ranges: ['3m', '1y', '3y', 'max'], range, setRange: re,
+      note: `${pts.length} dated reading${pts.length === 1 ? '' : 's'}${pts.length ? ' since ' + esc(pts[0][0]) : ''}${archived ? ' · ' + archived + ' recovered from archived copies of the source page' : ''}${row.history_via ? ' · from the ' + esc(row.history_via) + 's' : ''}`
+        + (rowsAll.length > SHOW ? ` · The table lists the latest ${SHOW} of ${rowsAll.length} readings; the chart holds all of them.` : ''),
+      table: rowsT.length ? `<table class="tb"><thead><tr><th>Date</th><th class="num">Price</th><th class="num">vs previous</th><th>Read from</th></tr></thead>
+        <tbody>${rowsT.map(t => `<tr><td>${esc(t.d)}</td><td class="num">${fmt(t.v, 2)}</td><td class="num">${pct(t.ch == null ? null : Math.round(t.ch * 10) / 10)}</td><td class="muted text-xs">${esc(viaLabel(t.via))}</td></tr>`).join('')}</tbody></table>` : '',
+      chart: () => {
+        const last = pts.length ? pts[pts.length - 1][0] : '';
+        const days = { '3m': 91, '1y': 365, '3y': 1096 }[range];
+        const from = days && last ? new Date(Date.parse(last) - days * 864e5).toISOString().slice(0, 10) : '';
+        const data = pts.filter(p => !from || p[0] >= from).map(p => ({ time: p[0], value: p[1] }));
+        // a hole longer than ~4 usual spacings (at least 45 days) is drawn as a hole, not a straight line across it
+        const sp = data.slice(1).map((p, i) => (Date.parse(p.time) - Date.parse(data[i].time)) / 864e5).sort((a, b) => a - b);
+        const lim = Math.max(45, 4 * (sp.length ? sp[Math.floor(sp.length / 2)] : 0));
+        const segments = [[]];
+        data.forEach((p, i) => {
+          if (i && (Date.parse(p.time) - Date.parse(data[i - 1].time)) / 864e5 > lim) segments.push([]);
+          segments[segments.length - 1].push(p);
+        });
+        drawChart(data, null, { precision: 2, segments, title, unit: row.unit || '', empty: 'No dated readings on file for this row yet.' });
+      },
+      url: '?ih=' + encodeURIComponent(id) });
   }
-  function openGroup(id) {
+  function openGroup(id, st) {
     const s = signals && signals.groups.find(g => g.id === id); const g = groups.find(x => x.id === id);
-    if (!s || !g) return;
-    const tr = s.sources.trade || [];
-    let pi = 0, side = tr.length ? (tr[0].imp ? 'imp' : 'exp') : null;
-    showDetail(`<div class="card"><div class="flex flex-wrap justify-between gap-2"><div><h2 class="text-lg font-bold">${esc(g.name)}</h2><div class="muted text-sm">${esc(s.headline)}</div></div>${closeBtn}</div>
-      ${tr.length ? `<div class="flex flex-wrap items-center gap-2 my-3 text-sm"><span class="seg" id="dpre">${tr.map((d, i) => `<button data-v="${i}" class="${i === 0 ? 'on' : ''}" title="${esc(d.name)}">HS ${esc(d.prefix)} · US$${fmt(d.value_3m_avg, 0)}mn</button>`).join('')}</span><span class="seg" id="dside"></span><span class="muted text-xs" id="dnote"></span></div><div id="dchart" class="chart"></div>` : '<p class="muted text-sm mt-2">No HS prefixes mapped for this group.</p>'}
-      <ul class="text-sm mt-3 list-disc pl-5">${(s.evidence || []).map(e => `<li>${esc(e)}</li>`).join('')}</ul>
-      ${s.history ? `<p class="text-sm mt-2"><b>Precedent:</b> ${esc(s.history)}</p>` : ''}
-      <div class="mt-3">${chipsFull(g)}</div>
-      <div class="mt-3 text-sm">${(s.sources.spot || []).map(x => `<span class="pill">${esc(x.name)} ${fmt(x.last, 2)} ${esc(x.unit)} · 1w ${x.chg_1w == null ? '—' : x.chg_1w + '%'} · 1m ${x.chg_1m == null ? '—' : x.chg_1m + '%'}</span>`).join('')}
-        ${(s.sources.wpi || []).map(x => `<span class="pill">WPI ${esc(x.name)} ${x.month}: ${fmt(x.last, 1)} · 3m ${x.chg_3m == null ? '—' : x.chg_3m + '%'} · 12m ${x.chg_12m == null ? '—' : x.chg_12m + '%'}</span>`).join('')}
-        ${(s.sources.te || []).map(x => `<span class="pill${x.id ? ' cursor-pointer' : ''}"${x.id ? ` data-ih="${esc(x.id)}" title="Open its history"` : ''}>${esc(x.name)} (global) ${fmt(x.last, 2)} ${esc(x.unit)} · 1m ${x.chg_1m == null ? '—' : x.chg_1m + '%'} · 1y ${x.chg_1y == null ? '—' : x.chg_1y + '%'}</span>`).join('')}
-        ${(s.sources.india || []).map(x => `<span class="pill${x.id ? ' cursor-pointer' : ''}"${x.id ? ` data-ih="${esc(x.id)}" title="Open its history"` : ''}>India · ${esc(x.name)} ${fmt(x.last, 1)} ${esc(x.unit || '')}${x.chg_1d == null ? '' : ' · 1d ' + x.chg_1d + '%'}${x.chg_prev == null ? '' : ' · vs prev ' + x.chg_prev + '%'}${x.date ? ' · priced ' + esc(x.date) : ''}${x.stats && x.stats.chg_1m != null ? ' · 1m ' + x.stats.chg_1m + '%' : ''}${x.stats && x.stats.deep ? (x.stats.at_series_high ? ' · highest in ' + x.stats.n + ' readings since ' + esc(x.stats.first) : ' · highest since ' + esc(x.stats.high_since)) : ''}</span>`).join('')}</div>
-    </div>`);
-    const render = () => {
-      const d = tr[pi]; if (!d) return;
-      if (!d[side]) side = d.imp ? 'imp' : 'exp';
-      detail.querySelector('#dside').innerHTML = ['imp', 'exp'].filter(k => d[k]).map(k => `<button data-v="${k}" class="${k === side ? 'on' : ''}">${k === 'imp' ? 'Imports' : 'Exports'}</button>`).join('');
-      const t = d[side];
-      detail.querySelector('#dnote').textContent = `${d.name} — aggregate US$/kg over ${t.codes} code(s)${t.dropped && t.dropped.length ? ', ' + t.dropped.length + ' left out as a different price class' : ''}; bars = US$ mn`;
-      const from = rangeFrom(t.series.months, '5y');
-      drawChart($('#dchart'), t.series.months.slice(from).map((m, i) => ({ time: mTime(m), value: t.series.price[from + i] })), t.series.months.slice(from).map((m, i) => ({ time: mTime(m), value: t.series.value[from + i] })), { precision: 3 });
-    };
-    if (tr.length) {
-      render();
-      detail.querySelector('#dpre').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; pi = +b.dataset.v; detail.querySelectorAll('#dpre button').forEach(x => x.classList.toggle('on', x === b)); render(); });
-      detail.querySelector('#dside').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; side = b.dataset.v; render(); });
+    if (!g) { paint({ key: 'G:' + id, title: id, body: '<div class="os-empty">No such group in the beneficiary map.</div>', msg: 'No such group in the beneficiary map.' }); return; }
+    const mapRows = kv('HS prefixes', esc((g.hs || []).join(', ') || '—')) + ((g.spot || []).length ? kv('Spot series', esc(g.spot.join(', '))) : '');
+    if (!s) {
+      paint({ key: 'G:' + id, title: g.name, tag: 'group', sub: 'beneficiary map', body: mapRows + (g.history ? `<div class="dp">${esc(g.history)}</div>` : '') + chipsFull(g), msg: 'No signal series on file for this group.', url: '?g=' + id });
+      return;
     }
-    history.replaceState(null, '', '?g=' + id);
+    const tr = s.sources.trade || [];
+    st = st || { pi: 0, side: tr.length ? (tr[0].imp ? 'imp' : 'exp') : null };
+    const d = tr[st.pi]; let side = st.side;
+    if (d && !d[side]) side = d.imp ? 'imp' : 'exp';
+    const t = d ? d[side] : null;
+    const re = (patch) => openGroup(id, Object.assign({}, st, { side }, patch));
+    const srcRows =
+      (s.sources.spot || []).map(x => `<div class="dp go" data-spot="${esc(x.name)}" title="Open this spot series">${esc(x.name)} ${fmt(x.last, 2)} ${esc(x.unit)} · 1w ${x.chg_1w == null ? '—' : x.chg_1w + '%'} · 1m ${x.chg_1m == null ? '—' : x.chg_1m + '%'}</div>`).join('')
+      + (s.sources.wpi || []).map(x => `<div class="dp go" data-wpi="${esc(x.code || '')}" title="Open this WPI item">WPI ${esc(x.name)} ${x.month}: ${fmt(x.last, 1)} · 3m ${x.chg_3m == null ? '—' : x.chg_3m + '%'} · 12m ${x.chg_12m == null ? '—' : x.chg_12m + '%'}</div>`).join('')
+      + (s.sources.te || []).map(x => `<div class="dp${x.id ? ' go' : ''}"${x.id ? ` data-ih="${esc(x.id)}" title="Open its history"` : ''}>${esc(x.name)} (global) ${fmt(x.last, 2)} ${esc(x.unit)} · 1m ${x.chg_1m == null ? '—' : x.chg_1m + '%'} · 1y ${x.chg_1y == null ? '—' : x.chg_1y + '%'}</div>`).join('')
+      + (s.sources.india || []).map(x => `<div class="dp${x.id ? ' go' : ''}"${x.id ? ` data-ih="${esc(x.id)}" title="Open its history"` : ''}>India · ${esc(x.name)} ${fmt(x.last, 1)} ${esc(x.unit || '')}${x.chg_1d == null ? '' : ' · 1d ' + x.chg_1d + '%'}${x.chg_prev == null ? '' : ' · vs prev ' + x.chg_prev + '%'}${x.date ? ' · priced ' + esc(x.date) : ''}${x.stats && x.stats.chg_1m != null ? ' · 1m ' + x.stats.chg_1m + '%' : ''}${x.stats && x.stats.deep ? (x.stats.at_series_high ? ' · highest in ' + x.stats.n + ' readings since ' + esc(x.stats.first) : ' · highest since ' + esc(x.stats.high_since)) : ''}</div>`).join('');
+    paint({ key: 'G:' + id, title: g.name, tag: 'group', sub: s.headline,
+      body: kv('Strength', `<span class="${s.direction === 'up' ? 'pos' : s.direction === 'down' ? 'neg' : ''}" title="Strength = the group's strongest price move divided by its alert threshold (spot +5% 1w / +10% 1m / +20% 3m; WPI +3% / +8% / +15% over 1 / 3 / 12 months; trade unit price +10% 1m / +15% 3m / +30% smoothed y/y). 1.0 = exactly at threshold.">${s.direction === 'up' ? '▲' : s.direction === 'down' ? '▼' : '·'} ${fmt(s.strength, 1)}× threshold</span>`)
+        + `<div class="dp"><b>${esc(s.headline)}</b></div>`
+        + ((s.evidence || []).length ? `<div class="dp"><ul>${(s.evidence || []).map(e => `<li>${esc(e)}</li>`).join('')}</ul></div>` : '')
+        + (s.history ? `<div class="dp"><b>Precedent:</b> ${esc(s.history)}</div>` : '')
+        + mapRows + chipsFull(g)
+        + (srcRows ? '<div class="dh">Wired series</div>' + srcRows : ''),
+      ctl: tr.length ? [{ items: tr.map((x, i) => [i, `HS ${esc(x.prefix)} · US$${fmt(x.value_3m_avg, 0)}mn`, x.name]), cur: st.pi, on: k => re({ pi: +k }) },
+        { items: d ? ['imp', 'exp'].filter(k => d[k]).map(k => [k, k === 'imp' ? 'Imports' : 'Exports']) : [], cur: side, on: k => re({ side: k }) }] : [],
+      note: t ? `${esc(d.name)} — aggregate US$/kg over ${t.codes} code(s)${t.dropped && t.dropped.length ? ', ' + t.dropped.length + ' left out as a different price class' : ''}; bars = US$ mn. Last five years.` : '',
+      msg: 'No HS prefixes mapped for this group.',
+      chart: t ? () => {
+        const from = rangeFrom(t.series.months, '5y');
+        drawChart(t.series.months.slice(from).map((m, i) => ({ time: mTime(m), value: t.series.price[from + i] })), t.series.months.slice(from).map((m, i) => ({ time: mTime(m), value: t.series.value[from + i] })), { precision: 3, title: d.name + ' · HS ' + d.prefix, unit: 'US$/kg', barLabel: 'US$ mn', monthly: true });
+      } : null,
+      url: '?g=' + id });
   }
-  detail.addEventListener('click', (e) => { if (e.target.id === 'dclose') { detail.classList.add('hidden'); detail.innerHTML = ''; history.replaceState(null, '', location.pathname); } });
-  detail.addEventListener('click', (e) => { const p = e.target.closest('.pill[data-ih]'); if (p) openSeries(p.dataset.ih); });
+  function openSel() {
+    selTok++;
+    if (!SEL) { lastPainted = ''; paint({ key: '', title: '', body: '<div class="os-empty">Pick a row from the list.</div>', msg: 'Pick a row from the list.', url: '' }); return; }
+    const id = SEL.id;
+    if (SEL.k === 'HS') openHS(id); else if (SEL.k === 'WPI') openWPI(id); else if (SEL.k === 'SPOT') openSpot(id);
+    else if (SEL.k === 'NMDC') openNMDC(id); else if (SEL.k === 'IH') openSeries(id); else openGroup(id);
+  }
+  $('#dBody').addEventListener('click', (e) => {
+    if (e.target.closest('a')) return;
+    const p = e.target.closest('.dp.go'); if (!p) return;
+    if (p.dataset.ih) jump({ k: 'IH', id: p.dataset.ih }, p.dataset.ih.indexOf('te|') === 0 ? 'te' : 'ind');
+    else if (p.dataset.spot && spot && spot.rows[p.dataset.spot]) jump({ k: 'SPOT', id: p.dataset.spot }, 'spot');
+    else if (p.dataset.wpi && wpi && wpi.items.some(x => x.c === p.dataset.wpi)) jump({ k: 'WPI', id: p.dataset.wpi }, 'wpi');
+  });
+  function jump(sel, v) { if (sel.k === 'IH' && sel.id.indexOf('nmdc|') === 0) sel = { k: 'NMDC', id: /lump/i.test(sel.id) ? 'lump' : 'fines' };
+    view = v; Q = ''; $('#search').value = ''; SEL = sel; SELV[v] = sel; render(true); }
 
-  // ---- search ----
-  const results = $('#results'); const sbox = $('#search');
+  /* ---------- search across everything: unchanged ---------- */
   const tradeValue = (r) => (r[ci.iv] || 0) + (r[ci.ev] || 0);
   function search(q) {
     const toks = q.toLowerCase().split(/\s+/).filter(Boolean);
@@ -564,206 +653,206 @@
     }
     return out.slice(0, 60);
   }
-  let sel = -1, cur = [];
-  function renderResults() {
-    if (!cur.length) { results.classList.add('hidden'); results.innerHTML = ''; return; }
-    results.innerHTML = cur.map((r, i) => `<div data-i="${i}" class="${i === sel ? 'on' : ''}"><span class="k">${r.k}</span>${esc(r.label)} <span class="muted text-xs">· ${esc(r.sub)}</span></div>`).join('');
-    results.classList.remove('hidden');
-  }
-  function pick(r) { results.classList.add('hidden'); if (r.k === 'HS') openHS(r.id); else if (r.k === 'WPI') openWPI(r.id); else if (r.k === 'SPOT') openSpot(r.id); else if (r.k === 'NMDC') openNMDC(r.id); else if (r.k === 'GROUP') openGroup(r.id); else if (r.k === 'GLOBAL' || r.k === 'INDIA') openSeries(r.id); }
-  sbox.addEventListener('input', () => { cur = search(sbox.value); sel = cur.length ? 0 : -1; renderResults(); });
-  sbox.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowDown') { sel = Math.min(cur.length - 1, sel + 1); renderResults(); e.preventDefault(); }
-    else if (e.key === 'ArrowUp') { sel = Math.max(0, sel - 1); renderResults(); e.preventDefault(); }
-    else if (e.key === 'Enter' && sel >= 0 && cur[sel]) { pick(cur[sel]); }
-    else if (e.key === 'Escape') { results.classList.add('hidden'); }
-  });
-  results.addEventListener('mousedown', (e) => { const d = e.target.closest('div[data-i]'); if (d) { e.preventDefault(); pick(cur[+d.dataset.i]); } });
-  sbox.addEventListener('blur', () => setTimeout(() => results.classList.add('hidden'), 150));
-  sbox.addEventListener('focus', () => { if (cur.length) results.classList.remove('hidden'); });
+  const SKIND = { HS: 'HS', WPI: 'WPI', SPOT: 'SPOT', NMDC: 'NMDC', GROUP: 'G', GLOBAL: 'IH', INDIA: 'IH' };
 
-  // ---- signals ----
-  if (signals) {
-    $('#signals-meta').textContent = `built ${signals.built} · spot ${signals.spot_date || '—'} · WPI ${signals.wpi_month || '—'} · trade ${signals.trade_month || '—'}`;
-    const list = $('#signals-list');
-    const strong = signals.groups.filter(g => Math.abs(g.strength || 0) >= 1);
-    const rest = signals.groups.filter(g => Math.abs(g.strength || 0) < 1);
-    const card = (s) => {
-      const g = groups.find(x => x.id === s.id) || {};
-      return `<div class="card sig ${esc(s.direction)} text-sm" data-g="${esc(s.id)}">
-        <div class="flex justify-between gap-2"><b class="cursor-pointer hover:underline" data-open="${esc(s.id)}">${esc(s.name)}</b><span class="pill" title="Strength = the group's strongest price move divided by its alert threshold (spot +5% 1w / +10% 1m / +20% 3m; WPI +3% / +8% / +15% over 1 / 3 / 12 months; trade unit price +10% 1m / +15% 3m / +30% smoothed y/y). 1.0 = exactly at threshold.">${s.direction === 'up' ? '▲' : s.direction === 'down' ? '▼' : '·'} ${fmt(s.strength, 1)}× threshold</span></div>
-        <div class="mt-1">${esc(s.headline)}</div>
-        ${(s.evidence || []).length > 1 ? `<ul class="muted text-xs mt-1">${s.evidence.slice(1, 4).map(e => `<li>${esc(e)}</li>`).join('')}</ul>` : ''}
-        <div class="mt-2">${chips([g], 8) || '<span class="muted text-xs">no listed names mapped</span>'}</div>
-      </div>`;
-    };
-    list.innerHTML = strong.map(card).join('') || '<div class="card muted text-sm">Nothing above threshold today.</div>';
-    if (rest.length) list.insertAdjacentHTML('afterend', `<details class="mt-2 text-sm"><summary class="muted">${rest.length} groups below threshold</summary><div class="grid gap-3 md:grid-cols-2 mt-2">${rest.map(card).join('')}</div></details>`);
-    document.querySelector('#signals').addEventListener('click', (e) => { const b = e.target.closest('[data-open]'); if (b) openGroup(b.dataset.open); });
-  } else {
-    $('#signals-list').innerHTML = '<div class="card muted text-sm">signals.json not published yet.</div>';
-  }
-
-  // ---- movers table ----
+  /* ---------- movers (HS codes): filter and sort unchanged ---------- */
   const COMMODITY_UNITS = new Set(['KGS', 'TON', 'LTR', 'GMS', 'MTR', 'SQM', 'CUM', 'CCM', 'MTS', 'KLR', 'TNE', 'CTM']);
   const state = { side: 'imp', win: '3', dir: 'up', minval: 5, chapter: '', nos: false, thin: false, filter: '', limit: 100, sort: null, asc: false };
   if (meta) Object.keys(CH).sort().forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = `${c} ${CH[c]}`; $('#chapter').appendChild(o); });
-  ['side', 'win', 'dir'].forEach(id => $('#' + id).addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state[id] = b.dataset.v; document.querySelectorAll('#' + id + ' button').forEach(x => x.classList.toggle('on', x === b)); state.limit = 100; state.sort = null; renderMovers(); }));
-  $('#minval').addEventListener('input', () => { state.minval = +$('#minval').value || 0; renderMovers(); });
-  $('#chapter').addEventListener('change', () => { state.chapter = $('#chapter').value; renderMovers(); });
-  $('#nos').addEventListener('change', () => { state.nos = $('#nos').checked; renderMovers(); });
-  $('#thin').addEventListener('change', () => { state.thin = $('#thin').checked; renderMovers(); });
-  $('#filter').addEventListener('input', () => { state.filter = $('#filter').value.toLowerCase(); renderMovers(); });
-  $('#more').addEventListener('click', () => { state.limit += 200; renderMovers(); });
-  function renderMovers() {
-    if (!index) { $('#movers-summary').textContent = 'trade index unavailable'; return; }
+  function moversRows() {
     const p = state.side === 'imp' ? 'i' : 'e';
     const key = p + (state.win === 'sy' ? 'sy' : 'p' + state.win);
     let rows = index.rows.filter(r => (r[ci[p + 'v']] || 0) >= state.minval && r[ci[key]] != null
       && (state.nos || COMMODITY_UNITS.has(r[2])) && (state.thin || !r[ci[p + 'thin']])
       && (!state.chapter || r[0].startsWith(state.chapter)) && (!state.filter || (r[0] + ' ' + r[1]).toLowerCase().includes(state.filter))
       && (state.dir === 'up' ? r[ci[key]] > 0 : r[ci[key]] < 0));
-    const cols = [['hs', 'HS', false], ['d', 'Product', false], ['u', 'Unit', false], [p + 'v', 'US$ mn', true], [p + 'q', 'Qty', true], [p + 'p', 'US$/unit', true],
-      [p + 'p1', '1m', true], [p + 'p3', '3m', true], [p + 'p12', '12m', true], [p + 'sy', '3-mo y/y', true], [p + 'q12', 'Qty y/y', true], [p + 'v12', 'Value y/y', true], ['ben', 'Exposed names', false]];
-    const sortKey = state.sort || key;
+    const sortKey = state.sort ? (['hs', 'd', 'u'].includes(state.sort) ? state.sort : p + state.sort) : key;
     rows.sort((a, b) => { const x = a[ci[sortKey]], y = b[ci[sortKey]]; if (x == null) return 1; if (y == null) return -1; return typeof x === 'string' ? (state.asc ? x.localeCompare(y) : y.localeCompare(x)) : (state.asc ? x - y : y - x); });
     if (!state.sort && state.dir === 'down') rows.reverse();
-    $('#movers-summary').textContent = `${fmt(rows.length, 0)} codes match (${state.side === 'imp' ? 'imports' : 'exports'}, ${state.win === 'sy' ? 'last 3 months vs the same 3 months a year ago' : 'unit price vs ' + state.win + ' month(s) earlier'}, ≥ US$ ${state.minval} mn in ${index.latest}); showing ${Math.min(rows.length, state.limit)}. Click a row for the chart.`;
-    $('#movers-table thead').innerHTML = '<tr>' + cols.map(([k, l, n]) => `<th class="${n ? 'num' : ''} ${k === sortKey ? 'on' : ''}" data-k="${k}">${l}</th>`).join('') + '</tr>';
-    $('#movers-table tbody').innerHTML = rows.slice(0, state.limit).map(r => `<tr class="row" data-hs="${r[0]}">
-      <td>${r[0]}</td><td title="${esc(r[1])}">${esc(r[1].length > 48 ? r[1].slice(0, 46) + '…' : r[1])}</td><td>${esc(r[2])}</td>
-      <td class="num">${fmt(r[ci[p + 'v']], 1)}</td><td class="num">${fmt(r[ci[p + 'q']], 0)}</td><td class="num">${fmtP(r[ci[p + 'p']])}</td>
-      <td class="num">${pct(r[ci[p + 'p1']])}</td><td class="num">${pct(r[ci[p + 'p3']])}</td><td class="num">${pct(r[ci[p + 'p12']])}</td><td class="num">${pct(r[ci[p + 'sy']])}</td>
-      <td class="num">${pct(r[ci[p + 'q12']])}</td><td class="num">${pct(r[ci[p + 'v12']])}</td><td>${chips(groupsForHS(r[0]), 4)}</td></tr>`).join('');
-    $('#more').style.display = rows.length > state.limit ? '' : 'none';
+    return { rows, p, key, sortKey };
   }
-  $('#movers-table').addEventListener('click', (e) => {
-    const th = e.target.closest('th'); if (th && th.dataset.k !== 'ben') { if (state.sort === th.dataset.k) state.asc = !state.asc; else { state.sort = th.dataset.k; state.asc = false; } renderMovers(); return; }
-    if (e.target.closest('a')) return;
-    const tr = e.target.closest('tr.row'); if (tr) openHS(tr.dataset.hs);
-  });
-  renderMovers();
+  const WINLAB = { '1': '1m', '3': '3m', '12': '12m', sy: '3-mo y/y' };
 
-  // ---- spot table ----
-  if (spot) {
-    const names = Object.keys(spot.rows).sort((a, b) => (spot.rows[b].chg_1m || 0) - (spot.rows[a].chg_1m || 0));
-    $('#spot-summary').textContent = `${names.length} commodities · ${spot.updated} · sorted by 1-month change · click a row for the chart`;
-    $('#spot-table thead').innerHTML = '<tr><th>Commodity</th><th class="num">Last</th><th>Unit</th><th class="num">1d</th><th class="num">1w</th><th class="num">1m</th><th class="num">3m</th><th class="num">6m</th><th class="num">52w pos</th><th>Source</th><th>Exposed names</th></tr>';
-    $('#spot-table tbody').innerHTML = names.map(n => { const r = spot.rows[n]; return `<tr class="row" data-spot="${esc(n)}"><td class="capitalize">${esc(n)}</td><td class="num">${fmt(r.last, 2)}</td><td>${esc(r.unit)}</td><td class="num">${pct(r.chg_1d)}</td><td class="num">${pct(r.chg_1w)}</td><td class="num">${pct(r.chg_1m)}</td><td class="num">${pct(r.chg_3m)}</td><td class="num">${pct(r.chg_6m)}</td><td class="num">${r.pos == null ? '—' : r.pos + '%'}</td><td class="muted">${esc(r.source)}</td><td>${chips(groupsForSpot(n), 5)}</td></tr>`; }).join('');
-    $('#spot-table').addEventListener('click', (e) => { if (e.target.closest('a')) return; const tr = e.target.closest('tr.row'); if (tr) openSpot(tr.dataset.spot); });
-  }
-
-  // ---- India spot blocks + Trading Economics table ----
-  const groupsForTE = (slug) => groups.filter(g => (g.te || []).includes(slug));
-  if (india && india.sources) {
-    const S = india.sources;
-    $('#india-meta').textContent = `built ${india.built} · ` + Object.entries(india.status || {}).map(([k, v]) => `${k}: ${v.split(',')[0]}`).join(' · ');
-    const blocks = $('#india-blocks');
-    const block = (title, src, cols, rows, note, rowAttr) => {
-      if (!src || !rows.length) return;
-      const el = document.createElement('div'); el.className = 'card';
-      el.innerHTML = `<div class="flex justify-between gap-2"><b>${esc(title)}</b><span class="muted text-xs">${esc(src.date || '')} · <a class="hover:underline" href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.source.split('(')[0].trim())}</a></span></div>
-        <div class="overflow-x-auto mt-2"><table class="sw"><thead><tr>${cols.map(c => `<th class="${c[2] ? 'num' : ''}">${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr${rowAttr ? ' ' + rowAttr(r) : ''}>${cols.map(c => `<td class="${c[2] ? 'num' : ''}">${c[1](r)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${note ? `<p class="muted text-xs mt-2">${note}</p>` : ''}`;
-      blocks.appendChild(el);
-    };
-    const sinceCell = (r) => {
-      const st = indiaStats[`${r.market || ''} ${r.name}`.trim()];
-      if (!st || !st.deep) return '<span class="muted">—</span>';
-      return st.at_series_high ? `<b>highest of all ${st.n}</b>` : esc(st.high_since);
-    };
-    const mb = (S.metalbook && S.metalbook.rows) || [];
-    const mbCity = (city) => mb.filter(r => r.city === city).sort((a, b) => a.name.localeCompare(b.name));
-    // every row opens its own history in the detail panel, like every other commodity on the page
-    const ih = (src) => (r) => r.key ? `class="row" data-ih="${esc(src + '|' + r.key)}"` : '';
-    ['Mumbai', 'Delhi', 'Raipur', 'Hyderabad', 'Bangalore'].forEach(city => block(`Steel & metals — ${city}`, S.metalbook,
-      [['Product', r => esc(r.name)], ['₹/kg', r => fmt(r.price, 1), 1], ['vs prev', r => pct(r.chg_prev), 1], ['Priced', r => `<span class="muted text-xs">${esc((r.date || '').slice(5))}</span>`]], mbCity(city), '', ih('metalbook')));
-    // the official monthly figure: the one Indian finished-steel price with years of dated history
-    block('Steel — Mumbai retail, monthly (Ministry of Steel)', S.minsteel, [['Product', r => esc(r.name)], ['₹/tonne', r => fmt(r.price, 0), 1],
-      ['vs prev month', r => pct(r.chg_prev), 1], ['Month-end', r => `<span class="muted text-xs">${esc(r.date || '')}</span>`]],
-      (S.minsteel && S.minsteel.rows) || [], 'The price the Ministry of Steel reports for the Mumbai market as on each month-end, including GST. It is the official series and goes back to November 2021; a month with no report is a gap, not a zero. Click a product for its history.', ih('minsteel'));
-    block('Bullion (IBJA)', S.ibja, [['Series', r => esc(r.name)], ['AM', r => fmt(r.am, 0), 1], ['PM', r => fmt(r.pm, 0), 1], ['Unit', r => esc(r.unit)]], (S.ibja && S.ibja.rows) || [], '', ih('ibja'));
-    block('Natural rubber (Rubber Board)', S.rubber, [['Market', r => esc(r.market)], ['Grade', r => esc(r.name)], ['₹/100 kg', r => fmt(r.price, 0), 1], ['US$/100 kg', r => fmt(r.usd_per_100kg, 2), 1]], (S.rubber && S.rubber.rows) || [], '', ih('rubber'));
-    block('Sugar spot (Chinimandi)', S.sugar, [['City', r => esc(r.city)], ['Grade', r => esc(r.grade)], ['₹/quintal', r => fmt(r.price, 2), 1], ['Change', r => fmt(r.chg_1d, 2), 1]], (S.sugar && S.sugar.rows) || [], '', ih('sugar'));
-    block('Petrol & diesel (PPAC)', S.fuel, [['Fuel', r => esc(r.name)], ['City', r => esc(r.city)], ['₹/litre', r => fmt(r.price, 2), 1]], (S.fuel && S.fuel.rows) || [], '', ih('fuel'));
-    // NMDC administers the Indian iron-ore price and files every revision with BSE, so unlike the other
-    // Indian prints this one arrives with its own history - 2019 to today - and can answer "highest since".
-    const nmdcNote = (() => {
-      const r = ((S.nmdc && S.nmdc.rows) || [])[0]; if (!r) return '';
-      const st = indiaStats[`${r.market || ''} ${r.name}`.trim()];
-      const span = st ? `${st.n} revisions since ${esc(st.first)}` : 'the filings read so far';
-      return `Set by NMDC, not a market print: it changes only when NMDC files a revision. History covers ${span}; `
-        + `"highest since" is measured against that span, not against all time. This price ${esc(r.basis || 'states its own tax basis per filing')} `
-        + `- and that basis changed between eras, so values either side of a change are not like for like. `
-        + `Click a grade for its chart and every revision.`;
-    })();
-    block('Iron ore — NMDC administered price', S.nmdc, [['Grade', r => esc(r.name)], ['₹/tonne', r => fmt(r.price, 0), 1],
-      ['w.e.f.', r => esc(r.wef || '')], ['vs prev revision', r => pct(r.chg_rev), 1], ['Highest since', r => sinceCell(r)]],
-      (S.nmdc && S.nmdc.rows) || [], nmdcNote, r => `class="row" data-nmdc="${/lump/i.test(r.name) ? 'lump' : 'fines'}"`);
-    // MOIL: like NMDC, an administered price filed with BSE each month; its ore letters state % changes, so the ore rows are indices
-    block('Manganese ore — MOIL administered (monthly letters)', S.moil, [['Series', r => esc(r.name)], ['Value', r => fmt(r.price, r.price > 1000 ? 0 : 2), 1], ['Unit', r => `<span class="muted text-xs">${esc(r.unit)}</span>`],
-      ['w.e.f.', r => esc(r.wef || '')], ['Last revision', r => pct(r.chg_rev), 1]],
-      (S.moil && S.moil.rows) || [], 'MOIL files a price letter with BSE every month. For ore it states only the % change on the previous month, so the ore rows are an index chained from those stated changes (100 = the month before the unbroken run of letters starts); EMD is stated in rupees. Click a row for every revision.', ih('moil'));
-    block('Cotton spot — Cotton Association of India', S.cai, [['Growth', r => esc(r.market)], ['Grade', r => esc(r.name.replace(/^Cotton /, ''))], ['Season', r => esc((r.grade || '').replace('season ', ''))], ['₹/candy', r => fmt(r.price, 0), 1]],
-      (S.cai && S.cai.rows) || [], 'CAI official spot rates, ₹ per candy of 356 kg, ex-gin, excluding tax, by growth area and grade; both the current and the previous cotton season are quoted.', ih('cai'));
-    block('Spices — Spices Board (cardamom auctions, pepper)', S.spices, [['Spice', r => esc(r.name)], ['Market / auctioneer', r => esc(r.market || '')], ['Grade', r => esc(r.grade || '')], ['₹/kg', r => fmt(r.price, 2), 1], ['Date', r => `<span class="muted text-xs">${esc(r.date || '')}</span>`]],
-      (S.spices && S.spices.rows) || [], 'Small cardamom: average price of each e-auction. Each row carries the date the Spices Board states.', ih('spices'));
-    block('Chemicals — China domestic quotes (Guidechem, CNY/t)', S.guidechem, [['Chemical', r => `${esc(r.name)}${r.caveat ? ' <span title="' + esc(r.caveat) + '" style="color:var(--warn,#b45309)">⚠</span>' : ''}`], ['CNY/t', r => fmt(r.price, 0), 1], ['1d', r => pct(r.chg_1d), 1],
-      ['3M avg', r => fmt(r.avg_3m, 0), 1], ['Updated', r => `<span class="muted text-xs">${esc(r.date || '')}</span>`], ['Quote row', r => `<span class="muted text-xs">${esc([r.market, r.grade].filter(Boolean).join(' · ').slice(0, 60))}</span>`]],
-      ((S.guidechem && S.guidechem.rows) || []).slice().sort((a, b) => a.name.localeCompare(b.name)),
-      'Supplier and market quotes inside China collected by Guidechem, an aggregator: direction data, not an assessed benchmark and not the Indian price. Each row is dated by Guidechem\'s own "Updated" (some are weeks or months old). ⚠ = a caution on that row (hover or click it). Click a chemical for its history.', ih('guidechem'));
-    blocks.addEventListener('click', (e) => {
-      if (e.target.closest('a')) return;
-      const n = e.target.closest('tr[data-nmdc]'); if (n) { openNMDC(n.dataset.nmdc); return; }
-      const t = e.target.closest('tr[data-ih]'); if (t) openSeries(t.dataset.ih);
-    });
-    const te = (S.te && S.te.rows) || [];
-    $('#global-meta').textContent = `${te.length} series · ${S.te ? S.te.fetched : ''}`;
-    $('#global-table tbody').innerHTML = te.slice().sort((a, b) => (b.chg_1m || 0) - (a.chg_1m || 0)).map(r =>
-      `<tr ${ih('te')(r)}><td><b>${esc(r.name)}</b></td><td class="num">${fmt(r.price, 2)}</td><td>${esc(r.unit)}</td><td class="muted">${esc(r.date)}</td><td class="num">${pct(r.chg_1d)}</td><td class="num">${pct(r.chg_1m)}</td><td class="num">${pct(r.chg_1y)}</td><td>${chips(groupsForTE(r.slug), 5)}</td></tr>`).join('');
-    $('#global-table').addEventListener('click', (e) => { if (e.target.closest('a')) return; const t = e.target.closest('tr[data-ih]'); if (t) openSeries(t.dataset.ih); });
-  } else {
-    $('#india-blocks').innerHTML = '<div class="card muted text-sm">india_spot.json not published yet.</div>';
-  }
-
-  // ---- WPI table ----
-  function wpiStats(it) {
-    const v = it.v; let li = -1; for (let i = v.length - 1; i >= 0; i--) if (v[i] != null) { li = i; break; }
-    if (li < 0) return {};
-    const at = (n) => li - n >= 0 ? v[li - n] : null; const ch = (b) => b ? +((v[li] / b - 1) * 100).toFixed(1) : null;
-    return { month: wpi.months[li], last: v[li], c1: ch(at(1)), c3: ch(at(3)), c12: ch(at(12)), c36: ch(at(36)) };
-  }
+  /* ---------- WPI list: filter and sort unchanged ---------- */
   const wstate = { filter: '', groups: false, limit: 60, sort: 'c3', asc: false };
-  if (wpi) {
-    const stats = wpi.items.map(it => Object.assign({ it }, wpiStats(it)));
-    function renderWPI() {
-      let rows = stats.filter(s => s.last != null && (wstate.groups || s.it.leaf) && (!wstate.filter || s.it.n.toLowerCase().includes(wstate.filter)));
-      rows.sort((a, b) => { const x = a[wstate.sort] ?? (wstate.sort === 'n' ? a.it.n : null), y = b[wstate.sort] ?? (wstate.sort === 'n' ? b.it.n : null); if (x == null) return 1; if (y == null) return -1; return typeof x === 'string' ? (wstate.asc ? x.localeCompare(y) : y.localeCompare(x)) : (wstate.asc ? x - y : y - x); });
-      $('#wpi-summary').textContent = `${rows.length} items · index to ${wpi.months[wpi.months.length - 1]} · click a heading to sort, a row for the chart`;
-      const cols = [['n', 'Item', false], ['w', 'Weight', true], ['last', 'Index', true], ['c1', '1m', true], ['c3', '3m', true], ['c12', '12m', true], ['c36', '36m', true], ['ben', 'Exposed names', false]];
-      $('#wpi-table thead').innerHTML = '<tr>' + cols.map(([k, l, n]) => `<th class="${n ? 'num' : ''} ${k === wstate.sort ? 'on' : ''}" data-k="${k}">${l}</th>`).join('') + '</tr>';
-      $('#wpi-table tbody').innerHTML = rows.slice(0, wstate.limit).map(s => `<tr class="row" data-c="${s.it.c}"><td>${esc(s.it.n)}${s.it.leaf ? '' : ' <span class="muted text-xs">group</span>'}</td><td class="num">${fmt(s.it.w, 3)}</td><td class="num">${fmt(s.last, 1)}</td><td class="num">${pct(s.c1)}</td><td class="num">${pct(s.c3)}</td><td class="num">${pct(s.c12)}</td><td class="num">${pct(s.c36)}</td><td>${chips(groupsForWPI(s.it.n), 4)}</td></tr>`).join('');
-      $('#wpi-more').style.display = rows.length > wstate.limit ? '' : 'none';
+  const wstats = wpi ? wpi.items.map(it => Object.assign({ it }, wpiStats(it))) : [];
+  function wpiRows() {
+    let rows = wstats.filter(s => s.last != null && (wstate.groups || s.it.leaf) && (!wstate.filter || s.it.n.toLowerCase().includes(wstate.filter)));
+    rows.sort((a, b) => { const x = a[wstate.sort] ?? (wstate.sort === 'n' ? a.it.n : null), y = b[wstate.sort] ?? (wstate.sort === 'n' ? b.it.n : null); if (x == null) return 1; if (y == null) return -1; return typeof x === 'string' ? (wstate.asc ? x.localeCompare(y) : y.localeCompare(x)) : (wstate.asc ? x - y : y - x); });
+    return rows;
+  }
+  const WSORT = [['c1', '1m'], ['c3', '3m'], ['c12', '12m'], ['c36', '36m'], ['last', 'Index'], ['n', 'Item']];
+
+  /* ---------- pane 1: the list ---------- */
+  const row = (key, n, v, m, title) => `<div class="os-row lr${key === keyOf(SEL) ? ' on' : ''}" role="option" data-i="${esc(key)}"${title ? ` title="${esc(title)}"` : ''}><span class="n">${n}</span><span class="v">${v}</span>${m == null ? '' : `<span class="m">${m}</span>`}</div>`;
+  function renderList(keep) {
+    let html = '', head = '', ttl = '', note = '', lede = '', two = false; VIS = [];
+    const add = (key, n, v, m, title) => { VIS.push(key); html += row(key, n, v, m, title); };
+    if (Q.trim()) {
+      const res = search(Q); two = true;
+      res.forEach(r => add(SKIND[r.k] + ':' + r.id, `<span class="kd">${r.k}</span>${esc(r.label)}`, `<span class="muted" style="font-weight:400;font-size:11.5px">${esc(r.sub)}</span>`, null, r.label + ' · ' + r.sub));
+      if (!res.length) html = `<div class="os-empty">Nothing matches “${esc(Q)}”.</div>`;
+      ttl = `Search results <i>${res.length}</i>`; note = 'first 60'; head = '<span>Match</span><span>Detail</span>';
+      lede = 'Searching every product, HS code, WPI item, spot commodity, Indian price and map group. Clear the box to go back to the list.';
+      keep = true;
+    } else if (view === 'map') {
+      two = true;
+      groups.forEach(g => add('G:' + g.id, esc(g.name) + ` <small>HS ${esc((g.hs || []).join(', ') || '—')}${(g.spot || []).length ? ' · spot ' + esc(g.spot.join(', ')) : ''}</small>`,
+        `<span class="pos">${(g.benefit || []).length}▲</span> <span class="neg">${(g.suffer || []).length}▼</span>`, null, g.name));
+      if (!groups.length) html = '<div class="os-empty">commodity_map.json not published yet.</div>';
+      ttl = `Groups <i>${groups.length}</i>`; note = 'map order'; head = '<span>Group · HS prefixes</span><span>Benefit · suffer</span>';
+      lede = 'Which listed names ride which price. Curated starting hypotheses (docs/ideas/commodity_map.json). Every name here must be verified from the company\'s own filings — share of revenue, pricing terms, inventory — before it becomes an idea.';
+    } else if (view === 'sig') {
+      two = true;
+      if (signals) {
+        const strong = signals.groups.filter(g => Math.abs(g.strength || 0) >= 1);
+        const rest = signals.groups.filter(g => Math.abs(g.strength || 0) < 1);
+        const one = (s) => add('G:' + s.id, esc(s.name) + ` <small>${esc(s.headline || '')}</small>`,
+          `<span class="${s.direction === 'up' ? 'pos' : s.direction === 'down' ? 'neg' : 'muted'}">${s.direction === 'up' ? '▲' : s.direction === 'down' ? '▼' : '·'} ${fmt(s.strength, 1)}×</span>`, null, s.name + ' — ' + (s.headline || ''));
+        html += `<div class="lgrp">At or above threshold<span>${strong.length}</span></div>`;
+        if (strong.length) strong.forEach(one); else html += '<div class="os-empty">Nothing above threshold today.</div>';
+        if (rest.length) { html += `<div class="lgrp">${rest.length} groups below threshold<span></span></div>`; rest.forEach(one); }
+        ttl = `Signals <i>${signals.groups.length}</i>`; note = 'strongest first';
+        lede = `Commodities on the move, and who is exposed. Strength is the group's biggest move ÷ its alert threshold (1.0× = at threshold; 10× = ten times it). Signals are hypotheses for research, not calls. · built ${esc(signals.built)} · spot ${esc(signals.spot_date || '—')} · WPI ${esc(signals.wpi_month || '—')} · trade ${esc(signals.trade_month || '—')}`;
+      } else { html = '<div class="os-empty">signals.json not published yet.</div>'; ttl = 'Signals'; }
+      head = '<span>Group · headline</span><span>Strength</span>';
+    } else if (view === 'hs') {
+      if (!index) { html = '<div class="os-empty">trade index unavailable</div>'; ttl = 'HS codes'; lede = 'trade index unavailable'; }
+      else {
+        const { rows, p, key, sortKey } = moversRows();
+        const third = /^[ie](p1|p3|p12|sy|q12|v12)$/.test(sortKey) ? sortKey : key;
+        const TL = { p1: '1m', p3: '3m', p12: '12m', sy: '3-mo y/y', q12: 'Qty y/y', v12: 'Value y/y' }[third.slice(1)];
+        rows.slice(0, state.limit).forEach(r => add('HS:' + r[0], `<b>${r[0]}</b> ${esc(r[1])}` + mark(groupsForHS(r[0])), fmt(r[ci[p + 'v']], 1), pct(r[ci[third]]),
+          `${r[0]} ${r[1]} · unit ${r[2]} · qty ${fmt(r[ci[p + 'q']], 0)} · US$/unit ${fmtP(r[ci[p + 'p']])}`));
+        if (rows.length > state.limit) html += `<div class="lmore" id="more">Show 200 more · ${fmt(rows.length - state.limit, 0)} not shown</div>`;
+        if (!rows.length) html = '<div class="os-empty">No HS code matches these filters.</div>';
+        ttl = `HS codes <i>${fmt(rows.length, 0)}</i>`; note = state.side === 'imp' ? 'imports' : 'exports';
+        head = `<span>HS code · product</span><span>US$ mn</span><span>${TL}</span>`;
+        lede = `${fmt(rows.length, 0)} codes match (${state.side === 'imp' ? 'imports' : 'exports'}, ${state.win === 'sy' ? 'last 3 months vs the same 3 months a year ago' : 'unit price vs ' + state.win + ' month(s) earlier'}, ≥ US$ ${state.minval} mn in ${esc(index.latest)}); showing ${Math.min(rows.length, state.limit)}. Unit prices are value ÷ quantity for the month, so one unusual shipment can move a small code a lot; rows flagged <i>thin</i> shipped under 30% of their usual quantity. ◆ = exposed names mapped.`;
+      }
+    } else if (view === 'spot') {
+      if (spot) {
+        const names = Object.keys(spot.rows).sort((a, b) => (spot.rows[b].chg_1m || 0) - (spot.rows[a].chg_1m || 0));
+        names.forEach(n => { const r = spot.rows[n]; add('SPOT:' + n, `<span class="capitalize">${esc(n)}</span> <small>${esc(r.unit)}</small>` + mark(groupsForSpot(n)), fmt(r.last, 2), pct(r.chg_1m), `${n} · ${r.source}`); });
+        ttl = `Spot prices <i>${names.length}</i>`; note = esc(spot.updated);
+        lede = `${names.length} commodities · ${esc(spot.updated)} · sorted by 1-month change. 1 day, 1 week, 3 months, 6 months, the 52-week position and the source are in the middle pane.`;
+      } else { html = '<div class="os-empty">spot.json not published yet.</div>'; ttl = 'Spot prices'; }
+      head = '<span>Commodity</span><span>Last</span><span>1m</span>';
+    } else if (view === 'ind' || view === 'te') {
+      const bl = BLOCKS.filter(b => b.view === view);
+      let n = 0;
+      bl.forEach(b => {
+        if (view === 'ind') html += `<div class="lgrp">${esc(b.title)}<span>${esc(b.src.date || '')}</span></div>`;
+        b.rows.forEach((r, i) => { const l = b.lst(r); n++;
+          if (b.keys[i]) add(b.keys[i], l[0], l[1], l[2] || '', ''); else html += `<div class="os-row lr" style="cursor:default"><span class="n">${l[0]}</span><span class="v">${l[1]}</span><span class="m">${l[2] || ''}</span></div>`; });
+      });
+      if (!bl.length) html = `<div class="os-empty">india_spot.json not published yet.</div>`;
+      if (view === 'ind') {
+        ttl = `India spot <i>${n}</i>`; note = 'daily, in rupees'; head = '<span>Price series</span><span>Price</span><span>Change</span>';
+        lede = 'The domestic prints the newspapers quote: steel and metals by city from MetalBook (its data comes from SteelMint), IBJA\'s bullion fix, the Rubber Board, sugar spot by city, PPAC\'s metro fuel prices and NMDC\'s iron ore. Each price is dated the day its source set it: MetalBook reprices items on their own schedule, often days apart, so read the Priced figure in the middle pane.'
+          + (india ? ` · built ${esc(india.built)} · ` + Object.entries(india.status || {}).map(([k, v]) => `${esc(k)}: ${esc(v.split(',')[0])}`).join(' · ') : '');
+      } else {
+        const S = india && india.sources;
+        ttl = `Global proxies <i>${n}</i>`; note = 'Trading Economics'; head = '<span>Commodity</span><span>Last</span><span>1m</span>';
+        lede = 'Futures and contract-for-difference series, so they give direction rather than the Indian price: their "steel" is Shanghai rebar in yuan and HRC is a US benchmark. Sorted by one-month change.' + (S && S.te ? ` · ${n} series · ${esc(S.te.fetched || '')}` : '');
+      }
+    } else if (view === 'wpi') {
+      if (wpi) {
+        const rows = wpiRows();
+        const third = /^c\d+$/.test(wstate.sort) ? wstate.sort : 'c3';
+        rows.slice(0, wstate.limit).forEach(s => add('WPI:' + s.it.c, esc(s.it.n) + (s.it.leaf ? '' : ' <small>group</small>') + mark(groupsForWPI(s.it.n)), fmt(s.last, 1), pct(s[third]), `${s.it.n} · weight ${fmt(s.it.w, 3)}`));
+        if (rows.length > wstate.limit) html += `<div class="lmore" id="more">Show 200 more · ${fmt(rows.length - wstate.limit, 0)} not shown</div>`;
+        if (!rows.length) html = '<div class="os-empty">No WPI item matches.</div>';
+        ttl = `WPI items <i>${rows.length}</i>`; note = 'to ' + esc(wpi.months[wpi.months.length - 1]);
+        head = `<span>Item</span><span>Index</span><span>${{ c1: '1m', c3: '3m', c12: '12m', c36: '36m' }[third]}</span>`;
+        lede = `${rows.length} items · index to ${esc(wpi.months[wpi.months.length - 1])} · base 2011-12 = 100. Weight and the other windows are in the middle pane. ◆ = exposed names mapped.`;
+      } else { html = '<div class="os-empty">wpi.json.gz unavailable</div>'; ttl = 'WPI items'; lede = 'wpi.json.gz unavailable'; }
     }
-    $('#wpi-filter').addEventListener('input', () => { wstate.filter = $('#wpi-filter').value.toLowerCase(); wstate.limit = 60; renderWPI(); });
-    $('#wpi-groups').addEventListener('change', () => { wstate.groups = $('#wpi-groups').checked; renderWPI(); });
-    $('#wpi-more').addEventListener('click', () => { wstate.limit += 200; renderWPI(); });
-    $('#wpi-table').addEventListener('click', (e) => {
-      const th = e.target.closest('th'); if (th && th.dataset.k !== 'ben' && th.dataset.k !== 'w') { if (wstate.sort === th.dataset.k) wstate.asc = !wstate.asc; else { wstate.sort = th.dataset.k; wstate.asc = false; } renderWPI(); return; }
-      if (e.target.closest('a')) return;
-      const tr = e.target.closest('tr.row'); if (tr) openWPI(tr.dataset.c);
-    });
-    renderWPI();
-  } else {
-    $('#wpi-summary').textContent = 'wpi.json.gz unavailable';
+    if (!keep && VIS.indexOf(keyOf(SEL)) < 0) { SEL = VIS.length ? selOf(VIS[0]) : null; }
+    $('#pL').classList.toggle('two', two);
+    $('#lTitle').innerHTML = ttl; $('#lNote').innerHTML = note; $('#lHead').innerHTML = head; $('#lede').innerHTML = lede;
+    const box = $('#lList'); box.innerHTML = html;
+    box.querySelectorAll('.lr[data-i]').forEach(el => el.classList.toggle('on', el.getAttribute('data-i') === keyOf(SEL)));
+    const more = $('#more'); if (more) more.onclick = () => { if (view === 'hs') state.limit += 200; else wstate.limit += 200; const top = box.scrollTop; renderList(true); $('#lList').scrollTop = top; };
+    seeRow();
+  }
+  $('#lList').addEventListener('click', (e) => { if (e.target.closest('a')) return; const el = e.target.closest('.lr[data-i]'); if (el) pick(el.getAttribute('data-i')); });
+  function seeRow() { const box = $('#lList'), on = box.querySelector('.lr.on'); if (!on) return;
+    if (on.offsetTop < box.scrollTop || on.offsetTop + on.offsetHeight > box.scrollTop + box.clientHeight) box.scrollTop = Math.max(0, on.offsetTop - box.clientHeight / 2); }
+  function pick(key, see) {
+    if (!key) return;
+    SEL = selOf(key); if (!Q.trim()) SELV[view] = SEL;
+    $('#lList').querySelectorAll('.lr[data-i]').forEach(el => el.classList.toggle('on', el.getAttribute('data-i') === key));
+    if (see) seeRow();
+    openSel();
   }
 
-  // ---- map ----
-  $('#map-list').innerHTML = groups.map(g => `<div class="card"><b class="cursor-pointer hover:underline" data-open="${esc(g.id)}">${esc(g.name)}</b> <span class="muted text-xs">HS ${esc((g.hs || []).join(', ') || '—')}${(g.spot || []).length ? ' · spot ' + esc(g.spot.join(', ')) : ''}</span>${chipsFull(g)}${g.history ? `<p class="muted text-xs mt-1">${esc(g.history)}</p>` : ''}</div>`).join('');
-  $('#map-list').addEventListener('click', (e) => { const b = e.target.closest('[data-open]'); if (b) openGroup(b.dataset.open); });
+  /* ---------- views, bar, keys ---------- */
+  function sgSet(id, cur) { document.querySelectorAll('#' + id + ' button').forEach(b => b.classList.toggle('on', b.dataset.v === String(cur))); }
+  function render(keep) {
+    $('#views').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
+    $('#hsCtl').classList.toggle('hidden', view !== 'hs'); $('#hsCtl').style.display = view === 'hs' ? 'contents' : 'none';
+    $('#wpiCtl').classList.toggle('hidden', view !== 'wpi'); $('#wpiCtl').style.display = view === 'wpi' ? 'contents' : 'none';
+    sgSet('side', state.side); sgSet('win', state.win); sgSet('dir', state.dir);
+    $('#hsSort').value = state.sort || ''; $('#hsAsc').textContent = state.asc ? '↑ low first' : '↓ high first'; $('#hsAsc').disabled = !state.sort;
+    $('#wsort').innerHTML = WSORT.map(([k, l]) => `<button type="button" data-v="${k}" class="${k === wstate.sort ? 'on' : ''}" title="Sort by ${l}; click again to flip the order">${l}${k === wstate.sort ? (wstate.asc ? ' ↑' : ' ↓') : ''}</button>`).join('');
+    $('#keys').innerHTML = '<b>↑↓</b> row · <b>←→</b> chart range · <b>/</b> search · <b>F</b> focus';
+    renderList(keep); openSel();
+    K.fitGrid($('#grid'));
+  }
+  function setView(v) { view = v; Q = ''; $('#search').value = ''; SEL = SELV[v] || null; if ($('#grid').classList.contains('focus')) toggleFocus(); render(false); }
+  $('#views').querySelectorAll('button').forEach(b => b.onclick = () => setView(b.dataset.v));
+  ['side', 'win', 'dir'].forEach(id => $('#' + id).addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state[id] = b.dataset.v; state.limit = 100; state.sort = null; state.asc = false; render(false); }));
+  $('#minval').addEventListener('input', () => { state.minval = +$('#minval').value || 0; render(false); });
+  $('#chapter').addEventListener('change', () => { state.chapter = $('#chapter').value; render(false); });
+  $('#nos').addEventListener('change', () => { state.nos = $('#nos').checked; render(false); });
+  $('#thin').addEventListener('change', () => { state.thin = $('#thin').checked; render(false); });
+  $('#filter').addEventListener('input', () => { state.filter = $('#filter').value.toLowerCase(); render(false); });
+  $('#hsSort').addEventListener('change', () => { state.sort = $('#hsSort').value || null; state.asc = false; render(false); });
+  $('#hsAsc').addEventListener('click', () => { if (!state.sort) return; state.asc = !state.asc; render(false); });
+  $('#wsort').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; if (wstate.sort === b.dataset.v) wstate.asc = !wstate.asc; else { wstate.sort = b.dataset.v; wstate.asc = false; } render(false); });
+  $('#wpi-filter').addEventListener('input', () => { wstate.filter = $('#wpi-filter').value.toLowerCase(); wstate.limit = 60; render(false); });
+  $('#wpi-groups').addEventListener('change', () => { wstate.groups = $('#wpi-groups').checked; render(false); });
+  const sbox = $('#search');
+  sbox.addEventListener('input', () => { Q = sbox.value; renderList(true); });
+  function toggleFocus() { const on = $('#grid').classList.toggle('focus'); $('#cFocus').classList.toggle('on', on); }
+  $('#cFocus').onclick = toggleFocus;
+  function step(d) { const i = VIS.indexOf(keyOf(SEL)), j = Math.max(0, Math.min(VIS.length - 1, i + d)); if (VIS.length && j !== i) pick(VIS[j], true); }
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target, typing = t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA');
+    if (e.key === 'Escape') {
+      if (typing) { if (t.id === 'search' && t.value) { t.value = ''; Q = ''; renderList(true); } t.blur(); }
+      else if ($('#grid').classList.contains('focus')) toggleFocus();
+      return; }
+    if (typing) {
+      if (t.id === 'search' && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { e.preventDefault(); step(e.key === 'ArrowDown' ? 1 : -1); }
+      else if (t.id === 'search' && e.key === 'Enter' && VIS.length && VIS.indexOf(keyOf(SEL)) < 0) pick(VIS[0], true);
+      return; }
+    if (e.key === '/') { e.preventDefault(); sbox.focus(); return; }
+    if (e.key === 'f' || e.key === 'F') { toggleFocus(); return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); step(e.key === 'ArrowDown' ? 1 : -1); return; }
+    if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && CUR && CUR.ranges) { e.preventDefault();
+      const i = CUR.ranges.indexOf(CUR.range), j = Math.max(0, Math.min(CUR.ranges.length - 1, i + (e.key === 'ArrowRight' ? 1 : -1)));
+      if (j !== i) CUR.setRange(CUR.ranges[j]); }
+  });
+  window.addEventListener('resize', () => K.fitGrid($('#grid')));
+  new MutationObserver(() => { if (CUR && CUR.chart) CUR.chart(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
 
-  // ---- deep links ----
+  /* ---------- deep links: the old ?hs= ?wpi= ?spot= ?nmdc= ?ih= ?g= all still open their item ---------- */
   const q = new URLSearchParams(location.search);
-  if (q.get('hs')) openHS(q.get('hs')); else if (q.get('wpi')) openWPI(q.get('wpi')); else if (q.get('spot')) openSpot(q.get('spot')); else if (q.get('nmdc')) openNMDC(q.get('nmdc')); else if (q.get('ih')) openSeries(q.get('ih')); else if (q.get('g')) openGroup(q.get('g'));
+  let hv = null; try { hv = new URLSearchParams(location.hash.replace(/^#/, '')).get('v'); } catch (e) {}
+  let deep = false;
+  if (q.get('hs')) { SEL = { k: 'HS', id: q.get('hs') }; view = 'hs'; }
+  else if (q.get('wpi')) { SEL = { k: 'WPI', id: q.get('wpi') }; view = 'wpi'; }
+  else if (q.get('spot')) { SEL = { k: 'SPOT', id: q.get('spot') }; view = 'spot'; }
+  else if (q.get('nmdc')) { SEL = { k: 'NMDC', id: q.get('nmdc') === 'fines' ? 'fines' : 'lump' }; view = 'ind'; }
+  else if (q.get('ih')) { const id = q.get('ih'); view = id.indexOf('te|') === 0 ? 'te' : 'ind';
+    SEL = id.indexOf('nmdc|') === 0 ? { k: 'NMDC', id: /lump/i.test(id) ? 'lump' : 'fines' } : { k: 'IH', id }; }
+  else if (q.get('g')) { SEL = { k: 'G', id: q.get('g') }; view = hv === 'sig' ? 'sig' : 'map'; }
+  if (SEL) { deep = true; SELV[view] = SEL; } else if (hv && VIEWS.includes(hv)) view = hv;
+  $('#status').classList.add('hidden'); $('#content').classList.remove('hidden');
+  render(deep);
 })();
 </script>
 </body>
