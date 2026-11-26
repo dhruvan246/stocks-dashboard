@@ -7,19 +7,30 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .seg{display:inline-flex;background:var(--surface-2,var(--surface-2));border:1px solid var(--border,var(--border));border-radius:9999px;padding:2px}
-  .seg span{padding:5px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted,var(--text-muted));transition:var(--tr,.15s)}
-  .seg span.on{background:var(--accent,var(--accent));color:#fff}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(270px,330px) minmax(250px,300px) minmax(0,1fr)}
+  #pL.tv #lHead,#pL.tv .lr{grid-template-columns:minmax(0,1fr) 84px 58px}
+  #pL.br #lHead,#pL.br .lr{grid-template-columns:minmax(0,1fr) 58px 40px 40px}
+  #lList{position:relative}
+  .dst{grid-template-columns:repeat(2,minmax(0,1fr));border-top:0;border-bottom:1px solid var(--border)}
+  .dst div:nth-child(2n){border-right:0} .dst div{border-bottom:1px solid var(--border)} .dst div:nth-last-child(-n+2){border-bottom:0}
+  .dst b small{display:block;margin:2px 0 0;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dh{padding:7px 12px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);background:var(--surface-2);border-bottom:1px solid var(--border)}
+  #pC .os-chartwrap{min-height:260px}
+  #pC .os-legend{right:10px} .os-legend b{font-weight:600}
+  .sw1{display:inline-block;width:12px;height:3px;border-radius:2px;vertical-align:middle;margin-right:4px}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55} #how summary{cursor:pointer;color:var(--text-muted)}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(240px,280px) minmax(220px,260px) minmax(0,1fr)} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #pD .os-list{max-height:none !important} #pC .os-legend div{white-space:normal} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -28,78 +39,54 @@
   </div>
 </header>
 
-<main class="max-w-screen-lg mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl font-bold text-slate-900">Market mood — Nifty 500 trading activity</h1>
-    <p class="text-sm text-slate-500 mt-0.5">Total money traded each month across all Nifty 500 stocks. Rising turnover = more participation and liquidity (a "hot" market); falling turnover = cooling interest. <span id="updated" class="text-slate-400"></span></p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Market Mood</h1>
+    <div class="os-vtabs" id="views" role="tablist" aria-label="Measure">
+      <button type="button" data-v="tv" title="Total money traded each month across all Nifty 500 stocks">Trading activity</button>
+      <button type="button" data-v="br" title="How many stocks are joining the move, day by day">Breadth</button>
+    </div>
+    <div class="os-asof" id="asof"></div>
   </div>
-
-  <div id="status" class="text-sm text-slate-500">Loading market-mood data…</div>
+  <div id="status" class="os-empty">Loading market-mood data…</div>
 
   <div id="content" class="hidden">
-    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+    <div class="os-bar">
+      <div class="os-sg hidden" id="buni" role="group" aria-label="Breadth universe"><button type="button" data-u="n500">Nifty 500</button><button type="button" data-u="fno">F&amp;O</button></div>
+      <div class="os-sg hidden" id="bchartSg" role="group" aria-label="Breadth chart"><button type="button" data-c="p200" title="% of stocks above their 200-day average">Above 200-day avg</button><button type="button" data-c="hl" title="New 52-week highs vs new 52-week lows">52-week highs vs lows</button></div>
+      <div class="os-sg" id="rangeBtns" role="group" aria-label="Chart range"></div>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>←→</b> measure · <b>F</b> focus</span>
+    </div>
+    <div id="lede" class="os-hint" style="white-space:normal;margin:-2px 0 10px;line-height:1.5"></div>
 
-    <div class="card p-4 mb-4" data-jump="Turnover">
-      <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-        <div class="text-sm font-semibold text-slate-700">Total monthly trade in Nifty 500 <span class="text-slate-400 font-normal">(₹ lakh crore — hover for values)</span></div>
-        <div id="rangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
-      </div>
-      <div class="flex flex-wrap gap-4 mb-2 text-xs text-slate-600">
-        <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3.5 h-[3px] rounded" style="background:var(--pos)"></span>Monthly traded value <b id="legV" class="text-slate-800 font-semibold">·</b></span>
-        <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3.5 h-0 border-t-2 border-dashed" style="border-color:#b91c1c"></span>12-mo moving average <b id="legM" class="text-slate-800 font-semibold">·</b></span>
-      </div>
-      <div id="chart"></div>
+    <div class="os-grid" id="grid">
+      <section class="os-pane tv" id="pL" aria-label="History">
+        <div class="os-ph"><span class="ttl" id="lTitle"></span><span class="r" id="lNote"></span></div>
+        <div class="os-ch" id="lHead"></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="History, newest first"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Figures">
+        <div class="os-ph"><span class="ttl" id="dTitle"></span></div>
+        <div class="os-list" id="dBody"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span class="sym" id="cSym"></span><span class="nm" id="cName"></span>
+          <span class="r"><button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-note" id="cNote"></div>
+      </section>
     </div>
 
-    <div class="mt-6 mb-4 flex items-start justify-between gap-3 flex-wrap" data-jump="Breadth">
-      <div class="min-w-0 flex-1">
-        <h2 class="text-lg font-bold text-slate-900">Market breadth — how many stocks are joining the move</h2>
-        <p class="text-sm text-slate-500 mt-0.5"><span id="buniDesc">Computed daily across the point-in-time Nifty 500.</span> Broad participation confirms a trend; a rally with narrow breadth is fragile, and washed-out breadth has historically marked bottoms. <span id="bupdated" class="text-slate-400"></span></p>
-      </div>
-      <div id="buni" class="seg hidden shrink-0" role="tablist" aria-label="Breadth universe"><span data-u="n500" role="tab" class="on">Nifty 500</span><span data-u="fno" role="tab">F&amp;O</span></div>
-    </div>
-
-    <div id="bwrap" class="hidden">
-      <div id="bcards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
-
-      <div class="card p-4 mb-4">
-        <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-          <div class="text-sm font-semibold text-slate-700">% of <span id="buniName">Nifty 500</span> stocks above their 200-day average <span class="text-slate-400 font-normal">(hover for values)</span></div>
-          <div id="brangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
-        </div>
-        <div id="bchart200"></div>
-        <p id="bnote" class="text-[11px] text-slate-400 mt-1"></p>
-        <p id="bcov" class="text-[11px] text-slate-400 mt-0.5"></p>
-      </div>
-
-      <div class="card p-4 mb-4" data-jump="Highs/Lows">
-        <div class="text-sm font-semibold text-slate-700 mb-2">New 52-week highs vs new lows <span id="bhlNote" class="text-slate-400 font-normal"></span></div>
-        <div id="bchartHL"></div>
-      </div>
-    </div>
-
-    <div class="card p-4" data-jump="History">
-      <div class="text-sm font-semibold text-slate-700 mb-2">Monthly history <span class="text-[11px] font-normal text-slate-400">(newest first — full history, scroll for more)</span></div>
-      <div class="overflow-auto" style="max-height:480px">
-        <table class="w-full text-sm">
-          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>
-            <th class="text-left py-2 px-1">Month</th>
-            <th class="text-right px-1">Traded value (₹ cr)</th>
-            <th class="text-right px-1">vs prev month</th>
-            <th class="text-right px-1">12-mo avg (₹ cr)</th>
-            <th class="text-right px-1">vs avg</th>
-          </tr></thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <p class="text-[11px] text-slate-500 mt-5">Each point = sum of the month's traded value (turnover) across that month's Nifty 500 constituents (point-in-time membership), from NSE bhavcopy. Pre-2018 turnover is sampled weekly, so those months are scaled to a full-month estimate (average daily turnover × trading days). The <b>12-month moving average</b> smooths seasonality to show the underlying trend. <b>Breadth</b> uses the same dataset's corp-action-adjusted daily closes (daily data begins Jan-2002, so the series starts once most members' 52-week window has filled, Jan-2003): % above 200-day average and new 52-week highs/lows count each day's point-in-time members against their own trailing 200 / 252 trading sessions. The <b>Nifty 500 / F&amp;O</b> toggle switches the universe — the F&amp;O list is the stocks with listed futures &amp; options on that day (from ~30 names in 2002); DVR share classes are not counted twice, and the coverage line shows how many members traded and had enough history that day. Educational only — not investment advice.</p>
+    <details id="how"><summary>How these numbers are made</summary>
+    <p>Each point = sum of the month's traded value (turnover) across that month's Nifty 500 constituents (point-in-time membership), from NSE bhavcopy. Pre-2018 turnover is sampled weekly, so those months are scaled to a full-month estimate (average daily turnover × trading days). The <b>12-month moving average</b> smooths seasonality to show the underlying trend. <b>Breadth</b> uses the same dataset's corp-action-adjusted daily closes (daily data begins Jan-2002, so the series starts once most members' 52-week window has filled, Jan-2003): % above 200-day average and new 52-week highs/lows count each day's point-in-time members against their own trailing 200 / 252 trading sessions. The <b>Nifty 500 / F&amp;O</b> toggle switches the universe — the F&amp;O list is the stocks with listed futures &amp; options on that day (from ~30 names in 2002); DVR share classes are not counted twice, and the coverage line shows how many members traded and had enough history that day. Educational only — not investment advice.</p>
+    </details>
   </div>
 </main>
 
 <script>
 'use strict';
+const K = window.OSKit;
 const $ = id => document.getElementById(id);
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const RANGES={'1y':12,'3y':36,'5y':60,'10y':120,'all':1e9};
@@ -116,17 +103,6 @@ const fmtDateLong = iso => { const p=iso.split('-'); return p.length<3 ? MON[+p[
 const pct = (a,b) => (b? (a-b)/b*100 : null);
 const fmtPct = p => p==null ? '·' : (p>=0?'+':'−')+Math.abs(p).toFixed(1)+'%';
 
-async function load(){
-  try { DATA = await (await fetch('./nifty500_turnover.json?t='+Date.now())).json(); }
-  catch(e){ $('status').textContent='Could not load nifty500_turnover.json — run scripts/build_nifty500_turnover.py first.'; return; }
-  if(!DATA || !DATA.months || !DATA.months.length){ $('status').textContent='No turnover data yet.'; return; }
-  $('updated').textContent = DATA.updated ? '· data through '+fmtDateLong(DATA.updated)+(DATA.partialLast?' (current month still updating)':'') : '';
-  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
-  renderRangeBtns(); renderCards(); renderChart(); renderTable();
-  try { BRP = await (await fetch('./market_breadth_pit.json?t='+Date.now())).json(); } catch(e){ BRP=null; }
-  $('buni').querySelectorAll('[data-u]').forEach(el=>el.onclick=()=>{ buni=el.dataset.u; renderBreadth(); });
-  renderBreadth();
-}
 
 /* ---------------- market breadth (daily) ---------------- */
 // Source: market_breadth_pit.json (runbook §21a) — point-in-time breadth for TWO universes (Nifty 500 and
@@ -151,117 +127,275 @@ function normUni(P,u){
   out.pct200=out.n200.map((m,i)=>m?100*out.a200[i]/m:null);
   return out;
 }
+let view='tv', bchart='p200', selM=null, selD=null, VIEWS={};   // selM = index into DATA.months, selD = index into BR.dates
+const esc = K.esc;
+const d8iso = d => { const s=''+d; return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6); };
+const stat = (t,val,sub,cls) => '<div><span>'+t+'</span><b class="'+(cls==='pos'?'os-pos':cls==='neg'?'os-neg':'')+'">'+val+'<small>'+(sub||'&nbsp;')+'</small></b></div>';
 
-function renderBreadth(){
-  if(!BRP) return;                                             // feed missing — section stays hidden
-  const views={n500:normUni(BRP,'n500'), fno:normUni(BRP,'fno')};
-  if(!views[buni]) buni = views.n500 ? 'n500' : (views.fno ? 'fno' : buni);   // selected universe absent → fall back
-  BR=views[buni]; if(!BR) return;
-  const both=!!(views.n500&&views.fno);
-  $('buni').classList.toggle('hidden',!both);
-  $('buni').querySelectorAll('[data-u]').forEach(el=>{ el.classList.toggle('on',el.dataset.u===buni); el.setAttribute('aria-selected',el.dataset.u===buni?'true':'false'); });
-  $('buniName').textContent=UNI[buni].name;
-  $('buniDesc').textContent=UNI[buni].desc(BR);
-  $('bupdated').textContent = '· data through '+fmtD8Long(BR.dates[BR.dates.length-1]);
-  $('bwrap').classList.remove('hidden');
-  renderBCards(); renderBRangeBtns(); renderB200(); renderBHL(); renderBNote();
+async function load(){
+  try { DATA = await (await fetch('./nifty500_turnover.json?t='+Date.now())).json(); }
+  catch(e){ $('status').textContent='Could not load nifty500_turnover.json — run scripts/build_nifty500_turnover.py first.'; return; }
+  if(!DATA || !DATA.months || !DATA.months.length){ $('status').textContent='No turnover data yet.'; return; }
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  try {
+    const h=new URLSearchParams(location.hash.replace(/^#/,''));
+    if(h.get('v')==='br') view='br';
+    if(h.get('u')==='fno') buni='fno';
+    if(h.get('c')==='hl') bchart='hl';
+  } catch(e){}
+  $('views').querySelectorAll('button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
+  $('buni').querySelectorAll('button').forEach(b=>b.onclick=()=>{ buni=b.dataset.u; selD=null; render(); });
+  $('bchartSg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ bchart=b.dataset.c; render(); });
+  $('cFocus').onclick=toggleFocus;
+  window.addEventListener('resize',()=>K.fitGrid($('grid')));
+  document.addEventListener('keydown',onKey);
+  new MutationObserver(()=>{ if(LC_){ killChart(); drawChart(); } }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  render();
+  try { BRP = await (await fetch('./market_breadth_pit.json?t='+Date.now())).json(); } catch(e){ BRP=null; }
+  BRDONE=true;
+  if(view==='br') render();
+}
+let BRDONE=false;
+function setView(v){ view=v; render(); }
+function pickBreadth(){                                           // the old renderBreadth() universe choice, unchanged
+  if(!BRP){ BR=null; return; }
+  VIEWS={n500:normUni(BRP,'n500'), fno:normUni(BRP,'fno')};
+  if(!VIEWS[buni]) buni = VIEWS.n500 ? 'n500' : (VIEWS.fno ? 'fno' : buni);   // selected universe absent → fall back
+  BR=VIEWS[buni]||null;
+}
+function render(){
+  $('views').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
+  $('pL').classList.toggle('tv',view==='tv'); $('pL').classList.toggle('br',view==='br');
+  if(view==='br') pickBreadth();
+  const both=!!(VIEWS.n500&&VIEWS.fno);
+  $('buni').classList.toggle('hidden',view!=='br'||!both);
+  $('bchartSg').classList.toggle('hidden',view!=='br'||!BR);
+  $('buni').querySelectorAll('button').forEach(b=>{ b.classList.toggle('on',b.dataset.u===buni); b.setAttribute('aria-pressed',b.dataset.u===buni?'true':'false'); });
+  $('bchartSg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.c===bchart));
+  if(view==='tv'){
+    $('asof').textContent = DATA.updated ? 'data through '+fmtDateLong(DATA.updated)+(DATA.partialLast?' (current month still updating)':'') : '';
+    $('lede').textContent = 'Total money traded each month across all Nifty 500 stocks. Rising turnover = more participation and liquidity (a "hot" market); falling turnover = cooling interest.';
+    if(selM==null||selM>=DATA.months.length) selM=DATA.months.length-1;
+    renderRangeBtns(); renderMonths(); renderMonthDetail(); drawChart();
+  } else if(!BR){
+    $('asof').textContent=''; $('lede').textContent='';
+    $('rangeBtns').innerHTML='';
+    $('lTitle').textContent='Breadth'; $('lNote').textContent=''; $('lHead').innerHTML='';
+    $('lList').innerHTML='<div class="os-empty">'+(BRDONE?'The breadth file (market_breadth_pit.json) did not load or has no usable series.':'Loading breadth…')+'</div>';
+    $('dTitle').textContent=''; $('dBody').innerHTML='';
+    $('cSym').textContent='Breadth'; $('cName').textContent=''; $('cNote').textContent=''; killChart(); $('cLegend').innerHTML=''; $('cMsg').textContent=BRDONE?'No breadth data.':'';
+  } else {
+    $('asof').textContent='data through '+fmtD8Long(BR.dates[BR.dates.length-1]);
+    $('lede').textContent=UNI[buni].desc(BR)+' Broad participation confirms a trend; a rally with narrow breadth is fragile, and washed-out breadth has historically marked bottoms.';
+    if(selD==null||selD>=BR.dates.length) selD=BR.dates.length-1;
+    renderBRangeBtns(); renderDays(); renderDayDetail(); drawChart();
+  }
+  K.fitGrid($('grid'));
+  try { history.replaceState(null,'','#'+(view==='br'?'v=br'+(buni==='fno'?'&u=fno':'')+(bchart==='hl'?'&c=hl':''):'v=tv')); } catch(e){}
 }
 
-function renderBCards(){
-  const i=BR.dates.length-1, p=BR.pct200[i], above=BR.a200[i];
-  const adv=BR.adv[i], dec=BR.dec[i], hi=BR.hi[i], lo=BR.lo[i];
-  const card=(t,val,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${val}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
-  $('bcards').innerHTML =
-     card('Above 200-day avg', p==null?'·':p.toFixed(1)+'%', above+' of '+BR.n200[i]+' stocks', p==null?'':(p>=50?'pos':'neg'))
-    +card('Advancers / decliners', adv+' ▲ / '+dec+' ▼', 'latest session · '+fmtD8(BR.dates[i]), adv>=dec?'pos':'neg')
-    +card('New 52-week highs', hi, 'of '+BR.n52[i]+' stocks today', 'pos')
-    +card('New 52-week lows', lo, 'of '+BR.n52[i]+' stocks today', lo>hi?'neg':'');
+/* ---------------- trading activity: months (pane 1) + the chosen month (pane 2) ---------------- */
+function renderRangeBtns(){
+  $('rangeBtns').innerHTML = ['1y','3y','5y','10y','all'].map(k=>
+    `<button type="button" data-r="${k}" class="${range===k?'on':''}">${k==='all'?'All':k.toUpperCase()}</button>`).join('');
+  $('rangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{ range=b.dataset.r; renderRangeBtns(); drawChart(); });
+}
+function sliced(){
+  const n=DATA.months.length, k=RANGES[range], s=k>=1e9?0:Math.max(0,n-k);
+  return { months:DATA.months.slice(s), value:DATA.value.slice(s), ma:DATA.ma.slice(s) };
+}
+function renderMonths(){                                         // the old "Monthly history" table: newest first, full history
+  const v=DATA.value, m=DATA.months, last=v.length-1, partial=!!DATA.partialLast;
+  $('lTitle').innerHTML='Months <i>'+m.length+'</i>'; $('lNote').textContent='newest first';
+  $('lHead').innerHTML='<span>Month</span><span>Traded (₹ cr)</span><span>vs prev</span>';
+  const rows=[];
+  for(let i=last; i>=0; i--){
+    const isP = partial && i===last;
+    const mom = isP ? null : pct(v[i], i>0?v[i-1]:null);
+    rows.push('<div class="os-row lr'+(i===selM?' on':'')+'" role="option" data-i="'+i+'"><span class="n">'+fmtMonLong(m[i])+(isP?' <i>so far</i>':'')+'</span>'+
+      '<span class="v">'+Math.round(v[i]).toLocaleString('en-IN')+'</span><span class="v '+(mom==null?'m':(mom>=0?'os-pos':'os-neg'))+'">'+fmtPct(mom)+'</span></div>');
+  }
+  $('lList').innerHTML=rows.join('');
+  $('lList').querySelectorAll('.lr').forEach(el=>el.onclick=()=>pick(+el.dataset.i));
+}
+function latestCards(){                                          // the old four cards, same branches and arithmetic
+  const v=DATA.value, m=DATA.months, ma=DATA.ma, partial=!!DATA.partialLast;
+  const i=v.length-1, c=partial?i-1:i;                 // c = last COMPLETE month
+  let peak=-1, pk=0; v.forEach((x,j)=>{ if((!partial||j<i) && x>peak){peak=x;pk=j;} });
+  const yoy = pct(v[c], c>=12?v[c-12]:null);
+  if(partial && c>=0){
+    return stat('This month so far · '+fmtMonShort(m[i]), fmtLc(v[i]), DATA.partialDays+' trading days')
+      +stat('Last full month · '+fmtMonShort(m[c]), fmtLc(v[c]), fmtCr(v[c]))
+      +stat('12-mo average', fmtLc(ma[c]), v[c]>=ma[c]?'last month above trend':'last month below trend', v[c]>=ma[c]?'pos':'neg')
+      +stat('Record high · '+fmtMonShort(m[pk]), fmtLc(peak), 'busiest full month');
+  }
+  return stat('Latest month · '+fmtMonShort(m[i]), fmtLc(v[i]), fmtCr(v[i]))
+    +stat('12-mo average', fmtLc(ma[i]), v[i]>=ma[i]?'now above trend':'now below trend', v[i]>=ma[i]?'pos':'neg')
+    +stat('vs a year ago', fmtPct(yoy), 'same month last year', (yoy||0)>=0?'pos':'neg')
+    +stat('Record high · '+fmtMonShort(m[pk]), fmtLc(peak), 'busiest month on record');
+}
+function renderMonthDetail(){
+  const v=DATA.value, m=DATA.months, ma=DATA.ma, i=selM, last=v.length-1, isP=!!DATA.partialLast&&i===last;
+  const mom = isP ? null : pct(v[i], i>0?v[i-1]:null), vsAvg = isP ? null : pct(v[i], ma[i]), yoy = isP ? null : pct(v[i], i>=12?v[i-12]:null);
+  $('dTitle').innerHTML=fmtMonLong(m[i])+(isP?' <i>so far · '+DATA.partialDays+' trading days</i>':'');
+  $('dBody').innerHTML='<div class="os-stats dst">'
+      +stat('Traded value', fmtLc(v[i]), fmtCr(v[i]))
+      +stat('12-mo average', fmtLc(ma[i]), fmtCr(ma[i]))
+      +stat('vs prev month', fmtPct(mom), isP?'month not complete':(i>0?fmtMonShort(m[i-1])+' '+fmtLc(v[i-1]):'first month on file'), mom==null?'':(mom>=0?'pos':'neg'))
+      +stat('vs 12-mo avg', fmtPct(vsAvg), isP?'month not complete':(v[i]>=ma[i]?'above trend':'below trend'), vsAvg==null?'':(vsAvg>=0?'pos':'neg'))
+      +stat('vs a year ago', fmtPct(yoy), isP?'month not complete':(i>=12?fmtMonShort(m[i-12])+' '+fmtLc(v[i-12]):'no month a year earlier'), yoy==null?'':(yoy>=0?'pos':'neg'))
+      +stat('Rank', (isP?'·':'#'+(v.filter((x,j)=>!(DATA.partialLast&&j===last)&&x>v[i]).length+1)), isP?'month not complete':'busiest of '+(DATA.partialLast?last:last+1)+' full months')
+    +'</div><div class="dh">Latest</div><div class="os-stats dst">'+latestCards()+'</div>';
 }
 
-// Record low is READ from the series (the old hard-coded "Mar-2020 bottom: 2.9%" had drifted to 3.4%
-// once the series was rebuilt) and the coverage line says what the latest day's counts stand on.
-function renderBNote(){
-  let lo=null, li=-1; BR.pct200.forEach((v,i)=>{ if(v!=null&&(lo==null||v<lo)){lo=v;li=i;} });
-  $('bnote').textContent='Above 80% = broadly overheated · below 20% = washed out'+(lo!=null?' (record low: '+lo.toFixed(1)+'% on '+fmtD8Long(BR.dates[li])+')':'')+'. Dashed line = 50%.';
-  const i=BR.dates.length-1;
-  $('bcov').textContent='Coverage on '+fmtD8Long(BR.dates[i])+': '+BR.nMem[i]+' members · '+BR.nObs[i]+' traded · '+BR.n200[i]+' with 200 sessions of history · '+BR.n52[i]+' with a full 52-week window.';
-}
-
+/* ---------------- breadth: days (pane 1) + the chosen day (pane 2) ---------------- */
 function renderBRangeBtns(){
-  $('brangeBtns').innerHTML = ['6m','1y','3y','5y','all'].map(k=>
-    `<button data-r="${k}" class="px-2 py-1 rounded ${brange===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${k==='all'?'All':k.toUpperCase()}</button>`).join('');
-  $('brangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{ brange=b.dataset.r; renderBRangeBtns(); renderB200(); renderBHL(); });
+  $('rangeBtns').innerHTML = ['6m','1y','3y','5y','all'].map(k=>
+    `<button type="button" data-r="${k}" class="${brange===k?'on':''}">${k==='all'?'All':k.toUpperCase()}</button>`).join('');
+  $('rangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{ brange=b.dataset.r; renderBRangeBtns(); renderDays(); drawChart(); });
 }
-
+function bstart(){ const n=BR.dates.length, k=BRANGES[brange]; return k>=1e9?0:Math.max(0,n-k); }
 function bsliced(){
   const n=BR.dates.length, k=BRANGES[brange], s=k>=1e9?0:Math.max(0,n-k);
   const out={dates:BR.dates.slice(s), pct200:BR.pct200.slice(s)}; for(const kk of BKEYS) out[kk]=BR[kk].slice(s);
   return out;
 }
-
-/* shared hover: crosshair + dot + tooltip over an svg built by the renderers */
-function bHover(wrapId, pts, tipHtml){
-  const wrap=$(wrapId), svg=wrap.querySelector('svg'); if(!svg||!pts.length) return;
-  const tip=wrap.querySelector('.tip'), cross=wrap.querySelector('.cx'), dot=wrap.querySelector('.dV');
-  const W=+svg.viewBox.baseVal.width, H=+svg.viewBox.baseVal.height;
-  const move=e=>{
-    const r=svg.getBoundingClientRect(); if(!r.width) return;
-    const sx=(e.clientX-r.left)/r.width*W;
-    let best=0,bd=1e9; for(let i=0;i<pts.length;i++){const dd=Math.abs(pts[i].px-sx); if(dd<bd){bd=dd;best=i;}}
-    const p=pts[best];
-    cross.setAttribute('x1',p.px); cross.setAttribute('x2',p.px); cross.style.display='';
-    if(dot){ dot.setAttribute('cx',p.px); dot.setAttribute('cy',p.py); dot.style.display=''; }
-    tip.style.left=(p.px/W*100)+'%'; tip.style.top=(p.py/H*100)+'%';
-    tip.innerHTML=tipHtml(p); tip.classList.remove('hidden');
-  };
-  svg.addEventListener('mousemove',move);
-  svg.addEventListener('mouseleave',()=>{ tip.classList.add('hidden'); cross.style.display='none'; if(dot)dot.style.display='none'; });
+function renderDays(){                                           // the days of the chosen range, newest first
+  const s=bstart(), n=BR.dates.length;
+  if(selD<s) selD=n-1;
+  $('lTitle').innerHTML='Days <i>'+(n-s).toLocaleString('en-IN')+'</i>'; $('lNote').textContent=UNI[buni].name+' · newest first';
+  $('lHead').innerHTML='<span>Day</span><span title="% of stocks above their 200-day average">&gt;200d</span><span title="Stocks that rose">Adv</span><span title="Stocks that fell">Dec</span>';
+  const rows=[];
+  for(let i=n-1;i>=s;i--){ const p=BR.pct200[i];
+    rows.push('<div class="os-row lr'+(i===selD?' on':'')+'" role="option" data-i="'+i+'"><span class="n">'+fmtD8Long(BR.dates[i])+'</span><span class="v '+(p==null?'m':(p>=50?'os-pos':'os-neg'))+'">'+(p==null?'·':p.toFixed(1)+'%')+'</span>'+
+      '<span class="os-pos">'+BR.adv[i]+'</span><span class="os-neg">'+BR.dec[i]+'</span></div>'); }
+  $('lList').innerHTML=rows.join('');
+  $('lList').onclick=e=>{ const el=e.target.closest('.lr'); if(el) pick(+el.dataset.i); };
+}
+function dayStats(i){                                            // the old four breadth cards, for any day
+  const p=BR.pct200[i], above=BR.a200[i], adv=BR.adv[i], dec=BR.dec[i], hi=BR.hi[i], lo=BR.lo[i], latest=i===BR.dates.length-1;
+  return stat('Above 200-day avg', p==null?'·':p.toFixed(1)+'%', above+' of '+BR.n200[i]+' stocks', p==null?'':(p>=50?'pos':'neg'))
+    +stat('Advancers / decliners', adv+' ▲ / '+dec+' ▼', (latest?'latest session · ':'')+fmtD8(BR.dates[i]), adv>=dec?'pos':'neg')
+    +stat('New 52-week highs', hi, 'of '+BR.n52[i]+' stocks '+(latest?'today':'that day'), 'pos')
+    +stat('New 52-week lows', lo, 'of '+BR.n52[i]+' stocks '+(latest?'today':'that day'), lo>hi?'neg':'');
+}
+function renderDayDetail(){
+  const i=selD, n=BR.dates.length-1;
+  $('dTitle').innerHTML=fmtD8Long(BR.dates[i])+' <i>'+UNI[buni].name+'</i>';
+  // Record low is READ from the series; the coverage line says what that day's counts stand on.
+  let lo=null, li=-1; BR.pct200.forEach((v,j)=>{ if(v!=null&&(lo==null||v<lo)){lo=v;li=j;} });
+  $('dBody').innerHTML='<div class="os-stats dst">'+dayStats(i)+'</div>'
+    +'<div class="os-note">Coverage on '+fmtD8Long(BR.dates[i])+': '+BR.nMem[i]+' members · '+BR.nObs[i]+' traded · '+BR.n200[i]+' with 200 sessions of history · '+BR.n52[i]+' with a full 52-week window.</div>'
+    +(i===n?'':'<div class="dh">Latest · '+fmtD8(BR.dates[n])+'</div><div class="os-stats dst">'+dayStats(n)+'</div>')
+    +'<div class="os-note">Above 80% = broadly overheated · below 20% = washed out'+(lo!=null?' (record low: '+lo.toFixed(1)+'% on '+fmtD8Long(BR.dates[li])+')':'')+'.</div>';
 }
 
-function renderB200(){
-  const d=bsliced(), n=d.dates.length;
-  if(!n){ $('bchart200').innerHTML='<div class="text-xs text-slate-400 py-8 text-center">No data in this range.</div>'; return; }
-  const W=720,H=260,PL=40,PR=14,PT=10,PB=28;
-  const x=i=>PL+(W-PL-PR)*(n<=1?0:i/(n-1)), y=v=>PT+(H-PT-PB)*(1-v/100);
-  let grid='';
-  for(const g of [0,20,40,60,80,100]){ const yy=y(g);
-    grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${g===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${g}%</text>`; }
-  let xl=''; const step=Math.max(1,Math.ceil(n/7));
-  d.dates.forEach((dt,i)=>{ if(i%step && i!==n-1) return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${fmtD8(dt)}</text>`; });
-  // null-safe: a null pct200 (n200 == 0) breaks the line and is skipped by the hover; the area spans the plotted points
-  let line='', area='', open=false, x0=null, x1=null;
-  d.pct200.forEach((v,i)=>{ if(v==null){ open=false; return; } const X=x(i).toFixed(1), Y=y(v).toFixed(1);
-    line+=(open?' L':' M')+X+' '+Y; area+=' L'+X+' '+Y; if(x0==null) x0=X; x1=X; open=true; });
-  if(x0!=null) area=`M ${x0} ${y(0).toFixed(1)}`+area+` L ${x1} ${y(0).toFixed(1)} Z`;
-  const pts=[]; d.dates.forEach((dt,i)=>{ if(d.pct200[i]!=null) pts.push({px:x(i),py:y(d.pct200[i]),i,dt}); });
-  if(!pts.length){ $('bchart200').innerHTML='<div class="text-xs text-slate-400 py-8 text-center">Too few stocks with 200 sessions of history in this range.</div>'; return; }
-  $('bchart200').innerHTML=`<div class="relative">
-    <svg viewBox="0 0 ${W} ${H}" class="w-full block">
-      <rect x="${PL}" y="${y(100).toFixed(1)}" width="${(W-PL-PR).toFixed(1)}" height="${(y(80)-y(100)).toFixed(1)}" fill="#b91c1c" opacity="0.05"/>
-      <rect x="${PL}" y="${y(20).toFixed(1)}" width="${(W-PL-PR).toFixed(1)}" height="${(y(0)-y(20)).toFixed(1)}" fill="#15803d" opacity="0.05"/>
-      ${grid}${xl}
-      <line x1="${PL}" y1="${y(50).toFixed(1)}" x2="${W-PR}" y2="${y(50).toFixed(1)}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
-      <path d="${area}" fill="#4f46e5" opacity="0.08"/>
-      <path d="${line}" fill="none" stroke="#4f46e5" stroke-width="2"/>
-      <line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
-      <circle class="dV" r="4" fill="#4f46e5" stroke="#fff" stroke-width="1.5" style="display:none"/>
-      <rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>
-    </svg>
-    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[135%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
-  </div>`;
-  bHover('bchart200', pts, p=>{
-    const i=p.i;
-    return `<div class="font-semibold">${fmtD8Long(p.dt)}</div>`
-      +`<div><span style="color:#818cf8">●</span> Above 200-DMA: ${d.pct200[i].toFixed(1)}% (${d.a200[i]}/${d.n200[i]})</div>`
-      +`<div><span style="color:#34d399">▲</span> ${d.adv[i]} advanced · <span style="color:#fb7185">▼</span> ${d.dec[i]} declined</div>`
-      +`<div>52-wk: <span style="color:#34d399">${d.hi[i]} new highs</span> · <span style="color:#fb7185">${d.lo[i]} new lows</span> (of ${d.n52[i]})</div>`
-      +`<div class="text-slate-300">${d.nObs[i]} of ${d.nMem[i]} members traded</div>`;
-  });
+/* ---------------- selection ---------------- */
+function seeRow(){ const box=$('lList'), on=box.querySelector('.lr.on'); if(!on) return;
+  if(on.offsetTop<box.scrollTop || on.offsetTop+on.offsetHeight>box.scrollTop+box.clientHeight) box.scrollTop=Math.max(0,on.offsetTop-box.clientHeight/2); }
+function pick(i, see){
+  if(view==='tv'){ if(i<0||i>=DATA.months.length) return; selM=i; }
+  else { if(!BR||i<bstart()||i>=BR.dates.length) return; selD=i; }
+  $('lList').querySelectorAll('.lr.on').forEach(el=>el.classList.remove('on'));
+  const el=$('lList').querySelector('.lr[data-i="'+i+'"]'); if(el) el.classList.add('on');
+  if(see) seeRow();
+  if(view==='tv') renderMonthDetail(); else renderDayDetail();
+  if(view==='tv'&&CH&&CH.idxOf()==null){ range='all'; renderRangeBtns(); drawChart(); return; }   // a month older than the chart's range: show the whole history so it is on the chart
+  markSel();
+}
+function toggleFocus(){ const on=$('grid').classList.toggle('focus'); $('cFocus').classList.toggle('on',on); }
+function onKey(e){
+  if(e.ctrlKey||e.metaKey||e.altKey) return;
+  const t=e.target; if(t&&(t.tagName==='INPUT'||t.tagName==='SELECT'||t.tagName==='TEXTAREA')) return;
+  if(e.key==='Escape'){ if($('grid').classList.contains('focus')) toggleFocus(); return; }
+  if(e.key==='f'||e.key==='F'){ toggleFocus(); return; }
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){ e.preventDefault();
+    const seq=[['tv',null],['br','p200'],['br','hl']], cur=seq.findIndex(s=>s[0]===view&&(s[1]==null||s[1]===bchart));
+    const nx=seq[Math.max(0,Math.min(seq.length-1,cur+(e.key==='ArrowRight'?1:-1)))];
+    if(nx[0]!==view||(nx[1]&&nx[1]!==bchart)){ view=nx[0]; if(nx[1]) bchart=nx[1]; render(); }
+    return; }
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){                    // the list is newest first: ↓ = one period older
+    if(view==='br'&&!BR) return; e.preventDefault();
+    pick((view==='tv'?selM:selD)+(e.key==='ArrowDown'?-1:1), true); }
 }
 
-function renderBHL(){
-  const d=bsliced(), nd=d.dates.length;
-  if(!nd){ $('bchartHL').innerHTML='<div class="text-xs text-slate-400 py-8 text-center">No data in this range.</div>'; return; }
+/* ---------------- chart (pane 3) ---------------- */
+let LC_=null, CH=null;                                           // CH = {chart, kind, times[], info(i), main series, valueAt(i), idxOf(sel)}
+function killChart(){ if(CH){ try{ CH.chart.remove(); }catch(e){} CH=null; } }
+function theme(){ const cs=getComputedStyle(document.documentElement), v=n=>cs.getPropertyValue(n).trim();
+  return {pos:v('--pos')||'#15803d', neg:v('--neg')||'#b91c1c', bd:v('--border')||'#e2e8f0', mut:v('--text-muted')||'#64748b', acc:v('--accent-text')||'#0f766e', faint:v('--text-faint')||'#94a3b8'}; }
+function drawChart(){
+  killChart(); $('cMsg').textContent=''; $('cLegend').innerHTML='';
+  LC_=window.LightweightCharts;
+  if(view==='tv'){ $('cSym').textContent='Total monthly trade in Nifty 500'; $('cName').textContent='₹ lakh crore';
+    $('cNote').innerHTML='<span class="sw1" style="background:var(--pos)"></span>Monthly traded value &nbsp; <span class="sw1" style="background:var(--neg)"></span>12-month moving average (dashed)'+(DATA.partialLast?' &nbsp;·&nbsp; the last point is the running month so far (dashed segment)':''); }
+  else if(bchart==='p200'){ $('cSym').textContent='% of '+UNI[buni].name+' stocks above their 200-day average'; $('cName').textContent='';
+    $('cNote').textContent='Above 80% = broadly overheated · below 20% = washed out. Dashed line = 50%.'; }
+  else { $('cSym').textContent='New 52-week highs vs new lows'; $('cName').textContent=UNI[buni].name; $('cNote').textContent=''; }
+  if(!LC_){ $('cMsg').textContent='Chart library did not load — the figures are in the list.'; return; }
+  const T=theme();
+  const chart=LC_.createChart($('cChart'),{ autoSize:true,
+    layout:{background:{color:'transparent'},textColor:T.mut,fontSize:11,fontFamily:getComputedStyle(document.body).fontFamily},
+    grid:{vertLines:{visible:false},horzLines:{color:T.bd}}, rightPriceScale:{borderColor:T.bd,scaleMargins:{top:.16,bottom:.06}},
+    timeScale:{borderColor:T.bd,rightOffset:2,minBarSpacing:0.01}, crosshair:{mode:0}, handleScroll:true, handleScale:true });
+  CH={chart:chart,T:T};
+  if(view==='tv') chartTurnover(); else if(bchart==='p200') chartP200(); else chartHL();
+  if(!CH) return;
+  CH.tIdx=new Map(CH.times.map((t,i)=>[t,i]));
+  chart.timeScale().fitContent();
+  chart.subscribeCrosshairMove(p=>{ const i=(p&&p.time!=null)?CH.tIdx.get(p.time):null; legend(i==null?CH.idxOf():i); });
+  chart.subscribeClick(p=>{ if(!p||p.time==null) return; const i=CH.tIdx.get(p.time); if(i!=null) pick(CH.selOf(i), true); });
+  markSel();
+}
+function legend(i){ if(!CH) return; if(i==null||i<0||i>=CH.times.length) i=CH.times.length-1; $('cLegend').innerHTML=CH.info(i); }
+function markSel(){                                              // show the chosen month / day on the chart: a marker line and its figures
+  if(!CH) return; const i=CH.idxOf();
+  if(LC_.createSeriesMarkers){ if(!CH.marks) CH.marks=LC_.createSeriesMarkers(CH.main,[]);
+    CH.marks.setMarkers(i==null?[]:[{time:CH.times[i],position:'aboveBar',color:CH.T.acc,shape:'arrowDown',text:''}]); }
+  legend(i);
+}
+function chartTurnover(){
+  const d=sliced(), n=d.months.length, T=CH.T, c=CH.chart;
+  if(!n){ killChart(); $('cMsg').textContent='No data in this range.'; return; }
+  const s0=DATA.months.length-n, partial=!!DATA.partialLast, solidEnd=partial?n-1:n;
+  const tm=d.months.map(m=>m+'-01'), fmt={type:'price',precision:2,minMove:0.01};
+  const area=c.addSeries(LC_.AreaSeries,{lineColor:T.pos,topColor:T.pos+'22',bottomColor:T.pos+'05',lineWidth:2,priceFormat:fmt,priceLineVisible:false,lastValueVisible:false});
+  area.setData(d.value.slice(0,solidEnd).map((cr,i)=>({time:tm[i],value:lc(cr)})));
+  if(partial&&n>=2){ const dash=c.addSeries(LC_.LineSeries,{color:T.pos,lineWidth:2,lineStyle:2,priceFormat:fmt,priceLineVisible:false,lastValueVisible:true,pointMarkersVisible:true});
+    dash.setData([{time:tm[n-2],value:lc(d.value[n-2])},{time:tm[n-1],value:lc(d.value[n-1])}]); }
+  const ma=c.addSeries(LC_.LineSeries,{color:T.neg,lineWidth:2,lineStyle:2,priceFormat:fmt,priceLineVisible:false,lastValueVisible:true,crosshairMarkerVisible:true});
+  ma.setData(d.ma.map((cr,i)=>({time:tm[i],value:lc(cr)})));
+  CH.main=ma; CH.times=tm;
+  CH.idxOf=()=>{ const i=selM-s0; return (i>=0&&i<n)?i:null; };
+  CH.selOf=i=>s0+i;
+  CH.info=i=>{ const isP=partial&&i===n-1;
+    return '<div><b>'+fmtMonLong(d.months[i])+(isP?' · so far':'')+'</b></div>'
+      +'<div><span class="os-pos">●</span> Traded: '+fmtLc(d.value[i])+(isP?' ('+DATA.partialDays+'d)':'')+'</div>'
+      +'<div><span class="os-neg">●</span> 12-mo avg: '+fmtLc(d.ma[i])+'</div>'; };
+}
+function chartP200(){
+  const d=bsliced(), n=d.dates.length, T=CH.T, c=CH.chart, s0=bstart();
+  if(!n){ killChart(); $('cMsg').textContent='No data in this range.'; return; }
+  if(!d.pct200.some(v=>v!=null)){ killChart(); $('cMsg').textContent='Too few stocks with 200 sessions of history in this range.'; return; }
+  const tm=d.dates.map(d8iso);
+  const s=c.addSeries(LC_.AreaSeries,{lineColor:T.acc,topColor:T.acc+'22',bottomColor:T.acc+'05',lineWidth:2,priceLineVisible:false,lastValueVisible:true,
+    priceFormat:{type:'custom',minMove:0.1,formatter:v=>(v>100.5||v<-0.5)?'':v.toFixed(0)+'%'}, autoscaleInfoProvider:()=>({priceRange:{minValue:0,maxValue:100}})});
+  s.setData(d.pct200.map((v,i)=>v==null?{time:tm[i]}:{time:tm[i],value:v}));      // a null day (no stock with 200 sessions) is a gap, as before
+  s.createPriceLine({price:80,color:T.neg,lineWidth:1,lineStyle:3,axisLabelVisible:false,title:'80%'});
+  s.createPriceLine({price:50,color:T.faint,lineWidth:1,lineStyle:2,axisLabelVisible:false,title:'50%'});
+  s.createPriceLine({price:20,color:T.pos,lineWidth:1,lineStyle:3,axisLabelVisible:false,title:'20%'});
+  CH.main=s; CH.times=tm;
+  CH.idxOf=()=>{ const i=selD-s0; return (i>=0&&i<n)?i:null; };
+  CH.selOf=i=>s0+i;
+  CH.info=i=>'<div><b>'+fmtD8Long(d.dates[i])+'</b></div>'
+      +'<div>Above 200-DMA: '+(d.pct200[i]==null?'·':'<b>'+d.pct200[i].toFixed(1)+'%</b>')+' ('+d.a200[i]+'/'+d.n200[i]+')</div>'
+      +'<div><span class="os-pos">▲ '+d.adv[i]+' advanced</span> · <span class="os-neg">▼ '+d.dec[i]+' declined</span></div>'
+      +'<div>52-wk: <span class="os-pos">'+d.hi[i]+' new highs</span> · <span class="os-neg">'+d.lo[i]+' new lows</span> (of '+d.n52[i]+')</div>'
+      +'<div class="mut">'+d.nObs[i]+' of '+d.nMem[i]+' members traded</div>';
+}
+function chartHL(){
+  const d=bsliced(), nd=d.dates.length, T=CH.T, c=CH.chart, s0=bstart();
+  if(!nd){ killChart(); $('cMsg').textContent='No data in this range.'; return; }
   // aggregate to ~weekly buckets when the range is long, else daily bars
   const bucket=Math.max(1,Math.ceil(nd/280)), agg=[];
   for(let s=0;s<nd;s+=bucket){
@@ -269,146 +403,16 @@ function renderBHL(){
     for(let j=s;j<e;j++){ hi+=d.hi[j]; lo+=d.lo[j]; }
     agg.push({d0:d.dates[s], d1:d.dates[e-1], hi, lo});
   }
-  $('bhlNote').textContent = bucket>1 ? `(${bucket}-day totals — hover for values)` : '(daily — hover for values)';
-  const n=agg.length, W=720,H=240,PL=40,PR=14,PT=10,PB=28;
-  const ymax=Math.max(4,...agg.map(a=>Math.max(a.hi,a.lo)))*1.08;
-  const x=i=>PL+(W-PL-PR)*(n<=1?0:i/(n-1)), y0=PT+(H-PT-PB)/2, sc=(H-PT-PB)/2/ymax;
-  const bw=Math.max(1,Math.min(9,(W-PL-PR)/n*0.72));
-  let grid=`<line x1="${PL}" y1="${y0.toFixed(1)}" x2="${W-PR}" y2="${y0.toFixed(1)}" stroke="#cbd5e1"/>`;
-  for(const f of [0.5,1]){ const v=Math.round(ymax*f);
-    grid+=`<text x="${PL-4}" y="${(y0-v*sc+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v}</text>`
-        +`<text x="${PL-4}" y="${(y0+v*sc+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v}</text>`
-        +`<line x1="${PL}" y1="${(y0-v*sc).toFixed(1)}" x2="${W-PR}" y2="${(y0-v*sc).toFixed(1)}" stroke="#f1f5f9"/>`
-        +`<line x1="${PL}" y1="${(y0+v*sc).toFixed(1)}" x2="${W-PR}" y2="${(y0+v*sc).toFixed(1)}" stroke="#f1f5f9"/>`; }
-  let xl=''; const step=Math.max(1,Math.ceil(n/7));
-  agg.forEach((a,i)=>{ if(i%step && i!==n-1) return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${fmtD8(a.d0)}</text>`; });
-  let bars='';
-  agg.forEach((a,i)=>{ const cx=x(i);
-    if(a.hi>0) bars+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${(y0-a.hi*sc).toFixed(1)}" width="${bw.toFixed(1)}" height="${(a.hi*sc).toFixed(1)}" fill="#15803d" opacity="0.85"/>`;
-    if(a.lo>0) bars+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${y0.toFixed(1)}" width="${bw.toFixed(1)}" height="${(a.lo*sc).toFixed(1)}" fill="#b91c1c" opacity="0.85"/>`;
-  });
-  const pts=agg.map((a,i)=>({px:x(i),py:y0-a.hi*sc,a}));
-  $('bchartHL').innerHTML=`<div class="relative">
-    <svg viewBox="0 0 ${W} ${H}" class="w-full block">${grid}${xl}${bars}
-      <text x="${W-PR}" y="${(PT+8)}" font-size="9" fill="#15803d" text-anchor="end">new highs ↑</text>
-      <text x="${W-PR}" y="${(H-PB-4)}" font-size="9" fill="#b91c1c" text-anchor="end">new lows ↓</text>
-      <line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
-      <rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>
-    </svg>
-    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[135%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
-  </div>`;
-  bHover('bchartHL', pts, p=>{
-    const a=p.a, span=a.d0===a.d1?fmtD8Long(a.d0):fmtD8(a.d0)+' – '+fmtD8(a.d1);
-    return `<div class="font-semibold">${span}</div>`
-      +`<div><span style="color:#34d399">●</span> New 52-wk highs: ${a.hi}</div>`
-      +`<div><span style="color:#fb7185">●</span> New 52-wk lows: ${a.lo}</div>`;
-  });
-}
-
-function renderRangeBtns(){
-  $('rangeBtns').innerHTML = ['1y','3y','5y','10y','all'].map(k=>
-    `<button data-r="${k}" class="px-2 py-1 rounded ${range===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${k==='all'?'All':k.toUpperCase()}</button>`).join('');
-  $('rangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{ range=b.dataset.r; renderRangeBtns(); renderChart(); });
-}
-
-function sliced(){
-  const n=DATA.months.length, k=RANGES[range], s=k>=1e9?0:Math.max(0,n-k);
-  return { months:DATA.months.slice(s), value:DATA.value.slice(s), ma:DATA.ma.slice(s) };
-}
-
-function renderCards(){
-  const v=DATA.value, m=DATA.months, ma=DATA.ma, partial=!!DATA.partialLast;
-  const i=v.length-1, c=partial?i-1:i;                 // c = last COMPLETE month
-  let peak=-1, pk=0; v.forEach((x,j)=>{ if((!partial||j<i) && x>peak){peak=x;pk=j;} });
-  const yoy = pct(v[c], c>=12?v[c-12]:null);
-  const card=(t,val,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${val}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
-  if(partial && c>=0){
-    $('cards').innerHTML =
-       card('This month so far · '+fmtMonShort(m[i]), fmtLc(v[i]), DATA.partialDays+' trading days')
-      +card('Last full month · '+fmtMonShort(m[c]), fmtLc(v[c]), fmtCr(v[c]))
-      +card('12-mo average', fmtLc(ma[c]), v[c]>=ma[c]?'last month above trend':'last month below trend', v[c]>=ma[c]?'pos':'neg')
-      +card('Record high · '+fmtMonShort(m[pk]), fmtLc(peak), 'busiest full month');
-  } else {
-    $('cards').innerHTML =
-       card('Latest month · '+fmtMonShort(m[i]), fmtLc(v[i]), fmtCr(v[i]))
-      +card('12-mo average', fmtLc(ma[i]), v[i]>=ma[i]?'now above trend':'now below trend', v[i]>=ma[i]?'pos':'neg')
-      +card('vs a year ago', fmtPct(yoy), 'same month last year', (yoy||0)>=0?'pos':'neg')
-      +card('Record high · '+fmtMonShort(m[pk]), fmtLc(peak), 'busiest month on record');
-  }
-  $('legV').textContent = fmtLc(v[i])+(partial?' so far':'');
-  $('legM').textContent = fmtLc(ma[i]);
-}
-
-function renderChart(){
-  const d=sliced(), n=d.months.length;
-  if(!n){ $('chart').innerHTML='<div class="text-xs text-slate-400 py-8 text-center">No data in this range.</div>'; return; }
-  const W=720, H=300, PL=44, PR=14, PT=14, PB=32;
-  const x=i=> PL+(W-PL-PR)*(n<=1?0:i/(n-1));
-  const ymax=(Math.max(...d.value, ...d.ma)/1e5)*1.08 || 1;          // in lakh crore
-  const y=val=> PT+(H-PT-PB)*(1-(val/1e5)/ymax);                     // val in crore, baseline 0
-  let grid=''; const GL=5;
-  for(let k=0;k<=GL;k++){ const lcv=ymax*k/GL, yy=PT+(H-PT-PB)*(1-k/GL);
-    grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${k===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${lcv.toFixed(1)}</text>`; }
-  let xl=''; const step=Math.max(1,Math.ceil(n/8));
-  d.months.forEach((mm,i)=>{ if(i%step && i!==n-1) return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${fmtMonShort(mm)}</text>`; });
-  const partial=!!DATA.partialLast, solidEnd=partial?n-1:n;
-  const vsolid=d.value.slice(0,solidEnd).map((cr,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ');
-  const vdash=(partial&&n>=2)?`M ${x(n-2).toFixed(1)} ${y(d.value[n-2]).toFixed(1)} L ${x(n-1).toFixed(1)} ${y(d.value[n-1]).toFixed(1)}`:'';
-  const area=`M ${x(0).toFixed(1)} ${y(0).toFixed(1)} `+d.value.map((cr,i)=>'L'+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ')+` L ${x(n-1).toFixed(1)} ${y(0).toFixed(1)} Z`;
-  const mline=d.ma.map((cr,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ');
-  CHART={pts:d.months.map((mm,i)=>({px:x(i),pyV:y(d.value[i]),pyM:y(d.ma[i]),m:mm,v:d.value[i],ma:d.ma[i],partial:(partial&&i===n-1)})), W, H, PT, PB};
-  $('chart').innerHTML=`<div class="relative">
-    <svg viewBox="0 0 ${W} ${H}" class="w-full block">${grid}${xl}
-      <path d="${area}" fill="#15803d" opacity="0.08"/>
-      <path d="${mline}" fill="none" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 4"/>
-      <path d="${vsolid}" fill="none" stroke="#15803d" stroke-width="2"/>
-      ${vdash?`<path d="${vdash}" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="4 3" opacity="0.8"/>`:''}
-      ${partial?`<circle cx="${x(n-1).toFixed(1)}" cy="${y(d.value[n-1]).toFixed(1)}" r="4" fill="#fff" stroke="#15803d" stroke-width="2"/>`:''}
-      <line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
-      <circle class="dM" r="3.5" fill="#b91c1c" stroke="#fff" stroke-width="1.5" style="display:none"/>
-      <circle class="dV" r="4" fill="#15803d" stroke="#fff" stroke-width="1.5" style="display:none"/>
-      <rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>
-    </svg>
-    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[135%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
-  </div>`;
-  attachHover();
-}
-
-function attachHover(){
-  const wrap=$('chart'); const svg=wrap.querySelector('svg'); if(!svg||!CHART.pts||!CHART.pts.length)return;
-  const tip=wrap.querySelector('.tip'), cross=wrap.querySelector('.cx'), dV=wrap.querySelector('.dV'), dM=wrap.querySelector('.dM');
-  const move=e=>{
-    const r=svg.getBoundingClientRect(); if(!r.width)return;
-    const sx=(e.clientX-r.left)/r.width*CHART.W;
-    let best=0,bd=1e9; for(let i=0;i<CHART.pts.length;i++){const dd=Math.abs(CHART.pts[i].px-sx); if(dd<bd){bd=dd;best=i;}}
-    const p=CHART.pts[best];
-    cross.setAttribute('x1',p.px); cross.setAttribute('x2',p.px); cross.style.display='';
-    dV.setAttribute('cx',p.px); dV.setAttribute('cy',p.pyV); dV.style.display='';
-    dM.setAttribute('cx',p.px); dM.setAttribute('cy',p.pyM); dM.style.display='';
-    tip.style.left=(p.px/CHART.W*100)+'%'; tip.style.top=(Math.min(p.pyV,p.pyM)/CHART.H*100)+'%';
-    tip.innerHTML=`<div class="font-semibold">${fmtMonLong(p.m)}${p.partial?' · so far':''}</div>`
-      +`<div><span style="color:#34d399">●</span> Traded: ${fmtLc(p.v)}${p.partial?' ('+DATA.partialDays+'d)':''}</div>`
-      +`<div><span style="color:#fb7185">●</span> 12-mo avg: ${fmtLc(p.ma)}</div>`;
-    tip.classList.remove('hidden');
-  };
-  svg.addEventListener('mousemove',move);
-  svg.addEventListener('mouseleave',()=>{tip.classList.add('hidden');cross.style.display='none';dV.style.display='none';dM.style.display='none';});
-}
-
-function renderTable(){
-  const v=DATA.value, m=DATA.months, ma=DATA.ma, last=v.length-1, partial=!!DATA.partialLast;
-  const rows=[];
-  for(let i=last; i>=0; i--){
-    const isP = partial && i===last;
-    const mom = isP ? null : pct(v[i], i>0?v[i-1]:null), vsAvg = isP ? null : pct(v[i], ma[i]);
-    rows.push(`<tr class="border-b border-slate-50">
-      <td class="py-1 px-1 font-medium">${fmtMonLong(m[i])}${isP?' <span class="text-[10px] text-amber-600 font-semibold">so far</span>':''}</td>
-      <td class="text-right px-1">${Math.round(v[i]).toLocaleString('en-IN')}</td>
-      <td class="text-right px-1 ${(mom||0)>=0?'pos':'neg'}">${fmtPct(mom)}</td>
-      <td class="text-right px-1 text-slate-500">${Math.round(ma[i]).toLocaleString('en-IN')}</td>
-      <td class="text-right px-1 ${(vsAvg||0)>=0?'pos':'neg'}">${fmtPct(vsAvg)}</td></tr>`);
-  }
-  $('tbody').innerHTML=rows.join('');
+  $('cNote').textContent = (bucket>1 ? 'Bars are '+bucket+'-day totals.' : 'Daily bars.')+' New highs go up (green), new lows go down (red).';
+  const tm=agg.map(a=>d8iso(a.d0)), fmt={type:'custom',minMove:1,formatter:v=>String(Math.abs(Math.round(v)))};
+  const hi=c.addSeries(LC_.HistogramSeries,{color:T.pos,priceFormat:fmt,priceLineVisible:false,lastValueVisible:false});
+  const lo=c.addSeries(LC_.HistogramSeries,{color:T.neg,priceFormat:fmt,priceLineVisible:false,lastValueVisible:false});
+  hi.setData(agg.map((a,i)=>({time:tm[i],value:a.hi}))); lo.setData(agg.map((a,i)=>({time:tm[i],value:-a.lo})));
+  CH.main=hi; CH.times=tm;
+  CH.idxOf=()=>{ const i=selD-s0; return (i>=0&&i<nd)?Math.floor(i/bucket):null; };
+  CH.selOf=i=>s0+Math.min(nd-1,i*bucket+bucket-1);
+  CH.info=i=>{ const a=agg[i], span=a.d0===a.d1?fmtD8Long(a.d0):fmtD8(a.d0)+' – '+fmtD8(a.d1);
+    return '<div><b>'+span+'</b></div><div><span class="os-pos">●</span> New 52-wk highs: '+a.hi+'</div><div><span class="os-neg">●</span> New 52-wk lows: '+a.lo+'</div>'; };
 }
 
 load();
