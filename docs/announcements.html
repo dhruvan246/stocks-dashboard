@@ -8,30 +8,36 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  th[data-s]{cursor:pointer;user-select:none;white-space:nowrap}
-  th[data-s]:hover{color:var(--accent-text)}
-  /* theme-variable styling so Light / Dark / Soft all work (theme.css defines the vars) */
-  .catlink{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;
-           padding:7px 11px;border-radius:var(--radius);border:0;background:none;cursor:pointer;
-           font-size:12.5px;font-weight:600;color:var(--text-muted,var(--text-muted));transition:background .12s,color .12s}
-  .catlink:hover{background:var(--surface-2,var(--surface-2));color:var(--text,var(--text))}
-  .catlink.on{background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text))}
-  .catn{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:var(--radius-sm);flex:none;
-        background:var(--surface-2,var(--surface-2));color:var(--text-faint,var(--text-faint))}
-  .catlink.on .catn{background:var(--accent,var(--accent));color:#fff}
-  .docbtn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--radius);
-          background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text));border:1px solid var(--border-strong,color-mix(in srgb,var(--accent) 38%,transparent));white-space:nowrap;
-          transition:border-color .12s}
-  .docbtn:hover{border-color:var(--accent,#93c5fd)}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(210px,250px) minmax(330px,430px) minmax(0,1fr)}
+  #cHead,.cr{grid-template-columns:minmax(0,1fr) 60px}
+  #fHead{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) 86px}
+  #fHead span:nth-child(2){text-align:left}
+  .fr{grid-template-columns:minmax(0,1fr) 86px;height:46px;row-gap:0;align-content:center}
+  .fr .n i{font-size:11.5px}
+  .fr .ty{grid-column:1 / -1;text-align:left !important;color:var(--text-faint);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3}
+  .fr .dt{color:var(--text-muted);font-size:12px}
+  #fMore{padding:10px 12px;text-align:center}
+  html[data-theme] #pF .os-ps input[type="search"]{flex:1 1 0;min-width:0;width:auto;text-transform:uppercase}
+  html[data-theme] #pF .os-ps input[type="search"]::placeholder{text-transform:none}
+  #aBox{padding:10px 12px;border-bottom:1px solid var(--border);max-height:34%;overflow-y:auto;flex:none}
+  #aBox .meta{font-size:12px;color:var(--text-faint);margin-bottom:5px}
+  #aBox .meta b{font-weight:600;color:var(--accent-text)}
+  #aBox .cap{font-size:13.5px;line-height:1.5;color:var(--text);overflow-wrap:anywhere}
+  #aBox .act{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(180px,210px) minmax(280px,340px) minmax(0,1fr)} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #aBox{max-height:none} #pC .os-chartwrap{height:300px} #pC .os-ph{flex-wrap:wrap}
+    #grid > #pF .os-list{max-height:420px} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -40,83 +46,53 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Corporate Announcements <span class="text-slate-400 font-semibold text-base">· NSE</span></h1>
-    <p class="text-sm text-slate-500 mt-1">Every exchange filing of the last month, organised by category. Pick a category on the left (Spurt in Volume, Dividend, Buyback…) to see every stock under it; narrow further by symbol or dates. Click <b>PDF</b> for the actual filing.</p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Corporate Announcements</h1>
+    <div class="os-asof" id="asof"></div>
   </div>
+  <div id="status" class="os-empty">Loading announcements…</div>
 
-  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading announcements…</div>
+  <div id="content" class="hidden">
+    <div class="os-bar">
+      <span class="os-sg" role="group" aria-label="Date range"><span class="lbl">From</span><input id="fFrom" type="date" aria-label="From date" /><span class="lbl">To</span><input id="fTo" type="date" aria-label="To date" style="border-right:0" /></span>
+      <button type="button" class="os-btn" id="bReset" title="Clear the symbol, the dates and the category">Reset</button>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>←→</b> categories / filings · <b>/</b> search · <b>Enter</b> open filing · <b>F</b> focus</span>
+    </div>
 
-  <div id="content" class="md:flex gap-4 items-start" style="display:none">
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pG" aria-label="Categories">
+        <div class="os-ph"><span class="ttl">Categories</span><span class="r" id="cCount"></span></div>
+        <div class="os-ch" id="cHead"><span>Category</span><span>Filings</span></div>
+        <div class="os-list" id="catList" role="listbox" aria-label="Categories"></div>
+      </section>
+      <section class="os-pane" id="pF" aria-label="Filings">
+        <div class="os-ph"><span class="ttl" id="catTitle"></span><span class="r" id="count"></span></div>
+        <div class="os-ps"><input id="fSym" type="search" placeholder="Symbol or company, e.g. RELIANCE" autocomplete="off" spellcheck="false" aria-label="Symbol or company" /></div>
+        <div class="os-ch" id="fHead"><span data-k="s" title="Sort by stock">Stock</span><span data-k="type" title="Sort by announcement type">Type</span><span data-k="dt" title="Sort by date">Date</span></div>
+        <div class="os-list" id="fList" role="listbox" aria-label="Filings"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Filing and chart">
+        <div class="os-ph"><span id="cStar"></span><span class="sym" id="cSym"></span><span class="nm" id="cName"></span>
+          <span class="r"><a class="os-btn hidden" id="cDoc" href="#" target="_blank" rel="noopener" title="Open the actual filing (Enter)">Filing ↗</a>
+            <a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page">Stock ↗</a>
+            <button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give this pane the whole width (F)">Focus</button></span></div>
+        <div id="aBox"></div>
+        <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
+          <span class="os-hint" id="cMark" style="margin-left:auto"></span></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-stats" id="cStats"></div>
+      </section>
+    </div>
 
-    <!-- Category sidebar -->
-    <aside class="hidden md:block w-60 shrink-0 card p-2 sticky top-[4.25rem] max-h-[calc(100vh-5.5rem)] overflow-y-auto">
-      <div class="px-2.5 pt-2 pb-1 text-[10px] uppercase tracking-wide text-slate-500 font-bold">Categories</div>
-      <nav id="catList" class="space-y-0.5 pb-1"></nav>
-    </aside>
-
-    <section class="flex-1 min-w-0">
-
-      <!-- Mobile category picker -->
-      <div class="md:hidden mb-3">
-        <select id="catSelect" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 bg-white text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
-      </div>
-
-      <!-- Toolbar -->
-      <div class="card p-3 mb-3">
-        <!-- Phone (2026-10-13): symbol box + a Filters button; the date range, Apply and Reset open under it. -->
-        <div class="flex flex-wrap items-end gap-2.5 sw-filters">
-          <div data-keep="search">
-            <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1" for="fSym">Symbol / company</label>
-            <input id="fSym" type="text" placeholder="e.g. RELIANCE" autocomplete="off" spellcheck="false"
-                   class="w-40 px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm font-semibold uppercase placeholder:normal-case placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1" for="fFrom">From</label>
-            <input id="fFrom" type="date" class="px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1" for="fTo">To</label>
-            <input id="fTo" type="date" class="px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <button id="bApply" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-sm transition">Apply</button>
-          <button id="bReset" class="px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Reset</button>
-        </div>
-      </div>
-
-      <!-- Results -->
-      <div class="card p-4 mb-3">
-        <div class="flex items-center flex-wrap gap-x-3 gap-y-1 mb-2">
-          <div id="catTitle" class="text-base font-extrabold text-slate-900"></div>
-          <div id="count" class="text-xs font-semibold text-slate-500"></div>
-          <span id="liveBadge" class="hidden text-[11px] font-bold tracking-wide ml-auto" style="color:var(--pos,#15803d)"></span>
-        </div>
-        <div class="sw-cards overflow-x-auto rounded-lg border border-slate-100">
-          <table class="w-full text-sm min-w-[820px]">
-            <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100"><tr>
-              <th data-s="s"    class="text-left py-2.5 px-3">Stock ⇅</th>
-              <th data-s="dt"   class="text-left px-3">Date ⇅</th>
-              <th data-s="type" class="text-left px-3">Announcement type ⇅</th>
-              <th class="text-left px-3 w-[46%]">Caption</th>
-              <th class="text-right px-3">Doc</th>
-            </tr></thead>
-            <tbody id="tbody" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
-        <div class="text-center mt-3">
-          <button id="bMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button>
-        </div>
-      </div>
-
-      <p class="text-[11px] text-slate-500">Source: NSE corporate announcements (equities) · rolling last ~31 days · <span id="updated"></span> · refreshes ~4× a day, plus a live top-up of today's filings (~every minute) via our Cloudflare relay when available. Categories are our grouping of NSE's raw announcement subjects.</p>
-    </section>
+    <p id="how">Source: NSE corporate announcements (equities) · rolling last ~31 days · <span id="updated"></span> · refreshes ~4× a day, plus a live top-up of today's filings (~every minute) via our Cloudflare relay when available. Categories are our grouping of NSE's raw announcement subjects. The chart is the stock's own daily prices; the arrow marks the first bar on or after the filing date. “Close” and “Since” use daily closing prices — the close of the last trading day on or before the filing date against the latest close on file.</p>
   </div>
 </main>
 
 <script>
 'use strict';
-const $ = id => document.getElementById(id);
+const K=window.OSKit, $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
 
@@ -162,9 +138,10 @@ function bucketOf(desc){
   return b;
 }
 
-let DATA = null, ROWS = [];
-const state = { sym:'', from:'', to:'', cat:'', sortK:'dt', sortDir:-1, limit:100 };
+let DATA = null, ROWS = [], CATS = [], CH = null, TOK = 0, MARK = null;
+const state = { sym:'', from:'', to:'', cat:'', sortK:'dt', sortDir:-1, limit:100, sel:null, pane:'f', focus:false };
 let filtered = [];
+const Q = new URLSearchParams(location.search);
 
 function mapRow(a){
   return { s: a[0], co: a[1], coU: (a[1] || '').toUpperCase(),
@@ -172,37 +149,30 @@ function mapRow(a){
            cat: bucketOf(a[3]), type: a[3], cap: a[4], f: a[5] };
 }
 const rowKey = a => a[0] + '|' + a[2] + '|' + a[3] + '|' + a[5];
+const docUrl = f => !f ? '' : (f.indexOf('http') === 0 ? f : PDF_PREFIX + f);
+const docExt = f => { const m = /\.([a-z0-9]{2,4})$/i.exec(f || ''); return m ? m[1].toUpperCase() : 'DOC'; };
+const shortDate = d => { const p = d.split('-'); return (+p[2]) + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]; };
 
-function docCell(f){
-  if (!f) return '<span class="text-slate-300">—</span>';
-  const url = f.indexOf('http') === 0 ? f : PDF_PREFIX + f;
-  const m = /\.([a-z0-9]{2,4})$/i.exec(f);
-  const ext = m ? m[1].toUpperCase() : 'DOC';
-  return '<a class="docbtn" href="' + esc(encodeURI(url)) + '" target="_blank" rel="noopener">📄 ' + esc(ext) + '</a>';
-}
-
-function renderRows(){
-  const upto = Math.min(state.limit, filtered.length);
+function renderRows(keepScroll){
+  const upto = Math.min(state.limit, filtered.length), box = $('fList'), top = box.scrollTop;
   let h = '';
   for (let i = 0; i < upto; i++){
-    const r = filtered[i];
-    h += '<tr class="align-top hover:bg-slate-50">' +
-      '<td class="py-3 px-3"><span class="sw-star" data-sym="' + esc(r.s) + '"></span> <a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(r.s) + '">' + esc(r.s) + '</a>' +
-        '<div class="text-[10.5px] text-slate-400 leading-tight max-w-[150px] truncate" title="' + esc(r.co) + '">' + esc(r.co) + '</div></td>' +
-      '<td class="py-3 px-3 whitespace-nowrap text-slate-600">' + r.date + '<div class="text-[10px] text-slate-400">' + r.time + '</div></td>' +
-      '<td class="py-3 px-3 text-[12px] text-slate-500 max-w-[190px]" title="' + esc(r.cat) + '">' + esc(r.type) + '</td>' +
-      '<td class="py-3 px-3 text-[13px] leading-relaxed text-slate-600">' + esc(r.cap) + '</td>' +
-      '<td class="py-3 px-3 text-right">' + docCell(r.f) + '</td></tr>';
+    const r = filtered[i], on = r === state.sel;
+    h += '<div class="os-row fr' + (on ? ' on' : '') + '" role="option" aria-selected="' + on + '" data-i="' + i + '" title="' + esc(r.co) + ' — ' + esc(r.cat) + '">' +
+      '<span class="n"><b>' + esc(r.s) + '</b><i>' + esc(r.co) + '</i></span><span class="dt">' + shortDate(r.date) + ' ' + r.time + '</span>' +
+      '<span class="ty">' + esc(r.type) + '</span></div>';
   }
-  if (!upto) h = '<tr><td colspan="5" class="py-10 text-center text-slate-400 text-sm">No announcements match these filters.</td></tr>';
-  $('tbody').innerHTML = h;
+  if (!upto) h = '<div class="os-empty">No announcements match these filters.</div>';
+  else if (upto < filtered.length) h += '<div id="fMore"><button type="button" class="os-btn" id="bMore">Show 200 more ↓</button></div>';
+  box.innerHTML = h; if (keepScroll) box.scrollTop = top;
   $('catTitle').textContent = state.cat || 'All announcements';
-  $('count').textContent = 'showing ' + upto.toLocaleString('en-IN') + ' of ' + filtered.length.toLocaleString('en-IN') +
-    ' · ' + state.from + ' → ' + state.to;
-  $('bMore').classList.toggle('hidden', upto >= filtered.length);
+  $('count').textContent = upto.toLocaleString('en-IN') + ' of ' + filtered.length.toLocaleString('en-IN');
+  $('count').title = 'showing ' + upto.toLocaleString('en-IN') + ' of ' + filtered.length.toLocaleString('en-IN') + ' · ' + state.from + ' → ' + state.to;
+  $('fHead').querySelectorAll('span[data-k]').forEach(el => { const on = el.dataset.k === state.sortK; el.classList.toggle('on', on);
+    el.textContent = ({s:'Stock', type:'Type', dt:'Date'})[el.dataset.k] + (on ? (state.sortDir > 0 ? ' ↑' : ' ↓') : ''); });
 }
 
-function applyFilters(){
+function applyFilters(keep){
   const q = state.sym;
   filtered = ROWS.filter(r =>
     r.date >= state.from && r.date <= state.to &&
@@ -210,29 +180,35 @@ function applyFilters(){
     (!q || r.s.indexOf(q) === 0 || r.coU.indexOf(q) >= 0));
   const k = state.sortK, d = state.sortDir;
   filtered.sort((a,b) => (a[k] < b[k] ? -d : a[k] > b[k] ? d : (a.dt < b.dt ? 1 : -1)));
-  state.limit = 100;
-  renderRows();
+  if (!keep) state.limit = 100;
+  const before = state.sel;
+  if (!state.sel || filtered.indexOf(state.sel) < 0) state.sel = filtered[0] || null;
+  const i = filtered.indexOf(state.sel); if (i >= state.limit) state.limit = i + 50;
+  renderRows(keep);
+  if (state.sel !== before || !keep) showSel();
+  saveUrl();
 }
 
-/* ---- category sidebar (desktop) + dropdown (mobile) ---- */
+/* ---- category list ---- */
 function catCounts(){
   const m = new Map();
   for (const r of ROWS) m.set(r.cat, (m.get(r.cat) || 0) + 1);
   return [...m.entries()].sort((a,b) => (a[0] === 'Others') - (b[0] === 'Others') || a[0].localeCompare(b[0]));
 }
 function buildSidebar(){    // idempotent — re-run when live rows add categories/counts
-  const cats = catCounts();
+  const cats = catCounts(); CATS = [''].concat(cats.map(c => c[0]));
   const item = (name, n, label) =>
-    '<button type="button" class="catlink' + (state.cat === name ? ' on' : '') + '" data-c="' + esc(name) + '">' +
-    '<span class="truncate">' + esc(label || name) + '</span><span class="catn">' + n.toLocaleString('en-IN') + '</span></button>';
+    '<div class="os-row cr' + (state.cat === name ? ' on' : '') + '" role="option" aria-selected="' + (state.cat === name) + '" data-c="' + esc(name) + '">' +
+    '<span class="n">' + esc(label || name) + '</span><span class="m">' + n.toLocaleString('en-IN') + '</span></div>';
+  const top = $('catList').scrollTop;
   $('catList').innerHTML = item('', ROWS.length, 'All announcements') + cats.map(([c, n]) => item(c, n)).join('');
-  $('catSelect').innerHTML = '<option value="">All announcements (' + ROWS.length.toLocaleString('en-IN') + ')</option>' +
-    cats.map(([c, n]) => '<option value="' + esc(c) + '"' + (state.cat === c ? ' selected' : '') + '>' + esc(c) + ' (' + n.toLocaleString('en-IN') + ')</option>').join('');
+  $('catList').scrollTop = top;
+  $('cCount').textContent = cats.length + ' categories';
 }
-function selectCat(c){
+function selectCat(c, scroll){
   state.cat = c || '';
-  document.querySelectorAll('.catlink').forEach(el => el.classList.toggle('on', el.getAttribute('data-c') === state.cat));
-  if ($('catSelect').value !== state.cat) $('catSelect').value = state.cat;
+  $('catList').querySelectorAll('.os-row').forEach(el => { const on = el.getAttribute('data-c') === state.cat; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); if (on && scroll) el.scrollIntoView({block:'nearest'}); });
+  state.sel = null; $('fList').scrollTop = 0;
   applyFilters();
 }
 
@@ -241,29 +217,117 @@ function readInputs(){
   state.from = $('fFrom').value || DATA.from;
   state.to = $('fTo').value || DATA.to;
 }
+function saveUrl(){
+  const p = new URLSearchParams();
+  if (state.cat) p.set('cat', state.cat); if (state.sym) p.set('s', state.sym);
+  if (DATA && state.from !== DATA.from) p.set('from', state.from); if (DATA && state.to !== DATA.to) p.set('to', state.to);
+  const s = p.toString(); try { history.replaceState(null, '', location.pathname + (s ? '?' + s : '')); } catch (e) {}
+}
+
+/* ---- right pane: the filing itself, and the stock's chart with the filing date marked ---- */
+function pickRow(r, scroll){
+  state.sel = r;
+  $('fList').querySelectorAll('.os-row').forEach(el => { const on = filtered[+el.dataset.i] === r; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); if (on && scroll) el.scrollIntoView({block:'nearest'}); });
+  showSel(true);
+}
+let showTimer = null;
+function showSel(lazy){
+  const r = state.sel, tok = ++TOK; clearTimeout(showTimer);
+  if (!r){ $('cStar').innerHTML = ''; $('cSym').textContent = ''; $('cName').textContent = ''; $('cDoc').classList.add('hidden'); $('cOpen').classList.add('hidden');
+    $('aBox').innerHTML = '<div class="os-empty">No filing selected.</div>'; $('cStats').innerHTML = ''; $('cMark').textContent = ''; if (CH) CH.clear(''); $('cMsg').textContent = ''; return; }
+  $('cStar').innerHTML = '<span class="sw-star" data-sym="' + esc(r.s) + '"></span>';
+  $('cSym').textContent = r.s; $('cName').textContent = r.co;
+  $('cOpen').href = './stock.html?sym=' + encodeURIComponent(r.s); $('cOpen').classList.remove('hidden');
+  const u = docUrl(r.f);
+  if (u){ $('cDoc').href = encodeURI(u); $('cDoc').textContent = 'Filing ' + docExt(r.f) + ' ↗'; $('cDoc').classList.remove('hidden'); } else $('cDoc').classList.add('hidden');
+  let n = 0; for (const x of ROWS) if (x.s === r.s) n++;
+  const only = state.sym === r.s;
+  $('aBox').innerHTML = '<div class="meta"><b>' + esc(r.cat) + '</b> · ' + esc(r.type) + ' · ' + K.niceDate(r.date) + ' ' + r.time + ' IST</div>' +
+    '<div class="cap">' + esc(r.cap || 'No caption in the exchange record.') + '</div>' +
+    '<div class="act">' + (u ? '<a class="os-btn on" href="' + esc(encodeURI(u)) + '" target="_blank" rel="noopener">Open the filing (' + esc(docExt(r.f)) + ') ↗</a>' : '<span class="os-hint">No document attached to this filing.</span>') +
+    '<button type="button" class="os-btn" id="bOnly">' + (only ? 'Show all stocks' : 'Only ' + esc(r.s) + ' · ' + n + ' filing' + (n === 1 ? '' : 's')) + '</button></div>';
+  $('bOnly').onclick = () => { $('fSym').value = only ? '' : r.s; readInputs(); if (!only) { state.cat = ''; buildSidebar(); } applyFilters(); };
+  stats(r, null, n);
+  showTimer = setTimeout(() => {                       // holding an arrow key walks the list; only the row you stop on is fetched
+    $('cMsg').textContent = 'Loading chart…';
+    K.loadStockBars(r.s).then(d => { if (tok !== TOK) return;
+      if (!CH){ CH = new K.Chart({chart:$('cChart'), legend:$('cLegend'), msg:$('cMsg'), iv:'D', range:'3M'}); }
+      CH.show(d, {name:r.s, tag:'NSE'}); chartBar(); mark(); stats(r, d, n); },
+      () => { if (tok !== TOK) return; if (CH) CH.clear(''); $('cMark').textContent = ''; $('cMsg').textContent = 'No daily price history on file for ' + r.s + '.'; });
+  }, lazy ? 140 : 0);
+}
+function mark(){
+  const r = state.sel, LC = window.LightweightCharts; $('cMark').textContent = '';
+  if (!r || !CH || !CH.ch || !CH.data || !LC || !LC.createSeriesMarkers) return;
+  const ser = CH.data.ohlc ? CH.ch.candle : CH.ch.line, b = CH.bars.find(x => K.tsISO(x.ts) >= r.date);
+  if (MARK && MARK.ch === CH.ch){ try { MARK.h.setMarkers([]); } catch (e) {} }
+  if (!b){ $('cMark').textContent = 'filed after the last daily bar on file'; return; }
+  try { MARK = {ch: CH.ch, h: LC.createSeriesMarkers(ser, [{time: K.tsISO(b.ts), position: 'aboveBar', shape: 'arrowDown', color: CH.ch.accent, text: 'Filed'}])}; } catch (e) {}
+  $('cMark').textContent = '▼ filed ' + K.niceDate(r.date);
+}
+function stats(r, d, n){
+  let c0 = null, d0 = null, cl = null, dl = null;
+  if (d && d.bars.length){ for (const b of d.bars){ if (K.tsISO(b.ts) <= r.date){ c0 = b.c; d0 = K.tsISO(b.ts); } else break; } const L = d.bars[d.bars.length - 1]; cl = L.c; dl = K.tsISO(L.ts); }
+  const since = (c0 && cl && dl > d0) ? (cl / c0 - 1) * 100 : null;
+  $('cStats').innerHTML =
+    '<div><span>Filed</span><b>' + K.niceDate(r.date) + '</b></div>' +
+    '<div><span>Time (IST)</span><b>' + esc(r.time || '—') + '</b></div>' +
+    '<div><span>Category</span><b title="' + esc(r.cat) + '">' + esc(r.cat) + '</b></div>' +
+    '<div><span>' + esc(r.s) + ' filings, 1 month</span><b>' + n.toLocaleString('en-IN') + '</b></div>' +
+    '<div><span>Close ' + (d0 ? shortDate(d0) : '') + '</span><b>' + (c0 == null ? '—' : K.fmtN(c0)) + '</b></div>' +
+    '<div><span>Since' + (since == null ? '' : ' · to ' + shortDate(dl)) + '</span><b class="' + K.cls(since) + '">' + K.fmtPct(since) + '</b></div>';
+}
+function seg(id, opts, val, fn){
+  $(id).innerHTML = opts.map(o => '<button type="button" class="' + (o[0] === val ? 'on' : '') + '" data-v="' + o[0] + '"' + (o[2] ? ' title="' + o[2] + '"' : '') + '>' + o[1] + '</button>').join('');
+  $(id).querySelectorAll('button').forEach(b => b.onclick = () => fn(b.dataset.v));
+}
+function chartBar(){
+  const iv = CH ? CH.iv : 'D', rg = CH ? CH.range : '3M';
+  seg('cIv', [['D','D','Daily bars'],['W','W','Weekly bars'],['M','M','Monthly bars']], iv, v => { if (!CH) return; CH.setIv(v); chartBar(); mark(); });
+  seg('cRg', ['3M','6M','1Y','3Y','Max'].map(k => [k, k]), rg, v => { if (!CH) return; CH.setRange(v); chartBar(); });
+}
+function setFocus(on){ state.focus = on == null ? !state.focus : on; $('grid').classList.toggle('focus', state.focus); $('cFocus').textContent = state.focus ? 'Show lists' : 'Focus'; $('cFocus').setAttribute('aria-pressed', state.focus); }
 
 function wire(){
   $('catList').addEventListener('click', e => {
-    const el = e.target.closest('.catlink'); if (!el) return;
-    selectCat(el.getAttribute('data-c'));
+    const el = e.target.closest('.os-row'); if (!el) return;
+    state.pane = 'c'; selectCat(el.getAttribute('data-c'));
   });
-  $('catSelect').addEventListener('change', () => selectCat($('catSelect').value));
-  $('bApply').addEventListener('click', () => { readInputs(); applyFilters(); });
+  $('fList').addEventListener('click', e => {
+    if (e.target.closest('#bMore')){ state.limit += 200; renderRows(true); return; }
+    const el = e.target.closest('.os-row'); if (!el) return;
+    state.pane = 'f'; pickRow(filtered[+el.dataset.i]); if (window.innerWidth < 900) $('pC').scrollIntoView({behavior:'smooth', block:'start'});
+  });
   let deb;
   $('fSym').addEventListener('input', () => { clearTimeout(deb); deb = setTimeout(() => { readInputs(); applyFilters(); }, 160); });
-  $('fSym').addEventListener('keydown', e => { if (e.key === 'Enter'){ readInputs(); applyFilters(); } });
   $('fFrom').addEventListener('change', () => { readInputs(); applyFilters(); });
   $('fTo').addEventListener('change', () => { readInputs(); applyFilters(); });
   $('bReset').addEventListener('click', () => {
     $('fSym').value = ''; $('fFrom').value = DATA.from; $('fTo').value = DATA.to;
     readInputs(); selectCat('');
   });
-  $('bMore').addEventListener('click', () => { state.limit += 200; renderRows(); });
-  document.querySelectorAll('th[data-s]').forEach(th => th.addEventListener('click', () => {
-    const k = th.getAttribute('data-s');
+  $('fHead').querySelectorAll('span[data-k]').forEach(th => th.addEventListener('click', () => {
+    const k = th.getAttribute('data-k');
     if (state.sortK === k) state.sortDir = -state.sortDir; else { state.sortK = k; state.sortDir = k === 'dt' ? -1 : 1; }
     applyFilters();
   }));
+  $('cFocus').onclick = () => setFocus();
+  window.addEventListener('resize', () => K.fitGrid($('grid')));
+  new MutationObserver(() => setTimeout(mark, 0)).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const tg = e.target, typing = tg && /^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
+    if (typing){ if (e.key === 'Escape' || e.key === 'Enter') tg.blur(); if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return; if (tg.type === 'date') return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ const st = e.key === 'ArrowDown' ? 1 : -1;
+      if (state.pane === 'c'){ const j = CATS.indexOf(state.cat) + st; if (CATS[j] != null) selectCat(CATS[j], true); }
+      else { const j = filtered.indexOf(state.sel) + st; if (filtered[j]){ if (j >= state.limit){ state.limit += 200; renderRows(true); } pickRow(filtered[j], true); } }
+      e.preventDefault(); }
+    else if (e.key === 'ArrowRight'){ state.pane = 'f'; e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'Escape'){ state.pane = 'c'; if (e.key === 'ArrowLeft') e.preventDefault(); }
+    else if (e.key === 'Enter'){ const a = $('cDoc'); if (state.sel && !a.classList.contains('hidden')) window.open(a.href, '_blank', 'noopener'); }
+    else if (e.key === 'f' || e.key === 'F'){ setFocus(); }
+    else if (e.key === '/'){ $('fSym').focus(); e.preventDefault(); }
+  });
 }
 
 /* live top-up of today's filings via our Cloudflare Worker (scripts/live-quote-worker.js).
@@ -285,15 +349,15 @@ async function liveTopUp(){
       const d = a[2].slice(0, 10); if (d > maxDate) maxDate = d;
     }
     const ist = new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000);
-    $('liveBadge').textContent = '● LIVE · ' + ('0' + ist.getHours()).slice(-2) + ':' + ('0' + ist.getMinutes()).slice(-2) + ' IST';
-    $('liveBadge').classList.remove('hidden');
+    $('asof').className = 'os-asof live';
+    $('asof').innerHTML = '<span class="os-dot on"></span>Live · ' + ('0' + ist.getHours()).slice(-2) + ':' + ('0' + ist.getMinutes()).slice(-2) + ' IST · file ' + esc(DATA.updated);
     if (added){
       if (maxDate > DATA.to){                       // live rows can be newer than the committed file
         const wasDefault = $('fTo').value === DATA.to;
         DATA.to = maxDate; $('fTo').max = maxDate; $('fFrom').max = maxDate;
         if (wasDefault) $('fTo').value = maxDate;
       }
-      buildSidebar(); readInputs(); applyFilters();
+      buildSidebar(); readInputs(); applyFilters(true);
     }
   } catch (e) { /* keep file data */ }
 }
@@ -305,17 +369,24 @@ async function load(){
     DATA = await res.json();
     ROWS = DATA.rows.map(mapRow);
     liveKeys = new Set(DATA.rows.map(rowKey));
-    $('fFrom').value = DATA.from; $('fFrom').min = DATA.from; $('fFrom').max = DATA.to;
-    $('fTo').value = DATA.to;     $('fTo').min = DATA.from;   $('fTo').max = DATA.to;
+    const okD = v => /^\d{4}-\d{2}-\d{2}$/.test(v || '') && v >= DATA.from && v <= DATA.to;
+    $('fFrom').value = okD(Q.get('from')) ? Q.get('from') : DATA.from; $('fFrom').min = DATA.from; $('fFrom').max = DATA.to;
+    $('fTo').value = okD(Q.get('to')) ? Q.get('to') : DATA.to;     $('fTo').min = DATA.from;   $('fTo').max = DATA.to;
+    $('fSym').value = (Q.get('s') || Q.get('sym') || '').toUpperCase();
     $('updated').textContent = 'Updated ' + DATA.updated;
-    buildSidebar(); wire(); readInputs(); applyFilters();
+    $('asof').textContent = 'Updated ' + DATA.updated;
+    const c0 = Q.get('cat'); if (c0 && ROWS.some(r => r.cat === c0)) state.cat = c0;
     $('status').classList.add('hidden');
-    $('content').style.display = '';
+    $('content').classList.remove('hidden');
+    K.fitGrid($('grid'));
+    buildSidebar(); wire(); chartBar(); readInputs(); applyFilters();
+    const on = $('catList').querySelector('.os-row.on'); if (on) on.scrollIntoView({block:'nearest'});
     liveTopUp();
     setInterval(() => { if (!document.hidden) liveTopUp(); }, 60000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) liveTopUp(); });
   } catch (e) {
     $('status').innerHTML = 'Could not load announcements data (' + esc(e.message) + '). Please try again in a minute.';
+    console.error(e);
   }
 }
 load();
