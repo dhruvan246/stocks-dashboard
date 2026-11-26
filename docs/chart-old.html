@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex" />
+<!-- OLD VIEW of chart.html, kept so the header's New / Old switch has somewhere to go. Frozen copy: fix bugs in chart.html, not here. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Charts</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  main{width:100%;min-width:0}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  #chartWrap{position:relative}
+  #chart{height:calc(100vh - 330px);min-height:360px}
+  @media (max-width:640px){ #chart{height:calc(100vh - 380px);min-height:300px} }
+  #chartWrap.drawing{cursor:crosshair;touch-action:none}
+  #zoomBar{position:absolute;left:50%;bottom:38px;transform:translateX(-50%);display:none;gap:6px;z-index:5}
+  #zoomBar button{width:32px;height:32px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;line-height:1;font-weight:600;cursor:pointer;box-shadow:0 4px 12px -6px rgba(0,0,0,.35);opacity:.9;display:flex;align-items:center;justify-content:center;padding:0}
+  #zoomBar button:hover{opacity:1;border-color:var(--accent)}
+  #tip{position:absolute;left:6px;top:6px;max-width:calc(100% - 84px);pointer-events:none;display:none;background:color-mix(in srgb,var(--surface) 82%,transparent);border-radius:var(--radius);padding:.2rem .45rem;font-size:.72rem;line-height:1.45;color:var(--text);z-index:5}
+  .sel,#indPanel input[type=number],#indPanel select{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text-muted);font-size:11px;font-weight:600;padding:.22rem .35rem;max-width:100%}
+  #indPanel{position:absolute;right:0;top:calc(100% + 6px);z-index:30;display:none;width:280px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 14px 34px -14px rgba(0,0,0,.45);padding:8px 10px;font-size:12px;font-weight:500;color:var(--text);cursor:default}
+  #indPanel.open{display:block}
+  #indPanel label{display:flex;align-items:center;gap:6px;padding:3px 0;flex-wrap:wrap}
+  #indPanel input[type=number]{width:54px}
+  #indPanel .hint{font-size:10.5px;color:var(--text-faint);padding-left:20px}
+  @media (max-width:640px){ #indPanel{position:fixed;left:12px;right:12px;top:auto;bottom:72px;width:auto;max-height:60vh;overflow-y:auto;z-index:80} }
+  #chartCard:fullscreen{display:flex;flex-direction:column;border-radius:0;padding:10px 12px;overflow:auto;background:var(--surface)}
+  #chartCard:fullscreen #chartWrap{flex:1 1 auto;min-height:240px}
+  #chartCard:fullscreen #chart{height:100%;min-height:240px}
+  .cmp-x{cursor:pointer;text-decoration:underline}
+  @media (max-width:640px){ #tip{font-size:.66rem} #tip div{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden} }
+  .rng,.tool{cursor:pointer;user-select:none}
+  html[data-theme] .rng.on{color:#fff !important}
+  .rng.on,.tool.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff !important;border-color:transparent}
+  .tool{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .55rem;border-radius:var(--radius);border:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);background:var(--surface);line-height:1.3}
+  .tool:hover{border-color:var(--accent)}
+  .tool[disabled]{opacity:.4;cursor:default}
+  .tool svg{width:14px;height:14px}
+  .chip{cursor:pointer;display:inline-flex;padding:.15rem .55rem;border-radius:999px;border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text-muted);background:var(--surface-2)}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  #expr{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  #exprBox{position:relative}
+  #sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 14px 34px -14px rgba(0,0,0,.45);max-height:min(60vh,380px);overflow-y:auto;padding:4px}
+  #sug.open{display:block}
+  .sug-r{display:flex;align-items:center;gap:.6rem;padding:.42rem .6rem;border-radius:var(--radius);cursor:pointer;font-size:12.5px;color:var(--text)}
+  .sug-r.on{background:var(--surface-2);box-shadow:inset 2px 0 0 var(--accent)}
+  .sug-c{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;flex:0 0 auto;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sug-n{flex:1 1 auto;min-width:0;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sug-k{flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint)}
+  .sug-k.idx{color:var(--accent)}
+  @media (max-width:640px){ .sug-r{flex-wrap:wrap;row-gap:1px} .sug-c{flex:1 1 0;max-width:none} .sug-n{order:3;flex:0 0 100%;font-size:11.5px} }
+</style>
+</head>
+<body>
+<main class="max-w-screen-xl mx-auto px-3 sm:px-4 py-4 space-y-3">
+
+  <div class="card p-4">
+    <div class="flex items-center justify-between flex-wrap gap-2">
+      <div>
+        <div class="text-lg font-bold text-slate-800">Charts</div>
+        <div class="text-slate-500 text-xs">One symbol, a ratio (A/B) or a basket (A+B+C). Draw on it; drawings are saved in this browser, per chart, with no limit.</div>
+      </div>
+    </div>
+    <form id="exprForm" class="flex items-center gap-2 mt-3">
+      <div id="exprBox" class="flex-1 min-w-0">
+        <input id="expr" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-controls="sug" aria-expanded="false" placeholder="Type a name: nif, reliance…   or a ratio: CANFINHOME/NIFTY   ·   PFC+RECLTD" class="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full" />
+        <div id="sug" role="listbox" aria-label="Matching indices and stocks"></div>
+      </div>
+      <button class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-800 text-white">Show</button>
+      <button type="button" id="cmpBtn" class="px-3 py-2 rounded-lg text-sm font-semibold border border-slate-300 text-slate-600" title="Draw what is typed in the box on top of the current chart, both as % change">Compare</button>
+    </form>
+    <div id="chips" class="flex flex-wrap items-center gap-1.5 mt-2"></div>
+  </div>
+
+  <div class="card p-3 sm:p-4" id="chartCard">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div id="tools" class="flex items-center gap-1 flex-wrap"></div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
+        <span id="tfBtns" class="flex items-center gap-1" title="Bar size: daily, weekly or monthly"><span data-tf="D" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Daily bars">D</span><span data-tf="W" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Weekly bars">W</span><span data-tf="M" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Monthly bars">M</span></span>
+        <select id="typeSel" class="sel" title="Chart type" aria-label="Chart type"><option value="line">Line</option><option value="candle">Candles</option><option value="bar">Bars</option><option value="ha">Heikin Ashi</option></select>
+        <span id="logBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Logarithmic price scale">Log</span>
+        <span id="pctBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Percent scale: change from the first bar on screen">%</span>
+        <span id="indBox" style="position:relative"><span id="indBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Moving averages, Bollinger Bands, RSI, MACD, volume">Indicators</span><div id="indPanel"></div></span>
+        <input id="goDate" type="date" class="sel" title="Go to a date" aria-label="Go to a date" />
+        <span id="favBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Add this chart to your favourites (kept in this browser)">&#9734;</span>
+        <span id="shotBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Save the chart as a picture (PNG)">Image</span>
+        <span id="csvBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Download the plotted bars as a CSV file">CSV</span>
+        <span id="fsBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Full screen (F)">Full screen</span>
+      </div>
+    </div>
+    <div id="chartWrap"><div id="chart"></div><div id="tip"></div><div id="zoomBar"><button type="button" data-z="out" title="Zoom out" aria-label="Zoom out">&minus;</button><button type="button" data-z="in" title="Zoom in" aria-label="Zoom in">+</button><button type="button" data-z="reset" title="Back to the selected range" aria-label="Reset zoom" style="font-size:15px">&#8634;</button></div></div>
+    <div id="legend" class="mt-2 text-[11px] text-slate-500 space-y-0.5"></div>
+  </div>
+
+  <div class="card p-4 text-xs text-slate-500 space-y-1">
+    <div class="font-semibold text-slate-700 text-sm">How to use</div>
+    <div><b>Symbols:</b> any NSE/BSE symbol on this site (RELIANCE, M&amp;M, BAJAJ-AUTO), or an index: NIFTY, CNX500, BANKNIFTY, CNXPSUBANK, CNXIT, CNXPHARMA, CNXAUTO, CNXMETAL, CNXREALTY, CNXPSE… TradingView-style <code>NSE:</code> / <code>BSE:</code> prefixes are accepted and ignored.</div>
+    <div><b>Maths:</b> <code>+ - * /</code>, brackets and plain numbers. Put spaces around a minus sign (<code>A - B</code>), because some symbols contain a hyphen.</div>
+    <div><b>Drawing:</b> pick a tool, then click two points (or press and drag). Horizontal line, Vertical line and Text need one click. Ray is a trend line that carries on past its second point. Measure shows the change, the % change, the bars and the days between two points. With the pointer tool, click a drawing to select it, drag it or its end points to move it, and press Delete to remove it. Undo and Redo step through your changes on the chart that is open.</div>
+    <div><b>Chart types:</b> Line, Candles, Bars (open-high-low-close) and Heikin Ashi (smoothed candles: the bars drawn are averages, the numbers at the top left stay the real prices). <b>Indicators:</b> up to three moving averages (simple or exponential, any length), Bollinger Bands, RSI and MACD, all worked out on the closes of the bars on screen (daily, weekly or monthly). Volume is offered for a single stock on daily bars and covers the last 400 sessions only.</div>
+    <div><b>Compare:</b> open a chart, type another symbol or ratio in the box and press Compare. Both are then drawn as % change from the first bar on screen (up to four at once); remove one under the chart. The <b>%</b> button puts a single chart on the same percent scale.</div>
+    <div><b>Keys:</b> <code>+</code> / <code>-</code> zoom, <code>&larr;</code> / <code>&rarr;</code> move, <code>/</code> jump to the symbol box, <code>F</code> full screen, <code>Ctrl+Z</code> / <code>Ctrl+Y</code> undo and redo a drawing, <code>Esc</code> drop the tool, <code>Delete</code> remove the selected drawing.</div>
+    <div><b>Global:</b> USDINR, DXY, US10Y · USOIL (US crude), BRENT, NATGAS, GOLD and SILVER ($/oz), GOLDINR (Rs/10g), SILVERINR (Rs/kg), XAUINRG (Rs/gram), COPPER, ALUMINIUM, BTCUSD · SENSEX — daily closes (most from 2012), so <code>NIFTY/USDINR</code> or <code>NIFTY/USOIL</code> work. TradingView prefixes (<code>TVC:</code>, <code>SP:</code>, <code>FX_IDC:</code>…) are accepted.</div>
+    <div><b>World indices</b> (daily open, high, low and close, whole history, refreshed every night, from Yahoo unless said): <b>Americas</b> SPX, NASDAQ, NDX, DJI, RUT, NYA, VIX (US), TSX, IBOV, MEXBOL · <b>Europe</b> FTSE, FTSE250, DAX, MDAX, CAC40, STOXX50, STOXX600, AEX, SMI, IBEX, FTSEMIB, BEL20, ATX, PSI, ISEQ, OMXS30, OMXC25, OMXH25, OSEBX, ATHEX, BIST100 · <b>Asia-Pacific</b> NIKKEI, HSI, HSCEI, SHCOMP, SZCOMP, CSI300 (from the index owner, closes from 2002, open/high/low from 2005), VNINDEX (Vietnam, from VNDIRECT, Aug 2017 onwards), KOSPI, KOSDAQ, TAIEX, STI, KLCI, JCI, ASX200, ALLORDS, NZX50 · <b>Middle East and Africa</b> TA125, TA35, JSE, JSE40. <b>Read by hand from TradingView charts on 25 Nov 2026 — not refreshed automatically, each ends on the date its legend shows</b>: MERVAL (Argentina, from Sep 2004, ends 16 Oct 2026), WIG20 (Poland, 1994), BUX (Hungary, 2002), MOEX (Russia — TradingView's “Russia Index”, starts at 100 on 22 Sep 1997; not checked against the exchange), SET (Thailand, 1982), PSEI (Philippines, 1987), KSE100 (Pakistan, 2013), CSEALL (Sri Lanka, 2012), TASI (Saudi Arabia, 1986), EGX30 (Egypt, 1998), DFM (Dubai, 2005), QSI (Qatar, 1999). Typing a country (japan, korea, germany) finds its index, and <code>NIFTY/SPX</code> or <code>CNX500/NIKKEI</code> work. They are in their own currency and points. On a ratio with an Indian index each day uses the world index bar of the same calendar date. An Asian index can be a day behind until its close is published. IPSA (Chile): daily closes only, from findic.cl, Jan 1989 onwards, refreshed every night — Line only, no candles; the index has been run by MSCI instead of S&P since 1 Sep 2026 and the series carries on across that date.</div>
+    <div><b>BSE indices and MCX:</b> <code>BSE:METAL</code>, <code>BSE:MIDCAP</code>, <code>BSE:SMLCAP</code>, <code>BSE:POWER</code>, <code>BSE:PSU</code> · MCX futures in rupees, front month <code>1!</code> and second month <code>2!</code>: <code>MCX:COPPER1!</code>, <code>MCX:ALUMINIUM1!</code>, <code>MCX:CRUDEOIL1!</code>, <code>MCX:NATURALGAS2!</code>, and the MCX copper index <code>MCX:MCXCOPRDEX</code> · NSE index futures, front month: <code>NSE:NIFTY1!</code>, <code>NSE:BANKNIFTY1!</code> (from NSE's daily F&amp;O file). These come from the BSE and MCX websites, which only answer a browser, so they are refreshed by hand and not every night — the line under the chart shows the last date. A futures series is the contracts joined end to end without adjustment, so the price steps on each roll day; a day the contract did not trade has no bar.</div>
+    <div><b>Data:</b> split/bonus-adjusted daily closes. Not available here: other currencies, GIFT Nifty, India money supply, intraday prices.</div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+'use strict';
+/* =====================================================================================================
+ * chart.html — expression charts (symbol, ratio A/B, basket A+B) with drawing tools.
+ *
+ * DATA (all measured 2026-11-24, see the legend the page prints under every chart):
+ *   stocks        sf-data/stk/<SYM>.json — the same per-stock slice stock.html draws (adjusted closes)
+ *   NIFTY 50      nifty.json            daily from 2002
+ *   NIFTY 500     nifty500.json         daily from 2012
+ *   NIFTY BANK    nifty_bank.json       daily from 2012
+ *   INDIA VIX     india_vix.json        daily from 2012
+ *   other indices indices_hist.json     daily only from 2026-07-20, and index_monthly.json month-end
+ *                 closes before that (32 indices). A chart that uses one of these is MONTHLY before
+ *                 its daily history starts — the legend says so for each operand.
+ * DRAWINGS live in localStorage (key LS_DRAW), one list per normalised expression. Local only — the
+ * key is deliberately NOT in theme.js SW_SETTINGS_KEYS, so nothing here is pushed to the shared doc.
+ * ===================================================================================================== */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DAY=86400;
+const SLICE_URL='https://dhruvan246.github.io/sf-data/stk/';   // same origin on the live site; CORS-open elsewhere
+const LS_DRAW='sw_chart_drawings_v1', LS_RECENT='sw_chart_recent_v1';
+const lsGet=(k,fb)=>{ try{ const v=JSON.parse(localStorage.getItem(k)); return v==null?fb:v; }catch(e){ return fb; } };
+const lsSet=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } };
+const isoToTs=s=>Date.parse(s+'T00:00:00Z')/1000;
+const tsToIso=t=>new Date(t*1000).toISOString().slice(0,10);
+const fmtDate=t=>new Date(t*1000).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'});
+const slugSym=s=>String(s).replace(/[^A-Za-z0-9._-]/g,'_');     // mirrors backtest-engine.js slugSym()
+const norm=s=>String(s).toUpperCase().replace(/[^A-Z0-9]/g,'');
+
+/* ---------- index catalogue ------------------------------------------------------------------- */
+// TradingView-style codes → the NSE index name used as the key in indices_hist.json
+const IDX_ALIAS={ NIFTY:'NIFTY 50', NIFTY50:'NIFTY 50', CNX500:'NIFTY 500', CNX100:'NIFTY 100', CNX200:'NIFTY 200',
+  NIFTYJR:'NIFTY NEXT 50', BANKNIFTY:'NIFTY BANK', CNXPSUBANK:'NIFTY PSU BANK', CNXIT:'NIFTY IT', CNXPHARMA:'NIFTY PHARMA',
+  CNXAUTO:'NIFTY AUTO', CNXMETAL:'NIFTY METAL', CNXFMCG:'NIFTY FMCG', CNXENERGY:'NIFTY ENERGY', CNXREALTY:'NIFTY REALTY',
+  CNXMEDIA:'NIFTY MEDIA', CNXINFRA:'NIFTY INFRA', CNXPSE:'NIFTY PSE', CNXMNC:'NIFTY MNC', CNXFINANCE:'NIFTY FIN SERVICE',
+  CNXMIDCAP:'NIFTY MIDCAP 100', CNXSMALLCAP:'NIFTY SMLCAP 100', CNXCONSUMPTION:'NIFTY CONSUMPTION', CNXCOMMODITIES:'NIFTY COMMODITIES',
+  NIFTYMIDSML400:'NIFTY MIDSMALLCAP 400', INDIAVIX:'INDIA VIX' };
+// index_monthly.json names that differ from indices_hist.json names (each pair verified equal by value on 2026-10-22)
+const MONTHLY_NAME={ 'NIFTY SMLCAP 100':'NIFTY SMALLCAP 100', 'NIFTY SMLCAP 250':'NIFTY SMALLCAP 250', 'NIFTY MICROCAP250':'NIFTY MICROCAP 250',
+  'NIFTY PVT BANK':'NIFTY PRIVATE BANK', 'NIFTY IND DEFENCE':'NIFTY INDIA DEFENCE', 'NIFTY CONSUMPTION':'NIFTY INDIA CONSUMPTION' };
+// indices with their own long daily file
+const DAILY_FILE={ 'NIFTY 50':'nifty.json', 'NIFTY 500':'nifty500.json', 'NIFTY BANK':'nifty_bank.json', 'INDIA VIX':'india_vix.json', 'NIFTY MICROCAP250':'nifty_microcap250.json' };
+
+/* Currency / commodity / world-index series from macro.json — the Macro page's own file (Yahoo daily closes from 2012).
+   code → [series key, label]. These trade on days NSE is shut, so in a mixed expression (NIFTY/USDINR) only the
+   NSE dates are plotted and the macro value is carried from its last close (≤5 days). A macro code wins over a
+   stock of the same name (SILVER is also a dead ticker). */
+const MACRO={ USDINR:['usdinr','USD/INR'], DXY:['dxy','US dollar index (DXY)'], USOIL:['wti','US crude oil (WTI)'], WTI:['wti','US crude oil (WTI)'], USCRUDE:['wti','US crude oil (WTI)'],
+  CRUDEOIL:['wti','US crude oil (WTI)'], BRENT:['crude','Brent crude oil'], UKOIL:['crude','Brent crude oil'],
+  GOLD:['goldusd','Gold ($/oz)'], XAUUSD:['goldusd','Gold ($/oz)'], SILVER:['silverusd','Silver ($/oz)'], XAGUSD:['silverusd','Silver ($/oz)'],
+  GOLDINR:['gold','Gold (Rs/10g)'], SILVERINR:['silver','Silver (Rs/kg)'], XAUINRG:['gold','Gold (Rs/gram)',0.1],
+  COPPER:['copper','Copper ($/lb)'], 'HG1!':['copper','Copper ($/lb)'], NATGAS:['natgas','US natural gas ($/mmBtu)'], NATURALGAS:['natgas','US natural gas ($/mmBtu)'],
+  ALUMINIUM:['alum','Aluminium, COMEX ($/t)'], BTCUSD:['btc','Bitcoin ($)'], BTC:['btc','Bitcoin ($)'],
+  SENSEX:['sensex','BSE Sensex'], SPX:['spx','S&P 500'], SP500:['spx','S&P 500'], NASDAQ:['nasdaq','Nasdaq Composite'], IXIC:['nasdaq','Nasdaq Composite'],
+  NDX:['ndx','Nasdaq 100'], US100:['ndx','Nasdaq 100'], DJI:['dji','Dow Jones Industrial Average'], US30:['dji','Dow Jones Industrial Average'],
+  DAX:['dax','DAX'], CAC40:['cac','CAC 40'], CAC:['cac','CAC 40'], PX1:['cac','CAC 40'], FTSE:['ftse','FTSE 100'], KOSPI:['kospi','KOSPI'], SMI:['smi','Swiss Market Index'],
+  AEX:['aex','AEX (Netherlands)'], NL25:['aex','AEX (Netherlands)'],
+  NIKKEI:['nikkei','Nikkei 225'], NI225:['nikkei','Nikkei 225'], HSI:['hsi','Hang Seng'], HANGSENG:['hsi','Hang Seng'], US10Y:['us10y','US 10-year yield (%)'] };
+/* Old tickers → the symbol that carries their price history today. Used only when the old ticker has no file of its own.
+   Each pair was checked on 2026-11-24: NSE renames from scripts/_rename_map.json plus a continuous slice under the new symbol;
+   old BSE ids (GMM, RAJGLOWIR, RSYSTEMINT) from BSE's own page address for that scrip code; CEINSYSTECH from the NSE filing prefix. */
+const RENAMED={ CADILAHC:'ZYDUSLIFE', GUJGASLTD:'GUJENERGY', GUJGAS:'GUJENERGY', BHAGIL:'BHAGCHEM', HEG:'HEGAM', TATAMOTORS:'TMPV', DHARAMSI:'DMCC', CEINSYSTECH:'CEINSYS',
+  GMM:'GMMPFAUDLR', RAJGLOWIR:'RAJRATAN', RSYSTEMINT:'RSYSTEMS' };
+// TradingView BSE: codes that are BSE indices, not stocks (METAL and MIDCAP are also dead NSE tickers — never load those for a BSE: code)
+const BSE_INDEX={ METAL:'BSE Metal index', MIDCAP:'BSE Midcap index', SMLCAP:'BSE Smallcap index', POWER:'BSE Power index', PSU:'BSE PSU index' };
+/* Extra series (scripts/build_xseries.py → ./xseries/): BSE sector indices, MCX and NSE continuous futures and one
+   delisted BSE-only stock. Their sources answer only a real browser, so no nightly job refreshes them — the legend
+   shows each one's last date. Codes: BSE:METAL, MCX:COPPER1!, NSE:BANKNIFTY1! … plus the aliases in _index.json. */
+let XSER=null;
+const xIndex=()=>XSER||(XSER=jget('./xseries/_index.json').then(j=>{ const m={}, S=(j&&j.ser)||{};
+  for(const c in S){ const e=Object.assign({code:c},S[c]); m[c]=e; }
+  for(const c in S) for(const a of (S[c].alias||[])) if(!m[a]) m[a]=m[c];
+  return m; }).catch(e=>{ console.warn('xseries index unavailable',e); XSER=null; return {}; }));
+async function loadX(e){
+  const b=await jget('./xseries/'+e.f+'.json'); const pts=[]; let t=isoToTs(b.d0);
+  for(let i=0;i<b.c.length;i++){ if(i) t+=b.dd[i-1]*DAY; if(!(b.c[i]>0)) continue; const p={t,v:b.c[i]/100,m:0};
+    if(b.o[i]!=null&&b.h[i]!=null&&b.l[i]!=null){ p.o=b.o[i]/100; p.h=b.h[i]/100; p.l=b.l[i]/100; } pts.push(p); }
+  if(!pts.length) throw new Error('empty');
+  return { label:e.label, kind:'x', tag:e.kind||'', src:e.src||'', unit:e.unit||'', note:e.note||'', pts, dailyFrom:pts[0].t, nMonthly:0 };
+}
+/* World indices (./world, built by scripts/fetch_world_indices.py every night from Yahoo's daily chart feed): full daily
+   open/high/low/close history of each country's main index. Same file shape as ./xseries. They resolve BEFORE the MACRO
+   table, so SPX, NIKKEI, DAX … get their whole history and real candles; if ./world cannot be read the MACRO closes still work. */
+let WSER=null, WMAP={};
+const wIndex=()=>WSER||(WSER=jget('./world/_index.json').then(j=>{ const m={}, S=(j&&j.ser)||{};
+  for(const c in S) m[c]=Object.assign({code:c},S[c]);
+  for(const c in S) for(const a of (S[c].alias||[])) if(!m[a]) m[a]=m[c];
+  return WMAP=m; }).catch(e=>{ console.warn('world index list unavailable',e); WSER=null; return {}; }));
+async function loadWorld(e){
+  const b=await jget('./world/'+e.f+'.json'); const pts=[]; let t=isoToTs(b.d0);
+  for(let i=0;i<b.c.length;i++){ if(i) t+=b.dd[i-1]*DAY; if(!(b.c[i]>0)) continue; const p={t,v:b.c[i]/100,m:0};
+    if(b.o[i]!=null&&b.h[i]!=null&&b.l[i]!=null){ p.o=b.o[i]/100; p.h=b.h[i]/100; p.l=b.l[i]/100; } pts.push(p); }
+  if(!pts.length) throw new Error('empty');
+  // kind 'macro': it trades on days NSE is shut, so it never adds dates to a chart that has an NSE leg
+  return { label:e.label, kind:'macro', world:true, country:e.country||'', src:e.src||'', manual:!!e.manual, unit:'', pts, dailyFrom:pts[0].t, nMonthly:0 };
+}
+function xMissing(tok){ const i=tok.indexOf(':'), ex=tok.slice(0,i), sym=tok.slice(i+1);
+  if(ex==='BSE'&&BSE_INDEX[sym]) return BSE_INDEX[sym]+' ("'+tok+'") is not available here yet. Sensex is: SENSEX.';
+  if(ex==='NSEIX') return '"'+tok+'" is a GIFT City contract; its prices are not available here. NSE\'s own front-month futures are NSE:NIFTY1! and NSE:BANKNIFTY1!.';
+  if(!/[0-9]!$/.test(sym)) return '"'+tok+'" is not available here. MCX codes that are: MCX:COPPER1!, MCX:ALUMINIUM1!, MCX:CRUDEOIL1!, MCX:NATURALGAS1! (and 2!), MCX:MCXCOPRDEX.';
+  return '"'+tok+'" is a futures contract that is not available here.'+(ex==='NSE'?' Available: NSE:NIFTY1! and NSE:BANKNIFTY1!; otherwise use the index itself, e.g. '+sym.replace(/[0-9]!$/,'')+'.':''); }
+async function loadMacro(code){
+  const [key,label,mul]=MACRO[code]; const j=await jget('./macro.json'); const S=(j.series||{})[key]; const d=S&&S.d;
+  if(!d||!Object.keys(d).length) throw new Error(label+' is not in the data yet.');
+  const pts=Object.keys(d).sort().map(k=>({t:isoToTs(k),v:+d[k]*(mul||1),m:0})).filter(p=>isFinite(p.v));
+  if(!pts.length) throw new Error('empty');
+  return { label, kind:'macro', src:S.src||'', unit:S.unit||'', pts, dailyFrom:pts[0].t, nMonthly:0 };
+}
+const jget=(()=>{ const c={}; return u=>c[u]||(c[u]=fetch(u).then(r=>{ if(!r.ok) throw new Error(u+' HTTP '+r.status); return r.json(); })); })();
+let IDX_NAMES=null;   // norm → canonical index name
+async function indexNames(){
+  if(IDX_NAMES) return IDX_NAMES;
+  const m={};
+  try{ const h=await jget('./indices_hist.json'); const days=Object.keys(h.daily||{}).sort(); const last=h.daily[days[days.length-1]]||{};
+    for(const k of Object.keys(last)) m[norm(k)]=k; }catch(e){ console.warn('indices_hist.json unavailable',e); }
+  for(const k of Object.keys(DAILY_FILE)) m[norm(k)]=k;
+  for(const a in IDX_ALIAS) m[a]=IDX_ALIAS[a];
+  for(const k in MONTHLY_NAME) m[norm(MONTHLY_NAME[k])]=k;
+  return IDX_NAMES=m;
+}
+/* Daily open/high/low/close per index from NSE's all-indices file (scripts/build_index_ohlc.py): 2012-02-21 →,
+   or from the day NSE first published that index. It supplies (a) the daily closes for days our own files do
+   not have, and (b) the open/high/low for candles. Our own close files win where both have a day. */
+let IDXO=null;
+const idxOhlcIndex=()=>IDXO||(IDXO=jget('./idx_ohlc/_index.json').then(j=>(j&&j.idx)||{}).catch(()=>({})));
+async function idxBars(name){
+  const m=(await idxOhlcIndex())[name]; if(!m) return null;
+  try{ const b=await jget('./idx_ohlc/'+m.f+'.json'); const out=new Map(); let t=isoToTs(b.d0);
+    for(let i=0;i<b.c.length;i++){ if(i) t+=b.dd[i-1]*DAY; out.set(t,[b.o[i],b.h[i],b.l[i],b.c[i]]); }
+    return out; }catch(e){ console.warn('index history unavailable for '+name,e); return null; }
+}
+// → {label, kind:'index', pts:[{t,v,m,o?,h?,l?}] ascending, dailyFrom:ts|null, note}
+async function loadIndex(name){
+  const daily=new Map();
+  if(DAILY_FILE[name]){ const j=await jget('./'+DAILY_FILE[name]); for(const d in (j.px||{})) if(j.px[d]>0) daily.set(isoToTs(d),j.px[d]); }
+  if(name!=='INDIA VIX'){
+    try{ const h=await jget('./indices_hist.json'); for(const d in h.daily){ const v=h.daily[d][name]; if(v>0) daily.set(isoToTs(d),v); } }catch(e){}
+  }
+  const bars=await idxBars(name);
+  if(bars) for(const [t,b] of bars) if(!daily.has(t)&&b[3]>0) daily.set(t,b[3]/100);
+  const dts=[...daily.keys()].sort((a,b)=>a-b);
+  const firstDaily=dts.length?dts[0]:Infinity;
+  // month-end closes for the months before the daily history starts
+  const pts=[];
+  const mname=MONTHLY_NAME[name]||name;
+  if(name!=='INDIA VIX'){
+    try{
+      const mo=await jget('./index_monthly.json'); const ix=(mo.indices||[]).find(x=>x.key===mname);
+      if(ix){
+        const cal=await tradingCalendar();
+        for(const y of Object.keys(ix.closes).sort()){ const arr=ix.closes[y]||[];
+          for(let i=0;i<arr.length;i++){ const v=arr[i]; if(!(v>0)) continue;
+            const t=monthEnd(+y,i,cal); if(t<firstDaily && tsToIso(t).slice(0,7)<tsToIso(firstDaily===Infinity?4e9:firstDaily).slice(0,7)) pts.push({t,v,m:1}); } }
+      }
+    }catch(e){ console.warn('index_monthly.json unavailable',e); }
+  }
+  for(const t of dts){ const p={t,v:daily.get(t),m:0}, b=bars&&bars.get(t);
+    if(b&&b[0]!=null&&b[1]!=null&&b[2]!=null){ p.o=b[0]/100; p.h=b[1]/100; p.l=b[2]/100; }
+    pts.push(p); }
+  if(!pts.length) throw new Error('No history for index '+name);
+  const nM=pts.filter(p=>p.m).length;
+  return { label:name, kind:'index', pts, dailyFrom:dts.length?dts[0]:null, nMonthly:nM };
+}
+// last trading day of each month, from the NIFTY 50 calendar (2002→); before that, the last weekday
+let CAL=null;
+async function tradingCalendar(){
+  if(CAL) return CAL; const m=new Map();
+  try{ const j=await jget('./nifty.json'); for(const d in (j.px||{})){ const k=d.slice(0,7); if(!m.has(k)||d>m.get(k)) m.set(k,d); } }catch(e){}
+  return CAL=m;
+}
+function monthEnd(y,mi,cal){
+  const k=y+'-'+String(mi+1).padStart(2,'0'); const hit=cal.get(k); if(hit) return isoToTs(hit);
+  let d=new Date(Date.UTC(y,mi+1,0)); while(d.getUTCDay()===0||d.getUTCDay()===6) d=new Date(d.getTime()-DAY*1000);
+  return d.getTime()/1000;
+}
+async function loadStock(sym){
+  let r=await fetch(SLICE_URL+slugSym(sym)+'.json'); let was='';
+  if(!r.ok&&RENAMED[sym]){ was=sym; r=await fetch(SLICE_URL+slugSym(RENAMED[sym])+'.json'); }
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const S=await r.json(); if(!S||!Array.isArray(S.p)||!S.p.length||typeof S.d0!=='number'||typeof S.ts!=='number') throw new Error('malformed');
+  const pts=[]; let off=S.d0, prev=-Infinity; const dd=S.dd||[];
+  const vq=Array.isArray(S.v)?S.v:[], v0=S.p.length-vq.length;      // volume: only the last S.k bars carry it
+  for(let i=0;i<S.p.length;i++){ if(i>0) off+=dd[i-1]; if(!(off>prev)) continue; prev=off; const v=S.p[i]/100; if(v>0){ const p={t:S.ts+off*DAY,v,m:0,i}; if(v0>=0&&i>=v0&&vq[i-v0]!=null) p.q=vq[i-v0]; pts.push(p); } }
+  if(!pts.length) throw new Error('empty');
+  return { label:(S.sym||sym)+(was?' (was '+was+')':''), name:S.name||'', kind:'stock', alive:!!S.alive, pts, dailyFrom:pts[0].t, nMonthly:0, file:was?RENAMED[sym]:sym, np:S.p.length };
+}
+/* Open/high/low for a stock: sf-data/ohlc/<SYM>.json (scripts/build_stock_ohlc.py), bar-for-bar with the slice,
+   each stored as the difference from the close in price x100. Fetched only when Candles is on. A missing file or
+   a bar count that differs from the slice (the two were built on different days) means no candles — never a guess. */
+let OHLC_URL='https://dhruvan246.github.io/sf-data/ohlc/';
+async function stockOhlc(op){
+  if(op.ohlcTried) return; op.ohlcTried=true;
+  try{ const r=await fetch(OHLC_URL+slugSym(op.file)+'.json'); if(!r.ok) return; const J=await r.json();
+    if(!J||J.n!==op.np||!Array.isArray(J.o)||J.o.length!==op.np||J.h.length!==op.np||J.l.length!==op.np) return;
+    for(const p of op.pts){ p.o=p.v+J.o[p.i]/100; p.h=p.v+J.h[p.i]/100; p.l=p.v+J.l[p.i]/100; }
+  }catch(e){ op.ohlcTried=false; console.warn('no open/high/low for '+op.label,e); }   // network failure: try again next time
+}
+const OPCACHE={};
+async function resolveSymbol(tok){           // tok: upper-case, exchange prefix already stripped
+  if(OPCACHE[tok]) return OPCACHE[tok];
+  const W=await wIndex(), w=W[tok];
+  const X=await xIndex(), x=(MACRO[tok]||w)?null:X[tok];
+  if(!x&&tok.includes(':')){ const e=new Error(xMissing(tok)); e.keep=true; throw e; }
+  const names=await indexNames(); const idx=names[norm(tok)];
+  const p=w ? loadWorld(w).catch(e=>{ if(MACRO[tok]) return loadMacro(tok); throw e; }) : MACRO[tok] ? loadMacro(tok) : x ? loadX(x) : idx ? loadIndex(idx) : loadStock(tok);
+  OPCACHE[tok]=p; p.catch(()=>{ delete OPCACHE[tok]; });
+  return p;
+}
+
+/* ---------- expression: tokenise → resolve symbols → parse → evaluate ---------------------------- */
+function tokenize(src){
+  const s=src.toUpperCase(); const out=[]; let i=0;
+  while(i<s.length){ const c=s[i];
+    if(/\s/.test(c)){ i++; continue; }
+    if('+*/()'.includes(c)){ out.push({k:c}); i++; continue; }
+    if(c==='-'){ out.push({k:'-'}); i++; continue; }
+    if(/[0-9.]/.test(c)){ let j=i; while(j<s.length&&/[0-9.]/.test(s[j])) j++;
+      // a digit run followed by letters is a symbol (3MINDIA, 20MICRONS), not a number
+      if(j<s.length&&/[A-Z&_]/.test(s[j])){ /* fall through to the symbol branch */ }
+      else { const n=parseFloat(s.slice(i,j)); if(!isFinite(n)) throw new Error('Bad number "'+s.slice(i,j)+'"'); out.push({k:'num',v:n}); i=j; continue; } }
+    if(/[A-Z0-9&_]/.test(c)){ let j=i;
+      while(j<s.length&&(/[A-Z0-9&_.:!]/.test(s[j])||(s[j]==='-'&&j+1<s.length&&/[A-Z0-9]/.test(s[j+1])&&/[A-Z0-9]/.test(s[j-1])))) j++;
+      let sym=s.slice(i,j); const colon=sym.lastIndexOf(':');
+      if(colon>=0){ const ex=sym.slice(0,colon); sym=sym.slice(colon+1);
+        if(ex==='BSE'&&BSE_INDEX[sym]) sym='BSE:'+sym;                          // a BSE index, never the dead NSE ticker of the same name
+        else if((/[0-9]!$/.test(sym)||ex==='MCX')&&!MACRO[sym]) sym=ex+':'+sym; // a futures contract or an MCX code: resolved in ./xseries or refused by name
+        else if(ex!=='NSE'&&ex!=='BSE'&&!MACRO[sym]&&!WMAP[sym]) throw new Error('"'+ex+':'+sym+'" is not available here. Open "How it works" for the list of global series.'); }
+      out.push({k:'sym',v:sym}); i=j; continue; }
+    throw new Error('Unexpected character "'+c+'"');
+  }
+  return out;
+}
+// resolve every symbol; a hyphenated token that is not itself a symbol becomes a subtraction (A-B)
+async function resolveTokens(toks){
+  const out=[], ops={};
+  for(const t of toks){
+    if(t.k!=='sym'){ out.push(t); continue; }
+    try{ ops[t.v]=await resolveSymbol(t.v); out.push(t); continue; }catch(e){
+      if(e&&e.keep) throw e;
+      if(!t.v.includes('-')) throw new Error('No price data for "'+t.v+'". Check the symbol.');
+    }
+    const parts=t.v.split('-');
+    for(let i=0;i<parts.length;i++){ const p=parts[i];
+      if(i) out.push({k:'-'});
+      if(/^[0-9.]+$/.test(p)) out.push({k:'num',v:parseFloat(p)});
+      else { try{ ops[p]=await resolveSymbol(p); }catch(e){ throw new Error('No price data for "'+t.v+'" (also tried "'+p+'"). Check the symbol.'); } out.push({k:'sym',v:p}); } }
+  }
+  return {toks:out,ops};
+}
+function parse(toks){
+  let i=0; const peek=()=>toks[i], eat=k=>{ if(toks[i]&&toks[i].k===k){ return toks[i++]; } return null; };
+  function expr(){ let l=term(); for(;;){ if(eat('+')) l={op:'+',l,r:term()}; else if(eat('-')) l={op:'-',l,r:term()}; else return l; } }
+  function term(){ let l=unary(); for(;;){ if(eat('*')) l={op:'*',l,r:unary()}; else if(eat('/')) l={op:'/',l,r:unary()}; else return l; } }
+  function unary(){ if(eat('-')) return {op:'neg',l:unary()}; if(eat('+')) return unary(); return atom(); }
+  function atom(){ const t=peek(); if(!t) throw new Error('The expression ends too early.');
+    if(eat('(')){ const e=expr(); if(!eat(')')) throw new Error('Missing ")".'); return e; }
+    if(t.k==='num'){ i++; return {num:t.v}; }
+    if(t.k==='sym'){ i++; return {sym:t.v}; }
+    throw new Error('Unexpected "'+t.k+'".'); }
+  const e=expr(); if(i<toks.length) throw new Error('Unexpected "'+(toks[i].v!=null?toks[i].v:toks[i].k)+'".'); return e;
+}
+function show(n){ if(n.num!=null) return String(n.num); if(n.sym) return n.sym; if(n.op==='neg') return '-'+showP(n.l,3);
+  const pr={'+':1,'-':1,'*':2,'/':2}[n.op]; return showP(n.l,pr)+(n.op==='-'?' - ':n.op)+showP(n.r,pr+(n.op==='-'||n.op==='/'?1:0)); }   // ' - ' spaced: a bare hyphen would re-read as one symbol (BAJAJ-AUTO)
+function showP(n,min){ const pr=n.num!=null||n.sym?9:(n.op==='neg'?3:{'+':1,'-':1,'*':2,'/':2}[n.op]); const s=show(n); return pr<min?'('+s+')':s; }
+function evalNode(n,val){ if(n.num!=null) return n.num; if(n.sym) return val[n.sym];
+  if(n.op==='neg') return -evalNode(n.l,val);
+  const a=evalNode(n.l,val), b=evalNode(n.r,val);
+  return n.op==='+'?a+b : n.op==='-'?a-b : n.op==='*'?a*b : (b===0?NaN:a/b); }
+/* Join the operands on dates. A point is drawn on date D only when EVERY operand has a close on D
+   or within the previous 5 calendar days (one name's holiday/suspension must not blank the day).
+   A MONTHLY point is used once — on the first date on/after it — so a month-end index close is
+   never smeared across the following days as if it were daily data. */
+const STALE=5*DAY;
+/* Weekly / monthly bars are built from the DAILY bars of the finished expression: open of the first day, highest
+   daily high, lowest daily low, close of the last day — so a monthly A/B candle shows the real extremes the ratio
+   reached inside the month (measured against TradingView's CNXSMALLCAP/NIFTY monthly chart, 2026-11-24). A day on
+   which a leg has only a close (older index history, USDINR, crude) enters with open = high = low = close for that
+   leg. The bar is stamped on the period's first calendar day (Monday, or the 1st). */
+function periodStart(t,tf){ if(tf==='W'){ const d=Math.floor(t/DAY); return (d-((d+3)%7))*DAY; }
+  const D=new Date(t*1000); return Date.UTC(D.getUTCFullYear(),D.getUTCMonth(),1)/1000; }
+function aggregate(daily,tf){ const out=[]; let cur=null;
+  for(const d of daily){ const k=periodStart(d.time,tf), o=d.open!=null?d.open:d.value, h=d.high!=null?d.high:d.value, l=d.low!=null?d.low:d.value;
+    if(!cur||cur.time!==k){ cur={time:k,value:d.value,open:o,high:Math.max(h,o,d.value),low:Math.min(l,o,d.value),close:d.value}; out.push(cur); }
+    else { cur.value=cur.close=d.value; if(h>cur.high) cur.high=h; if(l<cur.low) cur.low=l; } }
+  return out; }
+function evaluate(ast,ops,fill){
+  const syms=Object.keys(ops); if(!syms.length) throw new Error('Type at least one symbol.');
+  const dated=syms.filter(s=>ops[s].kind!=='macro');      // NSE dates only when the expression has an NSE leg
+  const all=new Set(); for(const s of (dated.length?dated:syms)) for(const p of ops[s].pts) all.add(p.t);
+  const dates=[...all].sort((a,b)=>a-b);
+  const ptr={}, used={}; for(const s of syms){ ptr[s]=-1; used[s]=-1; }
+  const out=[], val={}, vo={}, vh={}, vl={};
+  for(const t of dates){ let ok=true;
+    for(const s of syms){ const P=ops[s].pts; let i=ptr[s]; while(i+1<P.length&&P[i+1].t<=t) i++; ptr[s]=i;
+      if(i<0||t-P[i].t>STALE||(P[i].m&&used[s]===i&&P[i].t!==t)){ ok=false; continue; }
+      val[s]=P[i].v; }
+    if(!ok) continue;
+    // every monthly operand must be on a fresh point; a day where only stale monthly points exist was rejected above
+    let fresh=true; for(const s of syms){ const P=ops[s].pts, i=ptr[s]; if(P[i].m&&used[s]===i) fresh=false; }
+    if(!fresh) continue;
+    const v=evalNode(ast,val); if(!isFinite(v)) continue;
+    for(const s of syms){ const P=ops[s].pts, i=ptr[s]; if(P[i].m) used[s]=i; }
+    const pt={time:t,value:v};
+    /* candle: the expression applied to the opens, the highs and the lows (as TradingView does for A/B and A+B).
+       An operand carried from an earlier day (its holiday) counts as flat at its close, and so does a macro series
+       (USDINR, crude …), for which we hold daily closes only. A day needs real open/high/low from at least one leg. The drawn high/low are
+       widened to contain open and close, because high-of-A / high-of-B is not the true high of the ratio. */
+    let full=true, real=false;
+    for(const s of syms){ const p=ops[s].pts[ptr[s]];
+      if(fill&&(p.o==null||p.t!==t)){ vo[s]=vh[s]=vl[s]=p.v; real=true; }
+      else if(ops[s].kind==='macro'&&p.o==null){ vo[s]=vh[s]=vl[s]=p.v; }                    // closes only: flat at its close (said in the legend)
+      else if(ops[s].kind==='x'&&p.o==null){ vo[s]=vh[s]=vl[s]=p.v; real=true; }      // BSE/MCX day with a close only: drawn at its close (said in the legend) — never dropped, the gaps sit inside the history
+      else if(p.o==null) full=false;
+      else if(p.t!==t){ vo[s]=vh[s]=vl[s]=p.v; }
+      else { vo[s]=p.o; vh[s]=p.h; vl[s]=p.l; real=true; } }
+    if(full&&real){ const o=evalNode(ast,vo), a=evalNode(ast,vh), b=evalNode(ast,vl);
+      if(isFinite(o)&&isFinite(a)&&isFinite(b)){ pt.open=o; pt.close=v; pt.high=Math.max(o,v,a,b); pt.low=Math.min(o,v,a,b); } }
+    out.push(pt);
+  }
+  return out;
+}
+
+/* ---------- chart ------------------------------------------------------------------------------ */
+let CH=null;            // {chart, series, prim}
+let DATA=[], TIMES=[], KEY='', RANGE='Max', LOG=false;
+const LS_TF='sw_chart_tf_v1'; let TF=lsGet(LS_TF,'D'); if(!['D','W','M'].includes(TF)) TF='D';
+const LS_MODE='sw_chart_mode_v1'; let MODE=lsGet(LS_MODE,'line'); if(!['line','candle','bar','ha'].includes(MODE)) MODE='line';   // what the user asked for
+let FULLN=0, CNOTE='';      // bars before the candle filter; why candles are (partly) unavailable
+const UP='#16a34a', DN='#dc2626';
+const cssVar=(n,fb)=>{ const v=getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v||fb; };
+const isDark=()=>document.documentElement.getAttribute('data-theme')==='dark';
+function alpha(c,a){ const m=/^#([0-9a-f]{6})$/i.exec(c||''); if(!m) return c; const n=parseInt(m[1],16); return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`; }
+function colors(){ return { bg:cssVar('--surface','#ffffff'), text:cssVar('--text-muted','#586173'), faint:cssVar('--text-faint','#8b94a6'),
+  grid:cssVar('--border','#e7eaf2'), accent:cssVar('--accent','#4f46e5') }; }
+function themeOpts(){ const c=colors(); return {
+  layout:{ background:{type:'solid',color:c.bg}, textColor:c.text },
+  grid:{ vertLines:{color:c.grid}, horzLines:{color:c.grid} },
+  rightPriceScale:{ borderColor:c.grid }, timeScale:{ borderColor:c.grid },
+  crosshair:{ vertLine:{color:c.faint,labelBackgroundColor:c.accent}, horzLine:{color:c.faint,labelBackgroundColor:c.accent} } }; }
+function seriesOpts(){ const c=colors(); return {lineColor:c.accent, topColor:alpha(c.accent,.28), bottomColor:alpha(c.accent,.02)}; }
+function precisionFor(v){ const a=Math.abs(v); return a>=1?2 : a>=0.01?4 : a>=0.0001?6 : 8; }
+let PREC=2;
+let ALLPOS=true;   // every plotted value > 0 → axis ticks at or below zero (bottom margin) are blanked, as stock.html does
+const fmtNum=v=>!isFinite(v)?'':Math.abs(v)>=1000?v.toLocaleString('en-IN',{maximumFractionDigits:2}):v.toFixed(PREC);
+const fmtVal=v=>{ if(!isFinite(v)||(ALLPOS&&!(v>0))) return ''; return Math.abs(v)>=1000?v.toLocaleString('en-IN',{maximumFractionDigits:2}):v.toFixed(PREC); };
+
+function ensureChart(){
+  if(CH) return CH;
+  const LC=window.LightweightCharts, t=themeOpts(), el=$('chart'); el.innerHTML='';
+  const chart=LC.createChart(el,{ autoSize:true,
+    layout:Object.assign({ fontSize:11, fontFamily:getComputedStyle(document.body).fontFamily, attributionLogo:true }, t.layout),
+    grid:t.grid, rightPriceScale:Object.assign({ scaleMargins:{top:.08,bottom:.08} }, t.rightPriceScale),
+    timeScale:Object.assign({ timeVisible:false, rightOffset:8, minBarSpacing:.01 }, t.timeScale),
+    crosshair:Object.assign({ mode:LC.CrosshairMode.Normal }, t.crosshair),
+    handleScroll:{ vertTouchDrag:false },
+    localization:{ locale:'en-IN' } });
+  const prim={ _req:null,
+    attached(p){ this._req=p.requestUpdate; }, detached(){ this._req=null; }, updateAllViews(){},
+    paneViews(){ return [VIEW]; } };
+  chart.subscribeCrosshairMove(onCrosshair);
+  CH={chart,series:null,prim,kind:''};
+  makeSeries('line');
+  return CH;
+}
+// one price series at a time: an area line, or candles. The drawing layer is re-attached to whichever is live.
+function makeSeries(kind){
+  const LC=window.LightweightCharts; if(!CH||CH.kind===kind) return;
+  if(CH.series){ try{ CH.series.detachPrimitive(CH.prim); }catch(e){} CH.chart.removeSeries(CH.series); }
+  CH.series= kind==='candle'
+    ? CH.chart.addSeries(LC.CandlestickSeries,{ upColor:UP, downColor:DN, borderVisible:false, wickUpColor:UP, wickDownColor:DN, priceLineVisible:true, lastValueVisible:true })
+    : kind==='bar'
+    ? CH.chart.addSeries(LC.BarSeries,{ upColor:UP, downColor:DN, thinBars:false, priceLineVisible:true, lastValueVisible:true })
+    : CH.chart.addSeries(LC.AreaSeries,Object.assign({ lineWidth:2, priceLineVisible:true, lastValueVisible:true }, seriesOpts()));
+  CH.series.attachPrimitive(CH.prim); CH.kind=kind;
+}
+/* Heikin Ashi: close = (O+H+L+C)/4, open = midpoint of the previous HA bar, high/low widened to hold both.
+   Only what is DRAWN changes — DATA, the read-out, indicators and drawings keep the real prices. */
+function heikin(D){ const out=[]; let po=null, pc=null;
+  for(const d of D){ const c=(d.open+d.high+d.low+d.close)/4, o=po==null?(d.open+d.close)/2:(po+pc)/2;
+    out.push({time:d.time,open:o,close:c,high:Math.max(d.high,o,c),low:Math.min(d.low,o,c)}); po=o; pc=c; }
+  return out; }
+const displayData=()=>(MODE==='ha'&&CH&&CH.kind==='candle'&&DATA.length&&DATA[0].open!=null)?heikin(DATA):DATA;
+
+/* ---------- indicators: all computed from the closes of the bars on screen ----------------------- */
+const LS_IND='sw_chart_ind_v1', MA_COL=['#f59e0b','#3b82f6','#a855f7'];
+let INDS=[], CMPS=[], CMPKEYS=[], VOLQ=null, PCT=false, TIMEIX=new Map();
+const CMP_COL=['#f59e0b','#06b6d4','#d946ef','#84cc16'];
+const IND=(function(){ const D={ma:[{on:false,t:'EMA',n:20},{on:false,t:'SMA',n:50},{on:false,t:'SMA',n:200}],bb:{on:false,n:20,k:2},rsi:{on:false,n:14},macd:{on:false},vol:{on:false}};
+  const S=lsGet(LS_IND,null); if(!S||typeof S!=='object') return D;
+  const int=(x,fb,lo,hi)=>{ x=Math.round(+x); return isFinite(x)&&x>=lo&&x<=hi?x:fb; };
+  try{ D.ma.forEach((m,i)=>{ const x=(S.ma||[])[i]; if(x){ m.on=!!x.on; m.t=x.t==='EMA'?'EMA':'SMA'; m.n=int(x.n,m.n,2,1000); } });
+    if(S.bb){ D.bb.on=!!S.bb.on; D.bb.n=int(S.bb.n,20,2,1000); const k=+S.bb.k; D.bb.k=isFinite(k)&&k>0&&k<=10?k:2; }
+    if(S.rsi){ D.rsi.on=!!S.rsi.on; D.rsi.n=int(S.rsi.n,14,2,1000); }
+    D.macd.on=!!(S.macd&&S.macd.on); D.vol.on=!!(S.vol&&S.vol.on); }catch(e){}
+  return D; })();
+function sma(v,n){ const o=new Array(v.length).fill(null); let s=0; for(let i=0;i<v.length;i++){ s+=v[i]; if(i>=n) s-=v[i-n]; if(i>=n-1) o[i]=s/n; } return o; }
+// exponential average seeded with the simple average of the first n values (the usual convention); `from` = first usable index
+function ema(v,n,from){ from=from||0; const o=new Array(v.length).fill(null); if(v.length-from<n) return o;
+  let e=0; for(let i=from;i<from+n;i++) e+=v[i]; e/=n; o[from+n-1]=e; const k=2/(n+1);
+  for(let i=from+n;i<v.length;i++){ e=v[i]*k+e*(1-k); o[i]=e; } return o; }
+function boll(v,n,k){ const mid=sma(v,n), up=new Array(v.length).fill(null), lo=new Array(v.length).fill(null);
+  for(let i=n-1;i<v.length;i++){ let q=0; for(let j=i-n+1;j<=i;j++){ const d=v[j]-mid[i]; q+=d*d; } const sd=Math.sqrt(q/n); up[i]=mid[i]+k*sd; lo[i]=mid[i]-k*sd; }
+  return {mid,up,lo}; }
+// Wilder's RSI
+function rsi(v,n){ const o=new Array(v.length).fill(null); if(v.length<=n) return o; let g=0,l=0;
+  for(let i=1;i<=n;i++){ const c=v[i]-v[i-1]; if(c>0) g+=c; else l-=c; } g/=n; l/=n; o[n]=l===0?100:100-100/(1+g/l);
+  for(let i=n+1;i<v.length;i++){ const c=v[i]-v[i-1]; g=(g*(n-1)+(c>0?c:0))/n; l=(l*(n-1)+(c<0?-c:0))/n; o[i]=l===0?100:100-100/(1+g/l); }
+  return o; }
+function macd(v){ const f=ema(v,12), s=ema(v,26), m=new Array(v.length).fill(null); for(let i=0;i<v.length;i++) if(f[i]!=null&&s[i]!=null) m[i]=f[i]-s[i];
+  const sig=v.length>=26?ema(m,9,25):new Array(v.length).fill(null), hist=m.map((x,i)=>x!=null&&sig[i]!=null?x-sig[i]:null);
+  return {m,sig,hist}; }
+function clearInd(){ if(CH) for(const x of INDS){ try{ CH.chart.removeSeries(x.s); }catch(e){} } INDS=[]; }
+function clearCmp(){ if(CH) for(const x of CMPS){ if(x.s){ try{ CH.chart.removeSeries(x.s); }catch(e){} x.s=null; } } }
+function applyCompare(){ if(!CH) return; clearCmp(); const LC=window.LightweightCharts;
+  CMPS.forEach((c,i)=>{ c.color=CMP_COL[i%CMP_COL.length];
+    c.s=CH.chart.addSeries(LC.LineSeries,{ color:c.color, lineWidth:1.75, priceLineVisible:false, lastValueVisible:true, crosshairMarkerVisible:false,
+      priceFormat:{type:'price',precision:c.prec,minMove:Math.pow(10,-c.prec)} },0); c.s.setData(c.pts); }); }
+function applyIndicators(){ if(!CH) return; clearInd(); if(!DATA.length) return;
+  const LC=window.LightweightCharts, v=DATA.map(d=>d.value); let pane=1;
+  const pf={type:'custom',minMove:Math.pow(10,-PREC),formatter:fmtVal}, mf={type:'custom',minMove:Math.pow(10,-PREC),formatter:x=>isFinite(x)?x.toFixed(PREC):''};
+  const rows=arr=>{ const d=[]; for(let i=0;i<arr.length;i++) if(arr[i]!=null&&isFinite(arr[i])) d.push({time:TIMES[i],value:arr[i]}); return d; };
+  const line=(p,label,color,arr,fmt,extra)=>{ const d=rows(arr); if(!d.length) return null;
+    const s=CH.chart.addSeries(LC.LineSeries,Object.assign({ color, lineWidth:1.5, priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false, priceFormat:pf },extra||{}),p);
+    s.setData(d); INDS.push({s,label,color,arr,fmt:fmt||fmtNum}); return s; };
+  IND.ma.forEach((m,i)=>{ if(m.on) line(0,m.t+' '+m.n,MA_COL[i],m.t==='EMA'?ema(v,m.n):sma(v,m.n)); });
+  if(IND.bb.on){ const b=boll(v,IND.bb.n,IND.bb.k), c='#64748b';
+    line(0,'BB '+IND.bb.n+', '+IND.bb.k,c,b.mid,null,{lineWidth:1,lineStyle:2}); line(0,'upper',c,b.up,null,{lineWidth:1}); line(0,'lower',c,b.lo,null,{lineWidth:1}); }
+  if(IND.rsi.on){ const s=line(pane,'RSI '+IND.rsi.n,'#8b5cf6',rsi(v,IND.rsi.n),x=>x.toFixed(2),{priceFormat:{type:'price',precision:2,minMove:.01},lastValueVisible:true});
+    if(s){ for(const p of [70,30]) s.createPriceLine({price:p,color:colors().faint,lineWidth:1,lineStyle:2,axisLabelVisible:false,title:''}); pane++; } }
+  if(IND.macd.on){ const m=macd(v), hd=[]; for(let i=0;i<v.length;i++) if(m.hist[i]!=null) hd.push({time:TIMES[i],value:m.hist[i],color:m.hist[i]>=0?alpha(UP,.6):alpha(DN,.6)});
+    if(rows(m.m).length){ if(hd.length){ const h=CH.chart.addSeries(LC.HistogramSeries,{priceLineVisible:false,lastValueVisible:false,priceFormat:mf},pane); h.setData(hd); INDS.push({s:h,label:'hist',color:'#94a3b8',arr:m.hist,fmt:mf.formatter}); }
+      line(pane,'MACD 12, 26, 9','#3b82f6',m.m,mf.formatter,{priceFormat:mf}); line(pane,'signal','#f59e0b',m.sig,mf.formatter,{priceFormat:mf}); pane++; } }
+  if(IND.vol.on&&VOLQ){ const arr=TIMES.map(t=>VOLQ.has(t)?VOLQ.get(t):null), d=[];
+    for(let i=0;i<arr.length;i++) if(arr[i]!=null) d.push({time:TIMES[i],value:arr[i],color:(i>0&&v[i]<v[i-1])?alpha(DN,.6):alpha(UP,.6)});
+    if(d.length){ const h=CH.chart.addSeries(LC.HistogramSeries,{priceLineVisible:false,lastValueVisible:false,priceFormat:{type:'volume'}},pane); h.setData(d);
+      INDS.push({s:h,label:'Vol',color:'#94a3b8',arr,fmt:x=>x.toLocaleString('en-IN')}); pane++; } }
+  try{ CH.chart.panes().forEach((p,i)=>p.setStretchFactor(i?1:4)); }catch(e){ console.warn(e); }
+}
+function saveInd(){ lsSet(LS_IND,IND); }
+function renderIndPanel(){ const n=IND.ma.filter(m=>m.on).length+(IND.bb.on?1:0)+(IND.rsi.on?1:0)+(IND.macd.on?1:0)+(IND.vol.on?1:0);
+  $('indBtn').textContent='Indicators'+(n?' ('+n+')':''); $('indBtn').classList.toggle('on',n>0);
+  let h=IND.ma.map((m,i)=>`<label><input type="checkbox" data-k="ma${i}" ${m.on?'checked':''}/><span style="color:${MA_COL[i]}">&#9632;</span> Average <select data-t="${i}"><option${m.t==='SMA'?' selected':''}>SMA</option><option${m.t==='EMA'?' selected':''}>EMA</option></select> <input type="number" min="2" max="1000" value="${m.n}" data-n="ma${i}" aria-label="Length"/> bars</label>`).join('');
+  h+=`<label><input type="checkbox" data-k="bb" ${IND.bb.on?'checked':''}/> Bollinger Bands <input type="number" min="2" max="1000" value="${IND.bb.n}" data-n="bb" aria-label="Length"/> &times; <input type="number" min="0.5" max="10" step="0.5" value="${IND.bb.k}" data-n="bbk" aria-label="Width"/></label>`;
+  h+=`<label><input type="checkbox" data-k="rsi" ${IND.rsi.on?'checked':''}/> RSI <input type="number" min="2" max="1000" value="${IND.rsi.n}" data-n="rsi" aria-label="Length"/> bars</label>`;
+  h+=`<label><input type="checkbox" data-k="macd" ${IND.macd.on?'checked':''}/> MACD 12, 26, 9</label>`;
+  h+=`<label><input type="checkbox" data-k="vol" ${IND.vol.on?'checked':''}/> Volume</label><div class="hint">Volume: one stock on daily bars only, last 400 sessions.</div>`;
+  h+=`<div class="hint" style="padding-left:0;margin-top:4px">Worked out on the closes of the bars on screen.</div>`;
+  const P=$('indPanel'); P.innerHTML=h;
+  P.onchange=e=>{ const t=e.target, k=t.dataset.k, nn=t.dataset.n, num=(lo,hi,fb,int)=>{ let x=+t.value; if(int) x=Math.round(x); return isFinite(x)&&x>=lo&&x<=hi?x:fb; };
+    if(k){ if(k.startsWith('ma')) IND.ma[+k.slice(2)].on=t.checked; else IND[k].on=t.checked; }
+    else if(t.dataset.t!=null) IND.ma[+t.dataset.t].t=t.value==='EMA'?'EMA':'SMA';
+    else if(nn==='bbk') IND.bb.k=num(.5,10,IND.bb.k,false);
+    else if(nn==='bb'||nn==='rsi') IND[nn].n=num(2,1000,IND[nn].n,true);
+    else if(nn) IND.ma[+nn.slice(2)].n=num(2,1000,IND.ma[+nn.slice(2)].n,true);
+    saveInd(); renderIndPanel(); applyIndicators(); showBar(); renderIndNote(); };
+}
+function renderIndNote(){ const e=$('indNote'); if(!e) return; let t='';
+  if(IND.vol.on&&DATA.length){ const h=INDS.find(x=>x.label==='Vol');
+    t= h ? 'Volume: shares traded as held in the stock page file, last 400 sessions only.' : 'Volume is not shown: it exists only for a single stock on daily bars'+(VOLQ?', and none of its 400 sessions is on screen.':'.'); }
+  const short=[]; IND.ma.forEach(m=>{ if(m.on&&DATA.length<m.n) short.push(m.t+' '+m.n); }); if(IND.bb.on&&DATA.length<IND.bb.n) short.push('Bollinger Bands'); if(IND.rsi.on&&DATA.length<=IND.rsi.n) short.push('RSI'); if(IND.macd.on&&DATA.length<26) short.push('MACD');
+  if(short.length) t+=(t?' ':'')+'Not enough bars on this chart for: '+short.join(', ')+'.';
+  e.textContent=t; e.style.display=t?'':'none'; }
+$('indBtn').onclick=e=>{ e.stopPropagation(); $('indPanel').classList.toggle('open'); };
+$('indPanel').addEventListener('click',e=>e.stopPropagation());
+document.addEventListener('click',()=>$('indPanel').classList.remove('open'));
+const VIEW={ zOrder(){ return 'top'; }, renderer(){ return { draw(target){ target.useMediaCoordinateSpace(s=>{ try{ paint(s.context,s.mediaSize); }catch(e){ console.error(e); } }); } }; } };
+const redraw=()=>{ if(CH&&CH.prim._req) CH.prim._req(); };
+new MutationObserver(()=>{ if(!CH) return; try{ CH.chart.applyOptions(themeOpts()); if(CH.kind==='line') CH.series.applyOptions(seriesOpts()); redraw(); }catch(e){ console.error(e); } })
+  .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+const TFN={D:'Daily',W:'Weekly',M:'Monthly'};
+let FLASHING=false;
+/* The read-out (top left): symbol, bar size, date, real open/high/low/close, change from the previous bar, then every
+   indicator and compared series at that bar. Shows the last bar when the pointer is off the chart. */
+function showBar(i){ const tip=$('tip'); if(FLASHING) return; if(!CH||!DATA.length||!KEY){ tip.style.display='none'; return; }
+  if(i==null||i<0||i>=DATA.length) i=DATA.length-1; const d=DATA[i], pv=i>0?DATA[i-1].value:null;
+  let h='<b>'+esc(KEY)+'</b> <span style="opacity:.7">'+TFN[TF]+(MODE==='ha'&&CH.kind==='candle'?' · Heikin Ashi (real prices here)':'')+' · '+fmtDate(d.time)+'</span> ';
+  h+=(CH.kind!=='line'&&d.open!=null) ? 'O '+esc(fmtVal(d.open))+' H '+esc(fmtVal(d.high))+' L '+esc(fmtVal(d.low))+' C '+esc(fmtVal(d.close)) : esc(fmtVal(d.value));
+  if(pv!=null&&pv!==0){ const c=d.value-pv, pc=c/Math.abs(pv)*100; h+=' <span style="color:'+(c>=0?UP:DN)+'">'+(c>=0?'+':'')+esc(fmtNum(c))+' ('+(c>=0?'+':'')+pc.toFixed(2)+'%)</span>'; }
+  const ex=[]; for(const x of INDS){ const v=x.arr[i]; if(v!=null&&isFinite(v)) ex.push('<span style="color:'+x.color+'">'+esc(x.label)+' '+esc(x.fmt(v))+'</span>'); }
+  for(const c of CMPS){ const v=c.map.get(d.time); if(v!=null) ex.push('<span style="color:'+c.color+'">'+esc(c.key)+' '+esc(v.toLocaleString('en-IN',{maximumFractionDigits:c.prec}))+'</span>'); }
+  if(ex.length) h+='<div>'+ex.join(' · ')+'</div>';
+  tip.innerHTML=h; tip.style.display='block'; }
+function onCrosshair(p){ if(!CH||!p||p.time==null||!p.point){ showBar(); return; } const i=TIMEIX.get(p.time); showBar(i==null?-1:i); }
+function rangeDays(r){ return {'1M':31,'3M':92,'6M':182,'1Y':365,'3Y':1095,'5Y':1825,'10Y':3650,'Max':1e9}[r]||1e9; }
+/* Zoom buttons: widen or narrow the visible bars around their centre (a click = 30% fewer / more bars),
+   the same thing the mouse wheel or a pinch does. ⟲ goes back to the range button that is selected. */
+let ZPEND=null, ZSUB=null;     // the range we last asked for, until the chart reports it (it applies on the next frame, so fast clicks would otherwise all start from the same range)
+function zoomBy(f){ if(!CH||!DATA.length) return; const ts=CH.chart.timeScale(), r=ZPEND||ts.getVisibleLogicalRange(); if(!r) return;
+  if(ZSUB!==CH.chart){ ZSUB=CH.chart; ts.subscribeVisibleLogicalRangeChange(()=>{ ZPEND=null; }); }
+  const mid=(r.from+r.to)/2, half=Math.min(Math.max((r.to-r.from)*f/2,2.5),Math.max(DATA.length*0.6,5));
+  ZPEND={from:mid-half,to:mid+half}; ts.setVisibleLogicalRange(ZPEND); }
+document.querySelectorAll('#zoomBar button').forEach(b=>{
+  ['pointerdown','mousedown','touchstart','dblclick'].forEach(ev=>b.addEventListener(ev,e=>e.stopPropagation()));   // never start a drawing
+  b.addEventListener('click',e=>{ e.stopPropagation(); const z=b.dataset.z; if(z==='reset') applyRange(); else zoomBy(z==='in'?0.7:1/0.7); }); });
+function applyRange(){ ZPEND=null; const zb=document.getElementById('zoomBar'); if(zb) zb.style.display=(CH&&DATA.length)?'flex':'none';
+  if(!CH||!DATA.length) return; const ts=CH.chart.timeScale();
+  if(RANGE==='Max'){ ts.fitContent(); return; }
+  const last=DATA[DATA.length-1].time, first=DATA[0].time;
+  const from=RANGE==='YTD'?Date.UTC(new Date(last*1000).getUTCFullYear(),0,1)/1000:last-rangeDays(RANGE)*DAY;
+  ts.setVisibleRange({from:Math.max(first,from), to:last}); }
+function renderRanges(){
+  $('ranges').innerHTML=['1M','3M','6M','YTD','1Y','3Y','5Y','10Y','Max'].map(r=>`<span class="rng ${r===RANGE?'on':'text-slate-500'} px-1.5 sm:px-2 py-1 rounded-md border border-slate-200" data-r="${r}">${r}</span>`).join('');
+  $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; renderRanges(); applyRange(); });
+}
+$('typeSel').value=MODE;
+const renderTf=()=>$('tfBtns').querySelectorAll('[data-tf]').forEach(b=>b.classList.toggle('on',b.dataset.tf===TF));
+renderTf(); $('tfBtns').querySelectorAll('[data-tf]').forEach(b=>b.onclick=()=>{ TF=b.dataset.tf; lsSet(LS_TF,TF); renderTf(); if(KEY) loadExpr(KEY,false); });
+$('typeSel').onchange=()=>{ MODE=$('typeSel').value; lsSet(LS_MODE,MODE); if(KEY) loadExpr(KEY,false); };
+$('logBtn').onclick=()=>{ LOG=!LOG; if(LOG&&CMPS.length) flash('Log scale is off while charts are compared: they share a percent scale.'); else if(LOG) PCT=false; applyScale(); };
+$('pctBtn').onclick=()=>{ if(CMPS.length){ flash('The percent scale stays on while charts are compared.'); return; } PCT=!PCT; applyScale(); };
+function applyScale(){ if(!CH) return; const M=window.LightweightCharts.PriceScaleMode, canLog=DATA.every(d=>d.value>0), pct=PCT||CMPS.length>0;
+  CH.chart.priceScale('right').applyOptions({ mode: pct?M.Percentage:(LOG&&canLog)?M.Logarithmic:M.Normal });
+  $('pctBtn').classList.toggle('on',pct); $('logBtn').classList.toggle('on',LOG&&!pct); }
+// go to a date: keep the number of bars on screen, centre them on the first bar on/after the date
+$('goDate').onchange=()=>{ const v=$('goDate').value; if(!v||!CH||!DATA.length) return; const t=isoToTs(v); if(!isFinite(t)) return;
+  let i=TIMES.findIndex(x=>x>=t); if(i<0) i=TIMES.length-1; const ts=CH.chart.timeScale(), r=ts.getVisibleLogicalRange(); const w=r?Math.min(r.to-r.from,250):120;      // from a wide view (Max) zoom in to about a year around the date
+  ts.setVisibleLogicalRange({from:i-w/2,to:i+w/2}); if(i===TIMES.length-1&&TIMES[i]<t) flash('The chart ends on '+fmtDate(TIMES[i])+'.'); else if(i===0&&TIMES[0]>t) flash('The chart starts on '+fmtDate(TIMES[0])+'.'); };
+function saveBlob(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); }
+const fileStem=()=>KEY.replace(/[^A-Za-z0-9._-]+/g,'_').slice(0,60)+'_'+TF+'_'+tsToIso(DATA[DATA.length-1].time);
+$('shotBtn').onclick=()=>{ if(!CH||!DATA.length) return;
+  try{ const c=CH.chart.takeScreenshot(true), k=c.width/Math.max(1,$('chart').clientWidth), head=Math.round(26*k), o=document.createElement('canvas'); o.width=c.width; o.height=c.height+head;
+    const x=o.getContext('2d'), col=colors(); x.fillStyle=col.bg; x.fillRect(0,0,o.width,o.height); x.fillStyle=col.text; x.font='600 '+Math.round(12*k)+'px '+getComputedStyle(document.body).fontFamily; x.textBaseline='middle';
+    x.fillText(KEY+' · '+TFN[TF]+' · to '+fmtDate(DATA[DATA.length-1].time)+(CMPS.length?' · with '+CMPS.map(c=>c.key).join(', '):''),Math.round(8*k),head/2); x.drawImage(c,0,head);
+    o.toBlob(b=>{ if(b) saveBlob(b,fileStem()+'.png'); else flash('Could not make the picture.'); },'image/png'); }
+  catch(e){ console.error(e); flash('Could not make the picture.'); } };
+$('csvBtn').onclick=()=>{ if(!CH||!DATA.length) return; const oh=DATA[0].open!=null&&CH.kind!=='line', cm=CMPS.map(c=>c.key);
+  const q=s=>/[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+  const L=[['date'].concat(oh?['open','high','low','close']:[KEY],cm).map(q).join(',')];
+  for(const d of DATA){ const r=[tsToIso(d.time)].concat(oh?[d.open,d.high,d.low,d.close]:[d.value]); for(const c of CMPS){ const v=c.map.get(d.time); r.push(v==null?'':v); } L.push(r.join(',')); }
+  saveBlob(new Blob([L.join('\n')+'\n'],{type:'text/csv'}),fileStem()+'.csv'); };
+if(!document.fullscreenEnabled) $('fsBtn').style.display='none';
+function toggleFs(){ if(!document.fullscreenEnabled) return; if(document.fullscreenElement) document.exitFullscreen(); else { const p=$('chartCard').requestFullscreen(); if(p&&p.catch) p.catch(()=>flash('This browser did not allow full screen.')); } }
+$('fsBtn').onclick=toggleFs;
+document.addEventListener('fullscreenchange',()=>{ $('fsBtn').classList.toggle('on',!!document.fullscreenElement); });
+// favourites: a list of chart keys kept in this browser, shown first in the chip row
+const LS_FAV='sw_chart_fav_v1';
+const favs=()=>{ const f=lsGet(LS_FAV,[]); return Array.isArray(f)?f.filter(x=>typeof x==='string'):[]; };
+function renderFav(){ const on=!!KEY&&favs().includes(KEY); $('favBtn').innerHTML=on?'&#9733;':'&#9734;'; $('favBtn').classList.toggle('on',on); $('favBtn').title=on?'Remove this chart from your favourites':'Add this chart to your favourites (kept in this browser)'; }
+$('favBtn').onclick=()=>{ if(!KEY) return; let f=favs(); f=f.includes(KEY)?f.filter(x=>x!==KEY):[KEY].concat(f).slice(0,40); if(!lsSet(LS_FAV,f)) flash('Could not save: this browser is blocking or has run out of site storage.'); renderFav(); renderChips(); };
+// compare: what is typed in the box is drawn over the open chart; everything then sits on one percent scale
+$('cmpBtn').onclick=()=>{ sugClose(); const v=$('expr').value.trim(); if(!v) return; if(!KEY){ loadExpr(v); return; }
+  if(CMPKEYS.length>=4){ flash('Four compared charts is the limit. Remove one under the chart first.'); return; }
+  CMPKEYS=CMPKEYS.concat([v]); CMPNEW=v; loadExpr(KEY); };
+let CMPNEW='';
+
+/* ---------- load an expression ----------------------------------------------------------------- */
+let LOADSEQ=0;
+async function computeExpr(src,ohlc,seq){
+  await wIndex();                                  // the tokenizer needs the world codes to accept TVC:NI225, XETR:DAX …
+  const r=await resolveTokens(tokenize(src)); if(seq!==LOADSEQ) return null;
+  const ast=parse(r.toks), ops={};
+  (function walk(n){ if(!n) return; if(n.sym) ops[n.sym]=r.ops[n.sym]; walk(n.l); walk(n.r); })(ast);
+  if(ohlc){ await Promise.all(Object.values(ops).filter(o=>o.kind==='stock').map(stockOhlc)); if(seq!==LOADSEQ) return null; }
+  let data=evaluate(ast,ops,TF!=='D'); if(TF!=='D') data=aggregate(data,TF);
+  return {ast,ops,data,key:show(ast)};
+}
+async function loadExpr(raw,push){
+  const src=String(raw||'').trim(); const seq=++LOADSEQ;
+  if(!src){ showEmpty('Type a symbol, a ratio or a basket above and press Show.'); return; }
+  $('expr').value=src.toUpperCase();
+  if(!window.LightweightCharts){ showEmpty('The chart library did not load (offline?). Reload the page when you are back online.'); return; }
+  setLegend('<span class="text-slate-400">Loading…</span>');
+  let ast, ops; const cmpNew=CMPNEW; CMPNEW=''; const cmpMsgs=[];
+  try{
+    const R=await computeExpr(src,MODE!=='line',seq); if(!R) return; ast=R.ast; ops=R.ops; let data=R.data;
+    if(!data.length) throw new Error('These symbols have no dates in common, so there is nothing to draw.');
+    const fulln=data.length; let cnote='';
+    if(MODE!=='line'){
+      const c=data.filter(d=>d.open!=null), L=Object.values(ops);
+      if(!c.length){ const mac=L.filter(o=>o.kind==='macro'&&(!o.world||!o.pts.some(p=>p.o!=null))).map(o=>o.label);
+        cnote='Candles and bars are not available for this chart — showing the line. '+(mac.length?'There is no open/high/low for '+mac.join(', ')+' (daily closes only).':'No open/high/low history is published for '+L.filter(o=>!o.pts.some(p=>p.o!=null)).map(o=>o.label).join(', ')+'.'); }
+      else { const mac=TF==='D'?L.filter(o=>o.kind==='macro'&&(!o.world||!o.pts.some(p=>p.o!=null))).map(o=>o.label):[];
+        if(mac.length) cnote=mac.join(', ')+': daily closes only, so each candle uses that day\'s close for it — the open, high and low come from the other leg. ';
+        for(const o of L){ if(o.kind!=='x') continue; const n=o.pts.filter(p=>p.o==null).length;
+          if(n) cnote+=o.label+': '+n.toLocaleString('en-IN')+' of its '+o.pts.length.toLocaleString('en-IN')+' days have a close only (the source published no open/high/low); those days are drawn at the close. '; }
+        if(c.length<data.length) cnote+='Candles start '+fmtDate(c[0].time)+': '+(data.length-c.length).toLocaleString('en-IN')+' other bars have a close but no open/high/low. Choose Line for the full history.'; data=c; }
+    }
+    const key=show(ast), times=data.map(d=>d.time), tix=new Map(times.map((t,i)=>[t,i]));
+    // compared charts: closes only, kept on the main chart's own dates (an extra date would shift every bar and drawing)
+    const cmps=[], keys=[];
+    for(const k of CMPKEYS){ let C;
+      try{ C=await computeExpr(k,false,seq); if(!C) return;
+        if(C.key===key||keys.includes(C.key)){ if(k===cmpNew) cmpMsgs.push(C.key+' is already on this chart.'); continue; }
+        const pts=C.data.filter(d=>tix.has(d.time)).map(d=>({time:d.time,value:d.value}));
+        if(!pts.length) throw new Error('it has no dates in common with '+key+'.');
+        keys.push(C.key); cmps.push({key:C.key,pts,map:new Map(pts.map(p=>[p.time,p.value])),prec:precisionFor(pts[pts.length-1].value),first:pts[0].time,last:pts[pts.length-1].time,n:pts.length,s:null,color:''}); }
+      catch(e){ cmpMsgs.push('Cannot compare '+String(k).toUpperCase()+': '+(e&&e.message||e)); } }
+    clearInd(); clearCmp();
+    KEY=key; DATA=data; TIMES=times; TIMEIX=tix; FULLN=fulln; CNOTE=cnote; CMPS=cmps; CMPKEYS=keys;
+    const one=ast.sym&&ops[ast.sym].kind==='stock'&&TF==='D'?ops[ast.sym]:null;
+    VOLQ=one?new Map(one.pts.filter(p=>p.q!=null).map(p=>[p.t,p.q])):null; if(VOLQ&&!VOLQ.size) VOLQ=null;
+  }catch(e){ if(seq!==LOADSEQ) return; clearInd(); clearCmp(); CMPS=[]; if(cmpNew) CMPKEYS=CMPKEYS.filter(k=>k!==cmpNew); DATA=[]; TIMES=[]; TIMEIX=new Map(); KEY=''; SEL=null; DRAFT=null; if(CH){ CH.series.setData([]); redraw(); } showEmpty(e&&e.message||String(e)); renderTools(); renderFav(); return; }
+  $('chartErr')&&$('chartErr').remove();
+  ensureChart(); makeSeries(DATA[0].open!=null&&MODE!=='line'?(MODE==='bar'?'bar':'candle'):'line'); const series=CH.series;
+  PREC=precisionFor(DATA[DATA.length-1].value); ALLPOS=DATA.every(d=>d.value>0);
+  series.applyOptions({ priceFormat:{type:'custom',minMove:Math.pow(10,-PREC),formatter:fmtVal} });
+  series.setData(displayData()); applyCompare(); applyIndicators(); applyScale(); applyRange();
+  DRAWINGS=loadDrawings(KEY); histReset(); SEL=null; DRAFT=null; setTool('cursor'); redraw();
+  $('expr').value=KEY; document.title='STOCKSWORLD · '+KEY;
+  $('goDate').min=tsToIso(TIMES[0]); $('goDate').max=tsToIso(TIMES[TIMES.length-1]); $('goDate').value='';
+  if(push!==false){ const u=new URL(location.href); u.searchParams.set('s',KEY); if(CMPKEYS.length) u.searchParams.set('c',CMPKEYS.join(',')); else u.searchParams.delete('c'); history.replaceState(null,'',u); }
+  rememberRecent(KEY); renderChips(); renderLegend(ops); renderFav(); FLASHING=false; showBar();
+  if(cmpMsgs.length) flash(cmpMsgs.join(' '));
+}
+function showEmpty(msg){
+  let e=$('chartErr'); if(!e){ e=document.createElement('div'); e.id='chartErr'; e.className='text-slate-500 text-sm py-10 text-center'; e.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem;background:var(--surface);z-index:4'; $('chartWrap').appendChild(e); }
+  e.textContent=msg; setLegend(''); $('tip').style.display='none';
+}
+function setLegend(h){ $('legend').innerHTML=h; }
+function renderLegend(ops){
+  const rows=[];
+  rows.push('<div><b class="text-slate-700">'+esc(KEY)+'</b> · '+DATA.length.toLocaleString('en-IN')+' '+({D:'daily',W:'weekly',M:'monthly'})[TF]+' points · '+fmtDate(DATA[0].time)+' → '+fmtDate(DATA[DATA.length-1].time)+' · last '+esc(fmtVal(DATA[DATA.length-1].value))+'</div>');
+  for(const s of Object.keys(ops)){ const o=ops[s], P=o.pts; let t=esc(s)+' = ';
+    if(o.kind==='stock'){ t+=esc(o.name||o.label)+' (adjusted daily '+(CH&&CH.kind!=='line'?'open/high/low/close':'close')+', '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'+(o.alive?'':' · <span class="neg">not trading now</span>'); }
+    else if(o.kind==='x'){ t+=esc(o.label)+' ('+esc(o.src)+(o.unit?', '+esc(o.unit):'')+', daily '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+'; not refreshed automatically)'+(o.note?' · '+esc(o.note):''); }
+    else if(o.world){ t+=esc(o.label)+' ('+(o.country?esc(o.country)+', ':'')+esc(o.src)+(P.some(p=>p.o!=null)?', daily open/high/low/close, ':', daily closes only, ')+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+(o.manual?'; not refreshed automatically':'')+')'; }
+    else if(o.kind==='macro'){ t+=esc(o.label)+' ('+(o.src?esc(o.src)+' daily close, ':'daily close, ')+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'; }
+    else { t+=esc(o.label)+' index ('+(o.nMonthly?('month-end closes '+fmtDate(P[0].t)+' → '+fmtDate(P[o.nMonthly-1].t)+', then '):'')+(o.dailyFrom!=null?('daily '+fmtDate(o.dailyFrom)+' → '+fmtDate(P[P.length-1].t)):'no daily history')+')'; }
+    rows.push('<div>'+t+'</div>'); }
+  if(Object.values(ops).some(o=>o.nMonthly&&o.dailyFrom!=null&&DATA[0].time<o.dailyFrom||o.nMonthly&&o.dailyFrom==null)) rows.push('<div class="text-amber-600">Part of this chart is monthly: the dashboard holds only month-end closes for that index before its daily history starts.</div>');
+  if(CNOTE) rows.push('<div class="text-amber-600">'+esc(CNOTE)+'</div>');
+  CMPS.forEach((c,i)=>rows.push('<div><span style="color:'+c.color+'">&#9632;</span> Compared: <b class="text-slate-700">'+esc(c.key)+'</b> · '+c.n.toLocaleString('en-IN')+' closes on this chart\'s dates, '+fmtDate(c.first)+' → '+fmtDate(c.last)+' · <span class="cmp-x" data-rm="'+i+'">remove</span></div>'));
+  if(CMPS.length) rows.push('<div>Compared charts share a percent scale: each line is its change from the first bar on screen.</div>');
+  rows.push('<div id="indNote" class="text-amber-600" style="display:none"></div>');
+  setLegend(rows.join('')); renderIndNote();
+  $('legend').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ const k=CMPS[+b.dataset.rm]; if(!k) return; CMPKEYS=CMPKEYS.filter(x=>x!==k.key); loadExpr(KEY); });
+}
+function rememberRecent(k){ let r=lsGet(LS_RECENT,[]); if(!Array.isArray(r)) r=[]; r=[k].concat(r.filter(x=>x!==k)).slice(0,12); lsSet(LS_RECENT,r); }
+const EXAMPLES=['NIFTY','RELIANCE','CANFINHOME/NIFTY','NIFTY/USDINR','NIFTY/USOIL','PFC+RECLTD','BANKNIFTY/NIFTY','CNXPSUBANK/NIFTY','HINDPETRO+BPCL+IOC'];
+function renderChips(){
+  let r=lsGet(LS_RECENT,[]); if(!Array.isArray(r)) r=[];
+  const saved=Object.keys(allDrawings()).filter(k=>(allDrawings()[k]||[]).length);
+  const mk=(k,extra)=>'<span class="chip" data-x="'+esc(k)+'">'+esc(k)+(extra||'')+'</span>';
+  let h=''; const fav=favs();
+  if(fav.length) h+='<span class="text-[11px] text-slate-400">&#9733; Favourites</span>'+fav.map(k=>mk(k)).join('');
+  if(saved.length) h+='<span class="text-[11px] text-slate-400'+(h?' ml-2':'')+'">With drawings</span>'+saved.slice(0,30).map(k=>mk(k,' <span class="text-slate-400 ml-1">'+allDrawings()[k].length+'</span>')).join('');
+  const rec=r.filter(k=>!saved.includes(k)&&!fav.includes(k)).slice(0,6); if(rec.length) h+='<span class="text-[11px] text-slate-400'+(h?' ml-2':'')+'">Recent</span>'+rec.map(k=>mk(k)).join('');
+  h+='<span class="text-[11px] text-slate-400'+(h?' ml-2':'')+'">Examples</span>'+EXAMPLES.filter(k=>!r.includes(k)&&!saved.includes(k)&&!fav.includes(k)).map(k=>mk(k)).join('');
+  $('chips').innerHTML=h; $('chips').querySelectorAll('[data-x]').forEach(c=>c.onclick=()=>loadExpr(c.dataset.x));
+}
+$('exprForm').onsubmit=e=>{ e.preventDefault(); sugClose(); loadExpr($('expr').value); };
+
+/* ---------- suggestions: type-ahead for the symbol under the caret --------------------------------
+ * The box holds an EXPRESSION, so only the token the caret sits in is matched and replaced
+ * (CANFINHOME/NIF → pick → CANFINHOME/NIFTY). Indices come from the page's own catalogue (every name
+ * indexNames() can resolve — so a suggestion is always chartable); stocks from search_index.json, the
+ * index behind the site-wide search: rows [sym,name,alive,mcap,ind], pre-sorted live first, mcap desc.
+ * An index is inserted as its short code (NIFTY, CNXMIDCAP) or, without one, its name with the spaces
+ * removed (NIFTYMIDCAP150) — both are what resolveSymbol() accepts. ------------------------------- */
+const SUG_MAX=10, SUG_IDX_MAX=6;
+// best-known first; the rest follow alphabetically
+const IDX_ORDER=['NIFTY 50','NIFTY BANK','NIFTY 500','NIFTY NEXT 50','NIFTY MIDCAP 100','NIFTY SMLCAP 100','NIFTY MIDCAP 150','NIFTY SMLCAP 250',
+  'NIFTY MICROCAP250','NIFTY 100','NIFTY 200','NIFTY IT','NIFTY PSU BANK','NIFTY PVT BANK','NIFTY FIN SERVICE','NIFTY AUTO','NIFTY PHARMA','NIFTY FMCG',
+  'NIFTY METAL','NIFTY ENERGY','NIFTY REALTY','NIFTY INFRA','NIFTY PSE','NIFTY CPSE','NIFTY MEDIA','NIFTY MNC','NIFTY OIL AND GAS','NIFTY HEALTHCARE','INDIA VIX'];
+let SUG_IDX=null, SUG_STK=null, SUG_STK_LOAD=null, SUG_ITEMS=[], SUG_AT=-1, SUG_TOK=null;
+const titleCase=s=>s.toLowerCase().replace(/(^|[\s\-&:])([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\b(It|Psu|Pse|Cpse|Mnc|Fmcg|Vix|Ev|Ipo|Esg|Gs|Ew|Sme|Fpi|Mfg|Reits|Lms)\b/g,m=>m.toUpperCase());
+async function sugIndices(){
+  if(SUG_IDX) return SUG_IDX;
+  const names=await indexNames(); const byName={};
+  for(const k in names){ const n=names[k]; (byName[n]||(byName[n]={name:n,keys:new Set(),alias:null})).keys.add(k); }
+  for(const a in IDX_ALIAS){ const o=byName[IDX_ALIAS[a]]; if(o&&(!o.alias||a.length<o.alias.length)) o.alias=a; }
+  const list=Object.values(byName).map(o=>{ const full=MONTHLY_NAME[o.name]||o.name; o.keys.add(norm(full));
+    return { kind:'idx', code:o.alias||norm(o.name), label:titleCase(full), keys:[...o.keys], rank:IDX_ORDER.indexOf(o.name) }; });
+  list.sort((a,b)=>(a.rank<0?1e3:a.rank)-(b.rank<0?1e3:b.rank)||a.label.localeCompare(b.label));
+  const W=await wIndex(), ws={}, wkey={};
+  for(const c of Object.keys(W).sort((a,b)=>(W[a].ord||0)-(W[b].ord||0))){ const e=W[c]; if(MACRO[c]) wkey[MACRO[c][0]+'|'+(MACRO[c][2]||1)]=1; if(ws[e.code]) continue;
+    list.push(ws[e.code]={ kind:'w', code:e.code, label:e.label+(e.country?' · '+e.country:''), rank:-1,
+      keys:[e.code].concat(e.alias||[],[norm(e.label),norm(e.country||'')],(e.label+' '+(e.country||'')).toUpperCase().split(/[^A-Z0-9]+/).filter(x=>x.length>2)) }); }
+  const seen={}; for(const c in MACRO){ const [k0,label,mul]=MACRO[c]; const key=k0+'|'+(mul||1); if(wkey[key]) continue; if(seen[key]){ seen[key].keys.push(c); continue; }
+    list.push(seen[key]={ kind:'mac', code:c, label, keys:[c,norm(label)].concat(label.toUpperCase().split(/[^A-Z0-9]+/).filter(w=>w.length>2)), rank:-1 }); }
+  const X=await xIndex(), xs={}; for(const c in X){ const e=X[c]; if(xs[e.code]) continue; const a=(e.alias||[])[0]||e.code;
+    list.push(xs[e.code]={ kind:'x', tag:e.kind||'Index', code:a, label:e.label, rank:-1,
+      keys:[norm(a),norm(e.code),norm(e.label)].concat(e.label.toUpperCase().split(/[^A-Z0-9]+/).filter(w=>w.length>2)) }); }
+  return SUG_IDX=list;
+}
+function sugStocks(){
+  if(SUG_STK) return Promise.resolve(SUG_STK);
+  if(SUG_STK_LOAD) return SUG_STK_LOAD;
+  SUG_STK_LOAD=jget('./search_index.json').then(j=>SUG_STK=(j.s||[]).filter(r=>r&&typeof r[0]==='string').map(r=>({sym:r[0],name:String(r[1]||''),up:String(r[1]||'').toUpperCase(),alive:!!r[2]})))
+    .catch(e=>{ console.warn('search_index.json unavailable',e); SUG_STK_LOAD=null; return SUG_STK=null, []; });
+  return SUG_STK_LOAD;
+}
+// the token the caret is in: [start,end) and its text, exchange prefix (NSE:) left out of the match
+function sugToken(){
+  const el=$('expr'), v=el.value, c=el.selectionStart==null?v.length:el.selectionStart, D=/[\s+*\/()]/;
+  let s=c, e=c; while(s>0&&!D.test(v[s-1])) s--; while(e<v.length&&!D.test(v[e])) e++;
+  let text=v.slice(s,c); const colon=text.lastIndexOf(':'); if(colon>=0){ s+=colon+1; text=text.slice(colon+1); }
+  // the same, but reaching back over spaces to the last operator — so "nifty mid" can match a name typed in words
+  let ws=c; while(ws>0&&!/[+*\/()]/.test(v[ws-1])) ws--; while(ws<c&&/\s/.test(v[ws])) ws++;
+  const wide=v.slice(ws,c);
+  return { s, e, text, wide:(ws<s&&/\s/.test(wide)&&!wide.includes(':'))?{ s:ws, e, text:wide }:null };
+}
+function sugMatch(raw,idx,stk){
+  const q=raw.toUpperCase().trim(), qn=norm(q); if(!q||(!qn&&!/[A-Z0-9]/.test(q))) return [];
+  if(/^[0-9.]+$/.test(q)) return [];                       // a plain number is a number, not a search
+  const i0=[], i1=[];
+  if(qn) for(const x of idx){ let best=-1; for(const k of x.keys){ const p=k.indexOf(qn); if(p===0){ best=0; break; } if(p>0) best=1; }
+    if(best===0) i0.push(x); else if(best===1&&qn.length>=3) i1.push(x); }
+  const s1=[], s2=[], s3=[], s4=[], s5=[];
+  for(const r of stk){ const sym=r.sym;
+    if(sym===q){ (r.alive?s1:s2).push(r); continue; }
+    if(sym.indexOf(q)===0){ s2.push(r); continue; }
+    const ni=r.up.indexOf(q);
+    if(ni===0||(ni>0&&!/[A-Z0-9]/.test(r.up.charAt(ni-1)))){ s3.push(r); continue; }
+    if(q.length>=3&&sym.indexOf(q)>0){ s4.push(r); continue; }
+    if(q.length>=3&&ni>0) s5.push(r);
+    if(s1.length+s2.length+s3.length>60) break; }
+  const stocks=s1.concat(s2,s3,s4,s5).map(r=>({kind:'stk',code:r.sym,label:r.name,alive:r.alive}));
+  // an exact stock symbol first, then indices that START with the query, then stocks, then looser index hits
+  const out=[]; const exact=stocks.length&&stocks[0].code===q&&stocks[0].alive?[stocks.shift()]:[];
+  const idxHead=i0.slice(0,SUG_IDX_MAX), room=SUG_MAX-exact.length-idxHead.length;
+  out.push(...exact,...idxHead,...stocks.slice(0,Math.max(room,0)));
+  for(const x of i0.slice(SUG_IDX_MAX).concat(i1)){ if(out.length>=SUG_MAX) break; out.push(x); }
+  return out.slice(0,SUG_MAX);
+}
+function sugHi(text,q){ const i=q?text.toUpperCase().indexOf(q.toUpperCase()):-1; return i<0?esc(text):esc(text.slice(0,i))+'<b>'+esc(text.slice(i,i+q.length))+'</b>'+esc(text.slice(i+q.length)); }
+function sugRender(){
+  const box=$('sug');
+  if(!SUG_ITEMS.length){ box.classList.remove('open'); box.innerHTML=''; $('expr').setAttribute('aria-expanded','false'); $('expr').removeAttribute('aria-activedescendant'); return; }
+  const q=SUG_TOK?SUG_TOK.text:'';
+  box.innerHTML=SUG_ITEMS.map((x,i)=>'<div class="sug-r'+(i===SUG_AT?' on':'')+'" role="option" id="sug'+i+'" aria-selected="'+(i===SUG_AT)+'" data-i="'+i+'">'+
+    '<span class="sug-c">'+sugHi(x.code,q)+'</span><span class="sug-n">'+sugHi(x.label,q)+'</span>'+
+    '<span class="sug-k'+(x.kind!=='stk'?' idx':'')+'">'+(x.kind==='idx'?'Index':x.kind==='mac'?'Global':x.kind==='w'?'World':x.kind==='x'?esc(x.tag):(x.alive?'Stock':'Not trading'))+'</span></div>').join('');
+  box.classList.add('open'); $('expr').setAttribute('aria-expanded','true');
+  if(SUG_AT>=0){ $('expr').setAttribute('aria-activedescendant','sug'+SUG_AT); const r=$('sug'+SUG_AT); if(r&&r.scrollIntoView) r.scrollIntoView({block:'nearest'}); }
+  else $('expr').removeAttribute('aria-activedescendant');
+}
+function sugClose(){ SUG_ITEMS=[]; SUG_AT=-1; sugRender(); }
+let SUG_SEQ=0;
+async function sugUpdate(){
+  const seq=++SUG_SEQ, tok=sugToken();
+  if(!tok.text.trim()){ sugClose(); return; }
+  let idx=[], stk=[];
+  try{ idx=await sugIndices(); }catch(e){ console.warn(e); }
+  if(seq!==SUG_SEQ) return;
+  // a name typed in words ("nifty mid") wins when it matches anything; otherwise the single token under the caret
+  const run=list=>{ let t=tok, items=tok.wide?sugMatch(tok.wide.text,idx,list):[]; if(items.length) t=tok.wide; else items=sugMatch(tok.text,idx,list);
+    SUG_TOK=t; SUG_ITEMS=items; SUG_AT=-1; sugRender(); };
+  run(SUG_STK||[]);                                                                     // indices at once…
+  if(!SUG_STK){ stk=await sugStocks(); if(seq!==SUG_SEQ||document.activeElement!==$('expr')) return;   // …stocks when the index arrives
+    run(stk||[]); }
+}
+function sugPick(i){
+  const x=SUG_ITEMS[i], tok=SUG_TOK; if(!x||!tok) return;
+  const el=$('expr'), v=el.value, nv=v.slice(0,tok.s)+x.code+v.slice(tok.e), caret=tok.s+x.code.length;
+  el.value=nv; sugClose(); el.focus(); try{ el.setSelectionRange(caret,caret); }catch(e){}
+  // draw straight away when the box now holds a complete expression (a lone symbol, or A/B with both sides typed)
+  let complete=false; try{ parse(tokenize(nv)); complete=true; }catch(e){}
+  if(complete) loadExpr(nv);
+}
+(function(){ const el=$('expr'), box=$('sug');
+  el.addEventListener('input',sugUpdate);
+  el.addEventListener('focus',()=>{ sugIndices().catch(()=>{}); sugStocks(); });      // warm both lists before the first keystroke
+  el.addEventListener('keydown',e=>{
+    const open=SUG_ITEMS.length>0;
+    if(e.key==='ArrowDown'){ if(!open){ sugUpdate(); return; } e.preventDefault(); SUG_AT=(SUG_AT+1)%SUG_ITEMS.length; sugRender(); }
+    else if(e.key==='ArrowUp'){ if(!open) return; e.preventDefault(); SUG_AT=SUG_AT<=0?SUG_ITEMS.length-1:SUG_AT-1; sugRender(); }
+    else if(e.key==='Enter'){ if(open&&SUG_AT>=0){ e.preventDefault(); sugPick(SUG_AT); } }      // nothing highlighted → the form submits as typed
+    else if(e.key==='Tab'){ if(open&&!e.shiftKey){ e.preventDefault(); sugPick(SUG_AT>=0?SUG_AT:0); } }
+    else if(e.key==='Escape'){ if(open){ e.preventDefault(); e.stopPropagation(); sugClose(); } }
+  });
+  el.addEventListener('blur',()=>setTimeout(()=>{ if(document.activeElement!==el) sugClose(); },120));
+  box.addEventListener('pointerdown',e=>{ e.preventDefault(); });                     // keep the caret in the box while tapping a row
+  box.addEventListener('click',e=>{ const r=e.target.closest('[data-i]'); if(r) sugPick(+r.dataset.i); });
+  box.addEventListener('mousemove',e=>{ const r=e.target.closest('[data-i]'); if(r&&+r.dataset.i!==SUG_AT){ SUG_AT=+r.dataset.i; box.querySelectorAll('.sug-r').forEach((n,i)=>n.classList.toggle('on',i===SUG_AT)); } });
+})();
+
+/* ---------- drawings ---------------------------------------------------------------------------
+ * A drawing is {id,type,a:{t,p},b:{t,p}?,color,text?}; t = unix seconds, p = price. Points are stored
+ * as TIME, not bar index, so they stay on the same date when new bars arrive or the history grows.
+ * Beyond the last bar a point's time is extrapolated at 5 bars per 7 days. ------------------------- */
+let DRAWINGS=[], SEL=null, DRAFT=null, TOOL='cursor', COLOR='#f59e0b', HOVER=null;
+const FIB=[0,.236,.382,.5,.618,.786,1];
+const allDrawings=()=>{ const a=lsGet(LS_DRAW,{}); return (a&&typeof a==='object'&&!Array.isArray(a))?a:{}; };
+function loadDrawings(k){ const l=allDrawings()[k]; return Array.isArray(l)?l.filter(d=>d&&d.a&&isFinite(d.a.t)&&isFinite(d.a.p)):[]; }
+let HIST=[], HPOS=-1;      // undo / redo: snapshots of this chart's drawings, this page visit only
+function histReset(){ HIST=[JSON.stringify(DRAWINGS)]; HPOS=0; }
+function undo(dir){ const p=HPOS+dir; if(!KEY||p<0||p>=HIST.length) return; HPOS=p; DRAWINGS=JSON.parse(HIST[p]); SEL=null; DRAFT=null; saveDrawings(true); redraw(); }
+function saveDrawings(noHist){ if(!KEY) return; if(noHist!==true){ const j=JSON.stringify(DRAWINGS); if(j!==HIST[HPOS]){ HIST=HIST.slice(0,HPOS+1); HIST.push(j); if(HIST.length>200) HIST.shift(); HPOS=HIST.length-1; } }
+  const a=allDrawings(); if(DRAWINGS.length) a[KEY]=DRAWINGS; else delete a[KEY];
+  if(!lsSet(LS_DRAW,a)) flash('Could not save: this browser is blocking or has run out of site storage.'); renderChips(); renderTools(); }
+function timeToLogical(t){ const n=TIMES.length; if(!n) return 0;
+  if(t>=TIMES[n-1]) return n-1+(t-TIMES[n-1])/DAY*5/7;
+  if(t<=TIMES[0]) return (t-TIMES[0])/DAY*5/7;
+  let lo=0, hi=n-1; while(lo<hi){ const m=(lo+hi)>>1; if(TIMES[m]<t) lo=m+1; else hi=m; }
+  if(TIMES[lo]===t) return lo; return lo-1+(t-TIMES[lo-1])/(TIMES[lo]-TIMES[lo-1]); }
+function logicalToTime(l){ const n=TIMES.length; if(!n) return 0; const r=Math.round(l);
+  if(r>n-1) return Math.round(TIMES[n-1]+(r-(n-1))*DAY*7/5);
+  if(r<0) return Math.round(TIMES[0]+r*DAY*7/5);
+  return TIMES[r]; }
+function toXY(pt){ if(!CH) return null; const x=CH.chart.timeScale().logicalToCoordinate(timeToLogical(pt.t)); const y=CH.series.priceToCoordinate(pt.p);
+  return (x==null||y==null)?null:{x,y}; }
+function fromXY(x,y){ if(!CH) return null; const l=CH.chart.timeScale().coordinateToLogical(x); const p=CH.series.coordinateToPrice(y);
+  return (l==null||p==null||!isFinite(p))?null:{t:logicalToTime(l),p}; }
+// the PRICE pane only: indicator panes (RSI, MACD, volume) sit below it and take no drawings
+function paneSize(){ const el=$('chart'); let pw=0, th=0, ph=0; try{ pw=CH.chart.priceScale('right').width(); th=CH.chart.timeScale().height(); ph=CH.chart.panes()[0].getHeight(); }catch(e){}
+  return { w:el.clientWidth-pw, h:ph>0?ph:el.clientHeight-th }; }
+function rayEnd(A,B){ const dx=B.x-A.x, dy=B.y-A.y, L=Math.hypot(dx,dy); if(!L) return B; const k=Math.max(1,8000/L); return {x:A.x+dx*k,y:A.y+dy*k}; }
+
+function paint(ctx,size){
+  const list=DRAFT?DRAWINGS.concat([DRAFT]):DRAWINGS;
+  for(const d of list){ const A=toXY(d.a), B=d.b?toXY(d.b):null; if(!A||(d.b&&!B)) continue;
+    const sel=d===SEL||d===DRAFT; ctx.save(); ctx.strokeStyle=d.color; ctx.fillStyle=d.color; ctx.lineWidth=sel?2.5:1.75; ctx.font='600 11px '+getComputedStyle(document.body).fontFamily;
+    if(d.type==='line'){ ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke(); }
+    else if(d.type==='ray'){ const E=rayEnd(A,B); ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(E.x,E.y); ctx.stroke(); }
+    else if(d.type==='vline'){ ctx.beginPath(); ctx.moveTo(A.x,0); ctx.lineTo(A.x,size.height); ctx.stroke();
+      const s=fmtDate(d.a.t), w=ctx.measureText(s).width+8, x=Math.max(0,Math.min(size.width-w,A.x-w/2)); ctx.fillRect(x,size.height-17,w,16); ctx.fillStyle='#fff'; ctx.textBaseline='middle'; ctx.fillText(s,x+4,size.height-8.5); }
+    else if(d.type==='measure'){ const up=d.b.p>=d.a.p, col=up?UP:DN, x=Math.min(A.x,B.x), y=Math.min(A.y,B.y), w=Math.abs(A.x-B.x), h=Math.abs(A.y-B.y);
+      ctx.fillStyle=col; ctx.strokeStyle=col; ctx.globalAlpha=.13; ctx.fillRect(x,y,w,h); ctx.globalAlpha=1; ctx.lineWidth=sel?2:1; ctx.strokeRect(x,y,w,h);
+      const diff=d.b.p-d.a.p, pc=d.a.p?diff/Math.abs(d.a.p)*100:NaN, bars=Math.round(Math.abs(timeToLogical(d.b.t)-timeToLogical(d.a.t))), days=Math.round(Math.abs(d.b.t-d.a.t)/DAY);
+      const s=(diff>=0?'+':'')+fmtNum(diff)+(isFinite(pc)?' ('+(pc>=0?'+':'')+pc.toFixed(2)+'%)':'')+' · '+bars+' bars · '+days+' days';
+      const tw=ctx.measureText(s).width+12, lx=Math.max(2,Math.min(size.width-tw-2,x+w/2-tw/2)), ly=up?Math.max(2,y-22):Math.min(size.height-20,y+h+4);
+      ctx.fillRect(lx,ly,tw,18); ctx.fillStyle='#fff'; ctx.textBaseline='middle'; ctx.fillText(s,lx+6,ly+9.5); }
+    else if(d.type==='hline'){ ctx.beginPath(); ctx.moveTo(0,A.y); ctx.lineTo(size.width,A.y); ctx.stroke();
+      const s=fmtVal(d.a.p), w=ctx.measureText(s).width+8; ctx.fillRect(size.width-w-2,A.y-8,w,16); ctx.fillStyle='#fff'; ctx.textBaseline='middle'; ctx.fillText(s,size.width-w+2,A.y+.5); }
+    else if(d.type==='rect'){ const x=Math.min(A.x,B.x), y=Math.min(A.y,B.y), w=Math.abs(A.x-B.x), h=Math.abs(A.y-B.y);
+      ctx.globalAlpha=.14; ctx.fillRect(x,y,w,h); ctx.globalAlpha=1; ctx.strokeRect(x,y,w,h); }
+    else if(d.type==='fib'){ const x0=Math.min(A.x,B.x), x1=Math.max(Math.max(A.x,B.x),x0+60);
+      ctx.globalAlpha=.5; ctx.setLineDash([4,3]); ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1; ctx.textBaseline='bottom';
+      for(const f of FIB){ const p=d.b.p+(d.a.p-d.b.p)*f, y=CH.series.priceToCoordinate(p); if(y==null) continue;
+        ctx.globalAlpha=(f===0||f===1||f===.5)?1:.75; ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke(); ctx.fillText(f.toFixed(3).replace(/0+$/,'').replace(/\.$/,'')+'  '+fmtVal(p),x0+3,y-2); }
+      ctx.globalAlpha=1; }
+    else if(d.type==='text'){ ctx.font='600 13px '+getComputedStyle(document.body).fontFamily; ctx.textBaseline='middle'; const lines=String(d.text||'').split('\n');
+      lines.forEach((ln,i)=>ctx.fillText(ln,A.x+4,A.y+i*16));
+      if(sel){ const w=Math.max.apply(null,lines.map(l=>ctx.measureText(l).width)); ctx.lineWidth=1; ctx.setLineDash([3,3]); ctx.strokeRect(A.x,A.y-10,w+8,lines.length*16+4); ctx.setLineDash([]); } }
+    if(sel){ ctx.setLineDash([]); for(const P of (d.type==='hline'||d.type==='text'||!B)?[A]:[A,B]){ ctx.beginPath(); ctx.arc(P.x,P.y,4.5,0,Math.PI*2); ctx.fillStyle=cssVar('--surface','#fff'); ctx.fill(); ctx.lineWidth=2; ctx.strokeStyle=d.color; ctx.stroke(); } }
+    ctx.restore();
+  }
+}
+// distance from point to segment
+function segDist(px,py,a,b){ const dx=b.x-a.x, dy=b.y-a.y, L=dx*dx+dy*dy; let t=L?((px-a.x)*dx+(py-a.y)*dy)/L:0; t=Math.max(0,Math.min(1,t)); return Math.hypot(px-(a.x+t*dx),py-(a.y+t*dy)); }
+// → {d, part:'a'|'b'|'body'} for the top-most drawing under (x,y)
+function hit(x,y){ const T=7;
+  for(let i=DRAWINGS.length-1;i>=0;i--){ const d=DRAWINGS[i], A=toXY(d.a), B=d.b?toXY(d.b):null; if(!A||(d.b&&!B)) continue;
+    if(d===SEL){ if(Math.hypot(x-A.x,y-A.y)<=9) return {d,part:d.b?'a':'body'}; if(B&&Math.hypot(x-B.x,y-B.y)<=9) return {d,part:'b'}; }
+    if(d.type==='line'){ if(segDist(x,y,A,B)<=T) return {d,part:'body'}; }
+    else if(d.type==='ray'){ if(segDist(x,y,A,rayEnd(A,B))<=T) return {d,part:'body'}; }
+    else if(d.type==='vline'){ if(Math.abs(x-A.x)<=T) return {d,part:'body'}; }
+    else if(d.type==='hline'){ if(Math.abs(y-A.y)<=T) return {d,part:'body'}; }
+    else if(d.type==='rect'||d.type==='fib'||d.type==='measure'){ const x0=Math.min(A.x,B.x)-T, x1=Math.max(A.x,B.x,d.type==='fib'?Math.min(A.x,B.x)+60:-1e9)+T, y0=Math.min(A.y,B.y)-T, y1=Math.max(A.y,B.y)+T;
+      if(x>=x0&&x<=x1&&y>=y0&&y<=y1) return {d,part:'body'}; }
+    else if(d.type==='text'){ const lines=String(d.text||'').split('\n'); const w=Math.max.apply(null,lines.map(l=>l.length))*7.5+10;
+      if(x>=A.x-4&&x<=A.x+w&&y>=A.y-12&&y<=A.y+lines.length*16) return {d,part:'body'}; }
+  }
+  return null;
+}
+
+/* ---------- pointer handling: capture-phase listeners on the wrapper. When a tool is active or a
+ * drawing is being dragged the events are stopped before Lightweight Charts sees them (so the chart
+ * does not pan); otherwise they pass through untouched. ------------------------------------------- */
+let DRAG=null, BLOCK=false, DOWN=null;
+const wrap=$('chartWrap');
+function local(e){ const r=$('chart').getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; }
+function inPane(p){ const s=paneSize(); return p.x>=0&&p.y>=0&&p.x<=s.w&&p.y<=s.h; }
+wrap.addEventListener('pointerdown',e=>{
+  BLOCK=false; if(!CH||!DATA.length||(e.pointerType==='mouse'&&e.button!==0)) return;
+  const p=local(e); if(!inPane(p)) return;
+  if(TOOL!=='cursor'){
+    BLOCK=true; e.preventDefault(); e.stopPropagation(); try{ wrap.setPointerCapture(e.pointerId); }catch(_){}
+    const pt=fromXY(p.x,p.y); if(!pt) return;
+    DOWN={x:p.x,y:p.y,hadDraft:!!DRAFT};
+    if(TOOL==='hline'||TOOL==='vline'){ addDrawing({type:TOOL,a:pt}); return; }
+    if(TOOL==='text'){ DOWN=null; const s=prompt('Text to place on the chart:'); if(s&&s.trim()) addDrawing({type:'text',a:pt,text:s.trim().slice(0,200)}); else setTool('cursor'); return; }
+    if(!DRAFT) DRAFT={id:'draft',type:TOOL,a:pt,b:{t:pt.t,p:pt.p},color:COLOR}; else DRAFT.b=pt;
+    redraw(); return;
+  }
+  const h=hit(p.x,p.y);
+  if(h){ BLOCK=true; e.preventDefault(); e.stopPropagation(); try{ wrap.setPointerCapture(e.pointerId); }catch(_){}
+    SEL=h.d; const A=toXY(h.d.a), B=h.d.b?toXY(h.d.b):null;
+    DRAG={part:h.part,x:p.x,y:p.y,A,B,moved:false}; renderTools(); redraw(); }
+  else if(SEL){ SEL=null; renderTools(); redraw(); }
+},true);
+wrap.addEventListener('pointermove',e=>{
+  if(!CH) return; const p=local(e);
+  if(DRAFT){ const pt=fromXY(p.x,p.y); if(pt){ DRAFT.b=pt; redraw(); } e.stopPropagation(); return; }
+  if(DRAG&&SEL){ e.preventDefault(); e.stopPropagation(); const dx=p.x-DRAG.x, dy=p.y-DRAG.y; if(Math.hypot(dx,dy)>2) DRAG.moved=true;
+    if(DRAG.part==='a'||DRAG.part==='body'){ const n=fromXY(DRAG.A.x+dx,DRAG.A.y+dy); if(n) SEL.a=n; }
+    if(SEL.b&&(DRAG.part==='b'||DRAG.part==='body')){ const n=fromXY(DRAG.B.x+dx,DRAG.B.y+dy); if(n) SEL.b=n; }
+    redraw(); return; }
+  if(TOOL==='cursor'&&e.pointerType==='mouse'){ const h=inPane(p)?hit(p.x,p.y):null; if(!!h!==!!HOVER){ HOVER=h; wrap.style.cursor=h?'pointer':''; } }
+},true);
+function endPointer(e){
+  try{ wrap.releasePointerCapture(e.pointerId); }catch(_){}
+  if(DRAG){ if(DRAG.moved) saveDrawings(); DRAG=null; e.stopPropagation(); return; }
+  if(DRAFT&&DOWN){ const p=local(e), moved=Math.hypot(p.x-DOWN.x,p.y-DOWN.y)>6;
+    if(moved||DOWN.hadDraft){ const d=DRAFT; DRAFT=null; const A=toXY(d.a), B=toXY(d.b);
+      if(A&&B&&Math.hypot(A.x-B.x,A.y-B.y)>4) addDrawing({type:d.type,a:d.a,b:d.b}); else { setTool('cursor'); redraw(); } }
+    DOWN=null; e.stopPropagation(); }
+}
+wrap.addEventListener('pointerup',endPointer,true);
+wrap.addEventListener('pointercancel',e=>{ DRAG=null; DOWN=null; if(DRAFT){ DRAFT=null; redraw(); } },true);
+// Lightweight Charts listens to mouse and touch events, which follow the pointer event — stop those too
+for(const ev of ['mousedown','touchstart','touchmove','click','dblclick']) wrap.addEventListener(ev,e=>{ if(BLOCK||DRAFT||DRAG||TOOL!=='cursor'){ const p=e.touches&&e.touches[0]?local(e.touches[0]):(e.clientX!=null?local(e):null); if(!p||inPane(p)){ e.stopPropagation(); if(e.cancelable&&ev!=='click'&&ev!=='dblclick') e.preventDefault(); } } },true);
+wrap.addEventListener('dblclick',e=>{ if(TOOL!=='cursor'||!CH) return; const p=local(e), h=hit(p.x,p.y);
+  if(h&&h.d.type==='text'){ e.stopPropagation(); const s=prompt('Edit text:',h.d.text); if(s!=null&&s.trim()){ h.d.text=s.trim().slice(0,200); saveDrawings(); redraw(); } } },true);
+document.addEventListener('keydown',e=>{ const tag=(e.target&&e.target.tagName)||''; if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
+  const mod=e.ctrlKey||e.metaKey, k=e.key;
+  if(mod&&!e.altKey&&(k==='z'||k==='Z')){ e.preventDefault(); undo(e.shiftKey?1:-1); return; }
+  if(mod&&!e.altKey&&(k==='y'||k==='Y')){ e.preventDefault(); undo(1); return; }
+  if(mod||e.altKey) return;                                   // leave browser shortcuts (Ctrl +/-, Alt ←) alone
+  if((k==='Delete'||k==='Backspace')&&SEL){ e.preventDefault(); deleteSelected(); }
+  else if(k==='Escape'){ $('indPanel').classList.remove('open'); if(DRAFT){ DRAFT=null; redraw(); } if(TOOL!=='cursor') setTool('cursor'); else if(SEL){ SEL=null; renderTools(); redraw(); } }
+  else if(k==='/'){ e.preventDefault(); $('expr').focus(); $('expr').select(); }
+  else if(!CH||!DATA.length) return;
+  else if(k==='+'||k==='='){ e.preventDefault(); zoomBy(0.7); }
+  else if(k==='-'||k==='_'){ e.preventDefault(); zoomBy(1/0.7); }
+  else if(k==='ArrowLeft'||k==='ArrowRight'){ e.preventDefault(); const ts=CH.chart.timeScale(), r=ts.getVisibleLogicalRange(); if(!r) return; const st=Math.max(1,(r.to-r.from)*.1)*(k==='ArrowLeft'?-1:1); ts.setVisibleLogicalRange({from:r.from+st,to:r.to+st}); }
+  else if(k==='f'||k==='F'){ e.preventDefault(); toggleFs(); } });
+
+function addDrawing(d){ d.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6); d.color=COLOR; DRAWINGS.push(d); SEL=d; DRAFT=null; DOWN=null; setTool('cursor'); saveDrawings(); redraw(); }
+function deleteSelected(){ if(!SEL) return; DRAWINGS=DRAWINGS.filter(d=>d!==SEL); SEL=null; saveDrawings(); redraw(); }
+function setTool(t){ TOOL=t; if(t!=='cursor'){ SEL=null; } DRAFT=null; wrap.classList.toggle('drawing',t!=='cursor'); wrap.style.cursor=''; renderTools(); redraw(); }
+let FLASH_T=null;
+function flash(msg){ const tip=$('tip'); FLASHING=true; tip.textContent=msg; tip.style.display='block'; clearTimeout(FLASH_T); FLASH_T=setTimeout(()=>{ FLASHING=false; showBar(); },4000); }
+const ICON={ cursor:'<path d="M5 3l14 8-6 2-2 6z"/>', line:'<path d="M4 20L20 4"/><circle cx="4" cy="20" r="1.6"/><circle cx="20" cy="4" r="1.6"/>', hline:'<path d="M3 12h18"/>',
+  rect:'<rect x="4" y="6" width="16" height="12" rx="1"/>', fib:'<path d="M3 5h18M3 10h18M3 14h18M3 19h18"/>', text:'<path d="M5 6V4h14v2M12 4v16M9 20h6"/>',
+  trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>', vline:'<path d="M12 3v18"/>', ray:'<path d="M4 19L21 5"/><circle cx="4" cy="19" r="1.6"/><circle cx="11" cy="13.2" r="1.6"/>',
+  measure:'<path d="M4 16L16 4l4 4L8 20z"/><path d="M8 12l1.5 1.5M11 9l1.5 1.5M14 6l1.5 1.5"/>', undo:'<path d="M9 7L4 12l5 5"/><path d="M4 12h10a6 6 0 010 12" transform="translate(0 -5)"/>', redo:'<path d="M15 7l5 5-5 5"/><path d="M20 12H10a6 6 0 000 12" transform="translate(0 -5)"/>' };
+const TOOLS=[['cursor','Pointer'],['line','Trend line'],['ray','Ray'],['hline','Horizontal line'],['vline','Vertical line'],['rect','Rectangle'],['fib','Fib retracement'],['measure','Measure'],['text','Text']];
+function renderTools(){
+  const ok=!!(CH&&DATA.length);
+  const svg=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[k]+'</svg>';
+  let h=TOOLS.map(([k,l])=>`<button type="button" class="tool ${TOOL===k?'on':''}" data-tool="${k}" title="${l}" aria-label="${l}" ${ok?'':'disabled'}>${svg(k)}<span class="hidden xl:inline">${l}</span></button>`).join('');
+  h+=`<input id="colorPick" type="color" value="${COLOR}" title="Colour for new drawings and the selected one" style="width:28px;height:26px;padding:0;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer" ${ok?'':'disabled'}/>`;
+  h+=`<button type="button" class="tool" id="delBtn" title="Delete the selected drawing (Delete key)" ${SEL?'':'disabled'}>${svg('trash')}<span class="hidden xl:inline">Delete</span></button>`;
+  h+=`<button type="button" class="tool" id="undoBtn" title="Undo the last drawing change (Ctrl+Z)" aria-label="Undo" ${HPOS>0?'':'disabled'}>${svg('undo')}</button>`;
+  h+=`<button type="button" class="tool" id="redoBtn" title="Redo (Ctrl+Y)" aria-label="Redo" ${HPOS<HIST.length-1?'':'disabled'}>${svg('redo')}</button>`;
+  h+=`<button type="button" class="tool" id="clearBtn" title="Remove every drawing on this chart" ${DRAWINGS.length?'':'disabled'}>Clear all${DRAWINGS.length?' ('+DRAWINGS.length+')':''}</button>`;
+  $('tools').innerHTML=h;
+  $('tools').querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+  $('colorPick').oninput=e=>{ COLOR=e.target.value; if(SEL){ SEL.color=COLOR; saveDrawings(); redraw(); } };
+  $('delBtn').onclick=deleteSelected; $('undoBtn').onclick=()=>undo(-1); $('redoBtn').onclick=()=>undo(1);
+  $('clearBtn').onclick=()=>{ if(DRAWINGS.length&&confirm('Remove all '+DRAWINGS.length+' drawings on '+KEY+'? This cannot be undone.')){ DRAWINGS=[]; SEL=null; saveDrawings(); redraw(); } };
+}
+
+/* ---------- boot ------------------------------------------------------------------------------- */
+renderRanges(); renderTools(); renderChips(); renderIndPanel(); renderFav();
+(function boot(){ const q=new URLSearchParams(location.search); const s=q.get('s')||q.get('sym')||'';
+  CMPKEYS=s?(q.get('c')||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,4):[]; if(s) loadExpr(s,false); else showEmpty('Type a symbol, a ratio or a basket above and press Show.'); })();
+</script>
+</body>
+</html>

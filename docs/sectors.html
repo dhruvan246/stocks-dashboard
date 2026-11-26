@@ -8,7 +8,8 @@
 <link rel="canonical" href="./markets.html?v=sectors" />
 <script>
 /* Sectors now lives on the one Markets page (2026-11-26). Old links and bookmarks land here and are forwarded with their query. */
-(function(){ var q=new URLSearchParams(location.search); if(!q.get('v')) q.set('v','sectors'); location.replace('./markets.html?'+q.toString()+location.hash); })();
+(function(){ try{ if(localStorage.getItem('sw_view')==='old'){ location.replace('./sectors-old.html'+location.search+location.hash); return; } }catch(e){}
+ var q=new URLSearchParams(location.search); if(!q.get('v')) q.set('v','sectors'); location.replace('./markets.html?'+q.toString()+location.hash); })();
 </script>
 <noscript><meta http-equiv="refresh" content="0; url=./markets.html?v=sectors" /></noscript>
 </head>

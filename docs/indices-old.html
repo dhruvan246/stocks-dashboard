@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex" />
+<!-- OLD VIEW of indices.html, kept so the header's New / Old switch has somewhere to go. Frozen copy: fix bugs in indices.html, not here. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Indian Indices</title>
+<meta name="description" content="Every NSE index — live level, 1D/1W/1M/1Y change, PE/PB/dividend yield, a 30-day sparkline, 52-week-range position, valuation percentile vs the index's own history, relative strength vs Nifty 50, a heatmap view and constituent drill-downs." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1;}
+  :root{--ixc:var(--surface);--ixln:var(--border);--ixmut:var(--text-muted);--ixsub:var(--surface-2);}
+  html[data-theme="dark"]{--ixc:var(--surface);--ixln:var(--border);--ixmut:var(--text-muted);--ixsub:var(--surface-2);}
+  .card{background:var(--ixc);border:1px solid var(--ixln);border-radius:var(--radius-lg);}
+  .pos{color:var(--pos);}.neg{color:var(--neg);}.flat{color:var(--ixmut);}
+  html[data-theme="dark"] .pos{color:var(--pos);}html[data-theme="dark"] .neg{color:var(--neg);}
+
+  /* stat cards */
+  .stat{padding:12px 14px;border-radius:var(--radius-lg);border:1px solid var(--ixln);background:var(--ixc);}
+  .stat .lb{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ixmut);font-weight:700;}
+  .stat .vl{font-size:20px;font-weight:800;letter-spacing:-.01em;line-height:1.15;margin-top:3px;}
+  .stat .sc{font-size:11.5px;font-weight:600;margin-top:1px;}
+
+  /* pills / toggles */
+  .pill{padding:6px 13px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;
+        background:var(--ixsub);color:var(--ixmut);border:1px solid var(--ixln);transition:.12s;}
+  .pill:hover{color:var(--text,var(--text));}
+  html[data-theme="dark"] .pill:hover{color:var(--text);}
+  .pill.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent));}
+  .gtab{padding:7px 14px;border-radius:.6rem .6rem 0 0;font-size:12.5px;font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;
+        color:var(--ixmut);border:1px solid transparent;border-bottom:2px solid transparent;}
+  .gtab.on{color:var(--accent,var(--accent-text));border-bottom-color:var(--accent,var(--accent));background:var(--ixsub);}
+  .gtab .ct{font-size:10.5px;opacity:.7;font-weight:700;}
+
+  /* table */
+  .tb{border-collapse:separate;border-spacing:0;width:100%;}
+  .tb th,.tb td{padding:8px 9px;font-size:12.5px;white-space:nowrap;border-bottom:1px solid var(--ixln);text-align:right;}
+  .tb.dense th,.tb.dense td{padding:4px 8px;font-size:11.5px;}
+  .tb thead th{position:sticky;top:0;z-index:3;background:var(--ixc);font-size:10px;text-transform:uppercase;letter-spacing:.03em;
+               color:var(--ixmut);font-weight:800;cursor:pointer;user-select:none;}
+  .tb thead th.noclick{cursor:default;}
+  .tb thead th .ar{opacity:.45;font-size:9px;}
+  .tb th:first-child,.tb td:first-child{text-align:left;position:sticky;left:0;background:var(--ixc);z-index:2;min-width:190px;box-shadow:1px 0 0 var(--ixln);}
+  .tb thead th:first-child{z-index:4;}
+  .tb td{font-variant-numeric:tabular-nums;}
+  .tb tbody tr:hover td{background:var(--ixsub);}
+  .ixname{font-weight:700;color:var(--text,var(--text));cursor:default;}
+  html[data-theme="dark"] .ixname{color:var(--text);}
+  .ixname.link{color:var(--accent-text);cursor:pointer;}
+  .ixname.link:hover{text-decoration:underline;}
+  html[data-theme="dark"] .ixname.link{color:var(--accent-text);}
+  .memchip{display:inline-block;margin-left:6px;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:var(--radius-sm);
+           background:var(--ixsub);color:var(--ixmut);border:1px solid var(--ixln);vertical-align:1px;}
+  .lvl{font-weight:700;}
+
+  /* valuation percentile badge */
+  .vbadge{display:inline-block;min-width:30px;padding:1px 5px;border-radius:var(--radius-sm);font-size:11px;font-weight:700;color:#fff;}
+  .dash{color:var(--ixmut);}
+
+  /* 52w range bar */
+  .rng{display:inline-flex;align-items:center;gap:6px;}
+  .rngbar{position:relative;width:74px;height:6px;border-radius:9999px;background:linear-gradient(90deg,#fca5a5,#fde68a,#86efac);}
+  html[data-theme="dark"] .rngbar{background:linear-gradient(90deg,#7f1d1d,#78350f,#14532d);}
+  .rngdot{position:absolute;top:50%;width:8px;height:8px;border-radius:50%;background:#0f172a;border:1.5px solid #fff;transform:translate(-50%,-50%);}
+  html[data-theme="dark"] .rngdot{background:#e2e8f0;border-color:#0f172a;}
+  .rngpc{font-size:10.5px;color:var(--ixmut);min-width:26px;text-align:left;}
+
+  /* heatmap */
+  .hmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:7px;}
+  .hmtile{border-radius:var(--radius);padding:9px 10px;color:#fff;cursor:pointer;min-height:60px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;}
+  .hmtile .hn{font-size:11px;font-weight:700;line-height:1.15;text-shadow:0 1px 2px rgba(0,0,0,.28);}
+  .hmtile .hv{font-size:16px;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.28);}
+
+  select{background:var(--ixc);border:1px solid var(--ixln);border-radius:var(--radius);font-size:12.5px;padding:6px 9px;color:inherit;}
+
+  /* tooltip + modal */
+  #tip{position:fixed;z-index:70;pointer-events:none;background:#0f172a;color:#f1f5f9;border:1px solid #334155;border-radius:var(--radius);
+       padding:8px 11px;font-size:12px;line-height:1.5;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:280px;display:none;}
+  #tip b{color:#fff;}
+  #modal{position:fixed;inset:0;z-index:80;background:rgba(2,6,23,.6);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:40px 14px;}
+  #modalCard{background:var(--ixc);border:1px solid var(--ixln);border-radius:var(--radius-lg);max-width:640px;width:100%;max-height:82vh;overflow:auto;box-shadow:0 24px 60px rgba(0,0,0,.4);}
+  .mchip{display:inline-block;margin:3px;padding:4px 9px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;background:var(--ixsub);border:1px solid var(--ixln);}
+  .rew{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface);opacity:.55}
+  .rew.ready{opacity:1} .rew.on{border-color:var(--accent)} .rew.on .lb{color:var(--accent-text,var(--accent))}
+  .rew .lb{padding:0 8px 0 10px;font-size:12px;font-weight:600;color:var(--text-muted)}
+  html[data-theme] .rew button{background:none;border:0;border-left:1px solid var(--border);border-radius:0;padding:5px 9px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;min-height:0}
+  html[data-theme] .rew button:hover{color:var(--text);background:var(--surface-2)} html[data-theme] .rew button:disabled{opacity:.4;cursor:default}
+  html[data-theme] .rew input{border:0;border-left:1px solid var(--border);border-radius:0;background:transparent;color:var(--text);font:inherit;font-size:12px;padding:4px 6px;height:auto;min-height:0;width:auto;box-shadow:none}
+  .eodchip{display:inline-block;margin-left:6px;font-size:9.5px;font-weight:700;letter-spacing:.04em;color:var(--text-faint);border:1px solid var(--border);border-radius:4px;padding:0 4px;vertical-align:middle}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-2xl mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Indian Indices <span class="text-slate-400 font-semibold text-base">· every NSE index, live</span></h1>
+    <p class="text-sm text-slate-500 mt-1">Live level and <b>1D / 1W / 1M / 1Y</b> change for <b id="nCount">every</b> NSE index, with <b>PE, PB &amp; dividend yield</b> where NSE publishes them and a 30-day sparkline. Beyond the basics: a <b>valuation percentile</b> (is this index dear or cheap vs its own history?), a <b>52-week-range</b> position, <b>relative strength vs Nifty 50</b>, a <b>heatmap</b> view, and <b>constituent drill-downs</b> for the indices we track members for. <span id="updated" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading indices…</div>
+
+  <div id="content" class="hidden">
+    <!-- stat cards -->
+    <div id="cards" class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-5"></div>
+
+    <!-- controls -->
+    <div class="flex flex-wrap items-center gap-2 mb-2">
+      <div class="flex gap-1.5">
+        <span id="vTable" class="pill on">▦ Table</span>
+        <span id="vHeat" class="pill">▤ Heatmap</span>
+      </div>
+      <input id="search" type="search" placeholder="Filter indices…" class="pill" style="cursor:text;min-width:150px;color:inherit;" />
+      <div id="heatCtl" class="hidden items-center gap-1.5">
+        <span class="text-[11px] text-slate-500 font-semibold">Colour by</span>
+        <select id="heatMetric">
+          <option value="pc">1D %</option>
+          <option value="w1">1W %</option>
+          <option value="m1">1M %</option>
+          <option value="y1">1Y %</option>
+        </select>
+      </div>
+      <span id="rew" class="rew" title="Rewind: see every index as it stood at the close of a past date">
+        <span class="lb">Rewind</span>
+        <button type="button" id="rewPrev" title="One trading day back" aria-label="One trading day back">◀</button>
+        <input type="date" id="rewDate" aria-label="Show the table as of this date" />
+        <button type="button" id="rewNext" title="One trading day forward" aria-label="One trading day forward">▶</button>
+        <button type="button" id="rewNow" title="Back to the latest levels">Latest</button>
+      </span>
+      <span id="densBtn" class="pill ml-auto" title="Toggle row height">≡ Compact</span>
+    </div>
+
+    <div id="rewNote" class="hidden text-xs mb-2" style="color:var(--accent-text,var(--accent))"></div>
+    <!-- group tabs -->
+    <div id="tabs" class="flex flex-wrap gap-1 border-b border-slate-200 mb-0"></div>
+
+    <!-- table view -->
+    <div id="tableWrap" class="card overflow-x-auto rounded-t-none border-t-0">
+      <table class="tb" id="tbl"><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+    </div>
+
+    <!-- heatmap view -->
+    <div id="heatWrap" class="hidden card p-3">
+      <div id="hmgrid" class="hmgrid"></div>
+      <div class="flex items-center gap-2 mt-3 text-[11px] text-slate-500 justify-center">
+        <span id="hmL">−3%</span>
+        <div style="height:9px;width:200px;border-radius:9999px;background:linear-gradient(90deg,#dc2626,#f8717133 46%,#64748b22 50%,#4ade8033 54%,#16a34a)"></div>
+        <span id="hmR">+3%</span>
+      </div>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-5 leading-relaxed">
+      <b>Level</b> and <b>1D %</b> are live from NSE's index feed; <b>1M / 1Y</b> come from NSE's own index-level publication (which also supplies <b>PE / PB / dividend yield</b>) and fall back to our stored history. <b>1W</b> and the <b>30-day sparkline</b> are built from a daily-close window that grows one trading evening at a time — a column reads em-dash until it has enough history, and never stitches across an NSE index rename. <b>Valuation percentile</b> is where today's PE (or PB) sits within that index's <i>own</i> observed range — high (red) = more expensive than usual, low (green) = cheaper; it sharpens as history accrues. <b>52W</b> shows where the level sits between its 52-week low and high. <b>RS</b> is the index's 1-month return minus Nifty 50's (positive = leading the market). PE/PB/dividend yield aren't published for every index (bond, G-Sec and some factor indices omit them). Grouping is a display convenience, not a data value. Educational only — not investment advice.
+    </p>
+  </div>
+</main>
+
+<div id="tip"></div>
+<div id="modal"><div id="modalCard"></div></div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const fmtN = (v,d=2) => v==null ? '—' : Number(v).toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmtPc = v => v==null ? '<span class="dash">—</span>' : (v>0?'+':'')+v.toFixed(v===0?1:2)+'%';
+const cls = v => v==null?'flat':(v>0?'pos':(v<0?'neg':'flat'));
+
+let DATA=null, VIEW='table', GRP='broad', SORT={key:'pc',dir:-1}, DENSE=false, Q='';
+let HIST=null, REW=null, RROWS=null, XMEM=null, XHIST=null;     // close history of every series · rewound calendar position · rows on that date
+const IX=()=>RROWS||DATA.indices;
+
+const HIDE_IX=/\b(TR|PR)\b|\b50:50\b|\b25\/50\b|dividend|\bg-?sec|\bnifty gs\b|bharat ?bond|\b1d rate\b|india vix|arbitrage|futures|\busd\b/i;     /* user 2026-11-26: rows not wanted — Nifty 50 TR / PR series, names with 50:50, 25/50 or Dividend; bond / rate, VIX, arbitrage, futures, USD series */
+fetch('./indices.json?cb='+Date.now()).then(r=>r.json()).then(d=>{ d.indices=d.indices.filter(x=>!HIDE_IX.test(x.n)&&!HIDE_IX.test(x.k)); DATA=d; boot(); })
+  .catch(e=>{ $('status').textContent='Could not load indices.json — '+e; });
+
+function boot(){
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  $('nCount').textContent = DATA.indices.length + ' NSE indices';
+  loadHist();
+  const up = DATA.updated ? new Date(DATA.updated) : null;
+  $('updated').textContent = 'As of '+(DATA.asof||'')+(up?' · updated '+up.toLocaleString('en-IN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'}):'');
+  buildCards(); buildTabs();
+  // pick the first non-empty group
+  if(!DATA.indices.some(x=>x.g===GRP)) GRP = DATA.groups.find(g=>DATA.indices.some(x=>x.g===g))||GRP;
+  render();
+  wire();
+  liveTopUp();
+}
+
+/* ---- live top-up: same niftyindices CDN feed the nightly fetcher uses (CORS-open,
+   no proxy needed). Overwrites level / 1D% / 52w range in place; 1W/1M/1Y, PE/PB/DY,
+   sparkline and valuation percentile stay from the baked feed. ---- */
+const LIVE_URL='https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json';
+function marketOpenIST(){
+  const n=new Date(Date.now()+330*60000);                       // shift to IST, read UTC fields
+  const d=n.getUTCDay(), h=n.getUTCHours()+n.getUTCMinutes()/60;
+  return d>=1&&d<=5&&h>=9&&h<=15.75;
+}
+async function liveTopUp(){
+  if(!DATA||REW!=null) return;
+  try{
+    const j=await (await fetch(LIVE_URL+'?cb='+Date.now(),{cache:'no-store'})).json();
+    const rows=(j&&j.data)||[]; if(!rows.length) return;
+    const by={}; DATA.indices.forEach(x=>{ by[x.k]=x; });
+    let hit=0, tv='';
+    rows.forEach(rr=>{
+      const x=by[String(rr.indexName||'').trim()]; if(!x) return;
+      const last=parseFloat(rr.last), pc=parseFloat(rr.percChange);
+      if(!isFinite(last)||last<=0) return;
+      x.last=last; if(isFinite(pc)) x.pc=pc;
+      const yl=parseFloat(rr.yearLow), yh=parseFloat(rr.yearHigh);
+      if(isFinite(yl)&&isFinite(yh)&&yh>yl){
+        x.yl=yl; x.yh=yh;
+        x.pos52=Math.max(0,Math.min(100,Math.round((last-yl)/(yh-yl)*100)));
+      }
+      if(String(rr.timeVal||'')>tv) tv=String(rr.timeVal);
+      hit++;
+    });
+    if(!hit) return;
+    const t=/(\d{1,2}:\d{2})/.exec(tv);
+    $('updated').innerHTML=' · <span style="color:var(--pos);font-weight:800">● LIVE</span>'+
+      (t?' '+t[1]+' IST':'')+(marketOpenIST()?' · refreshes every minute':' · market closed — last session');
+    if(REW==null){ buildCards(); render(); }
+  }catch(e){ /* CDN hiccup — keep the baked numbers silently */ }
+}
+setInterval(()=>{ if(!document.hidden&&marketOpenIST()) liveTopUp(); },60000);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&marketOpenIST()) liveTopUp(); });
+
+function buildCards(){
+  const ix = IX();
+  const adv = ix.filter(x=>x.pc>0).length, dec = ix.filter(x=>x.pc<0).length;
+  const withpc = ix.filter(x=>x.pc!=null);
+  const top = withpc.slice().sort((a,b)=>b.pc-a.pc)[0];
+  const bot = withpc.slice().sort((a,b)=>a.pc-b.pc)[0];
+  const n50 = ix.find(x=>x.k==='NIFTY 50');
+  // best/worst group by median 1D
+  const med = arr=>{ const s=arr.filter(v=>v!=null).sort((a,b)=>a-b); return s.length?s[Math.floor(s.length/2)]:null; };
+  let gRows = DATA.groups.map(g=>({g, m:med(ix.filter(x=>x.g===g).map(x=>x.pc))})).filter(r=>r.m!=null);
+  gRows.sort((a,b)=>b.m-a.m);
+  const bestG = gRows[0], worstG = gRows[gRows.length-1];
+  const card=(lb,vl,sc,scc)=>`<div class="stat"><div class="lb">${lb}</div><div class="vl">${vl}</div><div class="sc ${scc||''}">${sc||''}</div></div>`;
+  $('cards').innerHTML =
+    card('Nifty 50', n50?fmtN(n50.last):'—', n50?fmtPc(n50.pc):'', n50?cls(n50.pc):'') +
+    card('Advancing', adv+' <span class="text-slate-400 text-sm font-bold">indices</span>', dec+' declining', 'flat') +
+    card('Top index'+(REW!=null?'':' (1D)'), top?`<span class="text-base">${top.n}</span>`:'—', top?fmtPc(top.pc):'', top?cls(top.pc):'') +
+    card('Weakest'+(REW!=null?'':' (1D)'), bot?`<span class="text-base">${bot.n}</span>`:'—', bot?fmtPc(bot.pc):'', bot?cls(bot.pc):'') +
+    card('Leading group', bestG?DATA.group_labels[bestG.g]:'—', bestG?('median '+fmtPc(bestG.m)):'', bestG?cls(bestG.m):'');
+}
+
+function buildTabs(){
+  const counts={}; IX().forEach(x=>counts[x.g]=(counts[x.g]||0)+1);
+  if(!counts[GRP]) GRP=DATA.groups.find(g=>counts[g])||GRP;
+  $('tabs').innerHTML = DATA.groups.filter(g=>counts[g]).map(g=>
+    `<span class="gtab ${g===GRP?'on':''}" data-g="${g}">${DATA.group_labels[g]} <span class="ct">${counts[g]}</span></span>`).join('');
+  $('tabs').querySelectorAll('.gtab').forEach(t=>t.onclick=()=>{ GRP=t.dataset.g; buildTabs(); render(); });
+}
+
+// ---- columns
+const COLS = [
+  {k:'n',   t:'Index',   noSort:false, align:'left'},
+  {k:'last',t:'Level'},
+  {k:'pc',  t:'1D %'},
+  {k:'w1',  t:'1W %'},
+  {k:'m1',  t:'1M %'},
+  {k:'y1',  t:'1Y %'},
+  {k:'spark',t:'30D', noSort:true},
+  {k:'pe',  t:'PE'},
+  {k:'pb',  t:'PB'},
+  {k:'dy',  t:'Div %'},
+  {k:'pos52',t:'52W range', noSort:false},
+  {k:'rs1m',t:'RS·1M'},
+];
+
+function rows(){
+  let r = IX().filter(x=>x.g===GRP);
+  if(Q){ const q=Q.toLowerCase(); r=r.filter(x=>x.n.toLowerCase().includes(q)||x.k.toLowerCase().includes(q)); }
+  const k=SORT.key, dir=SORT.dir;
+  r.sort((a,b)=>{
+    if(k==='n') return dir*a.n.localeCompare(b.n);
+    const av=a[k], bv=b[k];
+    if(av==null&&bv==null) return 0; if(av==null) return 1; if(bv==null) return -1;
+    return dir*(av-bv);
+  });
+  return r;
+}
+
+function valuationBadge(pct){
+  if(pct==null) return '';
+  // 0 (cheap, green) -> 100 (expensive, red)
+  const hue = Math.round((1-pct/100)*130); // 130=green .. 0=red
+  return `<span class="vbadge" style="background:hsl(${hue} 62% 42%)" data-vp="${pct}">${pct}</span>`;
+}
+function rangeBar(x){
+  if(x.pos52==null) return '<span class="dash">—</span>';
+  return `<span class="rng" data-yl="${x.yl}" data-yh="${x.yh}" data-lv="${x.last}" data-p="${x.pos52}">`+
+         `<span class="rngbar"><span class="rngdot" style="left:${x.pos52}%"></span></span>`+
+         `<span class="rngpc">${x.pos52}%</span></span>`;
+}
+function sparkSVG(arr){
+  if(!arr||arr.length<2) return '<span class="dash">—</span>';
+  const w=68,h=20,mn=Math.min(...arr),mx=Math.max(...arr),rg=(mx-mn)||1;
+  const pts=arr.map((v,i)=>[ (i/(arr.length-1))*w, h-2-((v-mn)/rg)*(h-4) ]);
+  const up=arr[arr.length-1]>=arr[0];
+  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  return `<svg width="${w}" height="${h}" class="inline-block align-middle" data-spark="${arr.join(',')}">`+
+         `<path d="${d}" fill="none" stroke="${up?'#16a34a':'#dc2626'}" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+}
+
+function render(){
+  if(VIEW==='table') renderTable(); else renderHeat();
+}
+
+function renderTable(){
+  $('tableWrap').classList.remove('hidden'); $('heatWrap').classList.add('hidden'); $('heatCtl').classList.add('hidden'); $('densBtn').classList.remove('hidden');
+  $('thead').innerHTML = '<tr>'+COLS.map(c=>{
+    const on = SORT.key===c.k;
+    const ar = c.noSort?'':`<span class="ar">${on?(SORT.dir<0?'▼':'▲'):'⇅'}</span>`;
+    return `<th class="${c.noSort?'noclick':''}" data-k="${c.k}" style="text-align:${c.align||'right'}">${c.t} ${ar}</th>`;
+  }).join('')+'</tr>';
+  $('tbody').innerHTML = rows().map(x=>{
+    const nameLink = x.members ? 'link' : '';
+    return '<tr data-k="'+encodeURIComponent(x.k)+'">'+
+      `<td><span class="ixname ${nameLink}" data-mem="${x.members?1:0}">${x.n}</span>${x.mem?`<span class="memchip">${x.mem}</span>`:''}${x.eod&&REW==null?`<span class="eodchip" title="NSE's live feed does not carry this index — level and changes are from its closing values up to ${x.eod}">CLOSE</span>`:''}</td>`+
+      `<td class="lvl">${fmtN(x.last)}</td>`+
+      `<td class="${cls(x.pc)}">${fmtPc(x.pc)}</td>`+
+      `<td class="${cls(x.w1)}">${fmtPc(x.w1)}</td>`+
+      `<td class="${cls(x.m1)}">${fmtPc(x.m1)}</td>`+
+      `<td class="${cls(x.y1)}">${fmtPc(x.y1)}</td>`+
+      `<td class="text-center">${sparkSVG(x.spark)}</td>`+
+      `<td>${x.pe==null?'<span class="dash">—</span>':fmtN(x.pe,1)+' '+valuationBadge(x.pep)}</td>`+
+      `<td>${x.pb==null?'<span class="dash">—</span>':fmtN(x.pb,2)+' '+valuationBadge(x.pbp)}</td>`+
+      `<td>${x.dy==null?'<span class="dash">—</span>':fmtN(x.dy,2)}</td>`+
+      `<td>${rangeBar(x)}</td>`+
+      `<td class="${cls(x.rs1m)}">${x.rs1m==null?'<span class="dash">—</span>':(x.rs1m>0?'+':'')+x.rs1m.toFixed(2)}</td>`+
+    '</tr>';
+  }).join('');
+  $('tbl').className = 'tb'+(DENSE?' dense':'');
+  $('thead').querySelectorAll('th:not(.noclick)').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k;
+    if(SORT.key===k) SORT.dir*=-1; else SORT={key:k,dir:k==='n'?1:-1};
+    renderTable();
+  });
+}
+
+function renderHeat(){
+  $('tableWrap').classList.add('hidden'); $('heatWrap').classList.remove('hidden'); $('heatCtl').classList.remove('hidden'); $('heatCtl').classList.add('flex'); $('densBtn').classList.add('hidden');
+  const m = $('heatMetric').value;
+  let r = IX().filter(x=>x.g===GRP && x[m]!=null);
+  if(Q){ const q=Q.toLowerCase(); r=r.filter(x=>x.n.toLowerCase().includes(q)); }
+  r.sort((a,b)=>b[m]-a[m]);
+  const cap = 3; // ±3% saturates the scale
+  const color = v=>{
+    const t=Math.max(-1,Math.min(1,v/cap));
+    if(t>=0) return `hsl(${142} ${28+Math.round(t*44)}% ${44-Math.round(t*10)}%)`;
+    return `hsl(${0} ${28+Math.round(-t*44)}% ${48-Math.round(-t*12)}%)`;
+  };
+  $('hmgrid').innerHTML = r.map(x=>
+    `<div class="hmtile" data-k="${encodeURIComponent(x.k)}" data-mem="${x.members?1:0}" style="background:${color(x[m])}">`+
+    `<div class="hn">${x.n}</div><div class="hv">${(x[m]>0?'+':'')+x[m].toFixed(2)}%</div></div>`).join('')
+    || '<div class="text-sm text-slate-500 p-4">No indices in this group have a '+m+' value yet.</div>';
+}
+
+/* ================= every NSE index + Rewind =================
+ * docs/idx_ohlc/_closes.bin (scripts/build_index_ohlc.py) = the daily close of every series in NSE's all-indices file.
+ * It (a) adds the indices NSE's live feed does not carry, with level and changes computed from their closes, and
+ * (b) lets the whole table be shown as of a past date. A series is tied to a table row by its key, else by VALUE
+ * (its close on the feed's date equals the row's baked level) — never by the look of the name.
+ * Changes computed here: 1D = previous close; 1W / 1M / 1Y = the close 7 / 30 / 365 calendar days earlier (or the
+ * last one before that, at most 10 days older); 52W = lowest / highest CLOSE of the last 365 days. */
+const SECT_NEW=new Set(['NIFTY FINANCIAL SERVICES EX-BANK','NIFTY NBFC','NIFTY HOUSING FINANCE','NIFTY INSURANCE','NIFTY POWER','NIFTY CAPITAL GOODS','NIFTY CONSTRUCTION',
+  'NIFTY COMMERCIAL & TRANSPORT SERVICES','NIFTY CONSUMER SERVICES','NIFTY RETAIL','NIFTY TELECOMMUNICATIONS','NIFTY HOSPITALS','NIFTY SMALL FINANCE BANKS & MICROFINANCE INSTITUTIONS']);
+function grpOf(name){
+  const n=name.toUpperCase();
+  if(/BOND|G-SEC|GSEC|SDL|\bSME\b|VIX|INVERSE|LEVERAGE|FUTURES|ARBITRAGE|RATE INDEX|DIVIDEND POINTS|USD|T-BILL|LIQUID 15 TR/.test(n)) return 'other';
+  if(/^(NIFTY 1000|NIFTY NEXT 100|NIFTY FULL MIDCAP 100|NIFTY FULL SMALLCAP 100)$/.test(n)) return 'broad';
+  if(SECT_NEW.has(n)) return 'sectoral';
+  if(/ALPHA|QUALITY|VALUE|MOMENTUM|LOW VOL|EQUAL WEIGHT|SHARIAH|ESG|DIVIDEND YIELD|DIVIDEND OPP|AHIMSA|GROWTH|LIQUID|BETA/.test(n)&&!/DEFENCE/.test(n)) return 'strategy';
+  return 'thematic';
+}
+// Fixed-income rows: the live feed's short key -> the series' key. Measured 2026-11-25 over 88 days (20 Jul - 23 Nov 2026):
+// each pair stays within 0.6% every day (the feed snapshot and the closing file are struck at different times, so they
+// are never equal to the paisa), and the next-closest series is 1.5% - 10% away.
+const SER_ALIAS={'NIFTY GS 15YRPLUS':'NIFTY 15 YR AND ABOVE G-SEC INDEX','NIFTY GS 11 15YR':'NIFTY 11-15 YR G-SEC INDEX','NIFTY GS 4 8YR':'NIFTY 4-8 YR G-SEC INDEX',
+  'NIFTY GS COMPSITE':'NIFTY COMPOSITE G-SEC INDEX','NIFTY GS 8 13YR':'NIFTY 8-13 YR G-SEC','NIFTY GS 10YR':'NIFTY 10 YR BENCHMARK G-SEC','NIFTY GS 10YR CLN':'NIFTY 10 YR BENCHMARK G-SEC (CLEAN PRICE)',
+  'BHARATBOND-APR30':'NIFTY BHARAT BOND INDEX - APRIL 2030','BHARATBOND-APR31':'NIFTY BHARAT BOND INDEX - APRIL 2031','BHARATBOND-APR32':'NIFTY BHARAT BOND INDEX - APRIL 2032','BHARATBOND-APR33':'NIFTY BHARAT BOND INDEX - APRIL 2033'};
+const normNm=s=>String(s||'').toUpperCase().replace(/&/g,'AND').replace(/[^A-Z0-9]/g,'');
+async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer(); return JSON.parse(await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).text()); }
+function posLEn(n){ const a=HIST.dn; let lo=0,hi=a.length-1,ans=-1; while(lo<=hi){ const m=(lo+hi)>>1; if(a[m]<=n){ans=m;lo=m+1;}else hi=m-1; } return ans; }
+function hAt(h,p){ let i=Math.min(p,h.s+h.c.length-1)-h.s; for(;i>=0;i--) if(h.c[i]!=null) return [h.c[i]/100,h.s+i]; return null; }
+function calcRow(h,P){
+  const dn=HIST.dn, a=hAt(h,P); if(!a||dn[P]-dn[a[1]]>7) return null;
+  const r2=v=>Math.round(v*100)/100, pv=hAt(h,a[1]-1);
+  const back=d=>{ const q=posLEn(dn[P]-d); if(q<h.s) return null; const b=hAt(h,q); return (b&&dn[P]-d-dn[b[1]]<=10&&b[0]>0)?r2((a[0]/b[0]-1)*100):null; };
+  const spark=[]; let lo=a[0],hi=a[0];
+  for(let i=a[1]-h.s;i>=0;i--){ const v=h.c[i]; if(v==null) continue; const old=dn[P]-dn[h.s+i];
+    if(spark.length<30) spark.unshift(v/100); if(old<=365){ if(v/100<lo)lo=v/100; if(v/100>hi)hi=v/100; } else if(spark.length>=30) break; }
+  return { last:a[0], pc:(pv&&dn[a[1]]-dn[pv[1]]<=7&&pv[0]>0)?r2((a[0]/pv[0]-1)*100):null, w1:back(7), m1:back(30), y1:back(365),
+    spark:spark.length>1?spark:null, yl:hi>lo?lo:null, yh:hi>lo?hi:null, pos52:hi>lo?Math.max(0,Math.min(100,Math.round((a[0]-lo)/(hi-lo)*100))):null };
+}
+function memAt(name,iso){          // {syms,note} for one of the 53 sector / theme indices, as of iso (null = today)
+  const cur=XMEM&&XMEM.indices&&XMEM.byNorm[normNm(name)]; if(!cur) return null;
+  const nm=cur.name, h=XHIST&&XHIST.indices&&XHIST.indices[nm];
+  if(iso==null) return {syms:cur.symbols,note:"Members today, from NSE's own list for this index."};
+  if(!h) return {syms:cur.symbols,note:"<b>Members as of today</b> — NSE's past lists for this index could not be checked, so no list for "+iso+' is shown.'};
+  let best=null; for(const s of h.snapshots) if(s.effectiveDate<=iso&&(!best||s.effectiveDate>best.effectiveDate)) best=s;
+  return best?{syms:best.symbols.slice().sort(),note:'Members on '+iso+' (in force since '+best.effectiveDate+'), rebuilt from NSE notices and checked against NSE’s archived lists.'}:null;
+}
+async function loadHist(){
+  try{
+    const [b,xm,xh]=await Promise.all([gunzipJSON('./idx_ohlc/_closes.bin'),
+      fetch('./nse_extra_indices/members.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
+      fetch('./nse_extra_indices/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null)]);
+    for(const k in b.idx) if(HIDE_IX.test(k)||HIDE_IX.test(b.idx[k].cur||'')) delete b.idx[k];     /* user 2026-11-26: no Nifty 50 TR / PR (leverage, inverse, futures TR) rows */
+    const day=iso=>Math.round(Date.parse(iso+'T00:00:00Z')/864e5), dn=[day(b.d0)]; for(const g of b.dd) dn.push(dn[dn.length-1]+g);
+    HIST={dn, iso:n=>new Date(n*864e5).toISOString().slice(0,10), idx:b.idx}; XMEM=xm; XHIST=xh;
+    if(XMEM&&XMEM.indices){ XMEM.byNorm={}; for(const n in XMEM.indices) XMEM.byNorm[normNm(n)]=Object.assign({name:n},XMEM.indices[n]); }
+    // tie series to the rows the feed already has: by key, else by value on the feed's date
+    const P0=posLEn(day(DATA.asof)), used=new Set();
+    DATA.indices.forEach(x=>{ x.bk={last:x.last}; const k=HIST.idx[x.k]?x.k:SER_ALIAS[x.k]; if(k&&HIST.idx[k]&&!used.has(k)){ x.h=HIST.idx[k]; if(k!==x.k) x.hk=k; used.add(k); } });
+    DATA.indices.forEach(x=>{ if(x.h||x.bk.last==null||P0<0) return;
+      const c=Object.keys(HIST.idx).filter(k=>{ if(used.has(k)) return false; const h=HIST.idx[k], i=P0-h.s; return i>=0&&i<h.c.length&&h.c[i]!=null&&Math.abs(h.c[i]/100-x.bk.last)<0.011; });
+      if(c.length===1){ x.h=HIST.idx[c[0]]; x.hk=c[0]; used.add(c[0]); } });
+    HIST.used=used; HIST.rowOf={}; DATA.indices.forEach(x=>{ if(x.h) HIST.rowOf[x.hk||x.k]=x; });
+    // indices NSE publishes but its live feed does not carry
+    const PL=dn.length-1, n50=DATA.indices.find(x=>x.k==='NIFTY 50'); let added=0;
+    for(const k in HIST.idx){ if(used.has(k)) continue; const h=HIST.idx[k], r=calcRow(h,PL); if(!r) continue;
+      const row=Object.assign({k, n:h.cur, g:grpOf(h.cur), h, eod:HIST.iso(dn[hAt(h,PL)[1]]), pe:null,pb:null,dy:null,pep:null,pbp:null}, r);
+      row.rs1m=(row.m1!=null&&n50&&n50.m1!=null)?Math.round((row.m1-n50.m1)*100)/100:null;
+      DATA.indices.push(row); added++; }
+    // members for the sector / theme indices outside the 28 of the shared pipeline
+    DATA.indices.forEach(x=>{ if(x.members) return; const m=memAt(x.n,null)||(x.h&&memAt(x.h.cur,null)); if(m){ x.members=m.syms; x.mem=m.syms.length; x.memNote=m.note; x.xm=1; } });
+    $('nCount').textContent=DATA.indices.length+' NSE indices';
+    $('rew').classList.add('ready'); rewBar();
+    buildCards(); buildTabs(); render();
+  }catch(e){ console.error('index history not loaded',e); $('rew').title='Rewind needs the index history file, which did not load'; }
+}
+function rowsAt(P){
+  const out=[], n50h=HIST.idx['NIFTY 50'], n50=n50h&&calcRow(n50h,P), iso=HIST.iso(HIST.dn[P]);
+  for(const k in HIST.idx){ const h=HIST.idx[k], r=calcRow(h,P); if(!r) continue;
+    const base=HIST.rowOf[k];
+    const row=Object.assign({k:base?base.k:k, n:base?base.n:h.cur, g:base?base.g:grpOf(h.cur), h, pe:null,pb:null,dy:null,pep:null,pbp:null}, r);
+    row.rs1m=(row.m1!=null&&n50&&n50.m1!=null)?Math.round((row.m1-n50.m1)*100)/100:null;
+    if(base&&base.members&&!base.xm){ row.members=base.members; row.mem=base.mem; row.memNote='<b>Members as of today</b>, not of '+iso+'. The list on a past date is on the Sectors page (Indices → Rewind).'; }
+    else{ const m=memAt(row.n,iso)||memAt(h.cur,iso); if(m){ row.members=m.syms; row.mem=m.syms.length; row.memNote=m.note; } }
+    out.push(row); }
+  return out;
+}
+function setRew(P){
+  if(!HIST) return; const PL=HIST.dn.length-1;
+  if(P==null||P>=PL){ REW=null; RROWS=null; } else { REW=Math.max(0,P); RROWS=rowsAt(REW); }
+  $('modal').style.display='none'; rewBar(); buildCards(); buildTabs(); render();
+  if(REW==null) liveTopUp();
+}
+function rewBar(){
+  if(!HIST) return; const PL=HIST.dn.length-1, d=$('rewDate'), cur=REW==null?PL:REW;
+  d.min=HIST.iso(HIST.dn[0]); d.max=HIST.iso(HIST.dn[PL]); d.value=HIST.iso(HIST.dn[cur]);
+  $('rew').classList.toggle('on',REW!=null); $('rewNext').disabled=$('rewNow').disabled=REW==null; $('rewPrev').disabled=cur<=0;
+  const nt=$('rewNote'); nt.classList.toggle('hidden',REW==null);
+  if(REW!=null){ const live=DATA.indices.length, n=RROWS.length;
+    nt.innerHTML='Rewound to the close of <b>'+new Date(HIST.dn[REW]*864e5).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})+'</b> · '+n+' indices had a published level then'+
+      ' · changes are from closing values (1W / 1M / 1Y = 7 / 30 / 365 days earlier; 52W range by closes) · PE, PB and dividend yield are not kept for past dates.'; }
+}
+function rewWire(){
+  $('rewPrev').onclick=()=>{ if(HIST) setRew((REW==null?HIST.dn.length-1:REW)-1); };
+  $('rewNext').onclick=()=>{ if(HIST&&REW!=null) setRew(REW+1); };
+  $('rewNow').onclick=()=>setRew(null);
+  $('rewDate').onchange=e=>{ if(!HIST) return; const v=e.target.value; if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){ rewBar(); return; }
+    const p=posLEn(Math.round(Date.parse(v+'T00:00:00Z')/864e5)); setRew(p<0?0:p); };
+}
+
+// ---- tooltip
+const tip=$('tip');
+function showTip(html,e){ tip.innerHTML=html; tip.style.display='block'; moveTip(e); }
+function moveTip(e){ const p=12,w=tip.offsetWidth,h=tip.offsetHeight; let x=e.clientX+p,y=e.clientY+p;
+  if(x+w>innerWidth) x=e.clientX-w-p; if(y+h>innerHeight) y=e.clientY-h-p; tip.style.left=x+'px'; tip.style.top=y+'px'; }
+function hideTip(){ tip.style.display='none'; }
+
+function wire(){
+  rewWire();
+  $('vTable').onclick=()=>{ VIEW='table'; $('vTable').classList.add('on'); $('vHeat').classList.remove('on'); render(); };
+  $('vHeat').onclick =()=>{ VIEW='heat';  $('vHeat').classList.add('on'); $('vTable').classList.remove('on'); render(); };
+  $('heatMetric').onchange=render;
+  $('densBtn').onclick=()=>{ DENSE=!DENSE; $('densBtn').classList.toggle('on',DENSE); $('densBtn').textContent=DENSE?'≡ Comfortable':'≡ Compact'; renderTable(); };
+  let t; $('search').oninput=e=>{ clearTimeout(t); t=setTimeout(()=>{ Q=e.target.value.trim(); render(); },120); };
+
+  // delegated hover + click for tooltips / drilldown
+  document.addEventListener('mousemove',e=>{
+    const sp=e.target.closest('[data-spark]'); const rn=e.target.closest('.rng'); const vp=e.target.closest('[data-vp]');
+    if(sp){ const a=sp.dataset.spark.split(',').map(Number); const chg=((a[a.length-1]-a[0])/a[0]*100);
+      showTip(`<b>Last ${a.length} sessions</b><br>${fmtN(a[0])} → ${fmtN(a[a.length-1])}<br><span class="${chg>=0?'pos':'neg'}">${(chg>=0?'+':'')+chg.toFixed(2)}%</span> over window`,e); return; }
+    if(rn){ showTip(`<b>52-week range</b><br>Low ${fmtN(+rn.dataset.yl)} · High ${fmtN(+rn.dataset.yh)}<br>Now ${fmtN(+rn.dataset.lv)} — <b>${rn.dataset.p}%</b> of range`,e); return; }
+    if(vp){ const p=+vp.dataset.vp; const lab=p>=75?'expensive vs its own history':p<=25?'cheap vs its own history':'around its usual';
+      showTip(`<b>Valuation percentile ${p}</b><br>${lab}<br><span style="opacity:.7">100 = dearest ever seen, 0 = cheapest</span>`,e); return; }
+    hideTip();
+  });
+  document.addEventListener('click',e=>{
+    const el=e.target.closest('[data-mem="1"]'); if(!el) return;
+    const tr=el.closest('[data-k]'); if(tr) openMembers(decodeURIComponent(tr.dataset.k));
+  });
+  $('modal').onclick=e=>{ if(e.target.id==='modal'||e.target.dataset.close) $('modal').style.display='none'; };
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') $('modal').style.display='none'; });
+}
+
+function openMembers(key){
+  const x=IX().find(i=>i.k===key); if(!x||!x.members) return;
+  const syms=x.members;
+  $('modalCard').innerHTML =
+    `<div class="p-4 border-b" style="border-color:var(--ixln)">
+       <div class="flex items-start justify-between gap-3">
+         <div><div class="text-lg font-extrabold">${x.n}</div>
+           <div class="text-xs text-slate-500 mt-0.5">${syms.length} constituents · level ${fmtN(x.last)} <span class="${cls(x.pc)}">${fmtPc(x.pc)}</span></div></div>
+         <span data-close="1" class="pill">✕ Close</span>
+       </div></div>
+     <div class="p-4">${syms.map(s=>`<span class="mchip">${s}</span>`).join('')}
+       <p class="text-[11px] text-slate-400 mt-3">${x.memNote||'Latest tracked constituents. Click a name on the table to open its members.'}</p></div>`;
+  $('modal').style.display='flex';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex" />
+<!-- OLD VIEW of movers.html, kept so the header's New / Old switch has somewhere to go. Frozen copy: fix bugs in movers.html, not here. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Top Movers</title>
+<meta name="description" content="NSE top gainers and losers by session, week, month or year — split/bonus-adjusted, filtered by universe (F&O / Nifty 500), market-cap band and sector, with per-stock sparklines, distance from the 52-week high/low and one-click deep links to full stock pages." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  :root { --mvc:var(--surface); --mvline:var(--border); --gain:var(--pos); --loss:var(--neg); }
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .pos{color:var(--gain);font-weight:700}.neg{color:var(--loss);font-weight:700}
+
+  /* page head */
+  .mv-head h1{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.2;color:var(--text);margin:0}
+  .mv-head h1 span{font-size:14px;font-weight:500;color:var(--text-faint);letter-spacing:0}
+  .mv-head p{font-size:12.5px;line-height:1.55;color:var(--text-muted);margin:6px 0 0;max-width:1000px}
+  .mv-head p b{color:var(--text);font-weight:600}
+
+  /* buttons: square, quiet; a row marked .seg joins its buttons into one control */
+  .vbtn{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;user-select:none;white-space:nowrap;
+        background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border);transition:var(--tr,.15s);box-sizing:border-box}
+  .vbtn:hover{border-color:var(--border-strong);color:var(--text)}
+  .vbtn.on{background:var(--accent);color:var(--on-accent,#fff);border-color:var(--accent)}
+  .seg{gap:0 !important}
+  .seg .vbtn{border-radius:0;margin-left:-1px}
+  .seg .vbtn:first-child{border-radius:var(--radius-sm) 0 0 var(--radius-sm);margin-left:0}
+  .seg .vbtn:last-of-type{border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+  .seg .vbtn.on{position:relative;z-index:1}
+  .seg #tabActive{border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+  select{background-color:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-weight:600;height:30px;padding:0 10px;color:var(--text)}
+  #fSearch{height:30px;box-sizing:border-box;background:var(--surface-2) !important;border:1px solid var(--border) !important;border-radius:var(--radius-sm) !important;color:var(--text);font-size:12px;min-width:170px}
+  .flab{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint)}
+
+  /* stat strip: four figures in one bar */
+  #cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+  .stat{padding:13px 16px;border-left:1px solid var(--border);min-width:0}
+  .stat:first-child{border-left:0}
+  .stat .v{font-size:22px;font-weight:700;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* sector pulse: an even grid of small tiles */
+  #sectorPulse{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:6px}
+  .schip{display:flex;align-items:center;gap:8px;padding:0 10px;height:30px;border-radius:var(--radius-sm);font-size:11.5px;font-weight:600;
+         border:1px solid transparent;cursor:pointer;white-space:nowrap;font-variant-numeric:tabular-nums;min-width:0;transition:border-color var(--tr,.15s)}
+  .schip:hover{border-color:var(--border-strong)}
+  .schip .sn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+  .schip .sv{font-weight:700}
+  .schip .sc{color:var(--text-faint);font-weight:500;min-width:22px;text-align:right}
+
+  /* table */
+  .mv{border-collapse:separate;border-spacing:0;width:100%}
+  .mv th,.mv td{padding:7px 12px;font-size:12.5px;border-bottom:1px solid var(--border);white-space:nowrap}
+  .mv tbody tr:last-child td{border-bottom:0}
+  .mv thead th{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);position:sticky;top:0;background:var(--surface-2);z-index:3;
+               cursor:pointer;user-select:none;text-align:right;padding-top:9px;padding-bottom:9px}
+  .mv thead th.l{text-align:left}.mv thead th.noclick{cursor:default}
+  .mv td{text-align:right;font-variant-numeric:tabular-nums}
+  .mv td.l{text-align:left}
+  .mv tbody tr{cursor:pointer;transition:background .12s}
+  .mv tbody tr:hover{background:var(--surface-2)}
+  .mv .sym{font-weight:700;color:var(--accent-text)}
+  .mv .nm{font-size:11px;color:var(--text-faint);max-width:230px;overflow:hidden;text-overflow:ellipsis}
+  .sec-chip{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted)}
+  .chg{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:var(--radius-sm);font-weight:700;font-size:12px}
+  .chg.g{background:var(--pos-soft);color:var(--gain)}
+  .chg.b{background:var(--neg-soft);color:var(--loss)}
+  .spark{display:block}
+  .rk{color:var(--text-faint);font-weight:600;font-size:11px}
+  #tip{position:fixed;z-index:80;pointer-events:none;background:var(--surface-3);color:var(--text);border:1px solid var(--border-strong);border-radius:var(--radius);
+       padding:7px 10px;font-size:11.5px;line-height:1.5;box-shadow:var(--shadow-lg);max-width:250px;display:none}
+  #tip b{color:var(--text)}
+  @media (max-width:760px){ #cards{grid-template-columns:repeat(2,minmax(0,1fr))} .stat:nth-child(odd){border-left:0} .stat:nth-child(n+3){border-top:1px solid var(--border)} }
+  @media (max-width:640px){ .mv th,.mv td{padding:7px 8px;font-size:12px} .hide-sm{display:none} .mv-head h1{font-size:21px}
+    #sectorPulse{grid-template-columns:repeat(2,minmax(0,1fr))} .stat .v{font-size:19px} }
+  .rew{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface);opacity:.55}
+  .rew.ready{opacity:1} .rew.on{border-color:var(--accent)}
+  html[data-theme] .rew button{background:none;border:0;border-left:1px solid var(--border);border-radius:0;padding:6px 9px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;min-height:0}
+  html[data-theme] .rew button:first-child{border-left:0}
+  html[data-theme] .rew button:hover{color:var(--text);background:var(--surface-2)} html[data-theme] .rew button:disabled{opacity:.4;cursor:default}
+  html[data-theme] .rew input{border:0;border-left:1px solid var(--border);border-radius:0;background:transparent;color:var(--text);font:inherit;font-size:12px;padding:5px 6px;height:auto;min-height:0;width:auto;box-shadow:none}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-2xl mx-auto px-4 py-6">
+  <div class="mb-4 mv-head">
+    <h1>Top Movers <span>· gainers &amp; losers</span></h1>
+    <p>NSE's biggest movers over the <b>session, week, month, quarter, half-year or year</b> — computed from <b>split/bonus-adjusted</b> closes so a corporate action never shows up as a fake jump. Filter by <b>universe</b> (F&amp;O / Nifty 500 / SME), <b>market-cap band</b> and <b>sector</b>. Each row carries an <b>8-month sparkline</b>, distance from the stock's own <b>52-week high &amp; low</b>, and a one-click deep link to its full page. <span id="updated" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading market data…</div>
+
+  <div id="content" class="hidden">
+    <!-- LIVE SESSION MOVERS (our CF Worker → NSE live gainers/losers; hidden unless live data parses) -->
+    <div id="liveCard" class="card p-4 mb-4 hidden">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+        <div class="text-[11px] font-extrabold uppercase tracking-wide text-slate-400">
+          <span style="color:var(--pos)">● LIVE</span> this session · biggest moves right now <span id="liveAt" class="normal-case font-semibold"></span>
+        </div>
+        <div class="text-[11px] text-slate-400">NSE raw session prices (vs prev close) · top 10 each side</div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-x-6 gap-y-1">
+        <div><div class="text-[11px] font-bold mb-1" style="color:var(--gain)">▲ Top gainers (all securities)</div><div id="liveGain" class="flex flex-wrap gap-1.5"></div></div>
+        <div><div class="text-[11px] font-bold mb-1" style="color:var(--loss)">▼ Top losers (all securities)</div><div id="liveLose" class="flex flex-wrap gap-1.5"></div></div>
+      </div>
+    </div>
+
+    <!-- which prices the table is using right now (live session vs last close) -->
+    <div id="modeNote" class="text-xs mb-3 px-3 py-2 rounded-lg hidden" style="background:var(--surface-2,rgba(100,116,139,.08))"></div>
+
+    <!-- stat cards -->
+    <div id="cards" class="mb-3"></div>
+
+    <!-- filters -->
+    <div class="card p-3 mb-3 flex flex-wrap items-end gap-x-5 gap-y-3">
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Window</span>
+        <div class="flex seg" id="fWindow">
+          <span class="vbtn on" data-w="1D">1D</span>
+          <span class="vbtn" data-w="1W">1W</span>
+          <span class="vbtn" data-w="1M">1M</span>
+          <span class="vbtn" data-w="3M">3M</span>
+          <span class="vbtn" data-w="6M">6M</span>
+          <span class="vbtn" data-w="1Y">1Y</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Universe</span>
+        <div class="flex flex-wrap gap-1.5" id="fUniv">
+          <span class="vbtn on" data-u="all">All</span>
+          <span class="vbtn" data-u="fno">F&amp;O</span>
+          <span class="vbtn" data-u="n500">Nifty 500</span>
+          <span class="vbtn" data-u="mc250" title="Nifty Microcap 250 — the 250 companies ranked just below the Nifty 500 (NSE's list, point-in-time history)">Nifty Microcap 250</span>
+          <span class="vbtn" data-u="sme" title="SME platform listings — NSE Emerge + BSE SME">SME</span>
+          <span class="vbtn" data-u="smeipo" title="BSE SME IPO index — BSE's official constituent list (listed on BSE SME in about the last year)">BSE SME IPO</span>
+          <span class="vbtn" data-u="smeemerge" title="Nifty SME Emerge index — NSE's official constituent list (NSE Emerge stocks that trade often enough)">Nifty SME Emerge</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Market cap</span>
+        <div class="flex seg" id="fCap">
+          <span class="vbtn on" data-c="all">All</span>
+          <span class="vbtn" data-c="large">Large</span>
+          <span class="vbtn" data-c="mid">Mid</span>
+          <span class="vbtn" data-c="small">Small</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Sector</span>
+        <select id="fSector"><option value="all">All sectors</option></select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Liquidity floor</span>
+        <select id="fFloor">
+          <option value="100">≥ ₹100 Cr m-cap</option>
+          <option value="0">Include micro-caps</option>
+          <option value="500">≥ ₹500 Cr m-cap</option>
+          <option value="2000">≥ ₹2,000 Cr m-cap</option>
+        </select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span class="flab">Rewind</span>
+        <span id="rew" class="rew ready" title="Rewind: see the movers as they stood at the close of a past date">
+          <button type="button" id="rewPrev" title="One trading day back" aria-label="One trading day back">◀</button>
+          <input type="date" id="rewDate" aria-label="Show the movers as of this date" />
+          <button type="button" id="rewNext" title="One trading day forward" aria-label="One trading day forward" disabled>▶</button>
+          <button type="button" id="rewNow" title="Back to today" disabled>Latest</button>
+        </span>
+      </div>
+      <div class="flex flex-col gap-1.5 ml-auto">
+        <span class="flab">&nbsp;</span>
+        <div class="flex gap-1.5 items-center">
+          <input id="fSearch" type="search" placeholder="Search symbol…" class="px-3" />
+          <button id="btnCsv" class="vbtn" title="Download the current view as CSV"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- sector heatmap -->
+    <div class="mb-4">
+      <div class="flab mb-1.5">Sector pulse <span class="normal-case font-medium text-slate-400" style="letter-spacing:0">· median move over the window (click to filter)</span></div>
+      <div id="sectorPulse"></div>
+    </div>
+
+    <!-- tabs -->
+    <div class="flex items-center seg mb-3">
+      <span class="vbtn on" id="tabGain" data-t="gain">▲ Gainers</span>
+      <span class="vbtn" id="tabLose" data-t="lose">▼ Losers</span>
+      <span class="vbtn" id="tabActive" data-t="active">↕ Biggest moves</span>
+      <span class="ml-auto text-xs text-slate-500" id="rowCount"></span>
+    </div>
+
+    <div class="card overflow-x-auto">
+      <table class="mv" id="tbl">
+        <thead>
+          <tr>
+            <th class="l noclick">#</th>
+            <th class="l" data-sort="symbol">Stock</th>
+            <th class="noclick hide-sm">Trend (8&nbsp;mo)</th>
+            <th data-sort="toPrice">Price ₹</th>
+            <th data-sort="changePercent">Change %</th>
+            <th data-sort="d52" class="hide-sm">From 52W&nbsp;high</th>
+            <th data-sort="u52" class="hide-sm">From 52W&nbsp;low</th>
+            <th data-sort="mcap">M-cap ₹Cr</th>
+            <th class="l hide-sm" data-sort="sector">Sector</th>
+          </tr>
+        </thead>
+        <tbody id="tBody"></tbody>
+      </table>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-4 leading-relaxed">
+      <b>Change %</b> is measured on split/bonus-adjusted closes (dividends are not adjusted — the ex-dividend drop counts as a move, as on NSE, Moneycontrol and Screener): <b>1D</b> = latest close vs the previous trading close, <b>1W/1M/3M/6M/1Y</b> = latest close vs the adjusted close roughly 7 / 30 / 91 / 182 / 365 calendar days earlier (a stock listed more recently than that is left out of the window). <b>1D–6M</b> paint instantly from the slim recent feed (~8 months); picking <b>1Y</b> loads the full price history once. <b>From 52W high / low</b> compares the latest close to the stock's own highest / lowest close in the trailing year (blank until a stock has a full year of history). <b>SME</b> = SME-platform listings on both exchanges — NSE Emerge and BSE SME (BSE groups M / MT, the stocks behind the BSE SME IPO index); each row says which; <b>BSE SME IPO</b> = the index's current constituents from BSE's official list (a stock the price feed doesn't carry yet is left out); <b>Nifty SME Emerge</b> = that index's current constituents from NSE's official list; picking it switches the liquidity floor to "Include micro-caps" since most SME names are below ₹100 Cr. Market-cap bands: <b>Large</b> ≥ ₹20,000 Cr, <b>Mid</b> ₹5,000–20,000 Cr, <b>Small</b> &lt; ₹5,000 Cr. The <b>liquidity floor</b> hides tiny illiquid tickers by minimum market cap (this feed doesn't carry intraday turnover, so we gate on size rather than a rupee-turnover floor). Prices are end-of-day from official NSE bhavcopies; BSE-only names (.BO) are priced from their BSE listing. Educational only — not investment advice.
+    </p>
+  </div>
+</main>
+
+<div id="tip"></div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const DAY = 86400;
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+const inr2 = n => n == null ? '—' : Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+let META = {}, SERIES = {}, START_TS = 0, END_TS = 0, END_OFF = 0;
+let LAST_BAR = '';   // ISO date most NSE series end on (NOT the file's build time; a midday refresh can add a partial bar)
+let STALE_1D = 0;    // EOD 1D rows whose own last bar is older than LAST_BAR (e.g. SME names — bhavcopy-only, no midday bar)
+let LIVE = null;     // {date:'YYYY-MM-DD', time:'HH:MM', data:{SYM:[ltp, prevClose, pchange]}} — NSE whole-market live feed
+let BLIVE = null;    // {date, time, data:{scripCode:[ltp, prevClose, pchange, scripId]}, idToCode} — BSE whole-market live feed
+let LIVE_SKIP = { bse: 0, untraded: 0, bseSnap: 0 };
+let FNO = new Set(), N500 = new Set(), MC250 = new Set();   // MC250: Nifty Microcap 250 (§227), same source as N500
+let FULL_LOADED = false, FULL_LOADING = null;
+// BSE SME platform names (.BO keys) — BSE groups M / MT in bse_universe.json; the whole BSE SME IPO index sits in
+// these groups (measured 2026-09-27: 160/160). Loaded only when the SME universe is first picked.
+let BSE_SME = new Set(), BSE_SME_LOADING = null;
+async function ensureBseSme(){
+  if (!BSE_SME_LOADING) BSE_SME_LOADING = fetch('./bse_universe.json').then(r => r.json()).then(U => {
+    BSE_SME = new Set((U.rows || []).filter(r => r[4] === 'M' || r[4] === 'MT').map(r => r[1] + '.BO'));
+  }).catch(e => { BSE_SME_LOADING = null; throw e; });
+  await BSE_SME_LOADING;
+}
+const isSme = tkr => !!(META[tkr] && META[tkr].sme) || BSE_SME.has(tkr);
+// BSE SME IPO index members (runbook §195) — BSE's official list, captured daily into bse_sme_ipo/members.json
+let SMEIPO = new Set(), SMEIPO_LOADING = null;
+async function ensureSmeIpo(){
+  if (!SMEIPO_LOADING) SMEIPO_LOADING = fetch('./bse_sme_ipo/members.json', { cache: 'no-store' }).then(r => r.json()).then(M => {
+    // a BSE-only row may be keyed by its scrip CODE ("544671.BO") instead of its id — accept both
+    SMEIPO = new Set((M.members || []).flatMap(m => [m.sym, m.code ? m.code + '.BO' : null]).filter(Boolean));
+  }).catch(e => { SMEIPO_LOADING = null; throw e; });
+  await SMEIPO_LOADING;
+}
+// Nifty SME Emerge index members (runbook §210) — NSE's official list, captured daily into nse_sme_emerge/members.json
+let SMEEM = new Set(), SMEEM_LOADING = null;
+async function ensureSmeEmerge(){
+  if (!SMEEM_LOADING) SMEEM_LOADING = fetch('./nse_sme_emerge/members.json', { cache: 'no-store' }).then(r => r.json()).then(M => {
+    SMEEM = new Set((M.members || []).flatMap(m => m.sym ? [m.sym, m.sym + '.NS'] : []));
+  }).catch(e => { SMEEM_LOADING = null; throw e; });
+  await SMEEM_LOADING;
+}
+
+let W = '1D', UNIV = 'all', CAP = 'all', SECTOR = 'all', FLOOR = 100, TAB = 'gain', SORT_KEY = 'changePercent', SORT_DIR = -1;
+let ROWS = [];       // last computed rows (all stocks passing universe/cap/sector/floor)
+
+async function gunzipFetch(url){
+  const buf = await (await fetch(url)).arrayBuffer();
+  const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return JSON.parse(await new Response(stream).text());
+}
+
+async function ensureFull(){
+  if (FULL_LOADED) return;
+  if (!FULL_LOADING) FULL_LOADING = (async () => {
+    const D = await gunzipFetch('./stock_data.bin');
+    // MERGE, never replace (runbook §103/§145): stock_data.bin can lag dash_slim.bin — a ticker only
+    // the slim file knows (e.g. newly added SME names) keeps its slim bars; slim wins on overlapping days.
+    SERIES = mergeSeries(D.series, SERIES);
+    FULL_LOADED = true;
+  })().catch(e => { FULL_LOADING = null; throw e; });
+  await FULL_LOADING;
+}
+
+function mergeSeries(full, slim){
+  const merged = Object.assign({}, full);
+  for (const t in slim){
+    const ov = slim[t], base = full[t];
+    if (!base || !base.d || !base.d.length){ merged[t] = ov; continue; }
+    const byOff = new Map();
+    for (let i = 0; i < base.d.length; i++) byOff.set(base.d[i], base.p[i]);
+    for (let i = 0; i < ov.d.length; i++) byOff.set(ov.d[i], ov.p[i]);
+    const offs = [...byOff.keys()].sort((a, b) => a - b);
+    merged[t] = { d: offs, p: offs.map(o => byOff.get(o)) };
+  }
+  return merged;
+}
+
+// last index i with arr[i] <= target (arr ascending), else -1
+function lastOnOrBefore(arr, target){
+  let lo = 0, hi = arr.length - 1, res = -1;
+  while (lo <= hi){ const m = (lo + hi) >> 1; if (arr[m] <= target){ res = m; lo = m + 1; } else hi = m - 1; }
+  return res;
+}
+
+const WIN_DAYS = { '1W':7, '1M':30, '3M':91, '6M':182, '1Y':365 };
+
+function capBand(mcap){ if (mcap >= 20000) return 'large'; if (mcap >= 5000) return 'mid'; return 'small'; }
+
+// Live 1D only when NSE's feed is for TODAY's session (IST). On a weekend/holiday the feed still
+// shows the last session, and the table falls back to stored closes.
+function todayIST(){ return new Date(Date.now() + 330*60000).toISOString().slice(0,10); }
+function liveMode(){ return W === '1D' && LIVE && LIVE.date === todayIST(); }
+function bseLiveOn(){ return BLIVE && BLIVE.date === todayIST(); }
+
+// Build ROWS for the current window / universe / cap / sector / floor.
+function compute(){
+  if (REW != null) return computeAt();
+  const rows = [];
+  const live = liveMode();
+  LIVE_SKIP = { bse: 0, untraded: 0, bseSnap: 0 }; STALE_1D = 0;
+  const todayOff = Math.round((Date.parse(todayIST() + 'T00:00:00Z')/1000 - START_TS) / DAY);
+  const lastBarOff = LAST_BAR ? Math.round((Date.parse(LAST_BAR + 'T00:00:00Z')/1000 - START_TS) / DAY) : -1;
+  for (const tkr in META){
+    const m = META[tkr];
+    const mcap = m.mcap || 0;
+    if (mcap < FLOOR) continue;
+    if (CAP !== 'all' && capBand(mcap) !== CAP) continue;
+    const base = tkr.endsWith('.NS') ? tkr.slice(0, -3) : tkr;
+    if (UNIV === 'fno'  && !FNO.has(base)) continue;
+    if (UNIV === 'n500' && !N500.has(base)) continue;
+    if (UNIV === 'mc250' && !MC250.has(base)) continue;
+    if (UNIV === 'sme'  && !isSme(tkr)) continue;  // NSE SME (meta.sme, runbook §145) + BSE SME (groups M/MT)
+    if (UNIV === 'smeipo' && !SMEIPO.has(tkr)) continue;
+    if (UNIV === 'smeemerge' && !SMEEM.has(tkr)) continue;
+    const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
+    if (SECTOR !== 'all' && indKey !== SECTOR) continue;
+
+    const ser = SERIES[tkr];
+    if (!ser || ser.d.length < 2) continue;
+    const lastIdx = ser.d.length - 1;
+    let toPrice, fromPrice;
+    if (live){
+      // today's session: NSE last price vs NSE previous close (NSE adjusts prev close on an ex-date)
+      let q;
+      if (tkr.endsWith('.BO')){
+        // BSE-only listing: keyed by scrip code (544563.BO) or scrip id (ZELIO.BO)
+        if (bseLiveOn()){
+          const b = tkr.slice(0, -3);
+          q = BLIVE.data[/^\d+$/.test(b) ? b : BLIVE.idToCode[b]];
+        } else if (ser.d[lastIdx] === todayOff){
+          // BSE's data API refuses Cloudflare's network (measured 2026-09-28), so no live BSE feed:
+          // use today's bar from the latest site refresh (a snapshot, time shown in the note)
+          q = [ser.p[lastIdx] / 100, ser.p[lastIdx - 1] / 100];
+          LIVE_SKIP.bseSnap++;
+        } else { LIVE_SKIP.bse++; continue; }
+      } else q = LIVE.data[base];
+      if (!q){ LIVE_SKIP.untraded++; continue; }                // no trade on NSE yet today
+      toPrice = q[0]; fromPrice = q[1];
+    } else {
+      toPrice = ser.p[lastIdx] / 100;
+      let iFrom;
+      if (W === '1D'){ iFrom = lastIdx - 1; }
+      else { const target = ser.d[lastIdx] - WIN_DAYS[W]; iFrom = lastOnOrBefore(ser.d, target); if (iFrom === lastIdx) iFrom = lastIdx - 1; }
+      if (iFrom < 0) continue;                       // no prior close in the window
+      fromPrice = ser.p[iFrom] / 100;
+      if (W === '1D' && ser.d[lastIdx] < lastBarOff) STALE_1D++;
+    }
+    if (!fromPrice || !toPrice) continue;
+    const chg = (toPrice - fromPrice) / fromPrice * 100;
+
+    rows.push({
+      tkr, symbol: m.symbol, name: m.name, sector: indKey,
+      mcap, toPrice, changePercent: chg,
+      d52: (typeof m.d52 === 'number') ? m.d52 : null,             // distance below 52w high (<=0)
+      u52: (typeof m.u52 === 'number') ? m.u52 : null,             // distance above 52w low  (>=0)
+      ser
+    });
+  }
+  ROWS = rows;
+}
+
+// distance above 52-week low, if a low was precomputed (else derive from slim series window)
+// META carries h52/d52 (high). We derive the low from the available series as a best-effort.
+function attachLows(){
+  for (const r of ROWS){
+    if (r.u52 != null) continue;
+    const d = r.ser.d, p = r.ser.p;
+    // scan points within ~365 days of the last point
+    const cutoff = d[d.length-1] - 365;
+    let lo = Infinity;
+    for (let i = d.length-1; i >= 0; i--){ if (d[i] < cutoff) break; if (p[i] < lo) lo = p[i]; }
+    if (lo !== Infinity && lo > 0){ r.u52 = (r.toPrice - lo/100) / (lo/100) * 100; }
+  }
+}
+
+function inlineSparkline(ser, up){
+  const p = ser.p, n = p.length;
+  const N = Math.min(60, n);
+  const arr = p.slice(n - N);
+  let mn = Infinity, mx = -Infinity;
+  for (const v of arr){ if (v < mn) mn = v; if (v > mx) mx = v; }
+  const W = 96, H = 26, pad = 2, rng = (mx - mn) || 1;
+  let dpath = '';
+  for (let i = 0; i < N; i++){
+    const x = pad + (W - 2*pad) * (i / (N - 1));
+    const y = pad + (H - 2*pad) * (1 - (arr[i] - mn) / rng);
+    dpath += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+  }
+  const col = up ? 'var(--gain)' : 'var(--loss)';
+  return '<svg class="spark" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'+
+         '<path d="'+dpath+'" fill="none" stroke="'+col+'" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+}
+
+function currentView(){
+  let v = ROWS.slice();
+  const q = $('fSearch').value.trim().toLowerCase();
+  if (q) v = v.filter(r => r.symbol.toLowerCase().includes(q) || (r.name||'').toLowerCase().includes(q));
+  if (TAB === 'gain')      { v = v.filter(r => r.changePercent > 0); if (SORT_KEY==='changePercent' && SORT_DIR===-1) {} }
+  else if (TAB === 'lose') { v = v.filter(r => r.changePercent < 0); }
+  // biggest moves = keep all, sorted by abs change
+  if (TAB === 'active') v.sort((a,b) => Math.abs(b.changePercent) - Math.abs(a.changePercent));
+  else v.sort((a,b) => cmp(a,b));
+  return v;
+}
+function cmp(a,b){
+  const k = SORT_KEY;
+  let av = a[k], bv = b[k];
+  if (k === 'symbol' || k === 'sector'){ return SORT_DIR * String(av).localeCompare(String(bv)); }
+  if (av == null || isNaN(av)) return 1; if (bv == null || isNaN(bv)) return -1;
+  return SORT_DIR * (av - bv);   // SORT_DIR: 1 = ascending, -1 = descending
+}
+
+function render(){
+  const v = currentView();
+  const tb = $('tBody');
+  const MAX = (UNIV === 'sme' || UNIV === 'smeipo' || UNIV === 'smeemerge') ? 2000 : 300;   // SME view lists every SME name (NSE ~570 + BSE ~500) on one page
+  const show = v.slice(0, MAX);
+  if (!show.length){ tb.innerHTML = '<tr><td colspan="9" class="text-center text-slate-400 py-14 text-sm">No stocks match these filters.</td></tr>'; }
+  else {
+    const out = [];
+    for (let i = 0; i < show.length; i++){
+      const r = show[i];
+      const up = r.changePercent >= 0;
+      const chgCls = up ? 'g' : 'b';
+      const arw = up ? '▲' : '▼';
+      const sgn = up ? '+' : '';
+      out.push(
+        '<tr data-tkr="'+esc(r.tkr)+'">'+
+        '<td class="l rk">'+(i+1)+'</td>'+
+        '<td class="l"><div class="sym">'+esc(r.symbol)+'</div><div class="nm">'+esc(r.name||'')+(UNIV==='sme' ? ' · '+(r.tkr.endsWith('.BO')?'BSE':'NSE')+' SME' : '')+'</div></td>'+
+        '<td class="hide-sm">'+inlineSparkline(r.ser, up)+'</td>'+
+        '<td>'+inr2(r.toPrice)+'</td>'+
+        '<td><span class="chg '+chgCls+'">'+arw+' '+sgn+r.changePercent.toFixed(2)+'%</span></td>'+
+        '<td class="hide-sm '+(r.d52!=null?'neg':'')+'">'+(r.d52!=null ? r.d52.toFixed(1)+'%' : '—')+'</td>'+
+        '<td class="hide-sm '+(r.u52!=null?'pos':'')+'">'+(r.u52!=null ? '+'+r.u52.toFixed(1)+'%' : '—')+'</td>'+
+        '<td'+(r.capApprox?' title="Estimated: today\'s share count at that day\'s price (no filed share count near this date)"':'')+'>'+(r.capApprox?'≈ ':'')+inr(r.mcap)+'</td>'+
+        '<td class="l hide-sm"><span class="sec-chip">'+esc(r.sector)+'</span></td>'+
+        '</tr>'
+      );
+    }
+    tb.innerHTML = out.join('');
+  }
+  $('rowCount').textContent = v.length.toLocaleString('en-IN') + ' stocks' + (v.length > MAX ? ' · showing top ' + MAX : '');
+}
+
+function renderStats(){
+  const adv = ROWS.filter(r => r.changePercent > 0).length;
+  const dec = ROWS.filter(r => r.changePercent < 0).length;
+  const unch = ROWS.length - adv - dec;
+  const nearHi = ROWS.filter(r => r.d52 != null && r.d52 > -2).length;    // within 2% of 52w high
+  const ad = dec ? (adv / dec) : adv;
+  $('cards').innerHTML =
+    statCard(adv.toLocaleString('en-IN'), 'Advancing', 'var(--gain)') +
+    statCard(dec.toLocaleString('en-IN'), 'Declining', 'var(--loss)') +
+    statCard(ad.toFixed(2), 'Adv / Dec ratio', ad>=1?'var(--gain)':'var(--loss)') +
+    statCard(nearHi.toLocaleString('en-IN'), 'Near 52W high (≤2%)', 'var(--accent,#2563eb)');
+}
+function statCard(v, l, col){ return '<div class="stat"><div class="v" style="color:'+col+'">'+v+'</div><div class="l">'+l+'</div></div>'; }
+
+function renderSectorPulse(){
+  // median change per sector over the current universe/cap/floor (ignores tab & sector filter)
+  const bys = {};
+  for (const r of ROWS){ (bys[r.sector] = bys[r.sector] || []).push(r.changePercent); }
+  const rows = Object.keys(bys).map(s => {
+    const a = bys[s].slice().sort((x,y)=>x-y);
+    const med = a[Math.floor(a.length/2)];
+    return { s, med, n: a.length };
+  }).filter(x => x.n >= 3).sort((a,b) => b.med - a.med);
+  const el = $('sectorPulse');
+  if (!rows.length){ el.innerHTML = '<span class="text-xs text-slate-400">Not enough data.</span>'; return; }
+  el.innerHTML = rows.map(x => {
+    const up = x.med >= 0;
+    const col = up ? 'var(--gain)' : 'var(--loss)';
+    const bg = up ? 'var(--pos-soft)' : 'var(--neg-soft)';
+    const on = SECTOR === x.s ? 'box-shadow:0 0 0 2px var(--accent,#2563eb) inset;' : '';
+    return '<span class="schip" data-sec="'+esc(x.s)+'" title="'+esc(x.s)+'" style="background:'+bg+';color:'+col+';'+on+'">'+
+           '<span class="sn">'+esc(x.s)+'</span><span class="sv">'+(up?'+':'')+x.med.toFixed(2)+'%</span><span class="sc">'+x.n+'</span></span>';
+  }).join('');
+}
+
+function refresh(){
+  compute();
+  attachLows();
+  renderStats();
+  renderSectorPulse();
+  render();
+  renderModeNote();
+}
+
+function fmtDay(iso){ return new Date(iso + 'T00:00:00Z').toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short', year:'numeric', timeZone:'UTC'}); }
+function renderModeNote(){
+  const el = $('modeNote');
+  if (!LAST_BAR){ el.classList.add('hidden'); return; }
+  let h;
+  if (REW != null){
+    const iso = offIso(REW);
+    h = '<b style="color:var(--accent-text,var(--accent))">Rewound to the close of ' + fmtDay(iso) + '</b> — every move is measured on closes up to that day and nothing later is used. ' +
+        '52-week high / low are by closing prices. Market cap is the cap on that date (≈ = estimated from today\'s share count). ' +
+        'F&O, Nifty 500 and Microcap 250 are the lists in force that day' +
+        (REW_INFO.noList ? ' — <b>' + REW_INFO.noList + ' has no list on this date</b>' : '') + '; sector and the SME lists are today\'s. ' +
+        (W === '1D' && REW_INFO.noTrade ? REW_INFO.noTrade.toLocaleString('en-IN') + ' stocks with no trade that day are hidden. ' : '') +
+        'Companies that have since left our price data (delisted or merged) are not shown.';
+    el.innerHTML = h; el.classList.remove('hidden'); return;
+  }
+  if (liveMode()){
+    const sk = [];
+    if (LIVE_SKIP.bse) sk.push(LIVE_SKIP.bse.toLocaleString('en-IN') + ' BSE-only listings with no price yet today');
+    if (LIVE_SKIP.untraded) sk.push(LIVE_SKIP.untraded.toLocaleString('en-IN') + ' not yet traded today');
+    h = '<b style="color:var(--pos)">● LIVE</b> — 1D is today\'s move (last price vs previous close), NSE updated ' + esc(LIVE.time) +
+        (bseLiveOn() ? ' · BSE ' + esc(BLIVE.time) : '') + ' IST, refreshes every minute' +
+        (bseLiveOn() ? ' (BSE prices can run up to ~6 min behind)' : '') + '.' +
+        (LIVE_SKIP.bseSnap ? ' <b>BSE-only listings (' + LIVE_SKIP.bseSnap.toLocaleString('en-IN') + ') are not live</b> — they use the site\'s ' +
+          new Date((END_TS + 19800) * 1000).toISOString().slice(11, 16) + ' IST price snapshot.' : '') + (sk.length ? ' Hidden: ' + sk.join(', ') + '.' : '') +
+        ' Other windows use stored prices up to ' + fmtDay(LAST_BAR) + '.';
+  } else if (W === '1D'){
+    h = '1D is the move on <b>' + fmtDay(LAST_BAR) + '</b> (latest prices in our data)' +
+        (STALE_1D ? '; ' + STALE_1D.toLocaleString('en-IN') + ' stocks whose latest price is older show their own last session\'s move' : '') +
+        ((marketOpenIST() || liveStillMissing()) ? ' — <b>today\'s live prices did not load yet</b> (retrying every minute), so this is NOT today\'s move.' : '.');
+  } else {
+    h = 'Stored prices up to <b>' + fmtDay(LAST_BAR) + '</b>.';
+  }
+  el.innerHTML = h;
+  el.classList.remove('hidden');
+}
+
+/* ---- live 1D: NSE's whole-market "stocks traded" feed via our Worker (?nse=traded) ---- */
+const BSE_LIVE_URL = 'https://raw.githubusercontent.com/dhruvan246/stocks-dashboard/live-bse/bse_live.json';
+const MON = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+async function loadLive(){
+  // NSE's feed answers 502 now and then (seen 2026-09-29: 502, then 200 a second later). On 2026-10-01 NSE
+  // 403'd the Worker on ~1 call in 3 (measured) — two tries left 1D on yesterday's move, so try 4 times.
+  // Never `return` out of here: the BSE block below must run even when NSE fails.
+  for (let attempt = 0; attempt < 4; attempt++){
+    try {
+      const j = await fetch(WORKER + '/?nse=traded', {cache:'no-store'}).then(r => r.json());
+      const m = /^(\d{1,2})-([A-Za-z]{3})-(\d{4}) (\d{2}):(\d{2})/.exec((j && j.timestamp) || '');
+      if (m && MON[m[2]] && j.data && Object.keys(j.data).length){
+        LIVE = { date: m[3] + '-' + MON[m[2]] + '-' + m[1].padStart(2, '0'), time: m[4] + ':' + m[5], data: j.data };
+        break;
+      }
+    } catch (e){ /* worker route missing / NSE hiccup — table stays on last close, the note says so */ }
+    if (attempt < 3) await new Promise(r => setTimeout(r, 2000 * (attempt + 1)));
+  }
+  // BSE's data API refuses Cloudflare's network (Akamai 403, measured 2026-09-28), so BSE prices come from
+  // a GitHub job that polls BSE every minute and publishes to the live-bse branch (runbook §216).
+  // GitHub caches raw files ~5 min. Missing/stale file → BSE-only names fall back to the site's snapshot.
+  try {
+    const b = await fetch(BSE_LIVE_URL, {cache:'no-store'}).then(r => r.json());
+    const m = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/.exec((b && b.timestamp) || '');
+    if (m && b.data && Object.keys(b.data).length){
+      const idToCode = {};
+      for (const c in b.data){ const id = b.data[c][3]; if (id) idToCode[id] = c; }
+      BLIVE = { date: m[1], time: m[2] + ':' + m[3], data: b.data, idToCode };
+    }
+  } catch (e){ /* BSE route missing / BSE hiccup — BSE-only names stay hidden in live 1D, the note says so */ }
+  if (W === '1D') refresh(); else renderModeNote();
+}
+
+/* ---------- Rewind: the movers as of the close of a past date ----------
+ * Needs the full price history (stock_data.bin). For the chosen day: price = that day's close; the window's base =
+ * the close WIN_DAYS earlier (same rule as today's table); 52-week high / low from closes of the 365 days before;
+ * market cap = hist_mcap.json's quarter-end cap (filed shares x raw close, runbook 233) at or before the date, moved
+ * by the adjusted price — else today's share count at that day's price, marked "≈"; F&O / Nifty 500 / Microcap 250
+ * = the list in force that day (fnoHistory / indicesHistory). Sector and SME lists are today's. */
+let REW = null, CAL = null, HM = null, REW_INFO = { noTrade: 0, noList: '' };
+let FNOH = [], N500H = [], MC250H = [];
+const offIso = o => new Date((START_TS + o * DAY) * 1000).toISOString().slice(0, 10);
+const isoOff = iso => Math.round((Date.parse(iso + 'T00:00:00Z') / 1000 - START_TS) / DAY);
+function listOn(hist, iso){ let best = null; for (const h of hist) if (h.effectiveDate <= iso && (!best || h.effectiveDate > best.effectiveDate)) best = h; return best ? new Set(best.symbols) : null; }
+function capAt(base, ser, li, price, m){
+  const now = (m.mcap > 0 && m.latest > 0 && price > 0) ? m.mcap / m.latest * price : null;
+  const list = HM && HM.rows[base];
+  if (list){
+    const want = +offIso(REW).replace(/-/g, ''); let q = null;
+    for (const e of list){ if (e[0] <= want) q = e; else break; }
+    if (q){
+      const qd = String(q[0]), qo = isoOff(qd.slice(0, 4) + '-' + qd.slice(4, 6) + '-' + qd.slice(6)), qi = lastOnOrBefore(ser.d, qo);
+      if (REW - qo <= 200 && qi >= 0 && qo - ser.d[qi] <= 7 && ser.p[qi] > 0){
+        const v = q[1] * price / (ser.p[qi] / 100), r = now ? v / now : 1;
+        if (HM.chk.has(base) || (r >= 0.4 && r <= 2.5)) return { v: v, approx: false };
+      }
+    }
+  }
+  return { v: now, approx: true };
+}
+function computeAt(){
+  const rows = [], iso = offIso(REW);
+  LIVE_SKIP = { bse: 0, untraded: 0, bseSnap: 0 }; STALE_1D = 0; REW_INFO = { noTrade: 0, noList: '' };
+  let uni = null;
+  if (UNIV === 'fno' || UNIV === 'n500' || UNIV === 'mc250'){
+    uni = listOn(UNIV === 'fno' ? FNOH : UNIV === 'n500' ? N500H : MC250H, iso);
+    if (!uni){ REW_INFO.noList = UNIV === 'fno' ? 'F&O' : UNIV === 'n500' ? 'Nifty 500' : 'Nifty Microcap 250'; ROWS = []; return; }
+  }
+  for (const tkr in META){
+    const m = META[tkr], base = tkr.endsWith('.NS') ? tkr.slice(0, -3) : tkr;
+    if (uni && !uni.has(base)) continue;
+    if (UNIV === 'sme' && !isSme(tkr)) continue;
+    if (UNIV === 'smeipo' && !SMEIPO.has(tkr)) continue;
+    if (UNIV === 'smeemerge' && !SMEEM.has(tkr)) continue;
+    const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
+    if (SECTOR !== 'all' && indKey !== SECTOR) continue;
+    const ser = SERIES[tkr]; if (!ser) continue;
+    const li = lastOnOrBefore(ser.d, REW); if (li < 1) continue;
+    if (ser.d[li] !== REW){ if (W === '1D'){ REW_INFO.noTrade++; continue; } if (REW - ser.d[li] > 7) continue; }
+    const toPrice = ser.p[li] / 100;
+    let iFrom;
+    if (W === '1D') iFrom = li - 1;
+    else { iFrom = lastOnOrBefore(ser.d, ser.d[li] - WIN_DAYS[W]); if (iFrom === li) iFrom = li - 1; }
+    if (iFrom < 0) continue;
+    const fromPrice = ser.p[iFrom] / 100; if (!fromPrice || !toPrice) continue;
+    const cap = capAt(base, ser, li, toPrice, m), mcap = cap.v || 0;
+    if (mcap < FLOOR) continue;
+    if (CAP !== 'all' && capBand(mcap) !== CAP) continue;
+    let hi = ser.p[li], lo = ser.p[li];
+    for (let i = li; i >= 0 && ser.d[li] - ser.d[i] <= 365; i--){ if (ser.p[i] > hi) hi = ser.p[i]; if (ser.p[i] < lo && ser.p[i] > 0) lo = ser.p[i]; }
+    const a = Math.max(0, li - 59);
+    rows.push({ tkr, symbol: m.symbol, name: m.name, sector: indKey, mcap, capApprox: cap.approx, toPrice,
+      changePercent: (toPrice - fromPrice) / fromPrice * 100,
+      d52: (toPrice / (hi / 100) - 1) * 100, u52: (toPrice / (lo / 100) - 1) * 100,
+      ser: { d: ser.d.slice(a, li + 1), p: ser.p.slice(a, li + 1) } });
+  }
+  ROWS = rows;
+}
+let CAL_LAST = -1;
+async function rewPrep(){
+  $('status').classList.remove('hidden'); $('status').textContent = 'Loading full price history for Rewind…'; $('content').style.opacity = '.5';
+  try {
+    await ensureFull();
+    if (!HM) HM = await fetch('./hist_mcap.json').then(r => r.ok ? r.json() : null).then(j => (j && j.rows) ? { rows: j.rows, chk: new Set(j.chk || []) } : { rows: {}, chk: new Set() }).catch(() => ({ rows: {}, chk: new Set() }));
+    if (!CAL){                                   // trading days = days on which at least 30 NSE series have a close
+      const cnt = new Map();
+      for (const t in SERIES){ if (!t.endsWith('.NS')) continue; const d = SERIES[t].d; for (let i = 0; i < d.length; i++) cnt.set(d[i], (cnt.get(d[i]) || 0) + 1); }
+      CAL = [...cnt.keys()].filter(k => cnt.get(k) >= 30).sort((a, b) => a - b);
+      CAL_LAST = lastOnOrBefore(CAL, isoOff(LAST_BAR)); if (CAL_LAST < 0) CAL_LAST = CAL.length - 1;
+    }
+  } finally { $('status').classList.add('hidden'); $('content').style.opacity = '1'; }
+}
+async function setRew(i){                        // i = position in CAL, null = latest
+  if (i == null){ REW = null; }
+  else {
+    try { await rewPrep(); } catch (e){ $('status').classList.remove('hidden'); $('status').textContent = 'Could not load full history for Rewind. Try again.'; return; }
+    if (typeof i === 'string'){ i = lastOnOrBefore(CAL, isoOff(i)); if (i < 0) i = 0; }
+    else if (i === -1) i = (REW == null ? CAL_LAST : lastOnOrBefore(CAL, REW)) - 1;
+    else if (i === 1) i = lastOnOrBefore(CAL, REW) + 1;
+    i = Math.max(0, i);
+    REW = i >= CAL_LAST ? null : CAL[i];
+  }
+  rewBar(); refresh();
+  $('liveCard').classList.toggle('rew-hide', REW != null); if (REW != null) $('liveCard').classList.add('hidden'); else liveMovers();
+}
+function rewBar(){
+  const d = $('rewDate');
+  d.max = LAST_BAR; if (CAL) d.min = offIso(CAL[0]);
+  d.value = REW == null ? LAST_BAR : offIso(REW);
+  $('rew').classList.toggle('on', REW != null);
+  $('rewNext').disabled = $('rewNow').disabled = REW == null;
+  $('rewPrev').disabled = REW != null && CAL && lastOnOrBefore(CAL, REW) <= 0;
+}
+function rewWire(){
+  $('rewPrev').onclick = () => setRew(-1);
+  $('rewNext').onclick = () => { if (REW != null) setRew(1); };
+  $('rewNow').onclick = () => setRew(null);
+  $('rewDate').onchange = e => { const v = e.target.value; if (!/^\d{4}-\d{2}-\d{2}$/.test(v)){ rewBar(); return; } setRew(v); };
+}
+
+/* ---------- window switch (lazy-load full history for 1Y) ---------- */
+async function setWindow(w){
+  if (w === W) return;
+  if (w === '1Y' && !FULL_LOADED){
+    $('status').classList.remove('hidden');
+    $('status').textContent = 'Loading full price history for the 1-year window…';
+    $('content').style.opacity = '.5';
+    try { await ensureFull(); }
+    catch(e){ $('status').textContent = 'Could not load full history. Try again.'; return; }
+    $('status').classList.add('hidden');
+    $('content').style.opacity = '1';
+  }
+  W = w;
+  document.querySelectorAll('#fWindow .vbtn').forEach(b => b.classList.toggle('on', b.dataset.w === w));
+  refresh();
+}
+
+/* ---------- events ---------- */
+function wire(){
+  $('fWindow').addEventListener('click', e => { const b = e.target.closest('.vbtn'); if (b) setWindow(b.dataset.w); });
+  $('fUniv').addEventListener('click', async e => { const b = e.target.closest('.vbtn'); if (!b) return;
+    if (b.dataset.u === 'sme'){
+      try { await ensureBseSme(); }
+      catch(err){ $('rowCount').textContent = 'BSE SME list did not load — showing NSE SME only'; }
+    }
+    if (b.dataset.u === 'smeipo'){
+      try { await ensureSmeIpo(); }
+      catch(err){ $('rowCount').textContent = 'BSE SME IPO member list did not load'; return; }
+    }
+    if (b.dataset.u === 'smeemerge'){
+      try { await ensureSmeEmerge(); }
+      catch(err){ $('rowCount').textContent = 'Nifty SME Emerge member list did not load'; return; }
+    }
+    UNIV = b.dataset.u; document.querySelectorAll('#fUniv .vbtn').forEach(x=>x.classList.toggle('on',x===b));
+    // SME names are mostly below the ₹100 Cr default floor — drop the floor so the SME view shows them all
+    if ((UNIV === 'sme' || UNIV === 'smeipo' || UNIV === 'smeemerge') && FLOOR > 0){ FLOOR = 0; $('fFloor').value = '0'; }
+    refresh(); });
+  $('fCap').addEventListener('click', e => { const b = e.target.closest('.vbtn'); if (!b) return;
+    CAP = b.dataset.c; document.querySelectorAll('#fCap .vbtn').forEach(x=>x.classList.toggle('on',x===b)); refresh(); });
+  $('fSector').addEventListener('change', e => { SECTOR = e.target.value; refresh(); });
+  $('fFloor').addEventListener('change', e => { FLOOR = +e.target.value; refresh(); });
+  $('fSearch').addEventListener('input', render);
+  document.querySelectorAll('[data-t]').forEach(b => b.addEventListener('click', () => {
+    TAB = b.dataset.t; document.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('on',x===b));
+    // sensible default sort per tab
+    if (TAB === 'gain'){ SORT_KEY='changePercent'; SORT_DIR=-1; }
+    else if (TAB === 'lose'){ SORT_KEY='changePercent'; SORT_DIR=1; }
+    render();
+  }));
+  // header sort
+  document.querySelectorAll('.mv thead th[data-sort]').forEach(th => th.addEventListener('click', () => {
+    const k = th.dataset.sort;
+    if (SORT_KEY === k) SORT_DIR *= -1; else { SORT_KEY = k; SORT_DIR = (k==='symbol'||k==='sector') ? 1 : -1; }
+    render();
+  }));
+  // sector pulse click → filter
+  $('sectorPulse').addEventListener('click', e => { const c = e.target.closest('.schip'); if (!c) return;
+    SECTOR = (SECTOR === c.dataset.sec) ? 'all' : c.dataset.sec; $('fSector').value = SECTOR; refresh(); });
+  // row → stock page
+  $('tBody').addEventListener('click', e => { const tr = e.target.closest('tr[data-tkr]'); if (!tr) return;
+    const sym = (tr.dataset.tkr||'').replace('.NS',''); window.open('./stock.html?symbol=' + encodeURIComponent(sym), '_blank'); });
+  // sparkline hover tooltip
+  const tip = $('tip');
+  $('tBody').addEventListener('mousemove', e => { const tr = e.target.closest('tr[data-tkr]'); if (!tr){ tip.style.display='none'; return; }
+    const r = ROWS.find(x => x.tkr === tr.dataset.tkr); if (!r){ tip.style.display='none'; return; }
+    tip.innerHTML = '<b>'+esc(r.symbol)+'</b> · ₹'+inr2(r.toPrice)+'<br>'+ (r.changePercent>=0?'+':'')+r.changePercent.toFixed(2)+'% ('+W+')'+
+      (r.d52!=null? '<br>'+r.d52.toFixed(1)+'% from 52W high':'') + (r.u52!=null? '<br>+'+r.u52.toFixed(1)+'% from 52W low':'');
+    tip.style.display='block'; tip.style.left = Math.min(e.clientX+14, innerWidth-260)+'px'; tip.style.top=(e.clientY+14)+'px'; });
+  $('tBody').addEventListener('mouseleave', () => { tip.style.display='none'; });
+  $('btnCsv').addEventListener('click', exportCsv);
+}
+
+function exportCsv(){
+  const v = currentView();
+  const head = ['Symbol','Name','Price','Change%('+W+')','From52WHigh%','From52WLow%','MktCapCr','Sector'];
+  const lines = [head.join(',')];
+  for (const r of v){
+    lines.push([r.symbol, '"'+(r.name||'').replace(/"/g,'""')+'"', r.toPrice.toFixed(2), r.changePercent.toFixed(2),
+      r.d52!=null?r.d52.toFixed(2):'', r.u52!=null?r.u52.toFixed(2):'', Math.round(r.mcap), '"'+r.sector+'"'].join(','));
+  }
+  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'movers_'+W+'_'+TAB+'.csv'; a.click(); URL.revokeObjectURL(a.href);
+}
+
+async function init(){
+  try {
+    const D = await gunzipFetch('./dash_slim.bin');
+    META = D.meta; SERIES = D.series; START_TS = D.startTs; END_TS = D.endTs || D.generatedAt;
+    END_OFF = Math.floor((END_TS - START_TS) / DAY);
+    FNO = new Set(D.fnoToday || []); FNOH = D.fnoHistory || []; N500H = (D.indicesHistory && D.indicesHistory['Nifty 500']) || []; MC250H = (D.indicesHistory && D.indicesHistory['Nifty Microcap 250']) || [];
+    const ih = D.indicesHistory && D.indicesHistory['Nifty 500'];
+    if (ih && ih.length) N500 = new Set(ih[ih.length - 1].symbols);
+    const ihm = D.indicesHistory && D.indicesHistory['Nifty Microcap 250'];
+    if (ihm && ihm.length) MC250 = new Set(ihm[ihm.length - 1].symbols);
+
+    // sector dropdown
+    const secs = new Set();
+    for (const t in META){ const m = META[t]; secs.add((m.industry && m.industry.trim()) || m.sector || 'Uncategorized'); }
+    const sel = $('fSector');
+    [...secs].sort().forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
+
+    const endCnt = {};   // most common last-bar day across NSE series (max would let one odd series decide)
+    for (const t in SERIES){ if (!t.endsWith('.NS')) continue; const d = SERIES[t].d; if (d && d.length){ const k = d[d.length-1]; endCnt[k] = (endCnt[k] || 0) + 1; } }
+    let lastOff = -1, best = 0;
+    for (const k in endCnt) if (endCnt[k] > best){ best = endCnt[k]; lastOff = +k; }
+    if (lastOff >= 0) LAST_BAR = new Date((START_TS + lastOff*DAY)*1000).toISOString().slice(0,10);
+    if (LAST_BAR) $('updated').textContent = 'Stored prices up to ' + LAST_BAR + '.';
+
+    wire(); rewWire(); rewBar();
+    $('status').classList.add('hidden');
+    $('content').classList.remove('hidden');
+    refresh();
+    loadLive();
+    // After the close the stored prices still end yesterday until the nightly refresh, so keep retrying
+    // until today's live feed has loaded at least once (a page opened at 6 pm must not settle on yesterday).
+    setInterval(() => { if (!document.hidden && (marketOpenIST() || liveStillMissing())) loadLive(); }, 60000);
+  } catch (e){
+    $('status').textContent = 'Failed to load market data: ' + e.message;
+    console.error(e);
+  }
+}
+init();
+
+/* ---- live session movers via our Cloudflare Worker (?nse=gainers|loosers).
+   NSE's raw intraday top gainers/losers (vs prev close, whole market where NSE
+   provides it). Kept as a separate strip: the main table is corp-action-ADJUSTED
+   EOD and must stay that way. Market-hours only; strip stays hidden if the
+   Worker route isn't deployed yet or NSE hiccups. ---- */
+const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+// Weekday session started, stored prices end before today, and no NSE feed has loaded yet this visit.
+// (A holiday feed loads with an older date → LIVE is set → stops retrying.)
+function liveStillMissing(){
+  const n = new Date(Date.now() + 330*60000), d = n.getUTCDay(), h = n.getUTCHours() + n.getUTCMinutes()/60;
+  return !LIVE && d >= 1 && d <= 5 && h >= 9.25 && !!LAST_BAR && LAST_BAR < todayIST();
+}
+function marketOpenIST(){
+  const n = new Date(Date.now() + 330*60000);
+  const d = n.getUTCDay(), h = n.getUTCHours() + n.getUTCMinutes()/60;
+  return d >= 1 && d <= 5 && h >= 9 && h <= 15.75;
+}
+function liveBucket(j){
+  const b = j && (j.allSec || j.SecGtr20 || j.FOSec || j.NIFTY);
+  return (b && Array.isArray(b.data)) ? b.data : [];
+}
+function liveChip(r, up){
+  const pc = r.perChange != null ? r.perChange : r.net_price;
+  return '<a class="chg ' + (up ? 'g' : 'b') + '" href="./stock.html?sym=' + encodeURIComponent(r.symbol) + '" ' +
+    'title="' + esc(r.symbol) + ' · LTP ₹' + inr2(r.ltp) + ' (prev ' + inr2(r.prev_price) + ')">' +
+    esc(r.symbol) + ' ' + (pc > 0 ? '+' : '') + Number(pc).toFixed(1) + '%</a>';
+}
+async function liveMovers(){
+  if (REW != null || !marketOpenIST()){ $('liveCard').classList.add('hidden'); return; }
+  try {
+    const [g, l] = await Promise.all([
+      fetch(WORKER + '/?nse=gainers', {cache:'no-store'}).then(r => r.json()),
+      fetch(WORKER + '/?nse=loosers', {cache:'no-store'}).then(r => r.json()),
+    ]);
+    const gains = liveBucket(g).slice(0, 10), losses = liveBucket(l).slice(0, 10);
+    if (!gains.length && !losses.length) return;
+    $('liveGain').innerHTML = gains.map(r => liveChip(r, true)).join('') || '<span class="text-xs text-slate-400">—</span>';
+    $('liveLose').innerHTML = losses.map(r => liveChip(r, false)).join('') || '<span class="text-xs text-slate-400">—</span>';
+    const t = new Date(g.asOf || l.asOf || Date.now());
+    $('liveAt').textContent = '· ' + t.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'}) + ' IST · refreshes every minute';
+    $('liveCard').classList.remove('hidden');
+  } catch (e){ /* keep the strip hidden — EOD table below is unaffected */ }
+}
+liveMovers(); setInterval(() => { if (!document.hidden) liveMovers(); }, 60000);
+</script>
+</body>
+</html>

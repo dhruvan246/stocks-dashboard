@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex" />
+<!-- OLD VIEW of market-mood.html, kept so the header's New / Old switch has somewhere to go. Frozen copy: fix bugs in market-mood.html, not here. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Market Mood</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .seg{display:inline-flex;background:var(--surface-2,var(--surface-2));border:1px solid var(--border,var(--border));border-radius:9999px;padding:2px}
+  .seg span{padding:5px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted,var(--text-muted));transition:var(--tr,.15s)}
+  .seg span.on{background:var(--accent,var(--accent));color:#fff}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div class="mb-4">
+    <h1 class="text-xl font-bold text-slate-900">Market mood — Nifty 500 trading activity</h1>
+    <p class="text-sm text-slate-500 mt-0.5">Total money traded each month across all Nifty 500 stocks. Rising turnover = more participation and liquidity (a "hot" market); falling turnover = cooling interest. <span id="updated" class="text-slate-400"></span></p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500">Loading market-mood data…</div>
+
+  <div id="content" class="hidden">
+    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+
+    <div class="card p-4 mb-4" data-jump="Turnover">
+      <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+        <div class="text-sm font-semibold text-slate-700">Total monthly trade in Nifty 500 <span class="text-slate-400 font-normal">(₹ lakh crore — hover for values)</span></div>
+        <div id="rangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
+      </div>
+      <div class="flex flex-wrap gap-4 mb-2 text-xs text-slate-600">
+        <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3.5 h-[3px] rounded" style="background:var(--pos)"></span>Monthly traded value <b id="legV" class="text-slate-800 font-semibold">·</b></span>
+        <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3.5 h-0 border-t-2 border-dashed" style="border-color:#b91c1c"></span>12-mo moving average <b id="legM" class="text-slate-800 font-semibold">·</b></span>
+      </div>
+      <div id="chart"></div>
+    </div>
+
+    <div class="mt-6 mb-4 flex items-start justify-between gap-3 flex-wrap" data-jump="Breadth">
+      <div class="min-w-0 flex-1">
+        <h2 class="text-lg font-bold text-slate-900">Market breadth — how many stocks are joining the move</h2>
+        <p class="text-sm text-slate-500 mt-0.5"><span id="buniDesc">Computed daily across the point-in-time Nifty 500.</span> Broad participation confirms a trend; a rally with narrow breadth is fragile, and washed-out breadth has historically marked bottoms. <span id="bupdated" class="text-slate-400"></span></p>
+      </div>
+      <div id="buni" class="seg hidden shrink-0" role="tablist" aria-label="Breadth universe"><span data-u="n500" role="tab" class="on">Nifty 500</span><span data-u="fno" role="tab">F&amp;O</span></div>
+    </div>
+
+    <div id="bwrap" class="hidden">
+      <div id="bcards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+
+      <div class="card p-4 mb-4">
+        <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+          <div class="text-sm font-semibold text-slate-700">% of <span id="buniName">Nifty 500</span> stocks above their 200-day average <span class="text-slate-400 font-normal">(hover for values)</span></div>
+          <div id="brangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
+        </div>
+        <div id="bchart200"></div>
+        <p id="bnote" class="text-[11px] text-slate-400 mt-1"></p>
+        <p id="bcov" class="text-[11px] text-slate-400 mt-0.5"></p>
+      </div>
+
+      <div class="card p-4 mb-4" data-jump="Highs/Lows">
+        <div class="text-sm font-semibold text-slate-700 mb-2">New 52-week highs vs new lows <span id="bhlNote" class="text-slate-400 font-normal"></span></div>
+        <div id="bchartHL"></div>
+      </div>
+    </div>
+
+    <div class="card p-4" data-jump="History">
+      <div class="text-sm font-semibold text-slate-700 mb-2">Monthly history <span class="text-[11px] font-normal text-slate-400">(newest first — full history, scroll for more)</span></div>
+      <div class="overflow-auto" style="max-height:480px">
+        <table class="w-full text-sm">
+          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>
+            <th class="text-left py-2 px-1">Month</th>
+            <th class="text-right px-1">Traded value (₹ cr)</th>
+            <th class="text-right px-1">vs prev month</th>
+            <th class="text-right px-1">12-mo avg (₹ cr)</th>
+            <th class="text-right px-1">vs avg</th>
+          </tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mt-5">Each point = sum of the month's traded value (turnover) across that month's Nifty 500 constituents (point-in-time membership), from NSE bhavcopy. Pre-2018 turnover is sampled weekly, so those months are scaled to a full-month estimate (average daily turnover × trading days). The <b>12-month moving average</b> smooths seasonality to show the underlying trend. <b>Breadth</b> uses the same dataset's corp-action-adjusted daily closes (daily data begins Jan-2002, so the series starts once most members' 52-week window has filled, Jan-2003): % above 200-day average and new 52-week highs/lows count each day's point-in-time members against their own trailing 200 / 252 trading sessions. The <b>Nifty 500 / F&amp;O</b> toggle switches the universe — the F&amp;O list is the stocks with listed futures &amp; options on that day (from ~30 names in 2002); DVR share classes are not counted twice, and the coverage line shows how many members traded and had enough history that day. Educational only — not investment advice.</p>
+  </div>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const RANGES={'1y':12,'3y':36,'5y':60,'10y':120,'all':1e9};
+const BRANGES={'6m':126,'1y':250,'3y':750,'5y':1250,'all':1e9};
+let DATA=null, range='all', CHART={};
+let BRP=null, BR=null, brange='1y', buni='n500';        // BRP = market_breadth_pit.json; BR = the selected universe, normalised
+
+const lc = cr => cr/1e5;                                  // ₹ crore → ₹ lakh crore
+const fmtLc = cr => '₹'+lc(cr).toFixed(2)+' L cr';
+const fmtCr = cr => '₹'+Math.round(cr).toLocaleString('en-IN')+' cr';
+const fmtMonShort = ym => { const p=ym.split('-'); return MON[+p[1]-1]+" '"+p[0].slice(2); };
+const fmtMonLong  = ym => { const p=ym.split('-'); return MON[+p[1]-1]+' '+p[0]; };
+const fmtDateLong = iso => { const p=iso.split('-'); return p.length<3 ? MON[+p[1]-1]+' '+p[0] : (+p[2])+' '+MON[+p[1]-1]+' '+p[0]; };
+const pct = (a,b) => (b? (a-b)/b*100 : null);
+const fmtPct = p => p==null ? '·' : (p>=0?'+':'−')+Math.abs(p).toFixed(1)+'%';
+
+async function load(){
+  try { DATA = await (await fetch('./nifty500_turnover.json?t='+Date.now())).json(); }
+  catch(e){ $('status').textContent='Could not load nifty500_turnover.json — run scripts/build_nifty500_turnover.py first.'; return; }
+  if(!DATA || !DATA.months || !DATA.months.length){ $('status').textContent='No turnover data yet.'; return; }
+  $('updated').textContent = DATA.updated ? '· data through '+fmtDateLong(DATA.updated)+(DATA.partialLast?' (current month still updating)':'') : '';
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  renderRangeBtns(); renderCards(); renderChart(); renderTable();
+  try { BRP = await (await fetch('./market_breadth_pit.json?t='+Date.now())).json(); } catch(e){ BRP=null; }
+  $('buni').querySelectorAll('[data-u]').forEach(el=>el.onclick=()=>{ buni=el.dataset.u; renderBreadth(); });
+  renderBreadth();
+}
+
+/* ---------------- market breadth (daily) ---------------- */
+// Source: market_breadth_pit.json (runbook §21a) — point-in-time breadth for TWO universes (Nifty 500 and
+// F&O) as INTEGER counts per day; the ratios are derived here. One file for both views so the toggle
+// compares like with like: same bars, same rules (engine membership objects, DVR lines dropped).
+const fmtD8      = d => { const s=''+d; return (+s.slice(6))+' '+MON[+s.slice(4,6)-1]+" '"+s.slice(2,4); };
+const fmtD8Long  = d => { const s=''+d; return (+s.slice(6))+' '+MON[+s.slice(4,6)-1]+' '+s.slice(0,4); };
+const BKEYS=['nMem','nObs','n200','a200','nAD','adv','dec','n52','hi','lo'];
+const UNI={
+  n500:{ name:'Nifty 500', desc:d=>'Computed daily across the point-in-time Nifty 500.' },
+  fno: { name:'F&O',       desc:d=>'Computed daily across the point-in-time F&O universe — the stocks with listed futures & options that day ('+d.nMem[0]+' names on '+fmtD8(d.dates[0])+', '+d.nMem[d.nMem.length-1]+' today).' },
+};
+// Normalise one universe block: shape-guard every array, start the display once the 52-week window has
+// filled for the MAJORITY of traded members (a young window would print near-zero new-high/low bars), and
+// derive pct200 = 100*a200/n200 — null while n200 == 0 (the engine's "null until 200 sessions" rule).
+function normUni(P,u){
+  const B=P&&P[u], D=P&&P.dates; if(!B||!Array.isArray(D)||!D.length) return null;
+  for(const k of BKEYS){ if(!Array.isArray(B[k])||B[k].length!==D.length) return null; }
+  let st=-1; for(let i=0;i<D.length;i++){ if(B.nObs[i]>0 && B.n52[i]>=0.5*B.nObs[i]){ st=i; break; } }
+  if(st<0) return null;
+  const out={dates:D.slice(st)}; for(const k of BKEYS) out[k]=B[k].slice(st);
+  out.pct200=out.n200.map((m,i)=>m?100*out.a200[i]/m:null);
+  return out;
+}
+
+function renderBreadth(){
+  if(!BRP) return;                                             // feed missing — section stays hidden
+  const views={n500:normUni(BRP,'n500'), fno:normUni(BRP,'fno')};
+  if(!views[buni]) buni = views.n500 ? 'n500' : (views.fno ? 'fno' : buni);   // selected universe absent → fall back
+  BR=views[buni]; if(!BR) return;
+  const both=!!(views.n500&&views.fno);
+  $('buni').classList.toggle('hidden',!both);
+  $('buni').querySelectorAll('[data-u]').forEach(el=>{ el.classList.toggle('on',el.dataset.u===buni); el.setAttribute('aria-selected',el.dataset.u===buni?'true':'false'); });
+  $('buniName').textContent=UNI[buni].name;
+  $('buniDesc').textContent=UNI[buni].desc(BR);
+  $('bupdated').textContent = '· data through '+fmtD8Long(BR.dates[BR.dates.length-1]);
+  $('bwrap').classList.remove('hidden');
+  renderBCards(); renderBRangeBtns(); renderB200(); renderBHL(); renderBNote();
+}
+
+function renderBCards(){
+  const i=BR.dates.length-1, p=BR.pct200[i], above=BR.a200[i];
+  const adv=BR.adv[i], dec=BR.dec[i], hi=BR.hi[i], lo=BR.lo[i];
+  const card=(t,val,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${val}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('bcards').innerHTML =
+     card('Above 200-day avg', p==null?'·':p.toFixed(1)+'%', above+' of '+BR.n200[i]+' stocks', p==null?'':(p>=50?'pos':'neg'))
+    +card('Advancers / decliners', adv+' ▲ / '+dec+' ▼', 'latest session · '+fmtD8(BR.dates[i]), adv>=dec?'pos':'neg')
+    +card('New 52-week highs', hi, 'of '+BR.n52[i]+' stocks today', 'pos')
+    +card('New 52-week lows', lo, 'of '+BR.n52[i]+' stocks today', lo>hi?'neg':'');
+}
+
+// Record low is READ from the series (the old hard-coded "Mar-2020 bottom: 2.9%" had drifted to 3.4%
+// once the series was rebuilt) and the coverage line says what the latest day's counts stand on.
+function renderBNote(){
+  let lo=null, li=-1; BR.pct200.forEach((v,i)=>{ if(v!=null&&(lo==null||v<lo)){lo=v;li=i;} });
+  $('bnote').textContent='Above 80% = broadly overheated · below 20% = washed out'+(lo!=null?' (record low: '+lo.toFixed(1)+'% on '+fmtD8Long(BR.dates[li])+')':'')+'. Dashed line = 50%.';
+  const i=BR.dates.length-1;
+  $('bcov').textContent='Coverage on '+fmtD8Long(BR.dates[i])+': '+BR.nMem[i]+' members · '+BR.nObs[i]+' traded · '+BR.n200[i]+' with 200 sessions of history · '+BR.n52[i]+' with a full 52-week window.';
+}
+
+function renderBRangeBtns(){
+  $('brangeBtns').innerHTML = ['6m','1y','3y','5y','all'].map(k=>
+    `<button data-r="${k}" class="px-2 py-1 rounded ${brange===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${k==='all'?'All':k.toUpperCase()}</button>`).join('');
+  $('brangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{ brange=b.dataset.r; renderBRangeBtns(); renderB200(); renderBHL(); });
+}
+
+function bsliced(){
+  const n=BR.dates.length, k=BRANGES[brange], s=k>=1e9?0:Math.max(0,n-k);
+  const out={dates:BR.dates.slice(s), pct200:BR.pct200.slice(s)}; for(const kk of BKEYS) out[kk]=BR[kk].slice(s);
+  return out;
+}
+
+/* shared hover: crosshair + dot + tooltip over an svg built by the renderers */
+function bHover(wrapId, pts, tipHtml){
+  const wrap=$(wrapId), svg=wrap.querySelector('svg'); if(!svg||!pts.length) return;
+  const tip=wrap.querySelector('.tip'), cross=wrap.querySelector('.cx'), dot=wrap.querySelector('.dV');
+  const W=+svg.viewBox.baseVal.width, H=+svg.viewBox.baseVal.height;
+  const move=e=>{
+    const r=svg.getBoundingClientRect(); if(!r.width) return;
+    const sx=(e.clientX-r.left)/r.width*W;
+    let best=0,bd=1e9; for(let i=0;i<pts.length;i++){const dd=Math.abs(pts[i].px-sx); if(dd<bd){bd=dd;best=i;}}
+    const p=pts[best];
+    cross.setAttribute('x1',p.px); cross.setAttribute('x2',p.px); cross.style.display='';
+    if(dot){ dot.setAttribute('cx',p.px); dot.setAttribute('cy',p.py); dot.style.display=''; }
+    tip.style.left=(p.px/W*100)+'%'; tip.style.top=(p.py/H*100)+'%';
+    tip.innerHTML=tipHtml(p); tip.classList.remove('hidden');
+  };
+  svg.addEventListener('mousemove',move);
+  svg.addEventListener('mouseleave',()=>{ tip.classList.add('hidden'); cross.style.display='none'; if(dot)dot.style.display='none'; });
+}
+
+function renderB200(){
+  const d=bsliced(), n=d.dates.length;
+  if(!n){ $('bchart200').innerHTML='<div class="text-xs text-slate-400 py-8 text-center">No data in this range.</div>'; return; }
+  const W=720,H=260,PL=40,PR=14,PT=10,PB=28;
+  const x=i=>PL+(W-PL-PR)*(n<=1?0:i/(n-1)), y=v=>PT+(H-PT-PB)*(1-v/100);
+  let grid='';
+  for(const g of [0,20,40,60,80,100]){ const yy=y(g);
+    grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${g===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${g}%</text>`; }
+  let xl=''; const step=Math.max(1,Math.ceil(n/7));
+  d.dates.forEach((dt,i)=>{ if(i%step && i!==n-1) return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${fmtD8(dt)}</text>`; });
+  // null-safe: a null pct200 (n200 == 0) breaks the line and is skipped by the hover; the area spans the plotted points
+  let line='', area='', open=false, x0=null, x1=null;
+  d.pct200.forEach((v,i)=>{ if(v==null){ open=false; return; } const X=x(i).toFixed(1), Y=y(v).toFixed(1);
+    line+=(open?' L':' M')+X+' '+Y; area+=' L'+X+' '+Y; if(x0==null) x0=X; x1=X; open=true; });
+  if(x0!=null) area=`M ${x0} ${y(0).toFixed(1)}`+area+` L ${x1} ${y(0).toFixed(1)} Z`;
+  const pts=[]; d.dates.forEach((dt,i)=>{ if(d.pct200[i]!=null) pts.push({px:x(i),py:y(d.pct200[i]),i,dt}); });
+  if(!pts.length){ $('bchart200').innerHTML='<div class="text-xs text-slate-400 py-8 text-center">Too few stocks with 200 sessions of history in this range.</div>'; return; }
+  $('bchart200').innerHTML=`<div class="relative">
+    <svg viewBox="0 0 ${W} ${H}" class="w-full block">
+      <rect x="${PL}" y="${y(100).toFixed(1)}" width="${(W-PL-PR).toFixed(1)}" height="${(y(80)-y(100)).toFixed(1)}" fill="#b91c1c" opacity="0.05"/>
+      <rect x="${PL}" y="${y(20).toFixed(1)}" width="${(W-PL-PR).toFixed(1)}" height="${(y(0)-y(20)).toFixed(1)}" fill="#15803d" opacity="0.05"/>
+      ${grid}${xl}
+      <line x1="${PL}" y1="${y(50).toFixed(1)}" x2="${W-PR}" y2="${y(50).toFixed(1)}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4"/>
+      <path d="${area}" fill="#4f46e5" opacity="0.08"/>
+      <path d="${line}" fill="none" stroke="#4f46e5" stroke-width="2"/>
+      <line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
+      <circle class="dV" r="4" fill="#4f46e5" stroke="#fff" stroke-width="1.5" style="display:none"/>
+      <rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>
+    </svg>
+    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[135%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
+  </div>`;
+  bHover('bchart200', pts, p=>{
+    const i=p.i;
+    return `<div class="font-semibold">${fmtD8Long(p.dt)}</div>`
+      +`<div><span style="color:#818cf8">●</span> Above 200-DMA: ${d.pct200[i].toFixed(1)}% (${d.a200[i]}/${d.n200[i]})</div>`
+      +`<div><span style="color:#34d399">▲</span> ${d.adv[i]} advanced · <span style="color:#fb7185">▼</span> ${d.dec[i]} declined</div>`
+      +`<div>52-wk: <span style="color:#34d399">${d.hi[i]} new highs</span> · <span style="color:#fb7185">${d.lo[i]} new lows</span> (of ${d.n52[i]})</div>`
+      +`<div class="text-slate-300">${d.nObs[i]} of ${d.nMem[i]} members traded</div>`;
+  });
+}
+
+function renderBHL(){
+  const d=bsliced(), nd=d.dates.length;
+  if(!nd){ $('bchartHL').innerHTML='<div class="text-xs text-slate-400 py-8 text-center">No data in this range.</div>'; return; }
+  // aggregate to ~weekly buckets when the range is long, else daily bars
+  const bucket=Math.max(1,Math.ceil(nd/280)), agg=[];
+  for(let s=0;s<nd;s+=bucket){
+    const e=Math.min(nd,s+bucket); let hi=0,lo=0;
+    for(let j=s;j<e;j++){ hi+=d.hi[j]; lo+=d.lo[j]; }
+    agg.push({d0:d.dates[s], d1:d.dates[e-1], hi, lo});
+  }
+  $('bhlNote').textContent = bucket>1 ? `(${bucket}-day totals — hover for values)` : '(daily — hover for values)';
+  const n=agg.length, W=720,H=240,PL=40,PR=14,PT=10,PB=28;
+  const ymax=Math.max(4,...agg.map(a=>Math.max(a.hi,a.lo)))*1.08;
+  const x=i=>PL+(W-PL-PR)*(n<=1?0:i/(n-1)), y0=PT+(H-PT-PB)/2, sc=(H-PT-PB)/2/ymax;
+  const bw=Math.max(1,Math.min(9,(W-PL-PR)/n*0.72));
+  let grid=`<line x1="${PL}" y1="${y0.toFixed(1)}" x2="${W-PR}" y2="${y0.toFixed(1)}" stroke="#cbd5e1"/>`;
+  for(const f of [0.5,1]){ const v=Math.round(ymax*f);
+    grid+=`<text x="${PL-4}" y="${(y0-v*sc+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v}</text>`
+        +`<text x="${PL-4}" y="${(y0+v*sc+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v}</text>`
+        +`<line x1="${PL}" y1="${(y0-v*sc).toFixed(1)}" x2="${W-PR}" y2="${(y0-v*sc).toFixed(1)}" stroke="#f1f5f9"/>`
+        +`<line x1="${PL}" y1="${(y0+v*sc).toFixed(1)}" x2="${W-PR}" y2="${(y0+v*sc).toFixed(1)}" stroke="#f1f5f9"/>`; }
+  let xl=''; const step=Math.max(1,Math.ceil(n/7));
+  agg.forEach((a,i)=>{ if(i%step && i!==n-1) return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${fmtD8(a.d0)}</text>`; });
+  let bars='';
+  agg.forEach((a,i)=>{ const cx=x(i);
+    if(a.hi>0) bars+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${(y0-a.hi*sc).toFixed(1)}" width="${bw.toFixed(1)}" height="${(a.hi*sc).toFixed(1)}" fill="#15803d" opacity="0.85"/>`;
+    if(a.lo>0) bars+=`<rect x="${(cx-bw/2).toFixed(1)}" y="${y0.toFixed(1)}" width="${bw.toFixed(1)}" height="${(a.lo*sc).toFixed(1)}" fill="#b91c1c" opacity="0.85"/>`;
+  });
+  const pts=agg.map((a,i)=>({px:x(i),py:y0-a.hi*sc,a}));
+  $('bchartHL').innerHTML=`<div class="relative">
+    <svg viewBox="0 0 ${W} ${H}" class="w-full block">${grid}${xl}${bars}
+      <text x="${W-PR}" y="${(PT+8)}" font-size="9" fill="#15803d" text-anchor="end">new highs ↑</text>
+      <text x="${W-PR}" y="${(H-PB-4)}" font-size="9" fill="#b91c1c" text-anchor="end">new lows ↓</text>
+      <line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
+      <rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>
+    </svg>
+    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[135%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
+  </div>`;
+  bHover('bchartHL', pts, p=>{
+    const a=p.a, span=a.d0===a.d1?fmtD8Long(a.d0):fmtD8(a.d0)+' – '+fmtD8(a.d1);
+    return `<div class="font-semibold">${span}</div>`
+      +`<div><span style="color:#34d399">●</span> New 52-wk highs: ${a.hi}</div>`
+      +`<div><span style="color:#fb7185">●</span> New 52-wk lows: ${a.lo}</div>`;
+  });
+}
+
+function renderRangeBtns(){
+  $('rangeBtns').innerHTML = ['1y','3y','5y','10y','all'].map(k=>
+    `<button data-r="${k}" class="px-2 py-1 rounded ${range===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${k==='all'?'All':k.toUpperCase()}</button>`).join('');
+  $('rangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{ range=b.dataset.r; renderRangeBtns(); renderChart(); });
+}
+
+function sliced(){
+  const n=DATA.months.length, k=RANGES[range], s=k>=1e9?0:Math.max(0,n-k);
+  return { months:DATA.months.slice(s), value:DATA.value.slice(s), ma:DATA.ma.slice(s) };
+}
+
+function renderCards(){
+  const v=DATA.value, m=DATA.months, ma=DATA.ma, partial=!!DATA.partialLast;
+  const i=v.length-1, c=partial?i-1:i;                 // c = last COMPLETE month
+  let peak=-1, pk=0; v.forEach((x,j)=>{ if((!partial||j<i) && x>peak){peak=x;pk=j;} });
+  const yoy = pct(v[c], c>=12?v[c-12]:null);
+  const card=(t,val,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${val}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  if(partial && c>=0){
+    $('cards').innerHTML =
+       card('This month so far · '+fmtMonShort(m[i]), fmtLc(v[i]), DATA.partialDays+' trading days')
+      +card('Last full month · '+fmtMonShort(m[c]), fmtLc(v[c]), fmtCr(v[c]))
+      +card('12-mo average', fmtLc(ma[c]), v[c]>=ma[c]?'last month above trend':'last month below trend', v[c]>=ma[c]?'pos':'neg')
+      +card('Record high · '+fmtMonShort(m[pk]), fmtLc(peak), 'busiest full month');
+  } else {
+    $('cards').innerHTML =
+       card('Latest month · '+fmtMonShort(m[i]), fmtLc(v[i]), fmtCr(v[i]))
+      +card('12-mo average', fmtLc(ma[i]), v[i]>=ma[i]?'now above trend':'now below trend', v[i]>=ma[i]?'pos':'neg')
+      +card('vs a year ago', fmtPct(yoy), 'same month last year', (yoy||0)>=0?'pos':'neg')
+      +card('Record high · '+fmtMonShort(m[pk]), fmtLc(peak), 'busiest month on record');
+  }
+  $('legV').textContent = fmtLc(v[i])+(partial?' so far':'');
+  $('legM').textContent = fmtLc(ma[i]);
+}
+
+function renderChart(){
+  const d=sliced(), n=d.months.length;
+  if(!n){ $('chart').innerHTML='<div class="text-xs text-slate-400 py-8 text-center">No data in this range.</div>'; return; }
+  const W=720, H=300, PL=44, PR=14, PT=14, PB=32;
+  const x=i=> PL+(W-PL-PR)*(n<=1?0:i/(n-1));
+  const ymax=(Math.max(...d.value, ...d.ma)/1e5)*1.08 || 1;          // in lakh crore
+  const y=val=> PT+(H-PT-PB)*(1-(val/1e5)/ymax);                     // val in crore, baseline 0
+  let grid=''; const GL=5;
+  for(let k=0;k<=GL;k++){ const lcv=ymax*k/GL, yy=PT+(H-PT-PB)*(1-k/GL);
+    grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${k===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${lcv.toFixed(1)}</text>`; }
+  let xl=''; const step=Math.max(1,Math.ceil(n/8));
+  d.months.forEach((mm,i)=>{ if(i%step && i!==n-1) return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${fmtMonShort(mm)}</text>`; });
+  const partial=!!DATA.partialLast, solidEnd=partial?n-1:n;
+  const vsolid=d.value.slice(0,solidEnd).map((cr,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ');
+  const vdash=(partial&&n>=2)?`M ${x(n-2).toFixed(1)} ${y(d.value[n-2]).toFixed(1)} L ${x(n-1).toFixed(1)} ${y(d.value[n-1]).toFixed(1)}`:'';
+  const area=`M ${x(0).toFixed(1)} ${y(0).toFixed(1)} `+d.value.map((cr,i)=>'L'+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ')+` L ${x(n-1).toFixed(1)} ${y(0).toFixed(1)} Z`;
+  const mline=d.ma.map((cr,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(cr).toFixed(1)).join(' ');
+  CHART={pts:d.months.map((mm,i)=>({px:x(i),pyV:y(d.value[i]),pyM:y(d.ma[i]),m:mm,v:d.value[i],ma:d.ma[i],partial:(partial&&i===n-1)})), W, H, PT, PB};
+  $('chart').innerHTML=`<div class="relative">
+    <svg viewBox="0 0 ${W} ${H}" class="w-full block">${grid}${xl}
+      <path d="${area}" fill="#15803d" opacity="0.08"/>
+      <path d="${mline}" fill="none" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5 4"/>
+      <path d="${vsolid}" fill="none" stroke="#15803d" stroke-width="2"/>
+      ${vdash?`<path d="${vdash}" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="4 3" opacity="0.8"/>`:''}
+      ${partial?`<circle cx="${x(n-1).toFixed(1)}" cy="${y(d.value[n-1]).toFixed(1)}" r="4" fill="#fff" stroke="#15803d" stroke-width="2"/>`:''}
+      <line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
+      <circle class="dM" r="3.5" fill="#b91c1c" stroke="#fff" stroke-width="1.5" style="display:none"/>
+      <circle class="dV" r="4" fill="#15803d" stroke="#fff" stroke-width="1.5" style="display:none"/>
+      <rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>
+    </svg>
+    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[135%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
+  </div>`;
+  attachHover();
+}
+
+function attachHover(){
+  const wrap=$('chart'); const svg=wrap.querySelector('svg'); if(!svg||!CHART.pts||!CHART.pts.length)return;
+  const tip=wrap.querySelector('.tip'), cross=wrap.querySelector('.cx'), dV=wrap.querySelector('.dV'), dM=wrap.querySelector('.dM');
+  const move=e=>{
+    const r=svg.getBoundingClientRect(); if(!r.width)return;
+    const sx=(e.clientX-r.left)/r.width*CHART.W;
+    let best=0,bd=1e9; for(let i=0;i<CHART.pts.length;i++){const dd=Math.abs(CHART.pts[i].px-sx); if(dd<bd){bd=dd;best=i;}}
+    const p=CHART.pts[best];
+    cross.setAttribute('x1',p.px); cross.setAttribute('x2',p.px); cross.style.display='';
+    dV.setAttribute('cx',p.px); dV.setAttribute('cy',p.pyV); dV.style.display='';
+    dM.setAttribute('cx',p.px); dM.setAttribute('cy',p.pyM); dM.style.display='';
+    tip.style.left=(p.px/CHART.W*100)+'%'; tip.style.top=(Math.min(p.pyV,p.pyM)/CHART.H*100)+'%';
+    tip.innerHTML=`<div class="font-semibold">${fmtMonLong(p.m)}${p.partial?' · so far':''}</div>`
+      +`<div><span style="color:#34d399">●</span> Traded: ${fmtLc(p.v)}${p.partial?' ('+DATA.partialDays+'d)':''}</div>`
+      +`<div><span style="color:#fb7185">●</span> 12-mo avg: ${fmtLc(p.ma)}</div>`;
+    tip.classList.remove('hidden');
+  };
+  svg.addEventListener('mousemove',move);
+  svg.addEventListener('mouseleave',()=>{tip.classList.add('hidden');cross.style.display='none';dV.style.display='none';dM.style.display='none';});
+}
+
+function renderTable(){
+  const v=DATA.value, m=DATA.months, ma=DATA.ma, last=v.length-1, partial=!!DATA.partialLast;
+  const rows=[];
+  for(let i=last; i>=0; i--){
+    const isP = partial && i===last;
+    const mom = isP ? null : pct(v[i], i>0?v[i-1]:null), vsAvg = isP ? null : pct(v[i], ma[i]);
+    rows.push(`<tr class="border-b border-slate-50">
+      <td class="py-1 px-1 font-medium">${fmtMonLong(m[i])}${isP?' <span class="text-[10px] text-amber-600 font-semibold">so far</span>':''}</td>
+      <td class="text-right px-1">${Math.round(v[i]).toLocaleString('en-IN')}</td>
+      <td class="text-right px-1 ${(mom||0)>=0?'pos':'neg'}">${fmtPct(mom)}</td>
+      <td class="text-right px-1 text-slate-500">${Math.round(ma[i]).toLocaleString('en-IN')}</td>
+      <td class="text-right px-1 ${(vsAvg||0)>=0?'pos':'neg'}">${fmtPct(vsAvg)}</td></tr>`);
+  }
+  $('tbody').innerHTML=rows.join('');
+}
+
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex" />
+<!-- OLD VIEW of stock.html, kept so the header's New / Old switch has somewhere to go. Frozen copy: fix bugs in stock.html, not here. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Stock</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  /* theme.css makes <body> a flex column and main's mx-auto cancels the flex stretch, so <main> was sized
+     SHRINK-TO-FIT: a no-wrap table's minimum width (12-quarter shareholding 1,007px on KENNAMET, 1,101px on
+     RELIANCE; Insights 1,278px) widened the whole page past a 1024px viewport even though each table sits in an
+     overflow-x-auto holder, and the price chart's autoSize then held that width (measured 2026-10-07). The theme
+     clamps this only at ≤760px. width:100% (still capped by max-w-screen-xl) pins main to the body at every
+     width, so wide tables scroll INSIDE their holders — the index-chart.html fix (runbook §39). */
+  main{width:100%;min-width:0}
+  /* Those holders now scroll above 640px too, and the two that open on their NEWEST column (Insights, shareholding)
+     would scroll their row names out of view — RELIANCE Insights at 1024px opened 319px in, every metric name
+     off-screen. Pin the label column the way theme.css does on phones, with the same resolved backgrounds. */
+  @media (min-width:641px){
+    html[data-theme] #shp table thead th:first-child, html[data-theme] #shp table tbody td:first-child,
+    html[data-theme] #kpiBody table thead th:first-child, html[data-theme] #kpiBody table tbody td:first-child{
+      position:sticky; left:0; z-index:2; box-shadow:1px 0 0 var(--border);
+    }
+    html[data-theme] #shp table thead th:first-child, html[data-theme] #kpiBody table thead th:first-child{ background:var(--sw-pin-head,var(--surface)); }
+    html[data-theme] #shp table tbody td:first-child, html[data-theme] #kpiBody table tbody td:first-child{ background:var(--sw-pin-body,var(--surface)); }
+  }
+  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .lbl{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.02em}
+  #ov{position:fixed;inset:0;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
+  .rng{cursor:pointer}
+  .rng.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
+  #chartWrap{position:relative}
+  /* price card: Lightweight Charts draws into #chart (autoSize follows this box) */
+  #chart{height:340px}
+  @media (max-width:640px){ #chart{height:260px} }
+  .tvlink{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .6rem;border-radius:var(--radius);border:1px solid var(--border,var(--border));font-size:11px;font-weight:700;color:var(--text-muted,var(--text-muted));text-decoration:none;line-height:1.4}
+  .tvlink:hover{border-color:var(--accent,var(--accent));color:var(--accent,var(--accent-text))}
+  .clschip{display:inline-flex;align-items:baseline;gap:.3rem;padding:.15rem .55rem;border-radius:var(--radius-sm);border:1px solid var(--border,var(--border));background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text-muted));font-size:.72rem;font-weight:600;line-height:1.5;white-space:nowrap;text-decoration:none;transition:border-color .12s,color .12s}
+  .clschip:hover{border-color:var(--accent,var(--accent));color:var(--accent,var(--accent-text))}
+  .clslv{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint,var(--text-faint))}
+  .pkcol{cursor:pointer;white-space:nowrap;user-select:none}
+  .pkcol:hover{color:var(--accent,var(--accent-text))}
+  #peers .psym{font-size:.625rem;color:var(--text-faint,var(--text-faint));margin-left:.25rem;font-weight:400}
+  /* On phones theme.js makes #peers a .sw-scrollx, which PINS the first column — and a pinned
+     "Company Name SYM" cell measured 269px of a 309px scroller at 375px, hiding MCap, P/E and 1Y
+     (and the headings you now sort by) behind it. Below 640px the row leads with the SYMBOL and
+     drops the long name; the symbol sits inside the same link, so it stays tappable. */
+  @media (max-width:640px){
+    #peers .pname{display:none}
+    #peers .psym{font-size:inherit;color:inherit;margin-left:0;font-weight:inherit}
+  }
+  /* Financial detail pins its ROW LABELS on phones (§186). Every header cell there is sticky at z-index 4 and
+     theme.css lifts the pinned corner only for .sw-pin2, so without this the scrolled years paint over it. */
+  @media (max-width:640px){ html[data-theme] #deepBody .sw-scrollx.tscroll table thead th:first-child{z-index:5} }
+  #tip{position:absolute;pointer-events:none;display:none;background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius);padding:.35rem .55rem;font-size:.72rem;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);white-space:nowrap;z-index:5}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+<div id="ov"><div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3"></div><p class="text-sm text-slate-600" id="ovT">Loading…</p></div>
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-5 space-y-4">
+  <!-- title -->
+  <div class="card p-4" data-jump="Overview">
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <h1 id="sSym" class="text-2xl font-extrabold text-slate-900 tracking-tight">—</h1>
+          <span id="sDead" class="hidden text-[10px] font-bold uppercase bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">delisted</span>
+          <span id="sSme" class="hidden text-[10px] font-bold uppercase bg-sky-100 text-sky-700 px-2 py-0.5 rounded-full" title="Listed on NSE's SME platform (Emerge): SME series SM/ST — smaller float, wider price bands, lot-size trading">NSE SME</span>
+        </div>
+        <div id="sName" class="text-sm text-slate-500 mt-0.5"></div>
+        <div id="sInd" class="text-xs text-slate-400 mt-0.5"></div>
+        <div id="sCls" class="mt-1.5 flex-wrap items-center gap-1" style="display:none"></div>
+        <div id="sMeta" class="text-xs text-slate-500 mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1"></div>
+      </div>
+      <div class="text-right">
+        <div id="sPrice" class="text-2xl font-extrabold text-slate-900">—</div>
+        <div id="sChg" class="text-sm"></div>
+        <div id="sAsof" class="text-[11px] text-slate-400 mt-0.5"></div>
+      </div>
+    </div>
+    <div id="sChips" class="flex flex-wrap gap-1.5 mt-3"></div>
+    <div class="mt-3 flex flex-wrap items-center gap-2">
+      <a id="sBt" class="text-xs font-semibold text-indigo-600 hover:underline" href="#">Backtest a strategy →</a>
+      <span class="text-slate-300">·</span>
+      <form id="sForm" class="flex items-center gap-1">
+        <input id="sSearch" placeholder="Look up another symbol…" class="border border-slate-300 rounded-lg px-2.5 py-1 text-xs w-44" />
+        <button class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-white">Go</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- rewind banner -->
+  <div id="rwBanner" class="hidden rounded-xl border border-indigo-200 bg-indigo-50/70 px-4 py-2.5 text-sm text-indigo-900 flex flex-wrap items-center gap-x-3 gap-y-1">
+    <span><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> <b>Rewind:</b> viewing this page as the market saw it on <b id="rwDate">—</b> — financials and shareholding show only what had been <i>filed</i> by then; current-only sections (activity, peers, strategies, technicals) are hidden.</span>
+    <button id="rwExit" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white">Back to today</button>
+  </div>
+
+  <!-- quick stats -->
+  <div id="stats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"></div>
+
+  <!-- price chart: our split/bonus-adjusted close series (Lightweight Charts) + events -->
+  <div class="card p-4" data-jump="Chart">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="flex items-center gap-2 flex-wrap min-w-0">
+        <div class="text-sm font-semibold text-slate-700">Price</div>
+        <span class="text-slate-400 text-[11px] font-normal">split/bonus-adjusted close · drag to pan · scroll to zoom · hover for values</span>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
+        <a id="drawLink" class="tvlink" title="Open this stock on the Charts page: draw trend lines, levels and notes (saved in this browser), or chart it as a ratio or basket">Draw / ratio ↗</a>
+        <a id="tvLink" class="tvlink hidden" target="_blank" rel="noopener" title="Open the full TradingView chart (candles, indicators, drawing tools) in a new tab">TradingView ↗</a>
+        <span class="text-slate-300">·</span>
+        <input id="rwPick" type="date" class="border border-slate-300 rounded-lg px-1.5 py-0.5 text-[11px] text-slate-600" title="Rewind: view the page as of a past date" />
+        <button id="rwGo" class="px-2 py-1 rounded-md text-[11px] font-semibold border border-indigo-300 text-indigo-600 hover:bg-indigo-50"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> Rewind</button>
+      </div>
+    </div>
+    <div id="chartWrap"><div id="chart"></div><div id="tip"></div></div>
+    <div id="evLegend" class="flex flex-wrap items-center gap-1.5 mt-2 text-[11px]"></div>
+    <div id="liveNote" class="mt-2 text-[11px] text-slate-500 hidden"></div>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-4" data-jump="Returns">
+    <!-- returns -->
+    <div class="card p-4">
+      <div class="text-sm font-semibold text-slate-700 mb-2">Returns <span class="text-slate-400 font-normal">— stock vs Nifty 50</span></div>
+      <div id="returns" class="overflow-x-auto"></div>
+    </div>
+    <!-- technicals -->
+    <div class="card p-4">
+      <div class="text-sm font-semibold text-slate-700 mb-2">Technicals <span id="techSub" class="text-slate-400 font-normal">— as of latest close</span></div>
+      <div id="tech" class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm"></div>
+      <div id="delivSpark" class="mt-3"></div>
+    </div>
+  </div>
+
+  <!-- fundamentals -->
+  <div class="card p-4" data-jump="Quarters">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">Quarterly financials <span id="fundHdrSub" class="text-slate-400 font-normal">— point-in-time (₹ cr), consolidated where filed, YoY growth</span></div>
+      <a href="./quarterly-results.html" class="text-xs font-semibold text-indigo-600 hover:underline">All companies' results →</a>
+    </div>
+    <div id="lastReact" class="text-xs text-slate-500 mb-2 hidden"></div>
+    <div id="fundCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-3"></div>
+    <!-- reporting-basis switch (screener.in style): consolidated by default, standalone on demand.
+         Governs the cards above, this table, and the 🧾 Financial detail card below. -->
+    <div id="fundBasis" class="flex items-center gap-1.5 flex-wrap mb-2" style="display:none"></div>
+    <!-- sw-scrollx: stays a table on phones and scrolls sideways with the quarter
+         column pinned (theme.css), instead of reflowing to one card per quarter -->
+    <div id="funds" class="sw-scrollx tscroll overflow-x-auto text-sm">—</div>
+    <div id="fundNote" class="text-[11px] text-slate-400 mt-2"></div>
+  </div>
+
+  <!-- annual history of a recent listing: the company's own prospectus + results PDFs (docs/ipo_fin/<SYM>.json, runbook §232);
+       MoneyControl's standalone feed only while no document has been read — DISPLAY ONLY, never the backtest -->
+  <div class="card p-4" id="preipoCard" data-jump="Pre-IPO" style="display:none">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700"><span id="preipoTitle">Pre-IPO financials</span> <span id="preipoBadge" class="text-slate-400 font-normal"></span></div>
+      <div id="ipofinBasis" class="flex items-center gap-1.5 flex-wrap" style="display:none"></div>
+    </div>
+    <div id="preipo" class="sw-scrollx overflow-x-auto text-sm" style="font-variant-numeric:tabular-nums">—</div>
+    <div id="preipoNote" class="text-[11px] text-slate-400 mt-2"></div>
+  </div>
+
+  <!-- deep financial detail (XBRL re-parse: EPS, P&L breakdown, balance sheet, cash flow, segments, bank health) -->
+  <div class="card p-4" id="deepCard" data-jump="Financials" style="display:none">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">Financial detail <span class="text-slate-400 font-normal">— from the company's own XBRL filings</span></div>
+    </div>
+    <div id="deepTabs" class="flex gap-1.5 overflow-x-auto whitespace-nowrap pb-1"></div>
+    <div id="deepBody" class="mt-2 text-sm"></div>
+    <div id="deepNote" class="text-[11px] text-slate-400 mt-2"></div>
+  </div>
+
+  <!-- insights: business/operating KPIs read from the company's OWN presentations & press releases
+       (scripts/kpi_insights/<SYM>.json → docs/fin/<SLUG>.json "kpi", runbook §137). Yearly / Quarterly
+       toggle; every cell is the number exactly as printed in a filing, ⓘ = that filing + page. -->
+  <div class="card p-4" id="kpiCard" data-jump="Insights" style="display:none">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">Insights <span id="kpiSub" class="text-slate-400 font-normal">— business metrics the company reports about itself, from its own filings</span></div>
+      <div id="kpiTabs" class="flex items-center gap-1.5"></div>
+    </div>
+    <div id="kpiBody" class="sw-scrollx overflow-x-auto text-sm"></div>
+    <div id="kpiSrc" class="text-[11px] text-slate-500 mt-2 rounded-lg border border-slate-200 px-2.5 py-1.5" style="display:none"></div>
+    <div id="kpiNote" class="text-[11px] text-slate-400 mt-2"></div>
+  </div>
+
+  <!-- strategy exposure -->
+  <div class="card p-4" id="stratCard" data-jump="Strategies" style="display:none">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">Strategy exposure <span id="stratN" class="text-slate-400 font-normal"></span></div>
+      <a href="./all-picks.html" class="text-xs font-semibold text-indigo-600 hover:underline">All strategies' picks →</a>
+    </div>
+    <div id="strat" class="text-sm"></div>
+    <div class="text-[11px] text-slate-400 mt-2">Tracked strategies (live paper portfolios on this site) whose current basket holds this stock. Return is since each strategy went live — not a recommendation.</div>
+  </div>
+
+  <!-- peer comparison -->
+  <div class="card p-4" id="peersCard" data-jump="Peers" style="display:none">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">Peer comparison <span id="peersInd" class="text-slate-400 font-normal"></span></div>
+    </div>
+    <div id="peers" class="sw-scrollx overflow-x-auto text-sm"></div>
+    <div class="text-[11px] text-slate-400 mt-2">Same-industry companies, this stock first and the rest by market cap — <b>click any column heading to re-rank them</b> (P/E, size or 1-year return); this stock stays bold wherever it lands. P/E uses point-in-time owners-attributable TTM profit (last 4 contiguous quarters); 1Y is the price return. Tap a name to open it. The median above covers <b>only the companies listed here</b> — the industry's biggest — so it can differ from the whole industry's median (measured across the 86 industries with more members than this table shows: higher in 55%, identical in 41%, lower in 5%). The industry-wide figure, over every listed member, is on the <a class="text-indigo-600 hover:underline" href="./sectors.html">sector page</a>.</div>
+  </div>
+
+  <!-- shareholding pattern -->
+  <div class="card p-4" data-jump="Shareholding">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">Shareholding pattern <span class="text-slate-400 font-normal">— quarterly filings, % of total shares</span></div>
+      <div class="flex items-center gap-3">
+        <button id="shpAll" class="text-xs font-semibold text-indigo-600 hover:underline" style="display:none">Full history</button>
+        <a href="./shareholding.html" class="text-xs font-semibold text-indigo-600 hover:underline">Compare all stocks →</a>
+      </div>
+    </div>
+    <div id="shpChart" class="mb-3" style="display:none"></div>
+    <div id="shp" class="sw-scrollx overflow-x-auto text-sm"><span class="text-slate-400">Loading shareholding pattern…</span></div>
+    <div id="shpNote"></div>
+  </div>
+
+  <!-- company activity -->
+  <div class="card p-4" id="actCard" data-jump="Activity" style="display:none">
+    <div class="text-sm font-semibold text-slate-700 mb-2">Company activity <span class="text-slate-400 font-normal">— rolling windows, refreshed daily</span></div>
+    <div id="actTabs" class="flex gap-1.5 overflow-x-auto whitespace-nowrap pb-1"></div>
+    <div id="actBody" class="mt-2 text-sm"></div>
+  </div>
+
+  <!-- seasonality -->
+  <div class="card p-4" data-jump="Seasonality">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div class="text-sm font-semibold text-slate-700">Seasonality <span class="text-slate-400 font-normal">— monthly returns, %</span></div>
+      <button id="seasAll" class="text-xs font-semibold text-indigo-600 hover:underline" style="display:none">All years</button>
+    </div>
+    <div id="season" class="sw-scrollx overflow-x-auto text-sm"><span class="text-slate-400">—</span></div>
+    <div class="text-[11px] text-slate-400 mt-2">Month-end split/bonus-adjusted closes. Green = up month, red = down; deeper shade = bigger move. “Yr” compounds the calendar year; “Avg” is the simple mean across all years shown.</div>
+  </div>
+
+  <p class="text-[11px] text-slate-400">Data: survivorship-free daily history (1996→latest), point-in-time quarterly earnings, quarterly shareholding patterns, NSE announcements/insider/deals feeds, NSE/BSE. Prices are split/bonus-adjusted close; "Last close" shows the raw traded price. Not investment advice.</p>
+</main>
+
+<script src="./backtest-engine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+'use strict';
+var SWI={file:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',book:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',layers:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 12.5-8.58 3.91a2 2 0 0 1-1.66 0L2.6 12.5"/><path d="m22 17.5-8.58 3.91a2 2 0 0 1-1.66 0L2.6 17.5"/></svg>',landmark:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>',megaphone:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',compass:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>',user:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',scale:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>',banknote:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01"/><path d="M18 12h.01"/></svg>',percent:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>',briefcase:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',calendar:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const qs=new URLSearchParams(location.search);
+let SYM=(qs.get('sym')||qs.get('s')||'').trim().toUpperCase();
+let TKR=null, CHART=null, RANGE='Max';
+/* SLICE = this stock's pre-cut payload (docs/stk/<SLUG>.json on the sf-data host). Null means we
+   fell back to loading the whole-market engine, the old ~137 MB path — see boot(). FIN_STATE tracks
+   the financials file so the quarterly table can say "loading" instead of "nothing on file". */
+let SLICE=null, FIN_STATE='pending';
+/* FUND_ALIAS is an NSE fact (old NSE symbol -> current one). A few BSE-only companies trade under a
+   scrip_id that is ALSO a former NSE ticker of an unrelated company — WORTH is Worth Investment on BSE
+   while NSE's WORTH became WORTHPERI — and following the alias sent their page to the other company
+   (runbook §197). docs/bse_alias_collisions.json lists the proven cases; it is read only on the paths
+   that would otherwise follow an alias. A failed read is not cached and falls back to the old behaviour. */
+let COLLIDE=null;
+async function aliasCollides(sym){
+  if(!COLLIDE){ try{ COLLIDE=(await (await fetch('./bse_alias_collisions.json')).json()).collisions||{}; }catch(e){ return false; } }
+  return !!COLLIDE[sym];
+}
+/* Provisional LIVE bar state — see the live-price block at the bottom of this file. LIVE_OFF is
+   the day offset of the spliced bar (null = none on the series); LIVE_END0 / LIVE_RAW0 hold the
+   pre-splice SF_END_OFF and META.raw so clearLiveBar() can put the series back exactly as baked. */
+let LIVE_OFF=null, LIVE_END0=null, LIVE_RAW0=null, LIVE_TURN_D=null;
+
+function fail(msg){ $('ov').style.display='none'; $('sSym').textContent=SYM||'?'; $('sName').innerHTML=`<span class="neg">${esc(msg)}</span>`; const sh=$('shp'); if(sh&&/Loading/.test(sh.textContent)) sh.textContent='—'; }
+// Full landing when the page is opened with no ?sym= at all (fail() is for real errors).
+// The data sections below are meaningless husks without a symbol, so hide them and turn the
+// title card into a proper hero: big search, popular-stock chips, and what-you-get tiles.
+// The existing #sForm node is MOVED (not rebuilt) so its swSearch/submit listeners survive.
+function noSymbol(){
+  $('ov').style.display='none';
+  document.title='STOCKSWORLD · Stocks';
+  const POPULAR=['RELIANCE','TCS','HDFCBANK','ICICIBANK','INFY','SBIN','BHARTIARTL','ITC','LT','TITAN'];
+  const tile=(ic,t,d)=>`<div class="rounded-xl border border-slate-200 bg-slate-50 p-4"><div class="text-xl">${ic}</div><div class="font-bold text-slate-900 text-sm mt-1.5">${t}</div><div class="text-xs text-slate-500 mt-1 leading-relaxed">${d}</div></div>`;
+  const card=$('sSym').closest('.card');
+  document.querySelectorAll('main > *').forEach(el=>{ if(el!==card) el.style.display='none'; });
+  [...card.children].forEach(el=>{ el.style.display='none'; });
+  const hero=document.createElement('div');
+  hero.className='text-center py-6 md:py-10';
+  hero.innerHTML='<div class="text-5xl mb-3">🔍</div>'
+    +'<h1 id="heroTitle" class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Every stock, decoded</h1>'
+    +'<p class="text-sm text-slate-500 mt-2 max-w-lg mx-auto">Price history since 1996, returns vs the Nifty, quarterly financials, shareholding pattern &amp; seasonality — for every NSE/BSE listing, delisted names included.</p>'
+    +'<div id="heroSlot" class="mt-6 flex justify-center"></div>'
+    +'<div class="mt-6 text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Popular</div>'
+    +'<div id="heroChips" class="mt-2.5 flex flex-wrap justify-center gap-2 max-w-xl mx-auto"></div>'
+    +'<div id="heroTiles" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-10 text-left">'
+    +tile('📈','Price &amp; returns','Split-adjusted closes with 1D → 10Y returns vs the Nifty 50, plus a rewind to any past date.')
+    +tile('💰','Quarterly financials','Point-in-time revenue, PAT &amp; margins with YoY growth — the numbers as originally filed.')
+    +tile('🏦','Shareholding','Promoter, FII, DII &amp; public stakes, quarter by quarter from the filings.')
+    +tile('📅','Seasonality','Month-by-month returns across every year of history — which months this stock likes.')
+    +'</div>';
+  card.appendChild(hero);
+  const form=$('sForm'); $('heroSlot').appendChild(form);
+  form.style.display=''; form.classList.add('gap-2');
+  const inp=$('sSearch');
+  inp.placeholder='Search any stock — name or symbol…';
+  inp.className='border border-slate-300 rounded-xl px-4 py-2.5 text-sm w-60 sm:w-80 md:w-96';
+  const go=form.querySelector('button'); if(go) go.className='px-4 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 text-white';
+  for(const s of POPULAR){ const a=document.createElement('a'); a.href='?sym='+s; a.textContent=s; a.className='sw-chip'; $('heroChips').appendChild(a); }
+}
+
+/* ---------- events on the price chart ----------------------------------------------------------
+ * Sources: results announce dates (fin slice), dividends & corp actions (slice.act), insider
+ * trades (ins), bulk/block deals (dls), discovery triggers (dsc). One dot per day on a strip
+ * under the price line, coloured by that day's highest-priority event; the hover tooltip lists
+ * the day's events. Legend chips toggle each type. ---------------------------------------------- */
+/* ---------- rewind (time-travel) state --------------------------------------------------------
+   ASOF = day offset of the rewind date, or null for the live view. Every renderer reads it:
+   prices/returns clamp to the date, financials and shareholding show only rows whose FILING
+   date (announcement / submission) was on or before it — what the market actually knew then.
+   Current-only sections (activity, peers, strategies, technicals with tail-limited inputs)
+   hide rather than silently show today's data. */
+let ASOF=null;
+/* BSE SME IPO chip (runbook §195). BSE-only slices (SLICE.bse) carry no index chips, so the page asks BSE's own list:
+   the current constituents (bse_sme_ipo/members.json, 31 KB) on the live view, the dated history (history.json) when
+   rewound. Only on a BSE-only page — a BSE id equal to an unrelated NSE symbol must never borrow the chip (§76). */
+let SMEIPO_M=null, SMEIPO_H=null, SMEIPO_SEQ=0;
+function smeIpoChip(dayISO, rewound){
+  const seq=++SMEIPO_SEQ;                 // only the LATEST render may paint: a live render's fetch can land after a
+  if(!(SLICE&&SLICE.bse)) return;          // rewind re-render and would chip a date the stock was not yet in the index
+  const tk=TKR, key=tk+'.BO';
+  const p=rewound
+    ? (SMEIPO_H||(SMEIPO_H=fetch('./bse_sme_ipo/history.json').then(r=>r.ok?r.json():null).catch(()=>null)))
+    : (SMEIPO_M||(SMEIPO_M=fetch('./bse_sme_ipo/members.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)));
+  p.then(j=>{
+    if(!j||TKR!==tk||seq!==SMEIPO_SEQ) return;
+    let has=false;
+    if(rewound){ const s=(j['BSE SME IPO']||[]).filter(x=>x.effectiveDate<=dayISO).pop(); has=!!(s&&s.symbols.indexOf(key)>=0); }
+    else has=(j.members||[]).some(m=>m.sym===key);
+    const el=$('sChips'); if(!el||!has||el.querySelector('[data-smeipo]')) return;
+    const chip='<a data-smeipo href="./index-chart.html?ix=smeipo" title="A constituent of BSE\'s SME IPO index — open the index" '+
+      'class="text-[10px] font-semibold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full hover:underline">BSE SME IPO</a>';
+    if(/Not in any tracked index/.test(el.textContent)) el.innerHTML=chip; else el.insertAdjacentHTML('beforeend',chip);
+  });
+}
+/* Nifty SME Emerge chip (runbook §210). Its membership is not in indicesHistory (own file, NSE Indices' press releases),
+   so slices carry no chip for it: the page reads nse_sme_emerge/ever.json ({sym: [[join, leave|null]…]}, 25 KB, symbols in
+   today's spelling = TKR) and chips the stock when a stint covers the shown day. Fetched only where it can matter — a
+   rewind of an NSE page (a past member may since have moved to the main board) or a live NSE SME page. A BSE-only page
+   never borrows it (§76). */
+let SMEEM_E=null, SMEEM_SEQ=0;
+function smeEmergeChip(dayISO, rewound){
+  const seq=++SMEEM_SEQ;
+  if(SLICE&&SLICE.bse) return;
+  const mm=META[TKR]||{};
+  if(!rewound&&!(mm.sme||mm.sector==='NSE-SME'||(SLICE&&SLICE.sme))) return;   // live: only an NSE SME listing can be a member
+  const tk=TKR;
+  (SMEEM_E||(SMEEM_E=fetch('./nse_sme_emerge/ever.json').then(r=>r.ok?r.json():null).catch(()=>null))).then(j=>{
+    if(!j||TKR!==tk||seq!==SMEEM_SEQ) return;
+    const has=((j.members||{})[tk]||[]).some(x=>x[0]<=dayISO&&(x[1]==null||dayISO<x[1]));
+    const el=$('sChips'); if(!el||!has||el.querySelector('[data-smeem]')) return;
+    const chip='<a data-smeem href="./index-chart.html?ix=smeemerge" title="A constituent of NSE\'s Nifty SME Emerge index — open the index" '+
+      'class="text-[10px] font-semibold bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full hover:underline">Nifty SME Emerge</a>';
+    if(/Not in any tracked index/.test(el.textContent)) el.innerHTML=chip; else el.insertAdjacentHTML('beforeend',chip);
+  });
+}
+const asofYmd=()=>ASOF==null?99999999:+isoOff(ASOF).replace(/-/g,'');
+
+const EV_TYPES={R:['Results','#6366f1'],D:['Dividend','#f59e0b'],C:['Corp action','#8b5cf6'],K:['Deals','#0ea5e9'],I:['Insider','#14b8a6'],T:['Triggers','#f43f5e']};
+const EV_PRIO=['R','D','C','K','I','T'];
+let EVENTS=[], EVSHOW=new Set(EV_PRIO);
+const ymd2iso=v=>{const s=String(v);return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8);};
+const fmtQtr=e=>{const s=String(e);return s.slice(0,4)+'-'+s.slice(4,6);};
+const fmtQty=v=>v==null?'—':(+v).toLocaleString('en-IN');
+const fmtRs=v=>{ if(v==null) return '—'; v=+v; if(Math.abs(v)>=1e7) return '₹'+(v/1e7).toFixed(2)+' cr'; if(Math.abs(v)>=1e5) return '₹'+(v/1e5).toFixed(2)+' L'; return '₹'+Math.round(v).toLocaleString('en-IN'); };
+function lbound(a,x){ let lo=0,hi=a.length; while(lo<hi){ const m=(lo+hi)>>1; if(a[m]<x) lo=m+1; else hi=m; } return lo; }
+/* ann = the exchange FILING date, YYYYMMDD. ⚠️ 0 is the "date UNKNOWN" sentinel (runbook §15/§91,
+   1,442 cells across 666 stocks and permanent — the BSE archive can't date them), and `0 != null` is
+   TRUE in JS, so the old `!= null` tests took it for "announced at time zero": Math.min() let a 0 std
+   date beat a REAL con date (119 rows), the rewind gate below counted the quarter as known at EVERY
+   past date (a look-ahead), the table printed the date as "0--" (200 stocks), and dayOff(ymd2iso(0))
+   = dayOff('0--') = NaN reached the chart as <circle cx="NaN">. ann must be TRUTHY, the same
+   convention profitAt()/postDrift already use in backtest-engine.js + stock-backtest.html. */
+const annReal=v=>v>0?v:null;                                   // 0 / null / undefined → date unknown
+function annOf(q){ const a=annReal(q[2]),b=annReal(q[4]); if(a==null) return b; if(b==null) return a; return Math.min(a,b); }
+/* Result-day reaction — same convention as build_quarterly_results.py: % move of the close on the
+   first trading day ON/AFTER the announce date (within 10 calendar days) vs the prior close. */
+function reactionAt(annYmd){
+  if(annReal(annYmd)==null) return null;        // 0 = date unknown → no result day to measure from
+  const s=SERIES[TKR]; if(!s) return null;
+  const aoff=dayOff(ymd2iso(annYmd));
+  const j=lbound(s.d,aoff);
+  if(j<=0||j>=s.d.length||s.d[j]-aoff>10) return null;
+  if(!s.p[j-1]) return null;
+  return {rx:(s.p[j]/s.p[j-1]-1)*100, j};
+}
+function buildEvents(){
+  EVENTS=[];
+  try{
+    const arr=(typeof fundFor==='function'?fundFor(TKR):null)||[];
+    for(const q of arr){ const a=annOf(q); if(a==null) continue;
+      EVENTS.push({off:dayOff(ymd2iso(a)),t:'R',lbl:'Results · '+fmtQtr(q[0])}); }
+    const S=SLICE||{};
+    for(const a of S.act||[]) EVENTS.push({off:dayOff(a[0]),t:a[1]==='D'?'D':'C',lbl:(a[1]==='D'?'':'Corp action: ')+(a[2]||'')});
+    for(const i of S.ins||[]) EVENTS.push({off:dayOff(i[0]),t:'I',lbl:'Insider '+(i[3]==='B'?'buy':i[3]==='S'?'sell':'trade')+': '+i[1]});
+    for(const d of S.dls||[]) EVENTS.push({off:dayOff(d[0]),t:'K',lbl:(d[1]==='K'?'Block':'Bulk')+' deal: '+d[2]+' '+(d[3]==='B'?'bought':'sold')+' '+fmtQty(d[4])+' @ ₹'+d[5]});
+    for(const t of S.dsc||[]) EVENTS.push({off:dayOff(t[0]),t:'T',lbl:t[1]+' · '+t[2]});
+    EVENTS.sort((a,b)=>a.off-b.off);
+  }catch(e){ console.error(e); EVENTS=[]; }
+  renderEvLegend();
+}
+function renderEvLegend(){
+  const el=$('evLegend'); if(!el) return;
+  const counts={}; for(const e of EVENTS) counts[e.t]=(counts[e.t]||0)+1;
+  const chips=EV_PRIO.filter(t=>counts[t]).map(t=>{
+    const on=EVSHOW.has(t);
+    return `<button data-ev="${t}" class="px-2 py-0.5 rounded-full border ${on?'border-slate-300':'border-slate-200 opacity-40'}" style="color:${EV_TYPES[t][1]}"><span style="font-weight:800">●</span> ${EV_TYPES[t][0]} ${counts[t]}</button>`;
+  });
+  el.innerHTML=chips.length?chips.join('')+'<span class="text-slate-400 ml-1">events on the chart — tap to toggle</span>':'';
+  el.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>{ const t=b.dataset.ev; if(EVSHOW.has(t)) EVSHOW.delete(t); else EVSHOW.add(t); if(LW) lwRefreshMarkers(); else drawChart(); renderEvLegend(); });
+}
+
+/* ---------- price chart -------------------------------------------------------------------------
+ * Our split/bonus-adjusted close series drawn with Lightweight Charts (TradingView's open-source
+ * library): real date axis (years / months), drag to pan, wheel or pinch to zoom, crosshair tooltip
+ * (close, 1-day %, volume, the day's events), volume for the last 400 sessions (all the slice
+ * carries), and the events (results, dividends, corp actions, deals, insider, triggers) as markers
+ * under the line. Honours Rewind (bars clip at ASOF). If the library never loaded (offline PWA),
+ * the old inline SVG chart further down draws instead — same data, fewer tricks.
+ *
+ * Why no embedded TradingView widget (tried 2026-09-03): the free Advanced Chart widget refuses
+ * every NSE symbol with "This symbol is only available on TradingView" (their NSE licence does not
+ * cover embeds), and the BSE listing could not be shown loading data in either test browser. So
+ * the header carries a deep link to the full TradingView chart instead — that URL is verified. --- */
+let LW=null;                // Lightweight Charts state: {chart, area, vol, markers, px, byT, days}
+const cssVar=(n,fb)=>{ const v=getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v||fb; };
+const isDark=()=>document.documentElement.getAttribute('data-theme')==='dark';
+// '#rrggbb' → 'rgba(r,g,b,a)'; any other colour form is returned as-is (no alpha applied)
+function alpha(c,a){ const m=/^#([0-9a-f]{6})$/i.exec(c||''); if(!m) return c; const n=parseInt(m[1],16); return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`; }
+const fmtPx=v=>v>=1000?Math.round(v).toLocaleString('en-IN'):(+v).toFixed(2);
+function seriesPoints(){
+  const s=SERIES[TKR]; const out=[];
+  for(let i=0;i<s.d.length;i++) out.push([s.d[i], s.p[i]/100]);   // [offset, price]
+  return out;
+}
+function rangeDays(r){ return {'1M':30,'6M':182,'1Y':365,'3Y':1095,'5Y':1825,'Max':1e9}[r]||1e9; }
+
+function lwColors(){
+  const dark=isDark();
+  return { bg:cssVar('--surface','#ffffff'), text:cssVar('--text-muted','#586173'), faint:cssVar('--text-faint','#8b94a6'),
+    grid:cssVar('--border','#e7eaf2'), accent:cssVar('--accent','#4f46e5'),
+    vol:dark?'rgba(148,163,184,.30)':'rgba(100,116,139,.22)' };
+}
+// colours only — safe to re-apply on a theme switch (re-applying timeScale options resets the zoom)
+function lwThemeOptions(){
+  const c=lwColors();
+  return {
+    layout:{ background:{type:'solid',color:c.bg}, textColor:c.text },
+    grid:{ vertLines:{color:c.grid}, horzLines:{color:c.grid} },
+    rightPriceScale:{ borderColor:c.grid },
+    timeScale:{ borderColor:c.grid },
+    crosshair:{ vertLine:{color:c.faint,labelBackgroundColor:c.accent}, horzLine:{color:c.faint,labelBackgroundColor:c.accent} } };
+}
+function lwOptions(){
+  const LC=window.LightweightCharts, t=lwThemeOptions();
+  return { autoSize:true,
+    layout:Object.assign({ fontSize:11, fontFamily:getComputedStyle(document.body).fontFamily, attributionLogo:true }, t.layout),
+    grid:t.grid,
+    rightPriceScale:Object.assign({ scaleMargins:{top:.08,bottom:.24} }, t.rightPriceScale),
+    timeScale:Object.assign({ timeVisible:false, rightOffset:3, minBarSpacing:.01 }, t.timeScale),   // .01: 'Max' must fit a 30-year name (7,500 bars) into a 340px phone
+    crosshair:Object.assign({ mode:LC.CrosshairMode.Normal }, t.crosshair),
+    handleScroll:{ vertTouchDrag:false },                     // a phone must still scroll the page
+    localization:{ locale:'en-IN', priceFormatter:v=>v<0?'':fmtPx(v) } };   // the bottom margin's ticks run below 0 on a low-priced early history — blank them
+}
+// bars → chart points. Times are UTC-midnight unix seconds (Lightweight Charts reads them as UTC,
+// so the axis shows the trading date exactly). Rewind clips at ASOF. A non-ascending offset is
+// skipped: the library throws on out-of-order times and one bad bar would blank the chart.
+function lwData(){
+  const s=SERIES[TKR], px=[], vol=[], byT=new Map(); let prev=-Infinity;
+  for(let i=0;i<s.d.length;i++){
+    const o=s.d[i]; if(ASOF!=null&&o>ASOF) break; if(!(o>prev)) continue; prev=o;
+    const t=START_TS+o*DAY;
+    px.push({time:t,value:s.p[i]/100}); byT.set(t,i);
+    if(s.v&&s.v[i]>0) vol.push({time:t,value:s.v[i]});
+  }
+  return {px,vol,byT};
+}
+// events → markers, one per trading day, snapped to the first session on/after the event date
+// (a Sunday ex-date or a Saturday results filing has no bar of its own), coloured by the day's
+// top-priority type. Kept as a Map keyed by bar time so the tooltip can list the day's events.
+function lwMarkers(){
+  const s=SERIES[TKR], days=new Map();
+  for(const e of EVENTS){ if(!EVSHOW.has(e.t)||!Number.isFinite(e.off)) continue;
+    const j=lbound(s.d,e.off); if(j>=s.d.length||s.d[j]-e.off>7) continue;
+    if(ASOF!=null&&s.d[j]>ASOF) continue;
+    const t=START_TS+s.d[j]*DAY; let d=days.get(t); if(!d){ d={types:[],lbls:[]}; days.set(t,d); }
+    d.types.push(e.t); d.lbls.push(e.lbl); }
+  const mk=[];
+  for(const [t,d] of days){ const top=EV_PRIO.find(x=>d.types.includes(x));
+    mk.push({time:t, position:'belowBar', shape:'circle', color:EV_TYPES[top][1], size:d.lbls.length>1?1:.7}); }
+  mk.sort((a,b)=>a.time-b.time);
+  return {mk,days};
+}
+function lwRefreshMarkers(){ if(!LW) return; const {mk,days}=lwMarkers(); LW.days=days; LW.markers.setMarkers(mk); }
+function lwTip(param){
+  const tip=$('tip');
+  if(!LW||!param||param.time==null||!param.point){ tip.style.display='none'; return; }
+  const i=LW.byT.get(param.time); if(i==null){ tip.style.display='none'; return; }
+  const s=SERIES[TKR], v=s.p[i]/100, pv=i>0?s.p[i-1]/100:0, chg=pv>0?(v/pv-1)*100:null;
+  const vol=(s.v&&s.v[i]>0)?s.v[i]:null, d=LW.days.get(param.time);
+  let evTxt='';
+  if(d) evTxt=d.lbls.slice(0,4).map((l,ix)=>`<div style="white-space:normal;max-width:240px;color:${EV_TYPES[d.types[ix]][1]}">● ${esc(l.length>70?l.slice(0,69)+'…':l)}</div>`).join('')
+        +(d.lbls.length>4?`<div class="text-slate-400">+${d.lbls.length-4} more</div>`:'');
+  tip.innerHTML=`<b>${isoOff(s.d[i])}</b> · ₹${fmtPx(v)}`+(chg==null?'':` <span class="${chg>=0?'pos':'neg'}">${pct(chg)}</span>`)
+    +(vol==null?'':`<br><span class="text-slate-400">Vol</span> ${vol.toLocaleString('en-IN')}`)+evTxt;
+  tip.style.display='block';
+  const w=$('chartWrap').clientWidth, tw=tip.offsetWidth||140;
+  let x=param.point.x+14; if(x+tw>w-8) x=Math.max(4,param.point.x-tw-14);
+  tip.style.left=x+'px'; tip.style.top='8px';
+}
+function lwRange(){
+  if(!LW||!LW.px.length) return;
+  const ts=LW.chart.timeScale();
+  if(RANGE==='Max'){ ts.fitContent(); return; }
+  const last=LW.px[LW.px.length-1].time, first=LW.px[0].time;
+  ts.setVisibleRange({from:Math.max(first,last-rangeDays(RANGE)*DAY), to:last});
+}
+function lwSeriesOpts(){ const c=lwColors(); return {lineColor:c.accent, topColor:alpha(c.accent,.35), bottomColor:alpha(c.accent,.02)}; }
+function lwTheme(){ if(!LW) return; LW.chart.applyOptions(lwThemeOptions()); LW.area.applyOptions(lwSeriesOpts()); LW.vol.applyOptions({color:lwColors().vol}); }
+function lwDestroy(){ if(LW){ try{ LW.chart.remove(); }catch(e){} LW=null; } }
+function onRangeChange(){ if(LW) lwRange(); else drawChart(); }
+
+function drawChart(){
+  const s=SERIES[TKR], el=$('chart');
+  if(!s||!s.d.length){ lwDestroy(); el.innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No price history.</div>'; return; }
+  if(!window.LightweightCharts){ drawChartSvg(); return; }
+  const {px,vol,byT}=lwData();
+  if(!px.length){ lwDestroy(); el.innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No trading history before this date.</div>'; return; }
+  if(!LW){
+    const LC=window.LightweightCharts;
+    el.innerHTML='';
+    const chart=LC.createChart(el,lwOptions());
+    const area=chart.addSeries(LC.AreaSeries,Object.assign({lineWidth:2, priceLineVisible:true, lastValueVisible:true, crosshairMarkerVisible:true,
+      priceFormat:{type:'price',precision:2,minMove:.01}},lwSeriesOpts()));
+    const volS=chart.addSeries(LC.HistogramSeries,{priceScaleId:'', color:lwColors().vol, priceFormat:{type:'volume'}, lastValueVisible:false, priceLineVisible:false});
+    volS.priceScale().applyOptions({scaleMargins:{top:.82,bottom:0}});
+    const markers=LC.createSeriesMarkers(area,[]);
+    chart.subscribeCrosshairMove(lwTip);
+    el.addEventListener('mouseleave',()=>{ $('tip').style.display='none'; });
+    LW={chart,area,vol:volS,markers,px:[],byT:new Map(),days:new Map()};
+  }
+  LW.px=px; LW.byT=byT;
+  LW.area.setData(px); LW.vol.setData(vol);
+  lwRefreshMarkers();
+  lwRange();
+}
+// theme switch (theme.js flips <html data-theme>): recolour the chart in place, zoom untouched
+new MutationObserver(()=>{ try{ lwTheme(); }catch(e){ console.error(e); } })
+  .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+/* ---------- FALLBACK: the pre-2026-09 inline SVG chart — drawn only when Lightweight Charts
+   never loaded (offline PWA, blocked CDN). Same data, no pan/zoom, 3 date labels. ---------- */
+function drawChartSvg(){
+  let all=seriesPoints(); if(!all.length){ $('chart').innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No price history.</div>'; return; }
+  if(ASOF!=null) all=all.filter(p=>p[0]<=ASOF);
+  if(!all.length){ $('chart').innerHTML='<div class="text-slate-400 text-sm py-10 text-center">No trading history before this date.</div>'; return; }
+  const lastOff=all[all.length-1][0], lo=lastOff-rangeDays(RANGE);
+  let pts=all.filter(p=>p[0]>=lo); if(pts.length<2) pts=all.slice(-2);
+  // downsample to ~420 points for smooth render
+  const MAX=420; if(pts.length>MAX){ const step=pts.length/MAX, ds=[]; for(let i=0;i<MAX;i++) ds.push(pts[Math.floor(i*step)]); ds.push(pts[pts.length-1]); pts=ds; }
+  const W=900,H=300,PADL=52,PADR=12,PADT=12,PADB=24;
+  const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+  const x0=xs[0],x1=xs[xs.length-1]; let yMin=Math.min(...ys),yMax=Math.max(...ys); if(yMin===yMax){yMin*=.99;yMax*=1.01;}
+  const X=o=>PADL+(o-x0)/((x1-x0)||1)*(W-PADL-PADR);
+  const Y=v=>PADT+(1-(v-yMin)/((yMax-yMin)||1))*(H-PADT-PADB);
+  const up=ys[ys.length-1]>=ys[0];
+  const line=pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
+  const area=line+` L ${X(x1).toFixed(1)} ${Y(yMin).toFixed(1)} L ${X(x0).toFixed(1)} ${Y(yMin).toFixed(1)} Z`;
+  const stroke=up?'#16a34a':'#dc2626', fill=up?'rgba(22,163,74,.10)':'rgba(220,38,38,.10)';
+  // y grid (4 lines)
+  let grid='';
+  for(let g=0;g<=4;g++){ const v=yMin+(yMax-yMin)*g/4, y=Y(v).toFixed(1);
+    grid+=`<line x1="${PADL}" y1="${y}" x2="${W-PADR}" y2="${y}" stroke="var(--border,#e5e7eb)" stroke-width="1"/>`+
+          `<text x="${PADL-6}" y="${(+y+3)}" text-anchor="end" font-size="10" fill="var(--text-faint,#94a3b8)">${v>=1000?Math.round(v).toLocaleString('en-IN'):v.toFixed(1)}</text>`; }
+  // x labels (start, mid, end dates)
+  let xlab='';
+  [0,Math.floor(pts.length/2),pts.length-1].forEach(i=>{ const d=isoOff(pts[i][0]); xlab+=`<text x="${X(pts[i][0]).toFixed(1)}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--text-faint,#94a3b8)">${d.slice(0,7)}</text>`; });
+  // event markers: one dot per day on a strip under the line, coloured by the day's top event
+  const evDays=new Map();
+  // Number.isFinite FIRST: a NaN offset passes both range tests (NaN<x0 and NaN>x1 are each
+  // false), so a bad date slips through a range filter and lands in the SVG as cx="NaN". Belt to
+  // annOf's braces — the slice events below it (act/ins/dls/dsc) parse dates annOf never sees.
+  for(const e of EVENTS){ if(!EVSHOW.has(e.t)||!Number.isFinite(e.off)||e.off<x0||e.off>x1) continue;
+    let d=evDays.get(e.off); if(!d){ d={types:[],lbls:[]}; evDays.set(e.off,d); }
+    d.types.push(e.t); d.lbls.push(e.lbl); }
+  let marks='';
+  for(const [off,d] of evDays){
+    const t=EV_PRIO.find(x=>d.types.includes(x));
+    marks+=`<circle cx="${X(off).toFixed(1)}" cy="${H-PADB+8}" r="${d.lbls.length>1?4:3}" fill="${EV_TYPES[t][1]}" fill-opacity=".85"/>`;
+  }
+  $('chart').innerHTML=`<svg id="svg" viewBox="0 0 ${W} ${H}" width="100%" height="100%" preserveAspectRatio="none" style="display:block">
+    ${grid}<path d="${area}" fill="${fill}" stroke="none"/><path d="${line}" fill="none" stroke="${stroke}" stroke-width="2"/>${marks}
+    <line id="cross" x1="0" y1="${PADT}" x2="0" y2="${H-PADB}" stroke="var(--text-faint,#94a3b8)" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
+    <circle id="dot" r="3.5" fill="${stroke}" style="display:none"/>${xlab}</svg>`;
+  CHART={pts,X,Y,W,H,PADL,PADR,PADT,PADB,evDays};
+  wireHover();
+}
+function wireHover(){
+  const svg=$('svg'); if(!svg||!CHART) return;
+  const {pts,X,Y,W}=CHART;
+  svg.onmousemove=e=>{ const r=svg.getBoundingClientRect(); const px=(e.clientX-r.left)/r.width*W;
+    let best=0,bd=1e9; for(let i=0;i<pts.length;i++){ const dx=Math.abs(X(pts[i][0])-px); if(dx<bd){bd=dx;best=i;} }
+    const p=pts[best], cx=X(p[0]), cy=Y(p[1]);
+    const cr=$('cross'), dot=$('dot'); cr.setAttribute('x1',cx);cr.setAttribute('x2',cx);cr.style.display='';dot.setAttribute('cx',cx);dot.setAttribute('cy',cy);dot.style.display='';
+    // events within ±2 days of the hovered bar join the tooltip
+    let evTxt='';
+    if(CHART.evDays&&CHART.evDays.size){
+      const near=[];
+      for(const [off,d] of CHART.evDays){ if(Math.abs(off-p[0])<=2) d.lbls.forEach((l,ix)=>near.push({t:d.types[ix],l})); }
+      if(near.length) evTxt=near.slice(0,4).map(e=>`<div style="white-space:normal;max-width:240px;color:${EV_TYPES[e.t][1]}">● ${esc(e.l.length>70?e.l.slice(0,69)+'…':e.l)}</div>`).join('')
+        +(near.length>4?`<div class="text-slate-400">+${near.length-4} more</div>`:'');
+    }
+    const tip=$('tip'); tip.style.display='block'; tip.innerHTML=`<b>${isoOff(p[0])}</b><br>₹${p[1]>=1000?Math.round(p[1]).toLocaleString('en-IN'):p[1].toFixed(2)}`+evTxt;
+    const wrapW=$('chartWrap').clientWidth, tx=cx/W*wrapW; tip.style.left=Math.min(Math.max(tx+10,4),wrapW-(evTxt?250:110))+'px'; tip.style.top='6px';
+  };
+  svg.onmouseleave=()=>{ $('cross').style.display='none';$('dot').style.display='none';$('tip').style.display='none'; };
+}
+
+/* ---------- stats / returns / technicals / fundamentals ---------- */
+function statCard(lbl,val,cls){ return `<div class="card p-3"><div class="lbl text-slate-500">${lbl}</div><div class="text-lg font-bold ${cls||'text-slate-900'} mt-0.5">${val}</div></div>`; }
+/* The page's "now" for THIS stock is its own last bar, never later. SF_END_OFF is the bin's end
+   date and is the same for every symbol; a delisted or suspended series stops years earlier, and
+   anchoring every window on the bin date made them end past the data — MINDTREE (last bar
+   Nov-2022) read "as of 2026-09-04", 1M…3Y "+0.00%", 52w high/low ±100% (2026-09-05 audit). */
+function stkEndOff(){ const s=SERIES[TKR]; const last=(s&&s.d&&s.d.length)?s.d[s.d.length-1]:SF_END_OFF; return Math.min(SF_END_OFF,last); }
+function render(){
+  const rw=ASOF!=null, s=SERIES[TKR], m=META[TKR];
+  const off=rw?ASOF:stkEndOff();
+  const n=s.p.length;
+  const bi=Math.min(Math.max(lbound(s.d,off+1)-1,0),n-1);      // last bar on/before the as-of date
+  const adjLast=s.p[bi]/100, adjPrev=bi>0?s.p[bi-1]/100:adjLast;
+  const rawLast=(!rw&&m.raw!=null)?m.raw:adjLast;               // no historical unadjusted close — rewind shows adjusted
+  const dayChg=adjPrev>0?(adjLast/adjPrev-1)*100:0;
+  const hl=hl52(TKR,off)||{hi:adjLast,low:adjLast};
+  const d52=(hl.hi-adjLast)/hl.hi*100, d52low=(adjLast-hl.low)/hl.low*100;
+  const rsi=rsi14(TKR,off);
+  const r1y=retPctAt(TKR,off,365);
+  const tech=computeTech(TKR,off,adjLast);
+  // header
+  $('sSym').textContent=m.symbol; document.title='STOCKSWORLD · '+m.symbol;
+  $('sName').textContent=m.name||''; $('sInd').textContent=m.industry||'';
+  if(!m.alive) $('sDead').classList.remove('hidden');
+  if(m.sme) $('sSme').classList.remove('hidden');   // NSE SME platform listing (slice flag, runbook §145)
+  $('sPrice').textContent='₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2));
+  $('sChg').innerHTML=`<span class="${dayChg>=0?'pos':'neg'}">${pct(dayChg)}</span> <span class="text-slate-400 text-xs">1-day</span>`;
+  if(!rw&&LIVE_OFF!=null&&off===LIVE_OFF)
+    $('sAsof').innerHTML='<span style="color:var(--pos);font-weight:800">● LIVE</span> '+
+      (liveMarketOpen()?'':'(last traded) ')+isoOff(off)+' · Yahoo NSE, ~15-min delay';
+  else $('sAsof').textContent=(rw?'rewound to ':(off<SF_END_OFF?'last traded ':'as of '))+isoOff(off);
+  $('sBt').href='./stock-backtest.html';
+  // chips: index memberships + F&O. The slice carries them precomputed — resolving membership from
+  // indicesHistory was the ONLY thing the page still wanted the 17 MB stock_data.bin for.
+  const today=isoOff(off); let chips=[], fno=false;
+  if(SLICE){ chips=SLICE.chips||[]; fno=!!SLICE.fno; }
+  else{
+    try{ for(const idx in (IDXH||{})){ const mem=membersAsOf(idx,today); if(mem&&mem.has(TKR)) chips.push(idx); } }catch(e){}
+    try{ const f=membersAsOf('__FNO__',today); fno=!!(f&&f.has(TKR)); }catch(e){}
+  }
+  $('sChips').innerHTML=(fno?`<span class="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full">F&amp;O</span>`:'')+
+    chips.map(c=>`<span class="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">${esc(c)}</span>`).join('')||'<span class="text-[11px] text-slate-400">Not in any tracked index currently.</span>';
+  smeIpoChip(today, !!rw);
+  smeEmergeChip(today, !!rw);
+  // next result date + latest results-filing PDF (daily slice; absent on the fallback path)
+  const meta2=[];
+  if(SLICE&&SLICE.nr) meta2.push(`<span>🗓️ Next result: <b>${esc(SLICE.nr)}</b></span>`);
+  if(SLICE&&SLICE.rp&&SLICE.rp[2]) meta2.push(`<a class="text-indigo-600 hover:underline" target="_blank" rel="noopener" href="${esc(SLICE.rp[2])}">📄 Latest result filing (${fmtQtr(SLICE.rp[1])}) →</a>`);
+  $('sMeta').innerHTML=meta2.join('');
+  // quick stats
+  $('stats').innerHTML=[
+    statCard(rw?'Close (adj.)':(LIVE_OFF!=null&&off===LIVE_OFF?'Live price':'Last close'),'₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2))),
+    statCard('1-year', r1y==null?'—':pct(r1y), r1y>=0?'pos':'neg'),
+    statCard('% from 52w high', d52.toFixed(2)+'%','neg'),
+    statCard('% above 52w low', pct(d52low), d52low>=0?'pos':'neg'),
+    statCard('RSI (14)', rsi==null?'—':rsi.toFixed(1), rsi==null?'':(rsi>=70?'neg':rsi<=30?'pos':'text-slate-900')),
+    statCard('Volatility (ann)', tech.vol==null?'—':tech.vol.toFixed(1)+'%'),
+  ].join('');
+  // ranges
+  $('ranges').innerHTML=['1M','6M','1Y','3Y','5Y','Max'].map(r=>`<span class="rng ${r===RANGE?'on':'text-slate-500 hover:bg-slate-100'} px-2 py-1 rounded-md border border-slate-200" data-r="${r}">${r}</span>`).join('');
+  $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; onRangeChange(); $('ranges').querySelectorAll('[data-r]').forEach(x=>x.classList.toggle('on',x.dataset.r===RANGE)); $('ranges').querySelectorAll('[data-r]').forEach(x=>{if(x.dataset.r!==RANGE)x.classList.add('text-slate-500');else x.classList.remove('text-slate-500');}); });
+  buildEvents();          // slice events now; results dates join once the fin file lands
+  drawChart();
+  $('drawLink').href='chart.html?s='+encodeURIComponent(m.symbol);
+  const tv=$('tvLink'); tv.href='https://www.tradingview.com/chart/?symbol='+encodeURIComponent('NSE:'+m.symbol); tv.classList.toggle('hidden',rw||!m.alive);
+  if(rw){                 // current-only sections: hide, never show today's data under a past date
+    ['stratCard','peersCard','actCard'].forEach(id=>{ const el=$(id); if(el) el.style.display='none'; });
+    $('delivSpark').style.display='none';
+    $('sMeta').style.display='none';
+  }else{
+    $('delivSpark').style.display=''; $('sMeta').style.display='';
+    try{ renderStrat(); }catch(e){ console.error(e); }
+    try{ renderPeers(); }catch(e){ console.error(e); }
+    try{ renderActivity(); }catch(e){ console.error(e); }
+    try{ renderDelivSpark(); }catch(e){ console.error(e); }
+  }
+  try{ renderSeason(); }catch(e){ console.error(e); }
+  // returns table (stock vs Nifty)
+  const periods=[['1M',30],['3M',91],['6M',182],['1Y',365],['3Y',1095],['5Y',1825]];
+  const yStart=dayOff(isoOff(off).slice(0,4)+'-01-01');
+  const firstOff=s.d[0];
+  const rows=periods.map(([l,d])=>{ const sr=retPctAt(TKR,off,d), nr=niftyRetAt(off,d); return [l,sr,nr]; });
+  rows.push(['YTD', retPctAt(TKR,off,off-yStart), niftyRetAt(off,off-yStart)]);
+  rows.push(['Since '+isoOff(firstOff).slice(0,4), retPctAt(TKR,off,off-firstOff), niftyRetAt(off,off-firstOff)]);
+  const years=(off-firstOff)/365.25; const p0=priceAt(TKR,firstOff); const cagr=(p0>0&&years>0)?(Math.pow(adjLast/p0,1/years)-1)*100:null;
+  $('returns').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Period</th><th class="text-right px-2">Stock</th><th class="text-right px-2">Nifty 50</th></tr></thead><tbody>
+    ${rows.map(([l,sr,nr])=>`<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium">${l}</td><td class="text-right px-2 ${sr>=0?'pos':'neg'}">${sr==null?'—':pct(sr)}</td><td class="text-right px-2 text-xs ${nr>=0?'pos':'neg'}">${nr==null?'—':pct(nr)}</td></tr>`).join('')}
+    <tr class="border-t border-slate-200"><td class="py-1 pr-2 font-semibold">CAGR (full)</td><td class="text-right px-2 font-semibold ${cagr>=0?'pos':'neg'}">${cagr==null?'—':pct(cagr)}</td><td class="text-right px-2"></td></tr>
+  </tbody></table>`+
+    // The benchmark series has no live bar of its own (nifty.json is baked by the evening run), so
+    // say so rather than let the two columns look like they end on the same day.
+    ((!rw&&LIVE_OFF!=null&&LIVE_END0!=null)?`<div class="text-[11px] text-slate-400 mt-1.5">Stock column includes today's live price; the Nifty column is as of ${isoOff(LIVE_END0)}.</div>`:'');
+  // technicals — hidden in rewind: h/l/v/delivery ship only for the last 400 bars, so a past
+  // date would read tail padding and lie with confidence
+  $('tech').parentElement.style.display=rw?'none':'';
+  const tline=(l,v)=>`<div class="text-slate-500">${l}</div><div class="text-right font-semibold">${v}</div>`;
+  const num=(v,suf)=>v==null?'—':(v.toFixed(2)+(suf||''));
+  $('tech').innerHTML=[
+    tline('SMA 50 distance', tech.dma50==null?'—':`<span class="${tech.dma50>=0?'pos':'neg'}">${pct(tech.dma50)}</span>`),
+    tline('SMA 200 distance', tech.dma200==null?'—':`<span class="${tech.dma200>=0?'pos':'neg'}">${pct(tech.dma200)}</span>`),
+    tline('RS vs Nifty (6m)', tech.rsNifty==null?'—':`<span class="${tech.rsNifty>=0?'pos':'neg'}">${pct(tech.rsNifty)}</span>`),
+    tline('Beta (6m)', num(tech.beta)),
+    tline('Max drawdown (6m)', tech.mdd6==null?'—':`<span class="neg">-${tech.mdd6.toFixed(2)}%</span>`),
+    tline('MACD hist', num(tech.macd)),
+    tline('Stochastic %K', num(tech.stoch)),
+    tline('Bollinger %b', num(tech.bollB)),
+    tline('Days since 52w high', tech.daysHigh==null?'—':tech.daysHigh),
+    tline('Up-day % (3m)', num(tech.upPct,'%')),
+    tline('Avg turnover (20d)', tech.turnover==null?'—':'₹'+Math.round(tech.turnover).toLocaleString('en-IN')+' L'),
+    tline('Delivery % (20d)', tech.delivPct==null?'—':tech.delivPct.toFixed(1)+'%'),
+  ].join('');
+  { const ts=$('techSub'); if(ts) ts.textContent=(!rw&&LIVE_OFF!=null&&off===LIVE_OFF)?'— live, today included':'— as of latest close'; }
+  // Say plainly that the last bar is provisional and what will replace it, so a live figure is
+  // never mistaken for a settled close.
+  { const ln=$('liveNote');
+    if(ln){ if(!rw&&LIVE_OFF!=null){
+        ln.innerHTML='<span style="color:var(--pos);font-weight:800">●</span> <b>'+isoOff(LIVE_OFF)+'</b> is a provisional live bar '+
+          '(Yahoo NSE, ~15-min delay). Volume and delivery % aren\'t published intraday, so that session carries neither. '+
+          'The official close replaces it after the evening bhavcopy run (~20:45 IST).';
+        ln.classList.remove('hidden');
+      } else ln.classList.add('hidden'); } }
+  // fundamentals (quarterly net profit, point-in-time)
+  renderFunds();
+}
+/* ---------- quarterly financials -------------------------------------------------
+ * Net profit comes from sf_fundamentals (point-in-time, OWNERS-attributable — never
+ * swap in sf_revop's PAT mirror slots). Revenue / operating profit / EBIT come from
+ * sf_revop, whose per-quarter cell is
+ *   [revStd, revCon, opStd, opCon, patStd*, patCon*, fin, ebitStd, ebitCon]
+ *   (* = PAT MIRROR, incomplete, never rendered or measured — runbook §70/§70d)
+ * with op = EBITDA (revenue - opex excl. interest & depreciation) and ebit = op - dep.
+ * fin=1 marks banks/NBFCs, whose "revenue" is interest earned and whose margins aren't
+ * comparable to industrials — flagged in the note rather than hidden.
+ * ------------------------------------------------------------------------------- */
+/* REVOP is normally this ONE stock's rows, lifted from docs/fin/<SLUG>.json. loadRevop() below is
+   the fallback path only: no fin slice → pull the whole 3.9 MB market file, as the page used to. */
+let REVOP=null;
+async function loadRevop(){
+  if(REVOP) return REVOP;
+  try{ REVOP=await (await fetch('./sf_revop.json')).json(); }
+  catch(e){ REVOP={}; }
+  return REVOP;
+}
+function revopFor(sym){
+  const R=REVOP||{}; const alias=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS)?FUND_ALIAS[sym]:null;
+  return R[sym]||(alias?R[alias]:null)||null;
+}
+/* Reporting basis, screener.in-style. CONSOLIDATED is the default — it is the group's real
+   picture and what the TTM cards / P/E have always used. In 'con' the standalone number is
+   still the fallback for a quarter the company never filed consolidated (pre-2020 consolidated
+   filings are structurally absent for most Indian companies), and the Basis column marks those
+   rows. 'std' is strict: parent-only figures, no consolidated ever mixed in.
+   FB_EFF is the basis actually in force for the stock on screen (a stock with no standalone
+   data at all can't honour a remembered 'std'), and the 🧾 Financial detail card reads it too. */
+let FBASIS='con', FB_EFF='con', FB_PICK=false;   // FB_PICK: the viewer chose a basis (clicked / remembered) — the 🧾 card then follows it
+try{ const v=localStorage.getItem('sw_finBasis'); if(v==='std') FBASIS='std'; if(v==='std'||v==='con') FB_PICK=true; }catch(e){}
+const qIdx=e=>{ const y=Math.floor(e/10000), m=Math.floor(e/100)%100; return y*4+Math.floor((m-1)/3); };  // quarter number, for contiguity checks
+const crFmt=v=>v==null?'—':v.toLocaleString('en-IN',{maximumFractionDigits:v!=null&&Math.abs(v)<100?1:0});
+const crBig=v=>v==null?'—':(Math.abs(v)>=100000?'₹'+(v/100000).toFixed(2)+' L cr':'₹'+Math.round(v).toLocaleString('en-IN')+' cr');
+const growth=(cur,base)=>(cur==null||base==null||base===0)?null:(cur-base)/Math.abs(base)*100;   // ABS base: a shrinking LOSS must not read as a gain
+
+function renderFunds(){
+  const arr=((typeof fundFor==='function')?fundFor(TKR):(typeof FUND!=='undefined'?FUND[TKR]:null))||[];   // fundFor() follows ticker-rename aliases (TATAMOTORS→TMPV, …)
+  const rv=revopFor(TKR)||{};
+  const fundBy={}; arr.forEach(q=>fundBy[q[0]]=q);
+  // rewind: a quarter (and each basis within it) exists only if its ANNOUNCEMENT date is on or
+  // before the as-of date — the strict point-in-time gate. Rev-only quarters with no announce
+  // date on file can't prove they were known, so they drop out of the rewound view.
+  const KY=asofYmd(), rw=ASOF!=null;
+  const kStd=e=>{ const q=fundBy[e]; return !!(q&&q[2]>0&&q[2]<=KY); };   // >0, not !=null — see annOf:
+  const kCon=e=>{ const q=fundBy[e]; return !!(q&&q[4]>0&&q[4]<=KY); };   // ann=0 can't prove it was known
+  const seen={};
+  arr.forEach(q=>{ if(!rw||kStd(q[0])||kCon(q[0])) seen[q[0]]=1; });
+  if(!rw) Object.keys(rv).forEach(k=>seen[+k]=1);
+  const ends=Object.keys(seen).map(Number).sort((a,b)=>a-b);
+  if(!ends.length){ $('fundBasis').style.display='none';
+    $('funds').innerHTML=FIN_STATE==='pending'
+      ? '<span class="text-slate-400">Loading quarterly financials…</span>'
+      : '<span class="text-slate-400">No quarterly earnings on file for this stock.</span>'; return; }
+
+  const conPat=e=>{ const q=fundBy[e]; return (q&&q[3]!=null&&(!rw||kCon(e)))?q[3]:null; };
+  const stdPat=e=>{ const q=fundBy[e]; return (q&&q[1]!=null&&(!rw||kStd(e)))?q[1]:null; };
+  const raw=(e,i)=>{ const c=rv[String(e)]; if(!c||c[i]==null) return null;
+    if(rw){ const con=(i===1||i===3||i===5||i===8); if(con?!kCon(e):!kStd(e)) return null; }
+    return c[i]; };
+  // which bases this stock actually has (after the point-in-time gate) — decides whether the
+  // switch is worth showing at all, and stops a remembered 'std' emptying a con-only stock
+  const anyCon=ends.some(e=>conPat(e)!=null||raw(e,1)!=null||raw(e,3)!=null||raw(e,8)!=null);
+  const anyStd=ends.some(e=>stdPat(e)!=null||raw(e,0)!=null||raw(e,2)!=null||raw(e,7)!=null);
+  const B=(FBASIS==='std'&&anyStd)?'std':'con';
+  FB_EFF=B;                                              // renderDeep()/xCell() follow the same basis
+
+  const pat=e=>{ if(B==='std') return stdPat(e); const c=conPat(e); return c!=null?c:stdPat(e); };
+  const patCon=e=>B!=='std'&&conPat(e)!=null;
+  const pick=(e,ci,si)=>{ if(B==='std'){ const s=raw(e,si); return s!=null?{v:s,con:false}:null; }
+    const c=raw(e,ci); if(c!=null) return {v:c,con:true}; const s=raw(e,si); return s!=null?{v:s,con:false}:null; };
+  const rev=e=>pick(e,1,0), op=e=>pick(e,3,2), ebit=e=>pick(e,8,7);
+  const vOf=x=>x?x.v:null;
+  const opm=e=>marginOn([e]);      // margin on ONE basis too — see marginOn() below
+  // Basis of the row as ACTUALLY shown. A quarter can be genuinely mixed — consolidated PAT is on
+  // file back to ~2010 while consolidated REVENUE mostly starts 2020 — and calling such a row "std"
+  // (what this did before) hid a consolidated profit behind a standalone label. 'mix' says so.
+  const rowCon=e=>{ const r=rev(e),o=op(e),b=ebit(e); return !!((r&&r.con)||(o&&o.con)||(b&&b.con)||patCon(e)); };
+  const rowStd=e=>{ const r=rev(e),o=op(e),b=ebit(e);
+    return !!((r&&!r.con)||(o&&!o.con)||(b&&!b.con)||(pat(e)!=null&&!patCon(e))); };
+  const basis=e=>{ const c=rowCon(e),s=rowStd(e); return c&&s?'mix':(c?'con':(s?'std':'—')); };
+
+  // ---- the basis switch itself (only when both bases exist for this stock) ----
+  const bEl=$('fundBasis');
+  if(anyCon&&anyStd){
+    bEl.style.display='';
+    bEl.innerHTML='<span class="text-[11px] uppercase text-slate-400 mr-1">Figures</span>'+
+      [['con','Consolidated'],['std','Standalone']].map(([k,l])=>
+        `<button data-b="${k}" class="px-2.5 py-1 rounded-lg text-xs font-semibold border shrink-0 ${k===B?'bg-slate-800 text-white border-slate-800':'text-slate-500 border-slate-200 hover:bg-slate-50'}">${l}</button>`).join('');
+    bEl.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{
+      if(b.dataset.b===FBASIS) return;
+      FBASIS=b.dataset.b; FB_PICK=true; try{ localStorage.setItem('sw_finBasis',FBASIS); }catch(e){}
+      renderFunds();
+    });
+  }else bEl.style.display='none';
+  const hdr=$('fundHdrSub');
+  if(hdr) hdr.textContent='— point-in-time (₹ cr), '+(B==='std'?'standalone (parent only)':'consolidated where filed')+', YoY growth';
+  const isFin=ends.some(e=>raw(e,6)===1);
+  const FYS=fiscalYears(ends,isFin);                     // year-ends, year by year — CFO/PAT card + renderDeep()
+  const fq=e=>{ const s=String(e); return s.slice(0,4)+'-'+s.slice(4,6); };
+
+  // ---- TTM = the rows that cover EXACTLY the latest 12 months (and the 12 before, for YoY) — runbook §198 ----
+  // Rows are keyed by quarter-end only, so a quarter and a half-year look alike; a row is one quarter unless the filings
+  // prove otherwise (slice `pd`, §191). Screener's rule, on what our filings prove: an SME half-yearly filer's TTM is
+  // its last two halves (Apr–Sep + Oct–Mar — Screener prices those companies' P/E on them); a switcher's is its last
+  // Oct–Mar half + two quarters; a filer of Q1 + H1 + Q3 + H2 (QMSMEDI, which summed 18 months as 12) gets the missing
+  // quarter split off the half the way Screener does — Jul–Sep = Apr–Sep − Apr–Jun, Jan–Mar = Oct–Mar − Oct–Dec — but
+  // only off a quarter the filings prove (pd 3: Oct–Dec by the company's own nine-month total). In a year that holds a
+  // proven half every other row is of UNKNOWN length; a window that cannot be tiled is blank, never summed. Profit on a
+  // proven row counts only when the proving filing prints the same profit (`pp` — ZEAL's is another company's).
+  const FYq=e=>{ const y=Math.floor(e/10000); return Math.floor(e/100)%100>3?y+1:y; };   // the Apr–Mar year of a quarter-end
+  const HY=new Set(); for(const k in (FIN_PD||{})){ const m=FIN_PD[k]; if(m===6||m===12) HY.add(FYq(+k)); }
+  const PP=new Set(FIN_PP||[]);
+  const lenRev=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; return (m===3||m===6||m===12)?m:(HY.has(FYq(e))?0:3); };   // 0 = unknown
+  const lenPat=e=>(FIN_PD&&FIN_PD[String(e)]&&!PP.has(String(e)))?0:lenRev(e);
+  const endSet=new Set(ends);
+  const qBack=(e,k)=>{ const i=qIdx(e)-k/3, y=Math.floor(i/4), m=(i%4+1)*3; return y*10000+m*100+((m===3||m===12)?31:30); };
+  // the pieces covering exactly the 12 months to quarter-end E, OLDEST first (the order the four quarters were always
+  // added in — floating-point sums depend on it, and a changed order moved ₹4,010 cr to ₹4,009 cr on APOLLOHOSP):
+  // row keys, or {h,q} = half h minus proven quarter q
+  const tile=(E,len)=>{ const w=[];
+    const go=(c,left)=>{ if(!left) return true;
+      const L=endSet.has(c)?len(c):0;
+      if(L&&L<=left){ w.push(c); if(go(qBack(c,L),left-L)) return true; w.pop(); }
+      const q=qBack(c,3), m=Math.floor(c/100)%100;
+      if((m===9||m===3)&&left>=3&&L===6&&endSet.has(q)&&len(q)===3&&FIN_PD&&FIN_PD[String(q)]===3){
+        w.push({h:c,q}); if(go(q,left-3)) return true; w.pop(); }
+      return false; };
+    return go(E,12)?w.reverse():null; };
+  const diff=(a,b)=>(a==null||b==null)?null:a-b;
+  // one getter over a window: a row through it; a split-off quarter as half − quarter (the getter is one basis)
+  const sum=(w,get)=>{ if(!w) return null; let t=0; for(const s of w){ const v=typeof s==='number'?get(s):diff(get(s.h),get(s.q)); if(v==null) return null; t+=v; } return t; };
+  // a LEVEL takes consolidated where filed, else standalone, row by row — but a split-off quarter takes both of its
+  // operands from ONE basis (a consolidated half minus a standalone quarter is a number of nothing)
+  const sumL=(w,lvl,gc,gs)=>{ if(!w) return null; let t=0;
+    for(const s of w){ let v; if(typeof s==='number') v=lvl(s); else{ v=B!=='std'?diff(gc(s.h),gc(s.q)):null; if(v==null) v=diff(gs(s.h),gs(s.q)); }
+      if(v==null) return null; t+=v; } return t; };
+  const tE=ends[ends.length-1], tE0=qBack(tE,12);
+  const curR=tile(tE,lenRev), prevR=curR&&tile(tE0,lenRev), curP=tile(tE,lenPat), prevP=curP&&tile(tE0,lenPat);
+  const conRev=e=>raw(e,1), stdRev=e=>raw(e,0);
+  const revT=sumL(curR,e=>vOf(rev(e)),conRev,stdRev), opT=sumL(curR,e=>vOf(op(e)),e=>raw(e,3),e=>raw(e,2)), patT=sumL(curP,pat,conPat,stdPat);
+  /* GROWTH IS COMPUTED ON ONE BASIS, NEVER ACROSS TWO. Consolidated revenue mostly starts 2020
+     while standalone runs back to 2015, so the naive con-preferred pair compares this year's
+     consolidated against last year's standalone and invents group-sized "growth" (measured
+     2026-08-06: 5.4% of revenue and 3.2% of PAT YoY cells site-wide). Rule: use consolidated
+     when BOTH periods have it, else standalone for both, else no number at all. */
+  /* RESTATED COMPARATIVE BASES (runbook §214b, user policy A 2026-11-17). A later filing prints, beside each current
+     figure, the company's own figure for the year-ago quarter — after a merger, demerger or reclassification it can
+     differ from what that quarter's filing printed (COALINDIA Jun-26 revenue 46,254.80 beside a restated Jun-25 of
+     42,919.20; the Jun-25 filing printed 35,842.19). LEVELS stay as first filed; GROWTH compares against the restated
+     figure, and only while the current figure in use is the one it was printed beside (slice `rb`, scripts/rbase.py —
+     the same rule in quarterly-results.html and both backtest engines). Each base row q pairs with the row a year
+     later, q+10000, whose filing printed it. */
+  const rbV=(F,q,bs,fld,cur)=>{ const e=FIN_RB&&FIN_RB[F+'|'+q], v=e&&e[bs]&&e[bs][fld];
+    if(!Array.isArray(v)||cur==null||Math.abs(cur-v[1])>Math.max(0.015,0.002*Math.abs(v[1]))) return null;
+    if(rw&&!(bs==='c'?kCon(F):kStd(F))) return null;      // rewind: known only once filing F is
+    return v[0]; };
+  let RB_USED=0;
+  // -> {g: growth %, rb: true when a restated base entered it} | null
+  const yoyX=(getCon,getStd,a,b,fld)=>{ if(!a||!b) return null;
+    const run=(get,bs)=>{ let used=false;
+      // a restated figure REPLACES a stored base row, never invents one (same rule in every consumer)
+      const x=sum(a,get), y=sum(b,q=>{ const s0=get(q); if(s0==null) return null;
+        const v=fld?rbV(q+10000,q,bs,fld,get(q+10000)):null; if(v!=null){ used=true; return v; } return s0; });
+      return (x!=null&&y!=null)?{g:growth(x,y),rb:used}:null; };
+    const r=(B!=='std'&&run(getCon,'c'))||run(getStd,'s'); if(r&&r.rb) RB_USED++; return r; };
+  const revG=yoyX(conRev,stdRev,curR,prevR,'rev');
+  const patG=yoyX(conPat,stdPat,curP,prevP,'pat');
+  // per-row YoY, same basis rule — and LIKE FOR LIKE (Screener: quarter vs quarter, half vs half): a row against the row
+  // a year earlier only when both are of the same known length (GICL's Sep-2025 quarter against its Sep-2024 Apr–Sep
+  // half read −46.5%, §198)
+  const qYoY=(gc,gs,len,fld)=>e=>{ const L=len(e); return (L&&len(e-10000)===L)?yoyX(gc,gs,[e],[e-10000],fld):null; };
+  const revYoY=qYoY(conRev,stdRev,lenRev,'rev'), patYoY=qYoY(conPat,stdPat,lenPat,'pat');
+  // …and so is a margin: consolidated op profit over STANDALONE revenue is not a margin of anything.
+  const marginOn=w=>{ if(!w) return null;
+    if(B!=='std'){ const r=sum(w,conRev), o=sum(w,e=>raw(e,3)); if(r&&o!=null) return o/r*100; }
+    const r=sum(w,stdRev), o=sum(w,e=>raw(e,2)); return (r&&o!=null)?o/r*100:null; };
+  const opmT=marginOn(curR);
+
+  // ---- valuation: mcap re-priced off THIS page's last close, so a stale bake can't skew P/E ----
+  // (in rewind: re-priced to the as-of close — share count assumed constant, a fair first cut)
+  const cm=(typeof CORE_META!=='undefined'&&CORE_META)?(CORE_META[TKR+'.NS']||CORE_META[TKR]):null;
+  const m=META[TKR], s=SERIES[TKR];
+  const lastRaw=rw?priceAt(TKR,ASOF):((m&&m.raw!=null)?m.raw:(s?s.p[s.p.length-1]/100:null));
+  let mcap=null;
+  if(cm&&cm.mcap&&cm.latest&&lastRaw) mcap=cm.mcap/cm.latest*lastRaw;
+  else if(cm&&cm.mcap) mcap=cm.mcap;
+  const pe=(mcap&&patT&&patT>0)?mcap/patT:null;
+  const ps=(mcap&&revT&&revT>0)?mcap/revT:null;
+
+  const sub=(v,cls)=>v==null?'':`<div class="text-[11px] ${cls||'text-slate-400'} mt-0.5">${v}</div>`;
+  const card=(lbl,val,extra,cls)=>`<div class="card p-3"><div class="lbl text-slate-500">${lbl}</div>`+
+    `<div class="text-lg font-bold ${cls||'text-slate-900'} mt-0.5">${val}</div>${extra||''}</div>`;
+  const RB_TIP='Against the year-ago figure as restated in this quarter’s own filing (the year-ago row keeps the figure first filed)';
+  const rbMark=r=>(r&&r.rb)?`<sup class="text-slate-400" title="${RB_TIP}">R</sup>`:'';
+  const gTag=r=>(r==null||r.g==null)?'':`<span class="${r.g>=0?'pos':'neg'}">${pct(r.g)}</span>${rbMark(r)} <span class="text-slate-400">YoY</span>`;
+  $('fundCards').innerHTML=[
+    card('Market cap', mcap==null?'—':crBig(mcap), sub(mcap==null?null:'at ₹'+(lastRaw>=1000?Math.round(lastRaw).toLocaleString('en-IN'):lastRaw.toFixed(2))+((!rw&&LIVE_OFF!=null)?' · live':''))),
+    card('Revenue (TTM)', revT==null?'—':crBig(revT), sub(gTag(revG))),
+    card('Operating profit (TTM)', opT==null?'—':crBig(opT), sub(opmT==null?null:('OPM '+opmT.toFixed(1)+'%'))),
+    card('Net profit (TTM)', patT==null?'—':crBig(patT), sub(gTag(patG)), patT<0?'neg':'text-slate-900'),
+    card('P/E (TTM)', pe==null?'—':pe.toFixed(1), sub(patT!=null&&patT<=0?'loss-making':null)),
+    card('P/S (TTM)', ps==null?'—':ps.toFixed(2), sub(revT==null?null:'price ÷ sales'))
+  ].join('');
+
+  // ---- ratio cards — unlocked by the deep slice (latest reported equity/borrowings) ----
+  const bs=latestBS(ends);
+  if(bs){
+    const eq=bs.x.eq, borr=bs.x.borr||0;
+    const ebitT=sumL(curR,e=>vOf(ebit(e)),e=>raw(e,8),e=>raw(e,7));
+    const fcB=(e,b)=>{ const c=FIN_X&&FIN_X[String(e)], d=c&&(b==='c'?c.c:c.s); return d&&d.fc!=null?d.fc:null; };
+    const fcT=sumL(curR,e=>{ const x=xPnlCell(e,rowCon); return x&&x.fc!=null?x.fc:null; },e=>fcB(e,'c'),e=>fcB(e,'s'));
+    const extra=[];
+    if(patT!=null&&eq){ const roe=patT/eq*100;
+      extra.push(card('ROE (TTM)',roe.toFixed(1)+'%',sub('on latest equity, '+fmtQtr(bs.e)),roe<0?'neg':'text-slate-900')); }
+    if(!isFin&&ebitT!=null&&eq){ const roce=ebitT/(eq+borr)*100;
+      extra.push(card('ROCE (TTM)',roce.toFixed(1)+'%',sub('EBIT ÷ (equity + debt)'),roce<0?'neg':'text-slate-900')); }
+    if(eq) extra.push(card('Debt / Equity',(borr/eq).toFixed(2),sub('borrowings ₹'+crS(borr)+' cr')));
+    if(mcap&&eq) extra.push(card('P/B',(mcap/eq).toFixed(2),sub('book value ₹'+crS(eq)+' cr')));
+    if(!isFin&&ebitT!=null&&fcT) extra.push(card('Interest cover',(ebitT/fcT).toFixed(1)+'×',sub('EBIT ÷ interest, TTM')));
+    for(let i=ends.length-1;i>=0;i--){                     // CFO/PAT — cash conversion, latest 12-month cash flow
+      const e=ends[i], x=xCell(e);
+      if(x&&x.cf_d>=300&&!x.cf_m&&x.cfo!=null){   // cf_m: a transition year's cfo is its whole 9/15/18 months, never pair it with four quarters
+        // the flow covers the 12 months ENDING at e, whatever the year-end month — pair it with exactly those
+        // four quarters (an Apr–Mar bucket paired ABB's Jan–Dec cash with Apr–Mar profit, §186)
+        const qs=ends.filter(q=>q>e-10000&&q<=e);
+        // four QUARTERS: a half-year row among them (a filer of both, QMSMEDI) would count months twice (§191)
+        if(qs.length===4&&qs.every(q=>pat(q)!=null&&rowMonths(q)===3)){
+          const pf=qs.reduce((t,q)=>t+pat(q),0), m=Math.floor(e/100)%100, yr=FYS.of(e)===e&&FYS.months(e)===12;
+          const lbl=(yr&&m===3)?'FY'+String(Math.floor(e/10000)).slice(2):(yr?'year to ':'12 months to ')+FY_MON[m]+' '+Math.floor(e/10000);
+          if(pf) extra.push(card('CFO / PAT',(x.cfo/pf).toFixed(2),sub(lbl+' cash conversion'),(x.cfo/pf)<0?'neg':'text-slate-900'));
+        }
+        break;
+      }
+    }
+    if(extra.length) $('fundCards').innerHTML+=extra.join('');
+  }
+  try{ renderDeep(ends,pat,rev,op,isFin,FYS,rowCon); }catch(e){ console.error(e); }
+
+  // ---- last-result reaction + drift since (result-day convention documented at reactionAt) ----
+  const s2=SERIES[TKR];
+  const withAnn=ends.filter(e=>fundBy[e]&&annOf(fundBy[e])!=null);
+  const lr=$('lastReact'); lr.classList.add('hidden');
+  // newest quarter whose reaction is computable — the very latest can announce after the last price bar
+  const li=s2?Math.min(Math.max(lbound(s2.d,(rw?ASOF:stkEndOff())+1)-1,0),s2.p.length-1):0;
+  for(let i=withAnn.length-1;i>=0&&s2;i--){
+    const e=withAnn[i], a=annOf(fundBy[e]), rct=reactionAt(a);
+    if(!rct||rct.j>li) continue;                    // reaction bar must be inside the rewound window
+    const drift=(s2.p[li]/s2.p[rct.j]-1)*100;
+    lr.classList.remove('hidden');
+    lr.innerHTML=`Last result <b>${fq(e)}</b> (announced ${ymd2iso(a)}): result-day move `+
+      `<b class="${rct.rx>=0?'pos':'neg'}">${pct(rct.rx)}</b> · since then <b class="${drift>=0?'pos':'neg'}">${pct(drift)}</b>`;
+    break;
+  }
+
+  // ---- quarter table (newest first, full history — every quarter on file) ----
+  const show=ends.slice().reverse();
+  const num=(v,cls)=>`<td class="text-right px-2 ${cls||''}">${crFmt(v)}</td>`;
+  const gCell=r=>{ const g=r?r.g:null;
+    return `<td class="text-right px-2 whitespace-nowrap ${g==null?'':(g>=0?'pos':'neg')}"${(r&&r.rb)?` title="${RB_TIP}"`:''}>${g==null?'—':pct(g)}${rbMark(r)}</td>`; };
+  const rxCell=e=>{ const q=fundBy[e], rr=q?reactionAt(annOf(q)):null;
+    return `<td class="text-right px-2 ${rr==null?'':(rr.rx>=0?'pos':'neg')}">${rr==null?'—':pct(rr.rx)}</td>`; };
+  const annCell=e=>{ const q=fundBy[e], a=q?annOf(q):null;
+    return `<td class="text-right px-2 text-slate-500 whitespace-nowrap">${a==null?'—':ymd2iso(a)}</td>`; };
+  // a proven half-year / full-year row says so: its figures cover six (twelve) months, not a quarter (§191/§198)
+  const lenTag=e=>monTag(e,FIN_PD&&FIN_PD[String(e)]);
+  $('funds').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
+    `<th class="text-left py-1 pr-2">Quarter end</th><th class="text-right px-2">Revenue</th><th class="text-right px-2">Rev YoY</th>`+
+    `<th class="text-right px-2">Op profit</th><th class="text-right px-2">OPM</th><th class="text-right px-2">EBIT</th>`+
+    `<th class="text-right px-2">Net profit</th><th class="text-right px-2">PAT YoY</th><th class="text-right px-2" title="Date the result was filed with the exchange">Announced</th><th class="text-right px-2">React</th><th class="text-right px-2">Basis</th>`+
+    `</tr></thead><tbody>`+
+    show.map(e=>{ const p=pat(e), r=vOf(rev(e)), o=vOf(op(e)), eb=vOf(ebit(e)), mg=opm(e);
+      return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium whitespace-nowrap">${fq(e)}${lenTag(e)}</td>`+
+        num(r)+gCell(revYoY(e))+
+        num(o,o!=null&&o<0?'neg':'')+
+        `<td class="text-right px-2 ${mg==null?'':(mg>=0?'':'neg')}">${mg==null?'—':mg.toFixed(1)+'%'}</td>`+
+        num(eb,eb!=null&&eb<0?'neg':'')+
+        num(p,p!=null&&p<0?'neg':'font-semibold')+gCell(patYoY(e))+annCell(e)+rxCell(e)+
+        `<td class="text-right px-2 text-[11px] text-slate-400 uppercase">${basis(e)}</td></tr>`;
+    }).join('')+`</tbody></table>`;
+
+  const notes=['All figures ₹ crore, as filed for that quarter (point-in-time — later restatements don’t rewrite history). '+
+    'Net profit is the owners-attributable share; “Basis” shows whether the row is consolidated or standalone. '+
+    'Op profit = EBITDA (revenue less operating expenses, before interest and depreciation); EBIT is after depreciation. '+
+    'YoY always compares both periods on the <i>same</i> basis (consolidated when both filed it, else standalone) — it is blank when the two share no basis, because mixing them invents growth that never happened. '+
+    '“Announced” is the date the result was filed with the exchange; “React” is the close-to-close move on the first trading day on/after the results announcement.'];
+  // basis note — only says something the Basis column doesn't already
+  if(RB_USED) notes.push('<b>R</b> — growth against the year-ago figure <i>as restated</i> in that quarter’s own filing (after a merger, demerger or reclassification the company re-states the comparative it prints). The year-ago row itself keeps the figure first filed.');
+  if(!anyCon) notes.push('This company files <b>standalone</b> results only — no consolidated filing on file, so there is nothing to switch to.');
+  else if(!anyStd) notes.push('This company files <b>consolidated</b> results only.');
+  else if(B==='std'){ const miss=show.filter(e=>basis(e)==='—').length;
+    notes.push('Showing <b>standalone</b> figures — the parent company alone, subsidiaries excluded.'+
+      (miss?' '+miss+' of the last '+show.length+' quarters '+(miss===1?'has':'have')+' no standalone filing on file and '+(miss===1?'is':'are')+' blank.':'')); }
+  else{ const fb=show.filter(e=>basis(e)==='std').length, mx=show.filter(e=>basis(e)==='mix').length, bits=[];
+    if(fb) bits.push(fb+' of the last '+show.length+' '+(fb===1?'has':'have')+' no consolidated filing at all, so '+(fb===1?'that row is':'those rows are')+' standalone (<span class="uppercase">std</span>)');
+    if(mx) bits.push(mx+' '+(mx===1?'row is':'rows are')+' part-consolidated — consolidated for the figures filed that way, standalone for the rest (<span class="uppercase">mix</span>)');
+    if(bits.length) notes.push('Showing <b>consolidated</b> figures where filed: '+bits.join('; ')+'.'); }
+  if(isFin) notes.push('<span class="text-amber-600">Bank / NBFC:</span> “revenue” is interest earned plus other operating income and “op profit” is pre-provision — neither margin is comparable to a non-financial company.');
+  // half-year rows, and what the TTM cards were built from (§198)
+  if(show.some(e=>{ const m=FIN_PD&&FIN_PD[String(e)]; return m===6||m===12; }))
+    notes.push('Rows tagged “6 mo” are <b>half-year results</b> — the company filed six months in one result (Apr–Sep or Oct–Mar). Their YoY compares with the same half a year earlier, and is blank where the row a year earlier covers a different length.');
+  const tEl=FY_MON[Math.floor(tE/100)%100]+' '+Math.floor(tE/10000);
+  const piece=s=>{ if(typeof s!=='number') return spanOf(s.h,3)+' (the '+spanOf(s.h,6)+' half less the '+spanOf(s.q,3)+' quarter)';
+    const L=lenRev(s); return 'the '+spanOf(s,L)+(L===3?' quarter':(L===6?' half':' year')); };
+  const hyNear=HY.has(FYq(tE))||HY.has(FYq(qBack(tE,9)));   // do the latest 12 months touch a year that holds a half?
+  let hyBlank=false;
+  if(curR&&curR.some(s=>typeof s!=='number'||lenRev(s)!==3))
+    notes.push('TTM = the 12 months to '+tEl+': '+curR.map(piece).join(' + ')+' — Screener’s arithmetic; a quarter is split off a half only where the company’s own filings prove that quarter.');
+  else if(!curR&&hyNear){ hyBlank=true;
+    notes.push('The TTM cards are blank: the results on file for the 12 months to '+tEl+' include a half-year (Apr–Sep or Oct–Mar) that can’t be split into quarters from the company’s filings, so they don’t add up to exactly 12 months.'); }
+  if(curR&&!curP&&hyNear)
+    notes.push('Net profit (TTM), P/E and ROE are blank: the profit stored on a half-year row in these 12 months doesn’t match the profit its filing prints, so it isn’t counted.');
+  if(!Object.keys(rv).length) notes.push('Revenue, margins and EBIT aren’t on file for this stock yet — only net profit is shown. <a class="text-indigo-500 hover:underline" href="./results-season.html">How coverage is built →</a>');
+  else if(revT==null&&!hyBlank) notes.push('Revenue (TTM) is blank because one of the last four quarters has no revenue on file — a partial sum would understate the year.');
+  $('fundNote').innerHTML=notes.join('<br>');
+}
+
+/* ---------- deep financial detail (fin slice `x` — XBRL re-parse) ------------------------------
+   FIN_X = {qEnd: {s:{...}, c:{...}}}: EPS, interest/depreciation/tax, balance sheet (half-yearly),
+   cash flow (+cf_d period days — filers tag quarter, H1 or FY periods), segments, bank health.
+   Consolidated preferred per quarter, standalone fallback — same rule as the summary table. */
+let FIN_X=null, FIN_PD=null, FIN_PP=null, FIN_RB=null, DEEP_TAB=null;
+/* How many months a result row covers (runbook §191). Rows are keyed by quarter-end only, so a quarter and a half-year
+   look alike: an SME half-yearly filer's Sep row is Apr–Sep and its Mar row Oct–Mar. The fin slice's `pd` lists the rows
+   the filings PROVE are 6 (or 12) months — scripts/build_row_periods.py, H1 + H2 = the printed full year; every other
+   row is one quarter. A year's sums count only when its rows tile its 12 months (renderDeep, CFO/PAT card). */
+const rowMonths=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; return (m===6||m===12)?m:3; };
+// "Apr–Sep 2025" / "Oct 2025 – Mar 2026": the m months ending at quarter-end e
+const spanOf=(e,m)=>{ const y=Math.floor(e/10000), mo=Math.floor(e/100)%100, i=y*12+mo-m, sy=Math.floor(i/12), sm=i%12+1;
+  return sy===y?FY_MON[sm]+'–'+FY_MON[mo]+' '+y:FY_MON[sm]+' '+sy+' – '+FY_MON[mo]+' '+y; };
+// the " 6 mo" tag a row of proven length carries — the results table and the Financial-detail card's Quarterly tab (§213)
+const monTag=(e,m)=>(m!==6&&m!==12)?'':` <span class="text-[10px] font-normal text-slate-400" title="${m===12?'Full-year':'Half-year'} result: ${spanOf(e,m)} (${m} months in one filing, proven from the company’s filings)">${m} mo</span>`;
+const xCell=e=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return null;
+  return FB_EFF==='std'?(c.s||null):(c.c||c.s||null); };                       // follows the basis switch
+const xBasis=e=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return '';
+  return FB_EFF==='std'?(c.s?'std':''):(c.c?'con':(c.s?'std':'')); };
+/* A row's P&L LINES follow the basis of the row's own figures (§213). xCell picks the consolidated cell wherever one
+   exists, but an SME half-year's consolidated statement can carry only a balance sheet while everything the results
+   table shows for the row — revenue, profit, and the detail filed with them — is standalone (DELAPLEX Sep-2024). Such a
+   row reads its P&L lines from the standalone cell; a row that shows any consolidated figure never does (no basis mix).
+   rowCon(e): does the results table show a consolidated figure for row e? */
+const X_PNL=['eps_b','oi','fc','dep','tax','exc','pbt','emp','mat'];
+const xPnlCell=(e,rowCon)=>{ const c=FIN_X&&FIN_X[String(e)]; if(!c) return null;
+  if(FB_EFF!=='std'&&c.c&&c.s&&rowCon&&!rowCon(e)&&!X_PNL.some(k=>c.c[k]!=null)&&X_PNL.some(k=>c.s[k]!=null)) return c.s;
+  return xCell(e); };
+/* ---- fiscal year-ends, year by year (runbook §186) ------------------------------------------------
+   A year-end is not always March (ABB/Castrol Dec, Kennametal/Accelya Jun, Siemens Energy Sep) and a
+   company can MOVE it: P&G group Jun→Mar through a 9-month year to Mar-2025, ACC/Ambuja/Linde Dec→Mar
+   through 15 months to Mar-2023, IGIL Dec→Mar (15 months) and Siemens Sep→Mar (18 months) to Mar-2026.
+   Evidence = the cash-flow period each filing tagged (x.cf_d, days). A year-to-date flow starts the day
+   after a year-end, so a 12-month (≥300 d), 9-month (250–290 d) or half-year (150–200 d) flow ending at
+   quarter t puts a year-end at t−12/9/6 months and none inside that span. A 12-month flow also closes a
+   year at t — unless another 12-month flow ends less than a year later: then t is the 12-month point of
+   a longer transition year (Siemens Sep-2025, IGIL Dec-2025) and the later flow closes it (its filing
+   tags only its own last 12 months, so its start proves nothing). Quarter-length (~90 d) flows are no
+   evidence: full years are often mis-tagged that way (§168p). Between two year-end months, years extend
+   12 months at a time only onto dates that hold a balance sheet, so a transition year's length comes
+   from the filings, never from a guess. Balance-sheet dates alone never pick the month — a June filer
+   has one every December too, and reading those half-years as annual was the old bug. Banks, and any
+   stock with no such cash flow, keep March. Mirrored in ~/stocks-cache/abscf/tools/card_audit.py. */
+const FY_MON=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fiscalYears(ends,isFin){
+  const mo=e=>Math.floor(e/100)%100;
+  const qA=(e,k)=>{ const i=Math.floor(e/10000)*4+mo(e)/3-1+k, m=(i%4+1)*3;          // k quarter-ends on
+    return Math.floor(i/4)*10000+m*100+((m===3||m===12)?31:30); };
+  if(!ends.length) return {of:()=>null, months:()=>12, prev:()=>null};
+  const ev={}, BS=new Set();                     // quarter-end → longest year-to-date flow (quarters); BS dates
+  for(const k in (FIN_X||{})){ const e=+k, c=FIN_X[k]||{};
+    for(const b of ['c','s']){ const v=c[b]; if(!v) continue;
+      if(v.assets!=null||v.eq!=null) BS.add(e);
+      const d=v.cf_d, L=d>=300?4:((d>=250&&d<=290)?3:((d>=150&&d<=200)?2:0));
+      if(L>(ev[e]||0)) ev[e]=L; } }
+  const mk=new Set(), F=new Set();               // year-end markers; quarter-ends that cannot be one
+  const forbid=(a,b,incl)=>{ for(let t=qA(a,1);t<b||(incl&&t===b);t=qA(t,1)) F.add(t); };
+  if(!isFin){
+    const Y=Object.keys(ev).map(Number).filter(e=>ev[e]===4).sort((a,b)=>a-b);
+    for(const t of Y){
+      const later=Y.filter(u=>u>t&&u<qA(t,4));
+      if(later.length){ mk.add(qA(t,-4)); forbid(qA(t,-4),later[later.length-1],false); }   // inside a long year
+      else if(Y.some(u=>u<t&&u>qA(t,-4))) mk.add(t);                                     // that long year's close
+      else{ mk.add(t); mk.add(qA(t,-4)); forbid(qA(t,-4),t,false); }
+    }
+    for(const k in ev){ const e=+k, L=ev[k]; if(L<4){ mk.add(qA(e,-L)); forbid(qA(e,-L),e,true); } }
+    F.forEach(t=>mk.delete(t));
+  }
+  const lo=ends[0], hi=ends[ends.length-1], YE=new Set(), ms=[...mk].sort((a,b)=>a-b);
+  if(!ms.length){ for(let t=(Math.floor(hi/10000)+1)*10000+331;t>=qA(lo,-4);t=qA(t,-4)) YE.add(t); }
+  else{
+    const runs=[];                               // consecutive markers sharing one year-end month
+    for(const t of ms){ const r=runs[runs.length-1]; if(r&&mo(r[r.length-1])===mo(t)) r.push(t); else runs.push([t]); }
+    for(const r of runs) for(let t=r[0];t<=r[r.length-1];t=qA(t,4)) if(!F.has(t)) YE.add(t);
+    for(let i=1;i<runs.length;i++){              // a changed year-end: extend each side only onto balance-sheet dates
+      const a=runs[i-1][runs[i-1].length-1], b=runs[i][0]; let last=a;
+      for(let t=qA(a,4);t<b&&!F.has(t)&&BS.has(t);t=qA(t,4)){ YE.add(t); last=t; }
+      for(let t=qA(b,-4);t>last&&!F.has(t)&&BS.has(t);t=qA(t,-4)) YE.add(t);
+    }
+    for(let t=qA(ms[0],-4);t>=qA(lo,-4);t=qA(t,-4)) YE.add(t);                   // before the first evidence
+    for(let t=qA(ms[ms.length-1],4);t<=qA(hi,4);t=qA(t,4)) if(!F.has(t)) YE.add(t);   // after the last
+  }
+  const ye=[...YE].sort((a,b)=>a-b);
+  const of=q=>{ for(const y of ye) if(y>=q) return y; return null; };            // the year-end closing quarter q
+  const prev=y=>{ const i=ye.indexOf(y); return i>0?ye[i-1]:null; };
+  const months=y=>{ const p=prev(y); return p==null?12:(Math.floor(y/10000)-Math.floor(p/10000))*12+mo(y)-mo(p); };
+  return {of,months,prev};
+}
+const crS=v=>v==null?'—':Math.round(v).toLocaleString('en-IN');
+function latestBS(ends){
+  for(let i=ends.length-1;i>=0;i--){ const x=xCell(ends[i]); if(x&&x.eq!=null) return {e:ends[i],x}; }
+  return null;
+}
+function renderDeep(ends,patFn,revFn,opFn,isFin,FYS,rowConFn){
+  const card=$('deepCard'); if(!card) return;
+  if(!FIN_X||!ends.some(e=>xCell(e))){ card.style.display='none'; return; }
+  card.style.display='';
+  const vOf=x=>x?x.v:null;
+  // ---- fiscal years, year by year — each keyed by its own year-end (yyyymmdd), see fiscalYears() ----
+  // A year's month can differ from March and can change mid-history (Jun→Mar at P&G, Dec→Mar at ACC):
+  // one year-end month for the whole history read Kennametal's half-year Decembers as its annual
+  // balance sheets and could not show both of P&G's eras (§186).
+  const FY=FYS||fiscalYears(ends,isFin), _mo=e=>Math.floor(e/100)%100, MON=FY_MON;
+  const byFy={};
+  ends.forEach(e=>{ const y=FY.of(e); if(y!=null) (byFy[y]=byFy[y]||[]).push(e); });
+  Object.values(byFy).forEach(a=>a.sort((a,b)=>a-b));
+  const fyAll=Object.keys(byFy).map(Number).sort((a,b)=>b-a);      // newest first
+  // a year's rows TILE its 12 months when each starts where the previous one ended (rowMonths: one quarter unless the
+  // filings proved a half-year / full year, §191). An SME half-yearly filer's Apr–Sep + Oct–Mar rows are its year
+  // (§181d); a quarterly filer's Dec + Mar quarters are not (AARNAV Mar-2026 read ₹231 cr as a year's sales), nor is
+  // Q1 + H1 + Q3 + H2 (QMSMEDI counts six months twice). Never a transition year (9 / 15 / 18 months).
+  const mIdx=e=>Math.floor(e/10000)*12+_mo(e);
+  const tiles=fy=>{ if(FY.months(fy)!==12) return false; let c=mIdx(fy)-12;
+    for(const e of byFy[fy]){ const m=mIdx(e); if(m-rowMonths(e)!==c) return false; c=m; }
+    return c===mIdx(fy); };
+  // a complete year (P&L): four quarters that tile it — or rows whose lengths the filings PROVE (slice pd) tiling it, an
+  // SME half-yearly filer's Apr–Sep + Oct–Mar (§213); never a transition year, one with a row missing, or one whose rows
+  // are of unknown length (a proven half beside unmarked rows, §198)
+  const provenLen=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; return m===3||m===6||m===12; };
+  const full=fy=>tiles(fy)&&(byFy[fy].length===4||byFy[fy].every(provenLen));
+  const fys=fyAll.filter(fy=>full(fy)&&byFy[fy].every(e=>patFn(e)!=null));   // complete FYs (P&L)
+  // year-end anchor = the quarter that closes the year (its audited year-end instant; cash flow is filed
+  // year-to-date so that quarter carries the full-year figures). Never a stray interim or an incomplete
+  // current year — a half-year balance sheet must not read as an annual.
+  const yearEndE=fy=>byFy[fy].includes(fy)?fy:null;
+  // Balance-sheet / cash-flow basis: prefer the page basis, but render the whole card in the OTHER
+  // basis if the page basis carries none and the other does — a standalone-only filer (Colgate, AU
+  // Bank) or one that tags BS/CF only on standalone (Tata Elxsi, MOIL) would otherwise show no card.
+  // Whole-card, never mixed within a column (that is the trap the strict-basis rule guards against).
+  const cellIn=(e,b)=>{ const cc=FIN_X&&FIN_X[String(e)]; return cc?((b==='std'?cc.s:cc.c)||null):null; };
+  const bscfCnt=b=>fyAll.reduce((n,fy)=>{ const e=yearEndE(fy); if(e==null) return n; const d=cellIn(e,b); return n+((d&&(d.assets!=null||d.eq!=null||d.cfo!=null))?1:0); },0);
+  const pageB=FB_EFF==='std'?'std':'con', otherB=pageB==='std'?'con':'std';
+  // whichever basis carries MORE year-end BS/CF (page basis wins ties) — unless the viewer picked a basis with the
+  // switch: then that basis, whenever it carries any year (DHANUKA: consolidated FY20-25, FY26 filed standalone only)
+  const bcB=(FB_PICK&&bscfCnt(pageB)>0)?pageB:(bscfCnt(otherB)>bscfCnt(pageB)?otherB:pageB);
+  const strictCell=e=>cellIn(e,bcB);
+  const bsOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&(d.assets!=null||d.eq!=null))?{e,x:d}:null; };
+  // a transition year's cash flow counts only when its tagged period spans that whole year: the filings
+  // tag just their last 12 months (ACC/Ambuja Mar-2023 start 1-Apr-2022; IGIL/Siemens Mar-2026 1-Apr-2025)
+  const cfSpans=(fy,d)=>FY.months(fy)===12||d.cf_m===FY.months(fy)||(d.cf_d!=null&&Math.abs(d.cf_d-FY.months(fy)*30.44)<=20);
+  const cfOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&d.cfo!=null&&cfSpans(fy,d))?{e,x:d}:null; };
+  // flows (sales, profit, EBIT) only over a year whose rows tile its 12 months — see tiles() above
+  const fySum=(fy,get)=>{ if(!tiles(fy)) return null; let t=0; for(const e of byFy[fy]){ const v=get(e); if(v==null) return null; t+=v; } return t; };
+  const fyRev=fy=>fySum(fy,e=>vOf(revFn(e))), fyOp=fy=>fySum(fy,e=>vOf(opFn(e)));
+  const pC=e=>xPnlCell(e,rowConFn);                                // a row's P&L lines, on the row's own basis (§213)
+  const fyEbit=fy=>fySum(fy,e=>{ const o=opFn(e), d=(pC(e)||{}).dep; return (o&&o.v!=null&&d!=null)?o.v-d:null; });
+  const bsFys=fyAll.filter(fy=>bsOf(fy)).slice(0,12);
+  const cfFys=fyAll.filter(fy=>cfOf(fy)).slice(0,12);
+  const ratioFys=fyAll.filter(fy=>{ const c=bsOf(fy); return c&&(c.x.rec!=null||c.x.invnt!=null||c.x.pay!=null)&&fyRev(fy); }).slice(0,12);
+  // a generic balance sheet is meaningful only with real composition (equity / fixed assets /
+  // borrowings / investments) — banks tag none of these the usual way, leaving just a Total-Assets
+  // plug, so their Balance-sheet tab is dropped in favour of the Bank-health tab.
+  const bsMeaningful=bsFys.some(fy=>{ const x=bsOf(fy).x; return x.sc!=null||x.eq!=null||x.ppe!=null||x.invst!=null||x.borr!=null; });
+  // a quarter row needs P&L detail — a balance-sheet-only cell (SME half-year / yearly filings,
+  // runbook §148) must not open an all-dash Quarterly table
+  const xPnl=e=>{ const x=pC(e); return !!x&&X_PNL.some(k=>x[k]!=null); };
+  const has={q:ends.some(xPnl), a:fys.length>0, bs:bsFys.length>0&&bsMeaningful, cf:cfFys.length>0, ratio:ratioFys.length>0,
+    seg:ends.some(e=>(xCell(e)||{}).seg),
+    bank:ends.slice(-12).some(e=>{const x=xCell(e); return x&&(x.gnpa_pct!=null||x.cet1!=null);})};
+  const tabs=[['q',SWI.file+' Quarterly detail'],['a',SWI.book+' P&L'],['bs',SWI.scale+' Balance sheet'],
+    ['cf',SWI.banknote+' Cash flow'],['ratio',SWI.percent+' Ratios'],['seg',SWI.layers+' Segments'],
+    ['bank',SWI.landmark+' Bank health']].filter(([k])=>has[k]);
+  if(!tabs.length){ card.style.display='none'; return; }        // nothing to show (e.g. BS-only cells on a basis the switch hides)
+  // keep the open tab across a re-render (flipping the basis switch re-runs this whole card)
+  let cur=(DEEP_TAB&&tabs.some(([k])=>k===DEEP_TAB))?DEEP_TAB:tabs[0][0];
+  // ---- shared transposed table (Screener layout: metric rows × year columns, oldest→newest) ----
+  // column label = the year's own year-end (Mar / Dec / Jun / Sep YYYY); a transition year also says its length
+  const yL0=fy=>MON[_mo(fy)]+' '+Math.floor(fy/10000);
+  // 12-month years left out of a sum because their rows on file do not tile the year — named in the Ratios / Cash-flow notes
+  const partTxt=fys=>fys.slice(0,3).map(yL0).join(', ')+(fys.length>3?' and '+(fys.length-3)+' earlier':'');
+  const partWhy=n=>': the results on file for '+(n===1?'that year do not add up to exactly its':'those years do not add up to exactly their')+' 12 months (a quarter or half-year missing, or counted twice)';
+  const trTxt=fy=>{ const p=FY.prev(fy), m=FY.months(fy); if(p==null) return '';
+    const from=MON[_mo(p)%12+1]+' '+(Math.floor(p/10000)+(_mo(p)===12?1:0));
+    return m+'-month year, '+from+' – '+yL0(fy)+(_mo(p)!==_mo(fy)?': the company moved its year-end from '+MON[_mo(p)]+' to '+MON[_mo(fy)]:''); };
+  const yLm=fy=>{ const d=cur==='cf'&&strictCell(yearEndE(fy)); return (d&&d.cf_m)||FY.months(fy); };   // cash-flow tab: the printed period (P&G Health's 18 months to Jun-2020; its P&L column is 12 months)
+  const yL=fy=>yL0(fy)+(yLm(fy)===12?'':`<span class="normal-case font-normal"> · ${yLm(fy)} mo</span>`);
+  const trList=fys=>fys.map(fy=>'the '+FY.months(fy)+'-month transition year to '+yL0(fy)).join(' and ');
+  // the year-end months a set of columns uses: "Apr–Mar", or "Apr–Mar from Mar 2026; Jul–Jun to Jun 2024"
+  const spanTxt=fyDesc=>{ const g=[]; fyDesc.forEach(fy=>{ const m=_mo(fy), l=g[g.length-1]; if(l&&l.m===m) l.o=fy; else g.push({m,n:fy,o:fy}); });
+    const r=m=>MON[m%12+1]+'–'+MON[m];
+    if(g.length<2) return r(g.length?g[0].m:3);
+    return g.map((x,i)=>r(x.m)+(i===0?' from '+yL0(x.o):(i===g.length-1?' to '+yL0(x.n):' '+yL0(x.o)+' to '+yL0(x.n)))).join('; '); };
+  function matrix(fyDesc, rows){
+    const cols=fyDesc.slice().reverse();                          // display oldest → newest
+    const th=cols.map(fy=>`<th class="text-right px-2 py-1 whitespace-nowrap"${FY.months(fy)===12?'':` title="${esc(trTxt(fy))}"`}>${yL(fy)}</th>`).join('');
+    const cellsFor=(get,fmt,neg,cls)=>cols.map(fy=>{ const v=get(fy);
+      const nc=(neg&&v!=null&&v<0)?'neg':(cls||''); return `<td class="text-right px-2 py-1.5 whitespace-nowrap ${nc}">${v==null?'<span class="text-slate-300">—</span>':fmt(v)}</td>`; }).join('');
+    let body='';
+    rows.forEach(r=>{
+      const anyMain=cols.some(fy=>r.get(fy)!=null);
+      const subs=(r.sub||[]).filter(s=>cols.some(fy=>s.get(fy)!=null));   // drop breakdown lines with no data
+      if(!anyMain && !subs.length) return;                                // hide a fully-empty row, like Screener
+      const lc=r.bold?'font-semibold':(r.faint?'text-slate-400':'');
+      const tg=subs.length?` <button class="deep-tg w-4 h-4 inline-flex items-center justify-center rounded border border-slate-300 text-slate-500 text-[10px] leading-none align-middle" data-tg="${r.id}" title="Show breakdown">+</button>`:'';
+      body+=`<tr class="${r.top?'border-t border-slate-200':'border-b border-slate-50'}"><td class="py-1.5 pr-2 ${lc} whitespace-nowrap">${r.label}${tg}</td>`+
+        cellsFor(r.get,r.fmt,r.neg,lc)+`</tr>`;
+      subs.forEach(s=>{ body+=`<tr class="deep-sub deep-sub-${r.id} hidden text-slate-500 border-b border-slate-50"><td class="py-1 pr-2 pl-5 whitespace-nowrap">${s.label}</td>`+
+        cellsFor(s.get,s.fmt,s.neg,'text-slate-500')+`</tr>`; });
+    });
+    // the corner cell carries a visually-hidden "Metric": theme.js pins column 2 on phones when the first
+    // header is blank (a rank gutter), which pinned the oldest YEAR and scrolled the row labels away
+    return `<div class="sw-scrollx tscroll overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Metric</span></th>${th}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+  const draw=()=>{
+    $('deepTabs').innerHTML=tabs.map(([k,l])=>`<button data-t="${k}" class="px-2.5 py-1 rounded-lg text-xs font-semibold border shrink-0 ${k===cur?'bg-slate-800 text-white border-slate-800':'text-slate-500 border-slate-200 hover:bg-slate-50'}">${l}</button>`).join('');
+    $('deepTabs').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ cur=DEEP_TAB=b.dataset.t; draw(); });
+    const th=t=>`<th class="text-right px-2">${t}</th>`;
+    const td=(v,cls)=>`<td class="text-right px-2 ${cls||''}">${v}</td>`;
+    const money=v=>td(v==null?'—':v.toLocaleString('en-IN',{maximumFractionDigits:Math.abs(v)<100?1:0}),v!=null&&v<0?'neg':'');
+    let html='',note='';
+    if(cur==='q'){
+      const rows=ends.filter(e=>xCell(e)).slice(-12).reverse();
+      // a half-year row says so (§213): its lines are six months, not a quarter — by the row's proven length, else by the
+      // detail cell's own mark (pm, written only from a filing proven to be that half)
+      const xMonths=e=>{ const m=FIN_PD&&FIN_PD[String(e)]; if(m===6||m===12) return m; const x=pC(e); return x&&x.pm===6?6:null; };
+      const hyRows=rows.some(e=>xMonths(e));
+      html=`<div class="sw-scrollx overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
+        `<th class="text-left py-1 pr-2">Quarter</th>${th('EPS ₹')}${th('Other inc')}${th('Interest')}${th('Depr')}${th('Tax')}${th('Excep')}${th('PBT')}<th class="text-right px-2">Audited</th></tr></thead><tbody>`+
+        rows.map(e=>{ const x=pC(e);
+          return `<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium whitespace-nowrap">${fmtQtr(e)}${monTag(e,xMonths(e))}</td>`+
+            td(x.eps_b==null?'—':x.eps_b.toLocaleString('en-IN'),x.eps_b!=null&&x.eps_b<0?'neg':'font-semibold')+
+            money(x.oi)+money(x.fc)+money(x.dep)+money(x.tax)+money(x.exc)+money(x.pbt)+
+            td(x.aud==='A'?'✓':(x.aud==='U'?'unaudited':'—'),x.qual?'neg':'text-slate-500 text-xs')+`</tr>`;
+        }).join('')+`</tbody></table></div>`;
+      note='₹ crore except EPS (₹/share, basic). '+(FB_EFF==='std'?'Standalone (parent only).':'Consolidated where filed.')+' '+(hyRows?'Rows tagged “6 mo” are <b>half-year results</b> — six months in one filing (Apr–Sep or Oct–Mar), not a quarter. ':'')+(ends.some(e=>(pC(e)||{}).qual)?'<span class="neg">⚠ At least one filing carries an audit qualification.</span>':'');
+    }else if(cur==='a'){
+      // Screener-style P&L: Sales, Expenses, Op profit, OPM, Other income, Interest, Depreciation,
+      // PBT, Tax%, Net profit, EPS, Dividend payout — one column per complete FY.
+      const pfy=fys.slice(0,12);
+      const fyX=(fy,k)=>fySum(fy,e=>{ const x=pC(e); return x&&x[k]!=null?x[k]:null; });
+      // a year made of half-year results (§213): its lines add the Apr–Sep and Oct–Mar filings — but not EPS, which a
+      // half-year filing's second column often prints for the whole year (AIMTRON FY26: 9.94 + 22.47 vs the year's 22.47)
+      const hyY=fy=>byFy[fy].some(e=>rowMonths(e)!==3);
+      const hyP=pfy.filter(hyY);
+      const fyOwn=fy=>fySum(fy,patFn);                        // owners-attributable (feeds EPS/PE/engine)
+      const fyNci=fy=>fySum(fy,e=>{ const x=pC(e); return x&&x.nci!=null?x.nci:null; });
+      const fyAssoc=fy=>fySum(fy,e=>{ const x=pC(e); return x&&x.assoc!=null?x.assoc:null; });
+      // Screener shows the pre-minority GROUP profit as "Net Profit" (owners + minority); the
+      // engine/PE keep owners. total = owners + minority where minority is filed, else owners.
+      const fyNet=fy=>{ const o=fyOwn(fy); if(o==null) return null; const n=fyNci(fy); return n!=null?o+n:o; };
+      const hasMinority=pfy.some(fy=>fyNci(fy)!=null);
+      const expenses=fy=>{ const r=fyRev(fy),o=fyOp(fy); return (r!=null&&o!=null)?r-o:null; };
+      const opm=fy=>{ const r=fyRev(fy),o=fyOp(fy); return (r&&o!=null)?o/r*100:null; };
+      const taxPct=fy=>{ const t=fyX(fy,'tax'),p=fyX(fy,'pbt'); return (t!=null&&p)?t/p*100:null; };
+      const payout=fy=>{ const c=cfOf(fy); const dv=c&&c.x.divp!=null?c.x.divp:null; const p=fyNet(fy); return (dv!=null&&p&&p>0)?dv/p*100:null; };
+      const pct1=v=>v.toFixed(0)+'%', eps=v=>v.toFixed(2);
+      const rows=[
+        {label:'Sales', get:fyRev, fmt:crS, bold:true},
+        {label:'Expenses', get:expenses, fmt:crS, id:'exp', sub:[
+          {label:'Material cost', get:fy=>fyX(fy,'mat'), fmt:crS},
+          {label:'Employee cost', get:fy=>fyX(fy,'emp'), fmt:crS},
+        ]},
+        {label:'Operating Profit', get:fyOp, fmt:crS, bold:true, neg:true},
+        {label:'OPM %', get:opm, fmt:pct1, faint:true},
+        {label:'Other Income', get:fy=>fyX(fy,'oi'), fmt:crS},
+        {label:'Interest', get:fy=>fyX(fy,'fc'), fmt:crS},
+        {label:'Depreciation', get:fy=>fyX(fy,'dep'), fmt:crS},
+        {label:'Profit before tax', get:fy=>fyX(fy,'pbt'), fmt:crS, bold:true, neg:true, top:true},
+        {label:'Tax %', get:taxPct, fmt:pct1, faint:true},
+        {label:'Net Profit', get:fyNet, fmt:crS, bold:true, neg:true, id:'np', sub: hasMinority?[
+          {label:'Profit from associates', get:fyAssoc, fmt:crS, neg:true},
+          {label:'Minority interest', get:fyNci, fmt:crS, neg:true},
+          {label:'Owners’ profit (for EPS / PE)', get:fyOwn, fmt:crS, neg:true},
+        ]:null},
+        {label:'EPS in ₹', get:fy=>hyY(fy)?null:fyX(fy,'eps_b'), fmt:eps, neg:true},
+        {label:'Dividend Payout %', get:payout, fmt:pct1, faint:true},
+      ];
+      html=matrix(pfy, rows);
+      const cagr=(get,yrs)=>{ if(pfy.length<yrs+1) return null; const a=get(pfy[yrs]), b=get(pfy[0]); return (a&&b&&a>0&&b>0)?(Math.pow(b/a,1/yrs)-1)*100:null; };
+      const gspan=(lbl,get)=>{ const bits=[[10,'10y'],[5,'5y'],[3,'3y']].map(([n,t])=>{ const g=cagr(get,n); return g==null?null:`${t} <b class="${g>=0?'pos':'neg'}">${g.toFixed(0)}%</b>`; }).filter(Boolean); return bits.length?`<span class="mr-4"><span class="text-slate-400">${lbl} CAGR:</span> ${bits.join(' · ')}</span>`:''; };
+      const strip=gspan('Sales',fyRev)+gspan('Profit',fyNet);
+      if(strip) html+=`<div class="text-[12px] mt-2 pt-2 border-t border-slate-100">${strip}</div>`;
+      const trP=fyAll.filter(fy=>FY.months(fy)!==12&&yearEndE(fy)!=null&&pfy.length&&fy>pfy[pfy.length-1]);   // transition years skipped
+      note='₹ crore, complete 12-month financial years ('+spanTxt(pfy)+'). '+(hyP.length?(hyP.length===pfy.length?'Each year adds':partTxt(hyP)+(hyP.length===1?' adds':' add'))+' the company’s two <b>half-year results</b> (Apr–Sep + Oct–Mar); EPS is not summed for '+(hyP.length===1?'that year':'those years')+' — a half-year filing often prints the full year’s EPS in its second column. ':'')+(trP.length?'Left out: '+trList(trP)+' — not comparable with a 12-month year. ':'')+(FB_EFF==='std'?'Standalone (parent only).':'Consolidated where filed.')+' Expenses = Sales − Operating profit; Operating profit = EBITDA. '+(hasMinority?'Net Profit is the total group profit (Screener basis); expand it for the associate / minority split — “Owners’ profit” is what drives our EPS, P/E and backtests, and a year is shown at owners’ profit only where minority interest was not separately filed. ':'Net Profit is owners-attributable. ')+'EPS is as originally filed (not adjusted for later bonus issues or splits). Dividend payout = dividends paid ÷ net profit. '+(isFin?'<span class="text-amber-600">Bank/NBFC:</span> “Sales” is interest earned — margins are not comparable to industrials.':'');
+    }else if(cur==='bs'){
+      const B=fy=>{ const c=bsOf(fy); return c?c.x:{}; };
+      const nw=fy=>{ const x=B(fy); if(x.eq!=null) return x.eq; if(x.sc!=null&&x.oeq!=null) return x.sc+x.oeq; return null; };
+      const reserves=fy=>{ const x=B(fy); if(x.oeq!=null) return x.oeq; const w=nw(fy); return (w!=null&&x.sc!=null)?w-x.sc:null; };
+      // Screener "Fixed Assets" = PP&E + Investment Property + Goodwill + Other Intangibles (runbook §148c —
+      // DBREALTY Mar-24 1,492.19+86.50+548.58+301.23 = 2,428.50 = Screener 2,429; OBEROIRLTY/PHOENIXLTD/DLF tie too)
+      const fa=fy=>{ const x=B(fy); if(x.ppe==null&&x.gw==null&&x.intg==null&&x.invprop==null) return null; return (x.ppe||0)+(x.invprop||0)+(x.gw||0)+(x.intg||0)+(x.bio||0)+(x.prodprop||0); };
+      const cwip=fy=>{ const x=B(fy); if(x.cwip==null&&x.iuad==null) return null; return (x.cwip||0)+(x.iuad||0); };
+      const othLia=fy=>{ const x=B(fy),w=nw(fy); return (x.assets!=null&&w!=null&&x.borr!=null)?x.assets-w-x.borr:null; };
+      const othAss=fy=>{ const x=B(fy); if(x.assets==null) return null; return x.assets-(fa(fy)||0)-(cwip(fy)||0)-(x.invst||0); };
+      const rows=[
+        {label:'Equity Capital', get:fy=>B(fy).sc, fmt:crS},
+        {label:'Reserves', get:reserves, fmt:crS, neg:true},
+        {label:'Borrowings', get:fy=>B(fy).borr, fmt:crS, bold:true, id:'borr', sub:[
+          {label:'Long-term', get:fy=>B(fy).blt, fmt:crS},
+          {label:'Short-term', get:fy=>B(fy).bst, fmt:crS},
+          {label:'Lease & other', get:fy=>{ const x=B(fy); if(x.borr==null||(x.blt==null&&x.bst==null)) return null; const d=x.borr-(x.blt||0)-(x.bst||0); return Math.abs(d)<1?null:d; }, fmt:crS},
+        ]},
+        {label:'Other Liabilities', get:othLia, fmt:crS},
+        {label:'Total Liabilities', get:fy=>B(fy).assets, fmt:crS, bold:true, top:true},
+        {label:'Fixed Assets', get:fa, fmt:crS, id:'fa', sub:[
+          {label:'Tangible (PP&E)', get:fy=>B(fy).ppe, fmt:crS},
+          {label:'Investment property', get:fy=>B(fy).invprop, fmt:crS},
+          {label:'Goodwill', get:fy=>B(fy).gw, fmt:crS},
+          {label:'Intangibles', get:fy=>B(fy).intg, fmt:crS},
+          {label:'Biological / producing', get:fy=>{ const x=B(fy); return (x.bio==null&&x.prodprop==null)?null:(x.bio||0)+(x.prodprop||0); }, fmt:crS},
+        ]},
+        {label:'CWIP', get:cwip, fmt:crS},
+        {label:'Investments', get:fy=>B(fy).invst, fmt:crS},
+        {label:'Other Assets', get:othAss, fmt:crS},
+        {label:'Total Assets', get:fy=>B(fy).assets, fmt:crS, bold:true, top:true},
+      ];
+      html=matrix(bsFys, rows);
+      note='₹ crore, '+(bcB==='std'?'standalone':'consolidated where filed')+', as filed at each year-end — point-in-time, later restatements are not back-applied. Fixed Assets = net block + investment property + goodwill + other intangibles + biological/producing assets; CWIP includes intangibles under development; Other Liabilities and Other Assets balance the sheet (Screener convention). Lease liabilities appear under Borrowings only where the filer tags them separately.'+
+        bsFys.filter(fy=>FY.months(fy)!==12).map(fy=>' '+yL0(fy)+' closes the '+trTxt(fy)+'.').join('');
+    }else if(cur==='cf'){
+      const C=fy=>{ const c=cfOf(fy); return c?c.x:{}; };
+      const net=fy=>{ const x=C(fy); return (x.cfo!=null&&x.cfi!=null&&x.cff!=null)?x.cfo+x.cfi+x.cff:null; };
+      const fcf=fy=>{ const x=C(fy); return (x.cfo!=null&&x.capex!=null)?x.cfo-x.capex:null; };
+      const cfoOp=fy=>{ const x=C(fy),o=fyOp(fy); return (x.cfo!=null&&o&&!(x.cf_m&&x.cf_m!==12))?x.cfo/o*100:null; };
+      const rows=[
+        {label:'Cash from Operating', get:fy=>C(fy).cfo, fmt:crS, bold:true, neg:true, id:'cfo', sub:[
+          // cf_tax is signed like the exchange data: + tax paid, − net refund received (runbook §168j) — so a
+          // payment shows as an outflow and a refund as an inflow (−|t| showed every refund as a payment)
+          {label:'Income tax paid / refund', get:fy=>{ const t=C(fy).cf_tax; return t==null?null:(-t||0); }, fmt:crS, neg:true},
+        ]},
+        {label:'Cash from Investing', get:fy=>C(fy).cfi, fmt:crS, neg:true},
+        {label:'Cash from Financing', get:fy=>C(fy).cff, fmt:crS, neg:true},
+        {label:'Net Cash Flow', get:net, fmt:crS, bold:true, neg:true, top:true},
+        {label:'Free Cash Flow', get:fcf, fmt:crS, neg:true, faint:true},
+        {label:'CFO / OP', get:cfoOp, fmt:v=>v.toFixed(0)+'%', faint:true},
+      ];
+      html=matrix(cfFys, rows);
+      // a transition year whose filed cash flow covers a different span gets no column — say so, don't leave a silent gap
+      const trC=fyAll.filter(fy=>FY.months(fy)!==12&&yearEndE(fy)!=null&&!cfOf(fy)&&(strictCell(fy)||{}).cfo!=null);
+      // a 12-month year whose result rows do not tile it has no annual operating profit to divide by (§191)
+      const partC=cfFys.filter(fy=>FY.months(fy)===12&&!tiles(fy)&&C(fy).cfo!=null);
+      note='₹ crore, the cash flow of each financial year as filed at its year-end, '+(bcB==='std'?'standalone':'consolidated where filed')+'. Net Cash Flow = operating + investing + financing; Free Cash Flow = CFO − capex; CFO/OP = operating cash ÷ operating profit. Income tax: negative = tax paid, positive = a net refund received that year.'+
+        cfFys.filter(fy=>FY.months(fy)!==12).map(fy=>' '+yL0(fy)+' closes the '+trTxt(fy)+'.').join('')+
+        (trC.length?' No column for '+trList(trC)+': the cash flow filed then does not cover that whole period.':'')+
+        (partC.length?' CFO/OP is blank for '+partTxt(partC)+partWhy(partC.length)+'.':'');
+    }else if(cur==='ratio'){
+      const B=fy=>{ const c=bsOf(fy); return c?c.x:{}; };
+      const dOn=(amt,fy)=>{ const r=fyRev(fy); return (amt!=null&&r)?amt/r*365:null; };
+      const debtor=fy=>dOn(B(fy).rec,fy), invD=fy=>dOn(B(fy).invnt,fy), payD=fy=>dOn(B(fy).pay,fy);
+      const ccc=fy=>{ const d=debtor(fy),i=invD(fy),p=payD(fy); return (d!=null&&i!=null&&p!=null)?d+i-p:null; };
+      const roce=fy=>{ const x=B(fy),eb=fyEbit(fy); return (eb!=null&&x.eq!=null&&x.borr!=null&&(x.eq+x.borr))?eb/(x.eq+x.borr)*100:null; };
+      const d0=v=>Math.round(v).toLocaleString('en-IN'), p0=v=>v.toFixed(0)+'%';
+      const rows=[
+        {label:'Debtor Days', get:debtor, fmt:d0},
+        {label:'Inventory Days', get:invD, fmt:d0},
+        {label:'Days Payable', get:payD, fmt:d0},
+        {label:'Cash Conversion Cycle', get:ccc, fmt:d0, neg:true, bold:true, top:true},
+        {label:'ROCE %', get:roce, fmt:p0, bold:true},
+      ];
+      html=matrix(ratioFys, rows);
+      // a year with a balance sheet but result rows that do not tile its 12 months gets no column (§191) — name it
+      const lo=ratioFys[ratioFys.length-1];
+      const partR=fyAll.filter(fy=>fy>lo&&FY.months(fy)===12&&!tiles(fy)&&(c=>!!c&&(c.x.rec!=null||c.x.invnt!=null||c.x.pay!=null))(bsOf(fy)));
+      note='Debtor / inventory / payable days use annual sales as the base (Screener convention); the cash-conversion cycle is debtor + inventory − payable days, and a negative figure means the business runs on supplier credit. ROCE = EBIT ÷ (equity + borrowings). '+(isFin?'Not shown for banks/NBFCs, where these concepts do not apply. ':'')+
+        (partR.length?'No column for '+partTxt(partR)+partWhy(partR.length)+', so annual sales cannot be read from them.':'');
+    }else if(cur==='seg'){
+      let segE=null; for(let i=ends.length-1;i>=0;i--){ const x=xCell(ends[i]); if(x&&x.seg){ segE=ends[i]; break; } }
+      const x=xCell(segE), tot=x.seg.reduce((t,s)=>t+(s[1]||0),0);
+      html=`<div class="sw-scrollx overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
+        `<th class="text-left py-1 pr-2">Segment</th>${th('Revenue')}${th('Share')}${th('Result')}${th('Margin')}</tr></thead><tbody>`+
+        x.seg.map(([nm,rv,rs])=>`<tr class="border-b border-slate-50"><td class="py-1.5 pr-2">${esc(nm)}</td>`+
+          money(rv)+td(rv!=null&&tot?(rv/tot*100).toFixed(1)+'%':'—')+money(rs)+
+          td(rv&&rs!=null?(rs/rv*100).toFixed(1)+'%':'—',rs!=null&&rs<0?'neg':'')+`</tr>`).join('')+
+        `</tbody></table></div>`;
+      note=`Reportable segments for ${fmtQtr(segE)} (${xBasis(segE)}). “Result” is segment profit before tax and finance costs; “Share” is of segment revenue before eliminations.`;
+    }else if(cur==='bank'){
+      const rows=ends.filter(e=>{const x=xCell(e); return x&&(x.gnpa_pct!=null||x.cet1!=null||x.dep_amt!=null);}).slice(-8);
+      const line=(lbl,get,fmt)=>`<tr class="border-b border-slate-50"><td class="py-1.5 pr-2 font-medium whitespace-nowrap">${lbl}</td>`+
+        rows.map(e=>{ const v=get(xCell(e)||{}); return `<td class="text-right px-2 whitespace-nowrap">${v==null?'<span class="text-slate-300">—</span>':fmt(v)}</td>`; }).join('')+`</tr>`;
+      html=`<div class="sw-scrollx overflow-x-auto"><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Metric</th>`+
+        rows.map(e=>`<th class="text-right px-2 whitespace-nowrap">${fmtQtr(e)}</th>`).join('')+`</tr></thead><tbody>`+
+        line('Gross NPA %',x=>x.gnpa_pct,v=>v.toFixed(2))+line('Net NPA %',x=>x.nnpa_pct,v=>v.toFixed(2))+
+        line('CET-1 %',x=>x.cet1,v=>v.toFixed(2))+line('CAR %',x=>x.car,v=>v.toFixed(2))+
+        line('ROA %',x=>x.roa,v=>v.toFixed(2))+
+        line('Deposits',x=>x.dep_amt,crS)+line('Advances',x=>x.adv,crS)+line('Interest expended',x=>x.int_exp,crS)+
+        `</tbody></table></div>`;
+      note='As filed in the bank’s quarterly XBRL. Deposits/advances/interest in ₹ crore. NPA ratios are of gross/net advances.';
+    }
+    $('deepBody').innerHTML=html;
+    $('deepNote').innerHTML=note;
+    // expandable "+" rows (Screener parity: Borrowings, Fixed Assets, Expenses, CFO, Net Profit…)
+    $('deepBody').querySelectorAll('.deep-tg').forEach(btn=>btn.onclick=()=>{
+      const id=btn.dataset.tg, open=btn.textContent.trim()==='−'; btn.textContent=open?'+':'−';
+      $('deepBody').querySelectorAll('.deep-sub-'+id).forEach(r=>r.classList.toggle('hidden',open));
+    });
+  };
+  draw();
+}
+
+/* Insights and shareholding put their NEWEST column on the right. When the columns don't fit (phones, narrow
+   laptops) the holder opens scrolled to it and keeps following the right edge while the layout settles: the page
+   scrollbar that appears as later cards render takes 10px off the holder, which left the newest Insights column
+   11px clipped at every width from 768px up (measured 2026-10-07). It stops following once the reader scrolls
+   away, and follows again when they scroll back to the end. */
+const NEWEST=new WeakMap();
+function openOnNewest(h){
+  if(!h) return;
+  let s=NEWEST.get(h);
+  if(!s){
+    s={follow:true, at:NaN};
+    s.end=()=>{ if(h.scrollWidth>h.clientWidth) h.scrollLeft=h.scrollWidth; s.at=h.scrollLeft; };
+    h.addEventListener('scroll',()=>{
+      if(Math.abs(h.scrollLeft-s.at)<=1) return;     // where we put it: our own scroll, or the layout moving under it
+      s.at=NaN; s.follow=h.scrollLeft>=h.scrollWidth-h.clientWidth-2;
+    },{passive:true});
+    if('ResizeObserver' in window) s.ro=new ResizeObserver(()=>{ if(s.follow) s.end(); });
+    NEWEST.set(h,s);
+  }
+  s.follow=true; s.end();
+  if(s.ro){ s.ro.disconnect(); s.ro.observe(h); const t=h.querySelector('table'); if(t) s.ro.observe(t); }   // the holder narrowing, or its table widening
+}
+
+/* ---------- Insights: operating KPIs from the company's OWN filings (runbook §137) ----------
+   docs/fin/<SLUG>.json → kpi = {fy, m:[{n,u,k,y,q,src}], docs:{att:{d,t,k,u?}}}. Rows are the
+   business metrics the company itself reports in its investor presentations / press releases
+   (stores, subscribers, ARPU, order book, NIM, GNPA…); every cell is the number exactly as PRINTED
+   there, and ⓘ names the filing and page it came from. Nothing is derived: a yearly column shows a
+   value only when a filing printed it for that FY, or — for a "level" metric (a count, balance or
+   ratio AS AT a date) — printed it for the FY-end quarter, which is the same date. Flow metrics
+   (production, volumes, ARPU) never borrow their Q4 value as the year. In rewind, a cell whose
+   source filing is dated after the as-of date is hidden — the market had not seen it yet. */
+let KPI=null, KPI_TAB='y';
+const KPI_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const kpiLbl=k=>KPI_MON[+k.slice(4,6)-1]+' '+k.slice(0,4);
+const KPI_I='<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+function renderKPI(K){
+  const card=$('kpiCard'); if(!card) return;
+  if(K!==undefined) KPI=K; K=KPI;
+  const body=$('kpiBody'), srcEl=$('kpiSrc'); srcEl.style.display='none';
+  if(!K||!Array.isArray(K.m)||!K.m.length){ card.style.display='none'; return; }
+  const docs=K.docs||{}, fyEnd=String(K.fy||3).padStart(2,'0'), asof=asofYmd();
+  const docYmd=att=>{ const d=docs[att]&&docs[att].d; return d?+String(d).replace(/-/g,''):0; };
+  const visible=s=>!s||docYmd(s[0])<=asof;
+  // cells of one metric for a view: {periodKey:{v,s}} — s = [attachment, page, label, as_printed]
+  const cells=(m,tab)=>{ const out={}, S=m.src||{};
+    if(tab==='q'){ for(const k in (m.q||{})){ const s=S['q:'+k]; if(visible(s)) out[k]={v:m.q[k],s}; } }
+    else{ for(const k in (m.y||{})){ const s=S['y:'+k]; if(visible(s)) out[k]={v:m.y[k],s}; }
+      if(m.k!=='flow') for(const k in (m.q||{})){ if(k.slice(4,6)!==fyEnd||out[k]) continue; const s=S['q:'+k]; if(visible(s)) out[k]={v:m.q[k],s}; } }
+    return out; };
+  const has=tab=>K.m.some(m=>Object.keys(cells(m,tab)).length>0);
+  const tabs=[['y','Yearly'],['q','Quarterly']].filter(([k])=>has(k));
+  if(!tabs.length){ card.style.display='none'; return; }
+  if(!tabs.some(([k])=>k===KPI_TAB)) KPI_TAB=tabs[0][0];
+  card.style.display='';
+  $('kpiTabs').innerHTML=tabs.map(([k,l])=>`<button data-k="${k}" class="px-2.5 py-1 rounded-lg text-xs font-semibold border shrink-0 ${k===KPI_TAB?'bg-slate-800 text-white border-slate-800':'text-slate-500 border-slate-200 hover:bg-slate-50'}">${l}</button>`).join('');
+  $('kpiTabs').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{ if(b.dataset.k!==KPI_TAB){ KPI_TAB=b.dataset.k; renderKPI(); } });
+  const rows=K.m.map(m=>({m,c:cells(m,KPI_TAB)})).filter(r=>Object.keys(r.c).length>0);
+  const all=[...new Set(rows.flatMap(r=>Object.keys(r.c)))].sort();
+  const MAXC=12, cols=all.slice(-MAXC);
+  const fmt=(v,s)=>{ if(v==null||!Number.isFinite(v)) return ''; const ap=s&&s[3]!=null?String(s[3]):''; const dec=Math.min(3,(ap.split('.')[1]||'').length);
+    return v.toLocaleString('en-IN',{minimumFractionDigits:dec,maximumFractionDigits:dec}); };
+  const srcTitle=s=>{ if(!s) return ''; const d=docs[s[0]]||{}; return `${d.t||'filing'} (${d.d||'?'}) · page ${s[1]} · “${s[2]}” printed as ${s[3]}`; };
+  body.innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Metric</th>`+
+    cols.map(k=>`<th class="text-right px-2 whitespace-nowrap">${kpiLbl(k)}</th>`).join('')+`</tr></thead><tbody>`+
+    rows.map(({m,c},ri)=>`<tr class="border-b border-slate-50"><td class="py-1.5 pr-3 whitespace-nowrap"><div class="font-medium">${esc(m.n)}</div><div class="text-[11px] text-slate-400">${esc(m.u||'')}</div></td>`+
+      cols.map(k=>{ const x=c[k]; if(!x) return '<td class="text-right px-2"></td>';
+        return `<td class="text-right px-2 whitespace-nowrap">${fmt(x.v,x.s)}${x.s?` <button class="kpi-i text-slate-400 hover:text-slate-600 align-middle" data-r="${ri}" data-k="${k}" title="${esc(srcTitle(x.s))}" aria-label="Source of this number">${KPI_I}</button>`:''}</td>`; }).join('')+`</tr>`).join('')+
+    `</tbody></table>`;
+  openOnNewest(body);   // a sideways-scrolling holder opens on the OLDEST column; start on the newest
+  body.querySelectorAll('.kpi-i').forEach(b=>b.onclick=()=>{
+    const r=rows[+b.dataset.r], x=r&&r.c[b.dataset.k]; if(!x||!x.s) return;
+    const d=docs[x.s[0]]||{}, url=d.u||('https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname='+encodeURIComponent(x.s[0]));
+    srcEl.innerHTML=`<span class="font-semibold text-slate-700">${esc(r.m.n)}</span> · ${kpiLbl(b.dataset.k)}: <b>${fmt(x.v,x.s)}</b>${r.m.u?' '+esc(r.m.u):''} — read from <i>${esc(d.t||'filing')}</i> filed ${esc(d.d||'?')}, page ${x.s[1]}, row “${esc(x.s[2])}”, printed as <b>${esc(x.s[3])}</b> · <a class="text-indigo-600 hover:underline font-semibold" href="${url}" target="_blank" rel="noopener">Open the filing on BSE →</a>`;
+    srcEl.style.display='';
+  });
+  const used=new Set(rows.flatMap(r=>Object.values(r.c).map(x=>x.s&&x.s[0]).filter(Boolean)));
+  const latest=[...used].map(a=>docs[a]||{}).sort((a,b)=>String(b.d||'').localeCompare(String(a.d||'')))[0];
+  $('kpiNote').innerHTML=`Read from ${used.size} filing${used.size===1?'':'s'} on BSE`+(latest?` (latest: ${esc(latest.t||'')}, ${esc(latest.d||'')})`:'')+
+    `. Every value is exactly as printed in that filing — nothing is estimated or derived; a yearly cell for a point-in-time metric (a count, balance or ratio) is its FY-end figure. `+
+    (all.length>MAXC?`Showing the last ${MAXC} of ${all.length} periods. `:'')+`Tap ${KPI_I} for the page.`;
+}
+
+/* ---------- shareholding pattern (NSE quarterly SHP filings) ----------------------------------
+   Rows normally arrive inside this stock's fin slice; loadSHP() below is the fallback that reads
+   the whole-market shareholding.json (0.9 MB) when no slice exists. -------------------------- */
+const SHP_MONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const shpQ=iso=>SHP_MONS[+iso.slice(5,7)-1]+' '+iso.slice(0,4);
+function renderSHP(quarters,cells){
+  const el=$('shp'), note=$('shpNote');
+  note.innerHTML='';   // the source line sits OUTSIDE the sideways-scrolling holder, so opening on the newest quarter can't cut it off
+  if(!quarters||!quarters.length||!cells||!cells.length){
+    el.innerHTML=FIN_STATE==='pending'
+      ? '<span class="text-slate-400">Loading shareholding pattern…</span>'
+      : '<span class="text-slate-400">No NSE quarterly shareholding-pattern filing on file for this stock (BSE-only listings and pre-2021-format filers aren’t covered yet).</span>';
+    return;
+  }
+  try{
+    // feed quarters are newest-first; display oldest -> newest, trimming leading never-filed quarters
+    let idx=quarters.map((q,i)=>i).reverse();
+    while(idx.length&&!cells[idx[0]]) idx.shift();
+    if(!idx.length){ el.innerHTML='<span class="text-slate-400">No parsed shareholding filings yet for this stock.</span>'; return; }
+    const v=(i,k)=>{ const c=cells[i]; return (c&&c[k]!=null)?c[k]:null; };
+    // Government holding (Screener's separate row) — a public sub-category from the SHP filing's
+    // GovernmentsMember, looked up by quarter from the slice's shpGov sidecar. Removed from the
+    // Public & others residual so the column still sums to ~100.
+    const govAt=i=>{ const g=(SHP_GOV&&SHP_GOV[quarters[i]]); return (g==null)?null:+g; };
+    const hasGov=idx.some(i=>govAt(i)!=null);
+    const pubO=i=>{ const c=cells[i]; if(!c) return null; const g=govAt(i)||0; return Math.max(0,+(100-c[0]-c[1]-c[2]-g).toFixed(2)); };
+    const tr=(lbl,get,cls,raw)=>'<tr class="border-b border-slate-50 '+(cls||'')+'"><td class="py-1.5 pr-2 font-medium whitespace-nowrap">'+lbl+'</td>'+
+      idx.map(i=>{ const x=get(i); return '<td class="text-right px-2 py-1.5 whitespace-nowrap">'+(x==null?'<span class="text-slate-300">—</span>':(raw?x:x.toFixed(2)+'%'))+'</td>'; }).join('')+'</tr>';
+    let h='<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1 pr-2">Holder</th>'+
+      idx.map(i=>'<th class="text-right px-2 py-1 whitespace-nowrap">'+shpQ(quarters[i])+'</th>').join('')+'</tr></thead><tbody>';
+    h+=tr('Promoters',i=>v(i,0));
+    h+=tr('FIIs',i=>v(i,1));
+    h+=tr('DIIs <button id="diiTg" class="ml-1 w-4 h-4 inline-flex items-center justify-center rounded border border-slate-300 text-slate-500 text-[10px] leading-none align-middle" title="Show mutual fund / insurance split">+</button>',i=>v(i,2));
+    h+=tr('<span class="pl-4">Mutual funds</span>',i=>v(i,3),'shp-sub hidden text-slate-500');
+    h+=tr('<span class="pl-4">Insurance</span>',i=>v(i,4),'shp-sub hidden text-slate-500');
+    if(hasGov) h+=tr('Government',i=>govAt(i));
+    h+=tr('Public &amp; others',i=>pubO(i));
+    if(idx.some(i=>v(i,6)!=null))
+      h+=tr('No. of shareholders',i=>{ const n=v(i,6); return n==null?null:(+n).toLocaleString('en-IN'); },'text-slate-500',true);
+    h+='</tbody></table>';
+    let sub=null; for(let k=idx.length-1;k>=0&&!sub;k--){ const c=cells[idx[k]]; if(c&&c[5]) sub=c[5]; }
+    el.innerHTML=h;
+    note.innerHTML='<div class="text-[11px] text-slate-400 mt-2">'+(sub?('Latest filing submitted '+sub+' · '):'')+
+      'Source: NSE quarterly shareholding-pattern (SHP) XBRL. FII = foreign institutions (FPI, FDI); DII = domestic institutions (MF, insurance, banks, PF, AIF); '+(hasGov?'Government = Central/State/President of India holding (as filed); ':'')+'Public &amp; others = balance incl. employee trusts. <a class="text-indigo-500 hover:underline" href="./fii-dii.html">Daily FII/DII flows →</a></div>';
+    openOnNewest(el);   // newest quarter first, as Insights does
+    const tg=$('diiTg');
+    if(tg) tg.onclick=()=>{ const open=tg.textContent.trim()==='−'; tg.textContent=open?'+':'−';
+      el.querySelectorAll('.shp-sub').forEach(r=>r.classList.toggle('hidden',open)); };
+  }catch(e){ el.innerHTML='<span class="text-slate-400">Shareholding data unavailable right now.</span>'; note.innerHTML=''; }
+}
+async function loadSHP(){
+  try{
+    const j=await(await fetch('./shareholding.json')).json();
+    const rows=j.rows||[];
+    const alias=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS&&FUND_ALIAS[SYM])||null;
+    const row=rows.find(r=>r[0]===SYM)||(alias?rows.find(r=>r[0]===alias):null);
+    renderSHP(j.quarters||[], row?(row[4]||[]):null);
+  }catch(e){ $('shp').innerHTML='<span class="text-slate-400">Shareholding data unavailable right now.</span>'; $('shpNote').innerHTML=''; }
+}
+
+/* ---------- deep shareholding history (fin slice shpH — back to 2019) -------------------------
+   Rows [qeISO, prom, fii, dii, mf, ins, subDate, nsh] oldest first. The table reuses renderSHP
+   by reshaping to its (quarters newest-first, cells) contract; the trend chart and the
+   shareholder-count band are drawn from the full history regardless of the table window. */
+let SHP_HIST=null, SHP_FULL=false, SHP_GOV=null;   // SHP_GOV = {qeISO: gov%} from the slice
+function shpHistView(){
+  // rewind: only filings SUBMITTED by the as-of date (submission date, else quarter end + a
+  // filing-lag cushion of 45 days when the submission date is missing)
+  if(ASOF==null) return SHP_HIST;
+  const iso=isoOff(ASOF);
+  return (SHP_HIST||[]).filter(r=>{
+    if(r[6]) return r[6]<=iso;
+    const qe=new Date(r[0]); qe.setDate(qe.getDate()+45);
+    return qe.toISOString().slice(0,10)<=iso;
+  // a re-filed quarter (§142k: [8] re-filing date, [9] original five %) shows the ORIGINAL until the re-filing was public
+  }).map(r=>(r[8]&&r[8]>iso&&Array.isArray(r[9]))?[r[0],...r[9],r[6],r[7]]:r);
+}
+function renderSHPdeep(){
+  const view=shpHistView();
+  if(!view.length){
+    $('shp').innerHTML='<span class="text-slate-400">No shareholding-pattern filing had been submitted by this date.</span>';
+    $('shpNote').innerHTML='';
+    $('shpChart').style.display='none';
+    $('shpAll').style.display='none';
+    return;
+  }
+  const hist=SHP_FULL?view:view.slice(-12);
+  renderSHP(hist.map(r=>r[0]).reverse(), hist.map(r=>r.slice(1,8)).reverse());
+}
+function wireShpToggle(){
+  const b=$('shpAll'); if(!b||!SHP_HIST||SHP_HIST.length<=12) return;
+  b.style.display='';
+  const set=()=>b.textContent=SHP_FULL?'Last 12 quarters':'Full history ('+SHP_HIST.length+' qtrs)';
+  set(); b.onclick=()=>{ SHP_FULL=!SHP_FULL; renderSHPdeep(); set(); };
+}
+function shpTrendChart(hist){
+  const el=$('shpChart'); if(!el||!hist||hist.length<3){ if(el) el.style.display='none'; return; }
+  const H=170,W=760,PL=36,PR=8,PT=10,PB=18;
+  const series=[['Promoters',1,'#6366f1'],['FIIs',2,'#16a34a'],['DIIs',3,'#d97706']];
+  let lo=100,hi=0;
+  for(const r of hist) for(const[,k]of series){ const x=r[k]; if(x!=null){ lo=Math.min(lo,x); hi=Math.max(hi,x); } }
+  if(hi<=lo){ el.style.display='none'; return; }
+  lo=Math.max(0,lo-2); hi=Math.min(100,hi+2);
+  const X=i=>PL+i/(hist.length-1||1)*(W-PL-PR), Y=v=>PT+(1-(v-lo)/(hi-lo))*(H-PT-PB);
+  let grid='';
+  for(let g=0;g<=3;g++){ const val=lo+(hi-lo)*g/3, y=Y(val).toFixed(1);
+    grid+=`<line x1="${PL}" x2="${W-PR}" y1="${y}" y2="${y}" stroke="var(--border,#e5e7eb)" stroke-width="1"/>`+
+      `<text x="${PL-5}" y="${(+y+3)}" text-anchor="end" font-size="9" fill="var(--text-faint,#94a3b8)">${val.toFixed(0)}%</text>`; }
+  let paths='',leg='';
+  series.forEach(([nm,k,col])=>{
+    const pts=hist.map((r,i)=>r[k]!=null?[X(i),Y(r[k])]:null).filter(Boolean);
+    if(pts.length<2) return;
+    paths+=`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="2"/>`;
+    const last=hist[hist.length-1][k];
+    leg+=`<span class="mr-3" style="color:${col}">━ ${nm}${last!=null?' '+last.toFixed(2)+'%':''}</span>`;
+  });
+  let xl='';
+  [0,hist.length>>1,hist.length-1].forEach(i=>{ xl+=`<text x="${X(i).toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="9" fill="var(--text-faint,#94a3b8)">${shpQ(hist[i][0])}</text>`; });
+  // shareholder-count band — retail crowding in/out, quarter by quarter
+  const withNs=hist.map((r,i)=>[i,r[7]]).filter(x=>x[1]!=null);
+  let band='';
+  if(withNs.length>=3){
+    const vals=withNs.map(x=>x[1]), bl=Math.min(...vals), bh=Math.max(...vals), BH=46;
+    const pts=withNs.map(([i,v])=>[X(i),10+(1-(v-bl)/((bh-bl)||1))*(BH-16)]);
+    band=`<svg viewBox="0 0 ${W} ${BH}" width="100%" preserveAspectRatio="none" style="display:block;margin-top:4px">
+      <path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')}" fill="none" stroke="var(--text-faint,#94a3b8)" stroke-width="1.5"/>
+      <text x="${PL}" y="11" font-size="9.5" fill="var(--text-faint,#94a3b8)">No. of shareholders: ${(+vals[vals.length-1]).toLocaleString('en-IN')} now · ${(+vals[0]).toLocaleString('en-IN')} in ${shpQ(hist[withNs[0][0]][0])}</text></svg>`;
+  }
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="none" style="display:block">${grid}${paths}${xl}</svg>${band}<div class="text-[11px] mt-1">${leg}</div>`;
+  el.style.display='';
+}
+
+/* ---------- strategy exposure (slice.strat — tracked strategies holding this stock now) ---------- */
+function renderStrat(){
+  const el=$('stratCard'); if(!el) return;
+  const rows=(SLICE&&SLICE.strat)||[];
+  if(!rows.length){ el.style.display='none'; return; }
+  el.style.display='';
+  $('stratN').textContent='— in '+rows.length+' tracked strateg'+(rows.length===1?'y':'ies')+' right now';
+  $('strat').innerHTML=rows.map(r=>`<div class="flex items-center justify-between gap-2 py-1.5 border-b border-slate-50">`+
+    `<span class="min-w-0 flex-1 text-[13px]">${esc(r[0])}<span class="text-[11px] text-slate-400 ml-1.5">since ${esc(r[2]||'—')}</span></span>`+
+    `<b class="${(r[1]||0)>=0?'pos':'neg'} whitespace-nowrap text-[13px]">${r[1]==null?'—':pct(+r[1])}</b></div>`).join('');
+}
+
+/* ---------- sector / industry breadcrumb (sector_classification.json) --------------------------
+ * NSE files every listed company under four nested labels — macro sector → sector → industry →
+ * basic industry — and sectors.html builds a live equal-weighted index for each one. Every rung
+ * here links into that page's chart, constituents and multi-period returns for the exact bucket
+ * this stock sits in.
+ *
+ * Source is the same file sectors.html groups by (~57 KB gzipped, shared browser cache), fetched
+ * AFTER first paint so it never delays the price. A rung is dropped only when it repeats the rung
+ * above BY NAME **and** BY MEMBERSHIP: "Financial Services › Financial Services" is one index
+ * listed twice, but macro "Utilities" (57 stocks) and sector "Utilities" (17) are different
+ * buckets that happen to share a name — name-only de-duping would hide the narrower index. */
+const CLS_CHAIN=[['macro','sector','Sector'],['sector','sub','Sub-sector'],['igroup','industry','Industry'],['industry','basic','Sub-industry']];
+let CLS_MAP=null, CLS_P=null;
+const clsNorm=s=>String(s==null?'':s).replace(/\s+/g,' ').trim();   // mirrors buildGroups() in sectors.html
+function loadClass(){ return CLS_P||(CLS_P=fetch('./sector_classification.json').then(r=>r.ok?r.json():null).catch(()=>null)); }
+async function renderClass(){
+  const el=$('sCls'); if(!el||!TKR) return;
+  if(!CLS_MAP) CLS_MAP=await loadClass();
+  const map=CLS_MAP; if(!map) return;
+  // Whose page this is picks the exchange's entry (§203/§207): a BSE slice (SLICE.bse) is the BSE company's page and
+  // reads only SYM.BO; every other page is the NSE company's and reads only SYM.NS. The old NS-then-BO fallback gave
+  // the 7 NSE pages whose ticker is also another company's BSE scrip_id (ZEAL, GSTL, MAL, SEL, RAJPUTANA, FOCUS,
+  // KALYANI — measured: the only NSE pages that ever reached .BO) that company's sector: ZEAL showed Zeal Aqua's Seafood.
+  const c=(SLICE&&SLICE.bse)?(map[TKR+'.BO']||map[TKR]):(map[TKR+'.NS']||map[TKR]); if(!c) return;   // 477 tickers (mostly renames) aren't filed yet
+  const chain=CLS_CHAIN.map(([f,lvl,lbl])=>({f,lvl,lbl,name:clsNorm(c[f])})).filter(x=>x.name);
+  if(!chain.length) return;
+  const sets=chain.map(()=>new Set());                               // one pass: who else sits in each rung
+  for(const k in map){ const v=map[k]; if(!v)continue;
+    for(let i=0;i<chain.length;i++) if(clsNorm(v[chain[i].f])===chain[i].name) sets[i].add(k); }
+  const same=(a,b)=>{ if(a.size!==b.size)return false; for(const k of a) if(!b.has(k))return false; return true; };
+  const show=chain.filter((x,i)=>i===0||!(x.name===chain[i-1].name&&same(sets[i],sets[i-1])));
+  el.innerHTML=show.map((x,i)=>
+    (i?'<span class="text-slate-300 px-0.5">›</span>':'')+
+    `<a class="clschip" href="./markets.html?v=sectors&level=${encodeURIComponent(x.lvl)}&name=${encodeURIComponent(x.name)}" `+
+    `title="${esc(x.lbl)} index — open the ${esc(x.name)} chart, constituents and returns">`+
+    `<span class="clslv hidden sm:inline">${esc(x.lbl)}</span>${esc(x.name)}</a>`).join('')+
+    `<span class="text-[10px] text-slate-400 ml-1 hidden sm:inline">← tap any for its index chart</span>`;
+  el.style.display='flex';
+  $('sInd').style.display='none';        // the single coarse label the full chain now supersedes
+}
+
+/* ---------- peer comparison (slice.peers — same industry, mcap-ranked, self first) --------------
+ * The builder's order — this stock, then the rest by market cap — is the DEFAULT, not the only one:
+ * a click on any heading re-ranks the industry by P/E, size or 1-year return, which is the question
+ * a peer list is usually being asked. Sorting drops the self-first pin (it would contradict the
+ * sort) but the row stays bold, so you can still see where this stock lands in the ranking.
+ * Same rules as the sectors page's table: a fresh column starts descending (A-Z for the name), the
+ * same column flips, and unknowns sink on BOTH directions — a company with no TTM profit on file
+ * is not the cheapest one in the industry. */
+const PEER_COLS=[{k:'sym',lbl:'Company',left:1},{k:2,lbl:'MCap (₹ cr)'},{k:3,lbl:'P/E (TTM)'},{k:4,lbl:'1Y'}];
+function medianOf(a){ if(!a.length)return null; const v=a.slice().sort((x,y)=>x-y), h=v.length>>1;
+  return v.length%2?v[h]:(v[h-1]+v[h])/2; }
+let PEER_SORT=null;                       // null = the builder's own order
+function renderPeers(){
+  const el=$('peersCard'); if(!el) return;
+  const P=SLICE&&SLICE.peers;
+  if(!P||!P.r||P.r.length<2){ el.style.display='none'; return; }
+  el.style.display='';
+  /* Median of the rows ON SCREEN — deliberately NOT the whole industry's. This table is the group's
+     LARGEST members (self + top 8 by market cap), so its middle is "the big names in this
+     business", a different and usually lower-covered statistic than sectors.html's median over
+     every listed member. Two pages quoting one label with two numbers is the failure mode here, so
+     the label says which rows it covers and the note below points at the other one. */
+  const peShown=P.r.map(x=>x[3]).filter(v=>v!=null&&v>0);
+  const peMed=medianOf(peShown);
+  $('peersInd').innerHTML='— '+esc(P.g||'same industry')+
+    (peMed==null?'' : ` · median P/E <b class="text-slate-600">${peMed.toFixed(1)}</b> <span class="text-slate-400">(${peShown.length} of the ${P.r.length} listed)</span>`);
+  const rows=P.r.slice();
+  if(PEER_SORT){
+    const k=PEER_SORT.k, dir=PEER_SORT.dir, get=r=>k==='sym'?String(r[0]).toLowerCase():r[k];
+    rows.sort((a,b)=>{ const va=get(a), vb=get(b);
+      if(va==null&&vb==null)return 0; if(va==null)return 1; if(vb==null)return -1;
+      return (va<vb?-1:va>vb?1:0)*dir; });
+  }
+  const arrow=c=>(PEER_SORT&&String(PEER_SORT.k)===String(c.k))?(PEER_SORT.dir===1?' ▲':' ▼'):'';
+  $('peers').innerHTML=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
+    PEER_COLS.map(c=>`<th class="pkcol ${c.left?'text-left py-1 pr-2':'text-right px-2'}" data-k="${c.k}" title="Sort by ${esc(c.lbl)}">${esc(c.lbl)}${arrow(c)}</th>`).join('')+
+    `</tr></thead><tbody>`+
+    rows.map(r=>{ const me=r[0]===TKR;
+      const cell=`<span class="pname">${esc(r[1])}</span><span class="psym">${esc(r[0])}</span>`;
+      return `<tr class="border-b border-slate-50 ${me?'font-bold':''}">`+
+        `<td class="py-1.5 pr-2 whitespace-nowrap">${me?cell:`<a class="text-indigo-600 hover:underline" href="./stock.html?sym=${encodeURIComponent(r[0])}">${cell}</a>`}</td>`+
+        `<td class="text-right px-2">${r[2]==null?'—':(+r[2]).toLocaleString('en-IN')}</td>`+
+        `<td class="text-right px-2">${r[3]==null?'—':(+r[3]).toFixed(1)}</td>`+
+        `<td class="text-right px-2 ${r[4]==null?'':(r[4]>=0?'pos':'neg')}">${r[4]==null?'—':pct(+r[4])}</td></tr>`;
+    }).join('')+`</tbody></table>`;
+  $('peers').querySelectorAll('.pkcol').forEach(th=>th.onclick=()=>{
+    const nk=th.dataset.k==='sym'?'sym':+th.dataset.k;
+    PEER_SORT=(PEER_SORT&&String(PEER_SORT.k)===String(nk))?{k:nk,dir:-PEER_SORT.dir}:{k:nk,dir:nk==='sym'?1:-1};
+    renderPeers();
+  });
+}
+
+/* ---------- company activity (slice act/ann/ins/dls/dsc — rolling feed windows) ---------- */
+const NSE_PDF='https://nsearchives.nseindia.com/corporate/';
+const INS_CAT={P:'Promoter',D:'Director',K:'KMP',O:'Other'};
+const INS_SIDE={B:['Buy','pos'],S:['Sell','neg'],P:['Pledge','neg'],R:['Pledge release','pos'],I:['Invoked','neg'],O:['Other','']};
+function renderActivity(){
+  const el=$('actCard'); if(!el) return;
+  const S=SLICE||{};
+  const tabs=[['ann',SWI.megaphone+' Announcements'],['dsc',SWI.compass+' Triggers'],['ins',SWI.user+' Insider'],['dls',SWI.briefcase+' Deals'],['act',SWI.calendar+' Corp actions']]
+    .map(([k,l])=>({k,l,n:(S[k]||[]).length}));
+  if(!tabs.some(t=>t.n)){ el.style.display='none'; return; }
+  el.style.display='';
+  let cur=(tabs.find(t=>t.n)||tabs[0]).k;
+  const draw=()=>{
+    $('actTabs').innerHTML=tabs.map(t=>`<button data-t="${t.k}" class="px-2.5 py-1 rounded-lg text-xs font-semibold border shrink-0 ${t.k===cur?'bg-slate-800 text-white border-slate-800':'text-slate-500 border-slate-200 hover:bg-slate-50'} ${t.n?'':'opacity-40'}">${t.l}${t.n?' · '+t.n:''}</button>`).join('');
+    $('actTabs').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ cur=b.dataset.t; draw(); });
+    $('actBody').innerHTML=actRows(cur,S[cur]||[]);
+  };
+  draw();
+}
+function actRows(kind,rows){
+  if(!rows.length) return '<div class="text-slate-400 text-xs py-3">Nothing in this feed’s window for this stock.</div>';
+  const pdf=f=>f?` <a class="text-indigo-600 hover:underline whitespace-nowrap" target="_blank" rel="noopener" href="${esc(NSE_PDF+f)}">📄 PDF</a>`:'';
+  const row=(date,badge,body,link)=>`<div class="flex items-start gap-2 py-1.5 border-b border-slate-50">`+
+    `<span class="text-[11px] text-slate-400 whitespace-nowrap w-[74px] shrink-0 pt-0.5">${esc(date)}</span>`+
+    `<div class="min-w-0 flex-1 text-[13px]">${badge}${body}${link||''}</div></div>`;
+  // BSE hands us category strings 50+ chars long ("Analysts/Institutional Investor
+  // Meet/Con. Call Updates"). As a nowrap inline badge that shoots past the row and,
+  // on a phone, past the screen edge — where it is clipped with no ellipsis and no way
+  // to scroll to it. inline-block + max-width + ellipsis keeps it on one line inside
+  // the row; the untruncated text stays reachable via the title.
+  const bdg=(txt,cls)=>`<span title="${esc(txt)}" class="text-[10px] font-bold uppercase ${cls} px-1.5 py-0.5 rounded mr-1.5 whitespace-nowrap inline-block align-bottom max-w-full overflow-hidden text-ellipsis">${esc(txt)}</span>`;
+  if(kind==='ann') return rows.map(r=>row(r[0].slice(0,10),bdg(r[1]||'—','bg-slate-100 text-slate-600'),esc(r[2]),pdf(r[3]))).join('');
+  if(kind==='dsc') return rows.map(r=>row(r[0],bdg(r[1],'bg-rose-50 text-rose-600'),esc(r[2]),pdf(r[3]))).join('');
+  if(kind==='ins') return rows.map(r=>{ const sd=INS_SIDE[r[3]]||[r[3]||'—',''];
+    return row(r[0],bdg(sd[0],sd[1]==='pos'?'bg-green-50 text-green-700':sd[1]==='neg'?'bg-red-50 text-red-600':'bg-slate-100 text-slate-600'),
+      `${esc(r[1])} <span class="text-slate-400">(${esc(INS_CAT[r[2]]||r[2]||'—')})</span> · ${fmtQty(r[4])} sh · ${fmtRs(r[5])}${r[7]!=null&&r[7]!==0?` <span class="text-slate-400">· holds ${esc(r[7])}% post</span>`:''}`); }).join('');
+  if(kind==='dls') return rows.map(r=>row(r[0],bdg(r[1]==='K'?'Block':'Bulk','bg-sky-50 text-sky-700'),
+    `${esc(r[2])} <b class="${r[3]==='B'?'pos':'neg'}">${r[3]==='B'?'bought':'sold'}</b> ${fmtQty(r[4])} @ ₹${esc(r[5])}`)).join('');
+  if(kind==='act') return rows.map(r=>row(r[0],bdg(r[1]==='D'?'Dividend':r[1]==='B'?'Bonus':r[1]==='S'?'Split':'Action','bg-amber-50 text-amber-700'),
+    `${esc(r[2])}${r[3]&&r[3]!==r[0]?` <span class="text-slate-400">· ex-date ${esc(r[3])}</span>`:''}${r[5]!=null?` <span class="text-slate-400">· yield ${esc(r[5])}%</span>`:''}`)).join('');
+  return '';
+}
+
+/* ---------- seasonality heatmap (month-end closes from the full price series) ---------- */
+let SEAS_ALL=false;
+function renderSeason(){
+  const el=$('season'); if(!el) return;
+  const s=SERIES[TKR]; if(!s||s.d.length<40){ el.innerHTML='<span class="text-slate-400">Not enough history for a seasonality view.</span>'; return; }
+  const me=[]; let curYm=null;                       // month-end closes [ [YYYY-MM, close], … ]
+  const cutoff=ASOF!=null?ASOF:Infinity;             // rewind: seasonality ends at the as-of date
+  for(let i=0;i<s.d.length;i++){ if(s.d[i]>cutoff) break;
+    const ym=isoOff(s.d[i]).slice(0,7);
+    if(ym!==curYm){ me.push([ym,s.p[i]/100]); curYm=ym; } else me[me.length-1][1]=s.p[i]/100; }
+  if(me.length<14){ el.innerHTML='<span class="text-slate-400">Not enough history for a seasonality view.</span>'; return; }
+  const by={};
+  for(let i=1;i<me.length;i++){ const pc=me[i-1][1]; if(!pc) continue;
+    const y=+me[i][0].slice(0,4), m=+me[i][0].slice(5,7)-1;
+    (by[y]=by[y]||new Array(12).fill(null))[m]=(me[i][1]/pc-1)*100; }
+  const years=Object.keys(by).map(Number).sort((a,b)=>b-a);
+  const shown=SEAS_ALL?years:years.slice(0,15);
+  const b=$('seasAll');
+  if(years.length>15){ b.style.display=''; b.textContent=SEAS_ALL?'Last 15 years':'All '+years.length+' years';
+    b.onclick=()=>{ SEAS_ALL=!SEAS_ALL; renderSeason(); }; }
+  const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const bg=v=>v==null?'':`background:${v>=0?'rgba(22,163,74,':'rgba(220,38,38,'}${Math.min(.12+Math.abs(v)/45,.55).toFixed(2)})`;
+  const cell=v=>`<td class="text-right px-2 py-1" style="${bg(v)}">${v==null?'<span class="text-slate-300">—</span>':v.toFixed(1)}</td>`;
+  const yrRet=y=>{ const a=by[y].filter(v=>v!=null); if(!a.length) return null;
+    return (by[y].reduce((t,v)=>t*(1+(v||0)/100),1)-1)*100; };
+  let html=`<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>`+
+    `<th class="text-left py-1 pr-2">Year</th>${MON.map(m=>`<th class="text-right px-2">${m}</th>`).join('')}<th class="text-right px-2">Yr</th></tr></thead><tbody>`;
+  for(const y of shown){ const yv=yrRet(y);
+    html+=`<tr class="border-b border-slate-50"><td class="py-1 pr-2 font-medium">${y}</td>${by[y].map(cell).join('')}`+
+      `<td class="text-right px-2 font-semibold ${yv==null?'':(yv>=0?'pos':'neg')}">${yv==null?'—':yv.toFixed(1)}</td></tr>`; }
+  const avg=new Array(12).fill(null).map((_,m)=>{ const a=years.map(y=>by[y][m]).filter(v=>v!=null);
+    return a.length?a.reduce((t,v)=>t+v,0)/a.length:null; });
+  html+=`<tr class="border-t border-slate-200 font-semibold"><td class="py-1 pr-2">Avg</td>${avg.map(cell).join('')}<td class="text-right px-2"></td></tr>`;
+  html+=`</tbody></table>`;
+  el.innerHTML=html;
+}
+
+/* ---------- delivery-% sparkline (dv rides the price slice tail — accumulation signal) ---------- */
+function renderDelivSpark(){
+  const el=$('delivSpark'); if(!el) return;
+  const s=SERIES[TKR];
+  if(!s||!s.dv){ el.innerHTML=''; return; }
+  const N=60, n=s.d.length, pts=[];
+  for(let i=Math.max(0,n-N);i<n;i++){ const v=s.dv[i]; if(v!=null&&v>0) pts.push(v); }
+  if(pts.length<10){ el.innerHTML=''; return; }
+  const W=300,H=44,hi=Math.max(...pts,1);
+  const X=i=>i/(pts.length-1)*(W-2)+1, Y=v=>H-4-(v/hi)*(H-14);
+  const avg=pts.reduce((t,v)=>t+v,0)/pts.length;
+  el.innerHTML=`<div class="text-[11px] text-slate-500 mb-1">Delivery % — last ${pts.length} sessions <span class="text-slate-400">(latest ${pts[pts.length-1].toFixed(1)}% · avg ${avg.toFixed(1)}%)</span></div>`+
+    `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="none" style="display:block">`+
+    `<line x1="1" x2="${W-1}" y1="${Y(avg).toFixed(1)}" y2="${Y(avg).toFixed(1)}" stroke="var(--text-faint,#94a3b8)" stroke-dasharray="3 3" stroke-width="1"/>`+
+    `<path d="${pts.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ')}" fill="none" stroke="#0ea5e9" stroke-width="1.5"/></svg>`;
+}
+
+/* ---------- pre-IPO annual financials (docs/ipo_prehistory.json) ---------------------------------
+   Annual revenue + net profit from the company's prospectus era, via MoneyControl's yearly feed —
+   the multi-year history a freshly-listed name has before it ever filed a quarter with the exchange.
+   DISPLAY ONLY: this file is never read by the backtest engine (whose point-in-time fundamentals stay
+   filing-sourced). Shown standalone; a "matches filed results" badge appears once a filed quarter
+   cross-checks it. In rewind, years ending after the as-of date are dropped (point-in-time honesty). */
+let IPOFIN=null, IPOFIN_P=null, IPOFIN_B=null;
+function loadIpoFin(){
+  return IPOFIN_P||(IPOFIN_P=fetch('./ipo_fin/'+encodeURIComponent(SYM)+'.json').then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{
+    IPOFIN=j; try{ if(j&&j.name&&$('sName')&&[ '',SYM].includes($('sName').textContent.trim())) $('sName').textContent=j.name; renderPreIPO(); }catch(e){ console.error(e); }
+  }));
+}
+/* The company's own restated statements (prospectus) and result columns. Every column shown passed its statement's
+   arithmetic in fetch_new_listing_financials.py; a period the documents don't print is simply absent, never estimated. */
+function renderIpoFin(){
+  const d=IPOFIN, card=$('preipoCard');
+  const has=b=>d[b]&&Object.keys(d[b]).length>0;
+  let b=IPOFIN_B||(FB_PICK&&has(FBASIS)?FBASIS:(has('con')?'con':'std')); if(!has(b)) b=has('con')?'con':'std';
+  IPOFIN_B=b;
+  let asof=null;
+  if(typeof ASOF!=='undefined'&&ASOF!=null&&typeof isoOff==='function') asof=+isoOff(ASOF).replace(/-/g,'');
+  const per=Object.keys(d[b]).map(k=>{ const [e,m]=k.split('|'); return {k,e:+e,m:+m,r:d[b][k]}; }).filter(p=>asof==null||p.e<=asof);
+  const MON=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const lab=p=>MON[Math.floor(p.e/100)%100]+' '+Math.floor(p.e/10000);
+  const inr=v=>v==null?'<span class="text-slate-300">—</span>':(v<0?'<span class="neg">':'<span>')+Number(v).toLocaleString('en-IN',{maximumFractionDigits:Math.abs(v)<100?1:0})+'</span>';
+  const tab=(title,cols,rows,head)=>{
+    if(!cols.length) return '';
+    const live=rows.filter(([,f])=>cols.some(c=>f(c.r)!=null));
+    if(!live.length) return '';
+    let h='<div class="text-[11px] uppercase text-slate-500 font-semibold mt-3 mb-1">'+title+'</div><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1.5 pr-3">₹ crore</th>'
+      +cols.map(c=>'<th class="text-right px-3 whitespace-nowrap">'+head(c)+'</th>').join('')+'</tr></thead><tbody>';
+    for(const [l,f,fmt] of live) h+='<tr class="border-b border-slate-50"><td class="py-1.5 pr-3 font-semibold text-slate-700 whitespace-nowrap">'+l+'</td>'+cols.map(c=>{ const v=f(c.r); return '<td class="px-3 text-right whitespace-nowrap">'+(fmt?fmt(v):inr(v))+'</td>'; }).join('')+'</tr>';
+    return h+'</tbody></table>';
+  };
+  const opx=r=>(r.exp!=null&&r.fc!=null&&r.dep!=null)?r.exp-r.fc-r.dep:null;      // expenses before interest and depreciation
+  const op=r=>(opx(r)!=null&&r.rev!=null)?r.rev-opx(r):null;
+  const np=r=>r.own!=null?r.own:(r.np!=null?r.np:r.pat);
+  const tax=r=>r.tax!=null?r.tax:((r.ctax!=null||r.dtax!=null)?(r.ctax||0)+(r.dtax||0):null);
+  const pct=v=>v==null?'<span class="text-slate-300">—</span>':v.toFixed(0)+'%';
+  const eps=v=>v==null?'<span class="text-slate-300">—</span>':v.toFixed(2);
+  const plRows=[['Revenue',r=>r.rev],['Expenses',opx],['Operating profit',op],['OPM %',r=>(op(r)!=null&&r.rev)?op(r)/r.rev*100:null,pct],['Other income',r=>r.oi],['Interest',r=>r.fc],['Depreciation',r=>r.dep],['Profit before tax',r=>r.pbt],['Tax',tax],['Net profit',np],['EPS ₹',r=>r.eps_b,eps]];
+  const eq=r=>r.eq!=null?r.eq:((r.sc!=null&&r.oeq!=null)?r.sc+r.oeq:null);
+  const bsRows=[['Share capital',r=>r.sc],['Reserves',r=>r.oeq],['Total equity',eq],['Borrowings',r=>r.borr],['Fixed assets (PPE)',r=>r.ppe],['Capital WIP',r=>r.cwip],['Goodwill',r=>r.gw],['Inventories',r=>r.invnt],['Receivables',r=>r.rec],['Cash',r=>r.cash],['Total assets',r=>r.assets]];
+  const cfRows=[['Operating cash flow',r=>r.cfo],['Investing cash flow',r=>r.cfi],['Financing cash flow',r=>r.cff],['Capex',r=>r.capex]];
+  const asc=(x,y)=>x.e-y.e;
+  const yr=per.filter(p=>p.m===12&&p.r.rev!=null).sort(asc), qt=per.filter(p=>p.m===3&&p.r.rev!=null).sort(asc), st=per.filter(p=>(p.m===6||p.m===9)&&p.r.rev!=null).sort(asc);
+  const bs=per.filter(p=>p.m===0&&p.r.assets!=null).sort(asc), cf=per.filter(p=>p.m!==0&&p.r.cfo!=null).sort(asc);
+  const listed=+(d.listed||'0').replace(/-/g,'');
+  const yh=p=>lab(p)+(p.e<listed?' <span class="text-[9px] font-extrabold text-indigo-500">PRE-IPO</span>':'');
+  let h=tab('Annual results',yr,plRows,yh)+tab('Quarterly results',qt,plRows,yh);
+  if(st.length) h+=tab('Half-year and nine-month results',st,plRows,p=>p.m+'m '+lab(p));
+  h+=tab('Balance sheet',bs,bsRows,yh)+tab('Cash flow',cf,cfRows,p=>(p.m===12?'':p.m+'m ')+yh(p));
+  if(!h) return false;
+  $('preipoTitle').textContent='Annual and pre-listing financials';
+  $('preipoBadge').innerHTML='— ₹ crore, '+(b==='con'?'consolidated':'standalone');
+  $('preipo').innerHTML=h;
+  const box=$('ipofinBasis');
+  if(has('con')&&has('std')){
+    box.style.display='';
+    box.innerHTML=['con','std'].map(x=>'<button class="sw-chip '+(x===b?'on':'')+'" data-b="'+x+'" style="font-size:12px;padding:2px 10px;border-radius:999px;border:1px solid var(--sw-border,#cbd5e1);'+(x===b?'font-weight:700':'')+'">'+(x==='con'?'Consolidated':'Standalone')+'</button>').join('');
+    box.querySelectorAll('button').forEach(el=>el.onclick=()=>{ IPOFIN_B=el.dataset.b; renderIpoFin(); });
+  } else box.style.display='none';
+  const doc=d.src&&d.src.url?'<a class="text-indigo-600 underline" href="'+d.src.url+'" target="_blank" rel="noopener">'+({final:'prospectus',rhp:'red herring prospectus',draft:'draft prospectus'}[d.src.kind]||'offer document')+'</a>':'';
+  $('preipoNote').innerHTML='Read from the company’s own '+(doc||'documents')+(d.results&&d.results.length?' and its results filings':'')+' (restated figures for years before listing). Each column passed its statement’s own arithmetic; a period the documents don’t print is left out, not estimated. Shown for context; <b>not used in the backtest</b> beyond quarters it reads from filings.';
+  card.style.display='';
+  return true;
+}
+let PREIPO_DATA=null, PREIPO_P=null;
+function loadPreIPO(){
+  return PREIPO_P||(PREIPO_P=fetch('./ipo_prehistory.json').then(r=>r.ok?r.json():null).then(j=>{
+    PREIPO_DATA=j; try{ renderPreIPO(); }catch(e){ console.error(e); }
+  }).catch(()=>{}));
+}
+function renderPreIPO(){
+  const card=$('preipoCard'); if(!card) return;
+  const hide=()=>{ card.style.display='none'; };
+  if(IPOFIN&&renderIpoFin()) return;
+  // a LIVE page is its own company: an alias only ever stands in for a dead old symbol (§197)
+  const al=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS[SYM])||null;
+  const j=PREIPO_DATA, key=(al&&!(SLICE&&SLICE.alive)&&!(COLLIDE&&COLLIDE[SYM]))?al:SYM;
+  const e=j&&j.data&&(j.data[SYM]||j.data[key]);
+  if(!e||e.status!=='filled'||!Array.isArray(e.rows)||!e.rows.length) return hide();
+  let rows=e.rows.filter(r=>Array.isArray(r)&&r[0]);            // [fyYear, revenue, netProfit]
+  if(typeof ASOF!=='undefined'&&ASOF!=null&&typeof isoOff==='function'){   // rewind: no future years
+    const d=isoOff(ASOF), asFY=(+d.slice(5,7)>=4)?(+d.slice(0,4)+1):+d.slice(0,4);
+    rows=rows.filter(r=>r[0]<=asFY);
+  }
+  if(!rows.length) return hide();
+  const listedFY=e.listed?((+e.listed.slice(5,7)>=4)?(+e.listed.slice(0,4)+1):+e.listed.slice(0,4)):9999;
+  const inr=v=>v==null?'<span class="text-slate-300">—</span>':Number(v).toLocaleString('en-IN',{maximumFractionDigits:0});
+  let h='<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200">'
+    +'<tr><th class="text-left py-1.5 pr-3">FY</th><th class="text-right px-3">Revenue (₹ cr)</th><th class="text-right px-3">Net profit (₹ cr)</th></tr></thead><tbody>';
+  for(const r of rows){
+    const pre=r[0]<listedFY;
+    h+='<tr class="border-b border-slate-50"><td class="py-1.5 pr-3 font-semibold text-slate-700">FY'+String(r[0]).slice(2)
+      +(pre?' <span class="text-[9px] font-extrabold text-indigo-500 align-middle">PRE-IPO</span>':'')+'</td>'
+      +'<td class="px-3 text-right">'+inr(r[1])+'</td>'
+      +'<td class="px-3 text-right'+(r[2]!=null&&r[2]<0?' neg':'')+'">'+inr(r[2])+'</td></tr>';
+  }
+  $('preipo').innerHTML=h+'</tbody></table>';
+  $('preipoBadge').innerHTML=e.verified
+    ? '<span style="color:var(--pos);font-weight:700">✓ matches filed results</span>'
+    : '— standalone only, as reported to MoneyControl, not yet read from a filing';
+  $('preipoNote').innerHTML='Annual figures (standalone) from the company’s prospectus era via MoneyControl — the years before it began filing quarterly results with the exchange. Shown for context; <b>not used in the backtest</b> (which uses only point-in-time filed data).'
+    +(e.verified?' The ✓ badge means at least one year here reproduces a quarter the company has since filed.':'');
+  card.style.display='';
+}
+
+/* ---------- rewind wiring ---------------------------------------------------------------- */
+function rerenderAll(){
+  try{ renderKPI(); }catch(e){ console.error(e); }   // Insights: rewind hides filings dated after as-of
+  try{ render(); }catch(e){ console.error(e); }
+  try{ renderFunds(); }catch(e){ console.error(e); }
+  try{ renderPreIPO(); }catch(e){ console.error(e); }
+  if(SHP_HIST){ try{ shpTrendChart(shpHistView()); renderSHPdeep(); wireShpToggle(); }catch(e){ console.error(e); } }
+}
+function applyRewind(iso){
+  const s=SERIES[TKR]; if(!s) return;
+  const o=Math.min(Math.max(dayOff(iso),s.d[0]),stkEndOff());
+  ASOF=o;
+  $('rwBanner').classList.remove('hidden');
+  $('rwDate').textContent=isoOff(o);
+  document.title='STOCKSWORLD · '+(META[TKR]?META[TKR].symbol:SYM)+' @ '+isoOff(o);
+  rerenderAll();
+  $('rwBanner').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function exitRewind(){
+  ASOF=null;
+  $('rwBanner').classList.add('hidden');
+  document.title='STOCKSWORLD · '+(META[TKR]?META[TKR].symbol:SYM);
+  rerenderAll();
+}
+
+/* ---------- boot ---------- */
+/* This box hands off to theme.js's site-wide search palette (name OR symbol, with
+   suggestions); typing a bare symbol and pressing Go still works if it hasn't loaded. */
+$('sSearch').addEventListener('focus',()=>{ if(window.swSearch){ $('sSearch').blur(); window.swSearch.open($('sSearch').value.trim()); } });
+$('sForm').onsubmit=e=>{ e.preventDefault(); const v=$('sSearch').value.trim().toUpperCase();
+  if(window.swSearch){ window.swSearch.open(v); return; }
+  if(v) location.href='./stock.html?sym='+encodeURIComponent(v); };
+/* ---------- live price top-up (our Cloudflare Worker → Yahoo NSE, ~15-min delay) --------------
+ * Splices today's quote onto this stock's price series as ONE PROVISIONAL BAR, so the chart and
+ * every derived number — 52-week band, RSI, SMA distances, MACD, stochastic, seasonality, the
+ * returns table, market cap, P/E, P/S, P/B — recompute through the very same engine maths the
+ * baked bars use. No second implementation to keep in sync: this mirrors applyLiveOverlay() in
+ * backtest-engine.js (the Live Picks path), with one improvement — the ?chart= route carries the
+ * session's TRUE day high/low, which the ?symbols= route used there does not.
+ *
+ * Why it exists: this function used to write the header price and the 1-day % and nothing else,
+ * so on 2026-09-11 PINELABS read ₹202.17 (+16.75%) in the header while the chart stopped at
+ * ₹173.17 and "Market cap … at ₹173.17" sat right below it.
+ *
+ * The evening bhavcopy append (20:45 IST, refresh-backtest-data.yml) publishes the official close.
+ * Once the slice itself carries the session, the guard in spliceLiveBar() declines to splice, so
+ * the settled close always wins over the provisional one — the page never shows both.
+ *
+ * Deliberate limits: volume and delivery % are not published intraday, so both are pushed as 0 —
+ * this codebase's existing "unknown" sentinel (lwData/lwTip skip v<=0; computeTech's delivery
+ * average skips dv<=0), which is why the provisional session draws no volume bar. Turnover (TURN)
+ * is never extended, so "Avg turnover (20d)" keeps averaging complete sessions only. Rewind is
+ * untouched: an as-of date in the past can never reach a bar dated after it.
+ * Skips dead tickers; fails silently for BSE-only names Yahoo doesn't carry. ---------- */
+const WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev';
+function liveMarketOpen(){
+  const n=new Date(Date.now()+330*60000);
+  const d=n.getUTCDay(), h=n.getUTCHours()+n.getUTCMinutes()/60;
+  return d>=1&&d<=5&&h>=9&&h<=15.75;
+}
+// Undo the provisional bar, restoring the exact pre-splice state. Idempotent, and called before
+// every re-quote: without it the 60-second refresh would stack a second synthetic bar on the
+// series. The tail check makes it a no-op if anything else re-installed the slice under us.
+function clearLiveBar(){
+  if(LIVE_OFF==null) return;
+  const s=SERIES[TKR], m=META[TKR];
+  if(s&&s.d&&s.d.length&&s.d[s.d.length-1]===LIVE_OFF)
+    for(const k of ['d','p','h','l','hb','lb','v','dv']) if(s[k]&&s[k].length) s[k].pop();
+  if(m) m.raw=LIVE_RAW0;
+  if(LIVE_END0!=null) SF_END_OFF=LIVE_END0;
+  { const tn=TURN[TKR]; if(tn&&LIVE_TURN_D) tn.d=LIVE_TURN_D; }   // re-share the date array
+  LIVE_TURN_D=null;
+  LIVE_OFF=null;
+}
+// 'ok' = a provisional bar was added (re-render off it) · 'covered' = we already hold the official
+// close for that session, which beats a quote · 'reject' = the quote can't be trusted onto this
+// series. The caller treats all three differently, which is the whole point of not returning a bool.
+function spliceLiveBar(mt){
+  const ltp=mt.regularMarketPrice, tt=mt.regularMarketTime;
+  const s=SERIES[TKR], m=META[TKR];
+  if(!(ltp>0)||!(tt>0)||!m||!s||!s.d||!s.d.length||!s.p) return 'reject';
+  // Date the bar by the EXCHANGE's own last-trade stamp in IST, never by the viewer's clock: on a
+  // Saturday, on a holiday, or from a browser in another timezone that stamp is still the last
+  // real session, so a bar is never invented for a day the market did not trade.
+  const off=dayOff(new Date((tt+19800)*1000).toISOString().slice(0,10));
+  const last=s.d.length-1;
+  // NSE's official close is a 30-minute weighted average, so it routinely differs from the last
+  // traded price Yahoo reports. Once the evening append has published it, that close is the better
+  // number for EVERY field - including the header, which used to be overwritten with the LTP and
+  // then disagreed with the stat card right beneath it.
+  if(s.d[last]>=off) return 'covered';
+  // Adjustment gate: Yahoo's previous close must be the close we hold. When it isn't, the two
+  // series sit on different split/bonus bases, or ours stops earlier (suspension, delisting), and
+  // splicing the quote in would draw a gap that never happened.
+  const pc=mt.chartPreviousClose!=null?mt.chartPreviousClose:mt.previousClose;
+  const prev=s.p[last]/100;
+  if(!(pc>0)||!(prev>0)||Math.abs(pc/prev-1)>0.01) return 'reject';
+  if(LIVE_OFF==null){ LIVE_END0=SF_END_OFF; LIVE_RAW0=m.raw; }   // capture the un-spliced state once
+  // installStockSlice() hands TURN[sym].d and SERIES[sym].d the SAME array object, so pushing a bar
+  // below would silently extend the turnover series too — leaving its `t` one short and making
+  // turnAvgAt() read undefined ("Avg turnover (20d) ₹NaN L"). Give turnover its own copy: intraday
+  // turnover is a part-day figure that would drag a 20-session average down, so the live bar must
+  // stay out of it entirely. (Same reason applyLiveOverlay() never extends TURN.)
+  const tn=TURN[TKR];
+  if(tn&&tn.d===s.d){ LIVE_TURN_D=tn.d; tn.d=s.d.slice(); }
+  const cp=Math.round(ltp*100);
+  const dh=mt.regularMarketDayHigh, dl=mt.regularMarketDayLow;
+  const hi=(dh>0&&dh>=ltp)?dh:ltp, lo=(dl>0&&dl<=ltp)?dl:ltp;
+  s.d.push(off); s.p.push(cp);
+  if(s.h) s.h.push(Math.round(hi*100));         // absolute paise (slice hl:1)
+  if(s.l) s.l.push(Math.round(lo*100));
+  if(s.hb) s.hb.push(Math.round((hi/ltp-1)*1000));   // legacy per-mil offsets from the close
+  if(s.lb) s.lb.push(Math.round((1-lo/ltp)*1000));
+  if(s.v) s.v.push(0);                          // 0 = unknown; never carry a stale figure forward
+  if(s.dv) s.dv.push(0);
+  m.raw=ltp; m.latest=ltp;                      // market cap / P/E re-price off m.raw (renderFunds)
+  SF_END_OFF=off;                               // stkEndOff() clamps to this — without it the page stays on yesterday
+  LIVE_OFF=off;
+  const rp=$('rwPick'); if(rp) rp.max=isoOff(off);
+  return 'ok';
+}
+async function liveQuote(){
+  if(ASOF!=null) return;                    // rewound view: the header must stay at the past date
+  // A BSE company's page (SLICE.bse) never asks Yahoo for SYM.NS: that is the NSE namespace, where the same string can
+  // be another company (BRIGHT.NS = Bright Solar on the Bright Outdoor Media page; KEL.NS = Kundan Edifice), and a
+  // rejected splice still writes the quote into the header below (§207).
+  if(SLICE&&SLICE.bse) return;
+  const m=META[TKR]; if(!m||!m.alive) return;
+  try{
+    const j=await (await fetch(WORKER+'/?chart='+encodeURIComponent(m.symbol+'.NS'),{cache:'no-store'})).json();
+    const mt=j&&j.chart&&j.chart.result&&j.chart.result[0]&&j.chart.result[0].meta;
+    if(!mt||mt.regularMarketPrice==null) return;
+    const had=LIVE_OFF!=null;
+    clearLiveBar();
+    const how=spliceLiveBar(mt);
+    // render() repaints the header, the stat cards, the chart, the technicals and (via its own
+    // tail call) the valuation cards — every one of them off the series we just extended.
+    if(how==='ok'){ try{ render(); }catch(e){ console.error(e); } return; }
+    // A bar we HAD installed no longer qualifies (a corporate action landing mid-session moves
+    // Yahoo's previous close off ours, so the gate below starts refusing). clearLiveBar() has
+    // already pulled it off the series — repaint, or the page keeps the LIVE labels, the live
+    // stat-card values and the provisional-bar note for a bar it no longer holds.
+    if(had){ try{ render(); }catch(e){ console.error(e); } }
+    // The session is already baked: the page is showing the official close everywhere, so touch
+    // nothing. Overwriting the header with the LTP here is what made the header and the stat cards
+    // disagree in the first place.
+    if(how==='covered') return;
+    // Rejected (different split/bonus basis, or a series that stops earlier): the baked bars stay
+    // as they are, but the header still gets the quote - otherwise the page would show nothing at
+    // all about today. The percentage is Yahoo's own close-to-close, so it stays self-consistent.
+    const ltp=mt.regularMarketPrice;
+    const pc=mt.chartPreviousClose!=null?mt.chartPreviousClose:mt.previousClose;
+    $('sPrice').textContent='₹'+(ltp>=1000?Math.round(ltp).toLocaleString('en-IN'):ltp.toFixed(2));
+    if(pc>0){ const ch=(ltp/pc-1)*100;
+      $('sChg').innerHTML=`<span class="${ch>=0?'pos':'neg'}">${pct(ch)}</span> <span class="text-slate-400 text-xs">1-day</span>`; }
+    $('sAsof').innerHTML='<span style="color:var(--pos);font-weight:800">● LIVE</span> '+
+      (liveMarketOpen()?'':'(last traded) ')+'· Yahoo NSE, ~15-min delay';
+  }catch(e){ /* keep baked close */ }
+}
+
+/* Opening a company used to cost ~137 MB — the whole market's prices, index history and
+   fundamentals — because the page booted the shared backtest engine. Now it pulls one pre-cut
+   slice for THIS stock (~16 KB) plus the benchmark series, both in flight together, and paints
+   as soon as they land. Financials follow a beat later in their own ~2 KB file. The full-engine
+   path survives underneath for any symbol the slice builder hasn't caught up with yet. */
+(async function boot(){
+  if(!SYM){ noSymbol(); return; }
+  // Nifty closes power the benchmark column, beta and RS — small, and shared with other pages'
+  // cache. Started first so it overlaps the slice fetch instead of following it.
+  // nifty.json is the NIFTY 50 (fetch_fii_dii.py: OUT_NIFTY, "Nifty 50 close history"), NOT the
+  // Nifty 500 — the returns column claimed "Nifty 500" until 2026-09-11 while showing Nifty 50
+  // numbers, which understated the benchmark by 19.4pp over 5 years (measured: +34.71% vs the real
+  // Nifty 500's +54.12%). The label now names what is actually plotted. To genuinely benchmark
+  // against the Nifty 500, switch to docs/nifty500.json (^CRSLDX) — but it only starts 2012-01-02
+  // where this one starts 2002-01-01, so the long "Since <year>" rows would lose their comparison
+  // until that history is extended. Do not "fix" the label back without swapping the data first.
+  const niftyP=fetch('./nifty.json').then(r=>r.json()).then(j=>{NIFTY=j.px||{};}).catch(()=>{NIFTY={};});
+  let slice=null;
+  try{ slice=await loadStockSlice(SYM); }catch(e){ console.warn('no slice for '+SYM+' ('+(e&&e.message||e)+') — falling back to the full engine'); }
+
+  // A renamed ticker's old symbol has no slice of its own — hop to the current name
+  // instead of booting the 17 MB engine just to fail (GUJGASLTD→GUJENERGY class, §30).
+  // An old name that still ships a DEAD stub slice (3IINFOTECH→3IINFOLTD) would otherwise
+  // render that stub as the company, so hop whenever the old name is not alive (2026-09-05).
+  if(typeof FUND_ALIAS!=='undefined' && FUND_ALIAS[SYM] && (!slice || !slice.alive) && !(await aliasCollides(SYM))){
+    location.replace('stock.html?sym='+encodeURIComponent(FUND_ALIAS[SYM])); return;
+  }
+
+  if(slice){
+    const finP=loadStockFin(SYM);                 // in flight while we render prices
+    TKR=installStockSlice(slice); SLICE=slice;
+    await niftyP;
+    try{ render(); }catch(e){ fail('Render error: '+(e&&e.message||e)); console.error(e); return; }
+    $('ov').style.display='none';
+    finP.then(F=>{
+      FIN_STATE=F?'ok':'none';
+      installStockFin(TKR,F);
+      REVOP={}; if(F&&F.revop) REVOP[TKR]=F.revop;
+      FIN_X=(F&&F.x)||null;
+      FIN_PD=(F&&F.pd)||null;                                            // half-year / full-year rows (§191)
+      FIN_PP=(F&&F.pp)||null;                                            // …whose profit is proven too (§198)
+      FIN_RB=(F&&F.rb)||null;                                            // restated comparative bases (§214b)
+      SHP_GOV=(F&&F.shpGov)||null;                                       // Government row lookup
+      try{ renderFunds(); }catch(e){ console.error(e); }
+      try{ renderKPI((F&&F.kpi)||null); }catch(e){ console.error(e); }   // Insights card (runbook §137)
+      if(F&&F.shpH&&F.shpH.length){
+        SHP_HIST=F.shpH;
+        try{ shpTrendChart(F.shpH); renderSHPdeep(); wireShpToggle(); }
+        catch(e){ console.error(e); renderSHP(F&&F.shpQ, F&&F.shp); }
+      }else renderSHP(F&&F.shpQ, F&&F.shp);
+      try{ buildEvents(); if(LW) lwRefreshMarkers(); else drawChart(); }catch(e){ console.error(e); }   // results dates just arrived
+    });
+  }else{
+    // FALLBACK: no slice for this symbol yet — load the whole market, as the page always did.
+    $('ovT').textContent='Loading market data (~17 MB, once)…';
+    try{ await loadEngineData(m=>{ const t=$('ovT'); if(t&&m) t.textContent=m; }); }
+    catch(e){ fail('Could not load market data: '+(e&&e.message||e)); return; }
+    if(!META[SYM]){
+      const nw=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS[SYM])||null;
+      if(nw&&META[nw]&&!(await aliasCollides(SYM))){ location.replace('stock.html?sym='+encodeURIComponent(nw)); return; }
+      fail('“'+SYM+'” not found in the dataset.'); return;
+    }
+    TKR=SYM;
+    FIN_STATE='ok';                                // FUND came with the engine; REVOP lands below
+    FIN_RB=(typeof RBASE!=='undefined'&&RBASE[TKR])||null;   // restated bases came with the engine too (fund_rbase.json, §214b)
+    try{ render(); }catch(e){ fail('Render error: '+(e&&e.message||e)); console.error(e); return; }
+    $('ov').style.display='none';
+    loadSHP();
+    // Revenue/margins arrive after first paint: the PAT-only table is already on screen,
+    // and re-renders with the full columns when sf_revop lands.
+    loadRevop().then(()=>{ try{ renderFunds(); }catch(e){ console.error(e); } });
+    try{ buildEvents(); if(LW) lwRefreshMarkers(); else drawChart(); }catch(e){ console.error(e); }     // engine FUND has the ann dates
+  }
+  renderClass().catch(e=>console.error(e));   // sector chain: after first paint, never blocking it
+  loadPreIPO(); loadIpoFin();                  // annual history card (recent listings only): company documents first, §232
+  // rewind controls: date bounds follow this stock's actual history
+  const s0=SERIES[TKR];
+  if(s0&&s0.d.length){
+    $('rwPick').min=isoOff(s0.d[0]); $('rwPick').max=isoOff(stkEndOff());
+    $('rwGo').onclick=()=>{ const v=$('rwPick').value; if(v) applyRewind(v); };
+    $('rwExit').onclick=exitRewind;
+    // ?asof=YYYY-MM-DD deep link (index-chart.html survivorship table, "Rewind" button): open the page
+    // already rewound to that date. applyRewind clamps it to this stock's own bar range.
+    const asofQ=new URLSearchParams(location.search).get('asof');
+    if(asofQ&&/^\d{4}-\d{2}-\d{2}$/.test(asofQ)){ $('rwPick').value=asofQ; applyRewind(asofQ); }
+  }
+  liveQuote();
+  setInterval(()=>{ if(!document.hidden&&liveMarketOpen()) liveQuote(); },60000);
+})();
+</script>
+</body>
+</html>

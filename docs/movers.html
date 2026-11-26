@@ -8,7 +8,8 @@
 <link rel="canonical" href="./markets.html?v=movers" />
 <script>
 /* Top Movers now lives on the one Markets page (2026-11-26). Old links and bookmarks land here and are forwarded with their query. */
-(function(){ var q=new URLSearchParams(location.search); if(!q.get('v')) q.set('v','movers'); location.replace('./markets.html?'+q.toString()+location.hash); })();
+(function(){ try{ if(localStorage.getItem('sw_view')==='old'){ location.replace('./movers-old.html'+location.search+location.hash); return; } }catch(e){}
+ var q=new URLSearchParams(location.search); if(!q.get('v')) q.set('v','movers'); location.replace('./markets.html?'+q.toString()+location.hash); })();
 </script>
 <noscript><meta http-equiv="refresh" content="0; url=./markets.html?v=movers" /></noscript>
 </head>

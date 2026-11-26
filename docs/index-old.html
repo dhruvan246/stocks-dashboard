@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex" />
+<!-- OLD VIEW of index.html, kept so the header's New / Old switch has somewhere to go. Frozen copy: fix bugs in index.html, not here. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Indian markets, decoded</title>
+<meta name="description" content="Live dashboards for Indian stocks, sectors and mutual funds, plus a strategy backtester over 25+ years of data." />
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  :root{ --up:var(--pos); --up-soft:var(--pos-soft); --down:var(--neg); --down-soft:var(--neg-soft); }
+  *{box-sizing:border-box;}
+  body{font-family:var(--font);margin:0;color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    font-feature-settings:"tnum" 1;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1680px;margin:0 auto;padding:0 28px;}
+  @media (max-width:640px){.wrap{padding:0 14px;}}
+
+  /* header — theme.js injects the Menu into <nav> and the theme pill into header>div */
+  header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--surface) 82%,transparent);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:box-shadow var(--tr);}
+  header.sw-scrolled{box-shadow:var(--shadow);}
+  .hd{display:flex;align-items:center;gap:12px;height:60px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px;color:var(--text);}
+  .logo .mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:800;letter-spacing:.04em;
+    background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent) 55%,color-mix(in srgb,var(--accent) 72%,#000));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 4px 12px -5px var(--glow);}
+  .logo em{font-style:normal;color:var(--accent-text);}
+  /* narrow phones: keep just the SW mark, like every other page (their Tailwind
+     header hides the wordmark under 640px). With the full wordmark the ☰ menu and
+     the theme pill ran into each other on a 360-400px screen. */
+  @media (max-width:430px){.hd{gap:8px;}.logo{font-size:0;gap:0;}.logo .mark{font-size:12px;}}
+
+  /* ---- page head: title + market status on the left, quick links on the right ---- */
+  .ctr{display:flex;align-items:flex-end;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;padding:22px 0 16px;}
+  .ctr h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.15;color:var(--text);}
+  .ctr-status{margin-top:5px;font-size:12.5px;font-weight:500;color:var(--text-muted);}
+  .ctr-status .on{color:var(--up);font-weight:700;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .chip{font-size:12px;font-weight:600;color:var(--text);background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--radius);padding:7px 12px;transition:var(--tr);}
+  .chip:hover{color:var(--accent-text);border-color:var(--accent);}
+  @media (max-width:520px){.ctr{padding:16px 0 12px;}.ctr h1{font-size:22px;}}
+
+  /* ---- bento deck ---- */
+  .deck{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:repeat(5,128px);grid-auto-rows:auto;gap:10px;margin:0 0 8px;}
+  .bt{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;
+    box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);}
+  a.bt:hover{box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border));}
+  .bt-h{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text-muted);}
+  .bt-h .to{font-weight:700;letter-spacing:0;color:var(--text-faint);}
+  a.bt:hover .bt-h .to{color:var(--accent);}
+  .skel{color:transparent!important;background:var(--surface-3);border-radius:6px;animation:sk 1.2s ease-in-out infinite;}
+  @keyframes sk{50%{opacity:.5;}}
+
+  #tIndices{grid-column:span 8;grid-row:span 2;}
+  #tHeat{grid-column:span 4;grid-row:span 3;}
+  #tBreadth{grid-column:span 4;grid-row:span 1;}
+  #tFlows{grid-column:span 4;grid-row:span 1;}
+  #tGlobal{grid-column:span 8;grid-row:span 2;}
+  #tIpo{grid-column:span 4;grid-row:span 2;}
+  #tTools{grid-column:span 12;grid-row:span 1;flex-direction:row;align-items:center;gap:12px;}
+
+  /* indices sub-grid: 7 cards in two rows of four — seven across left 87px per card at 1440px and the price overflowed */
+  .ixg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;flex:1;min-height:0;margin-top:10px;}
+  .ix{display:flex;flex-direction:column;justify-content:center;gap:2px;border-radius:var(--radius);padding:8px 11px;min-width:0;min-height:0;overflow:hidden;
+    background:var(--surface-2);border:1px solid var(--border);transition:border-color var(--tr);}
+  .ix:hover{border-color:var(--accent);}
+  .ix .nm{font-size:10.5px;font-weight:700;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ix .px{font-size:18px;font-weight:700;letter-spacing:-.02em;min-height:22px;}
+  .ix .chg{font-size:11.5px;font-weight:700;min-height:15px;}
+  .ix .chg.up{color:var(--up);}.ix .chg.down{color:var(--down);}
+  .ix .spark{width:100%;height:18px;margin-top:3px;opacity:.9;}
+  .lv{font-size:8px;font-weight:800;letter-spacing:.05em;color:var(--up);}
+  .ac{font-size:8px;font-weight:700;letter-spacing:.05em;color:var(--text-faint);}
+
+  /* sector heatmap cells */
+  .heat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;flex:1;margin-top:12px;}
+  .hc{border-radius:var(--radius);padding:9px 10px;display:flex;flex-direction:column;justify-content:space-between;min-height:0;}
+  .hc .n{font-size:11px;font-weight:700;color:var(--text);}
+  .hc .v{font-size:12.5px;font-weight:800;min-height:15px;}
+
+  /* small stat tiles */
+  .big{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;}
+  .big b{font-size:17px;font-weight:800;}
+  .big .lb{font-size:10.5px;color:var(--text-faint);font-weight:700;}
+  .bar{height:5px;border-radius:5px;background:var(--surface-3);overflow:hidden;display:flex;}
+  .bar i{display:block;height:100%;}
+  .foot{font-size:10px;color:var(--text-faint);}
+  .pos{color:var(--up);}.neg{color:var(--down);}
+
+  /* overnight world markets — mini tiles keyed on global.json */
+  #tGlobal .gxg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:10px;flex:1;min-height:0;margin-top:8px;}
+  .gx{display:flex;flex-direction:column;gap:2px;border-radius:var(--radius);padding:7px 9px;min-width:0;overflow:hidden;
+    background:var(--surface-2);border:1px solid var(--border);}
+  .gx .gnm{font-size:10px;font-weight:700;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em;}
+  .gx .gchg{font-size:13px;font-weight:800;letter-spacing:-.01em;min-height:16px;}
+  .gx .gchg.up{color:var(--up);}.gx .gchg.down{color:var(--down);}
+  .gx .spark{height:15px;margin-top:auto;opacity:.85;}
+
+  /* ipo */
+  .colv{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:6px;margin-top:8px;font-size:11.5px;color:var(--text-muted);}
+  .colv b{font-size:14.5px;font-weight:800;color:var(--text);}
+  #tIpo .colv{font-size:13px;}#tIpo .colv div:first-child b{font-size:22px;font-weight:700;letter-spacing:-.02em;}
+
+  /* tools pills */
+  .tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .tool{font-size:12px;font-weight:600;color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 13px;transition:var(--tr);}
+  .tool:hover{border-color:var(--accent);color:var(--accent-text);}
+
+  /* responsive deck — ID selectors here on purpose: the base spans above are
+     ID-specificity, so a class rule can't override them in this media block */
+  @media (max-width:1020px){
+    .deck{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:auto;}
+    #tIndices,#tGlobal,#tHeat,#tTools{grid-column:1/-1;grid-row:auto;}
+    #tBreadth,#tFlows,#tIpo{grid-column:auto;grid-row:auto;min-height:96px;}
+    .ixg{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .ix{min-height:92px;}
+    .ixg .ix:last-child:nth-child(odd){grid-column:1/-1;}   /* only an odd card out spans the row */
+  }
+  @media (max-width:520px){
+    .heat{grid-template-columns:repeat(3,minmax(0,1fr));}
+    #tGlobal .gxg{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto;}
+  }
+
+  /* sections + tiles (site directory below the deck) */
+  .sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:30px 0 12px;}
+  .sec-h h2{font-size:16px;font-weight:700;letter-spacing:-.01em;margin:0;}
+  .sec-h .grp{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);}
+  .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
+  .tile{display:flex;gap:13px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:13px;transition:border-color var(--tr);}
+  .tile:hover{border-color:var(--accent);}
+  .tile .ic{flex:none;width:34px;height:34px;border-radius:var(--radius);display:grid;place-items:center;font-size:16px;background:var(--accent-soft);color:var(--accent-text);}
+  .tile .tt{font-size:13.5px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:6px;color:var(--text);}
+  .tile .tt .arrow{color:var(--text-faint);font-size:13px;transition:transform var(--tr);}
+  .tile:hover .tt .arrow{transform:translate(3px,-3px);color:var(--accent);}
+  .tile .td{font-size:12px;color:var(--text-muted);line-height:1.45;margin-top:4px;}
+
+  main.wrap{padding-bottom:64px;}  /* beat .wrap's padding shorthand (else footer overlaps tiles) */
+  @media (max-width:1500px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr));}}
+  @media (max-width:860px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media (max-width:520px){.tiles{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hd">
+    <a class="logo" href="./index.html"><span class="mark">SW</span>STOCKS<em>WORLD</em></a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- PAGE HEAD — title + market status, quick links (search lives in the header on every page) -->
+  <section class="ctr">
+    <div>
+      <h1>Market overview</h1>
+      <div class="ctr-status" id="ctrStatus">&nbsp;</div>
+    </div>
+    <div class="chips">
+      <a class="chip" href="./stock.html?sym=RELIANCE">RELIANCE</a>
+      <a class="chip" href="./markets.html?v=sectors">Sector heatmap</a>
+      <a class="chip" href="./saved-strategies.html">Saved strategies</a>
+      <a class="chip" href="./quarterly-results.html">Results today</a>
+    </div>
+  </section>
+
+  <!-- BENTO DECK -->
+  <section class="deck">
+
+    <!-- indices: the 5 live cards (same feeds as before — committed JSON seed, Worker/proxy live top-up) -->
+    <div class="bt" id="tIndices">
+      <div class="bt-h"><span>INDICES</span><a class="to" href="./markets.html?v=indices">index browser →</a></div>
+      <div class="ixg" id="indices">
+        <a class="ix" href="./index-chart.html?ix=nifty"     data-src="nifty.json"       data-ysym="%5ENSEI"     data-name="NIFTY 50"   data-kind="index"></a>
+        <a class="ix" href="./index-chart.html?ix=nifty500"  data-src="nifty500.json"    data-ysym="%5ECRSLDX"   data-name="NIFTY 500"  data-kind="index"></a>
+        <a class="ix" href="./index-chart.html?ix=banknifty" data-src="nifty_bank.json"  data-ysym="%5ENSEBANK"  data-name="NIFTY BANK" data-kind="index"></a>
+        <a class="ix" href="./index-chart.html?ix=vix"       data-src="india_vix.json"   data-ysym="%5EINDIAVIX" data-name="INDIA VIX"  data-kind="vix"></a>
+        <!-- GIFT NIFTY (NSE IX futures) has no Yahoo symbol and no committed daily JSON — live-only
+             via the Worker's ?gift=1 route, falling back to public CORS proxies. -->
+        <a class="ix" href="https://www.nseix.com/markets/derivatives-watch" target="_blank" rel="noopener"
+                                                             data-name="GIFT NIFTY" data-kind="gift"></a>
+        <!-- BSE SME IPO: official BSE end-of-day level (scripts/fetch_bse_sme_ipo.py, runbook §195) — no live feed -->
+        <a class="ix" href="./index-chart.html?ix=smeipo"    data-src="bse_sme_ipo.json" data-name="BSE SME IPO" data-kind="eod"></a>
+        <!-- Nifty SME Emerge: NSE's official end-of-day close (scripts/fetch_nse_sme_emerge.py, runbook §210) — no live feed -->
+        <a class="ix" href="./index-chart.html?ix=smeemerge" data-src="nifty_sme_emerge.json" data-name="NIFTY SME EMERGE" data-kind="eod"></a>
+        <!-- Nifty Microcap 250: NSE's official end-of-day close (scripts/fetch_nifty_microcap250.py, runbook §227) — no live feed -->
+        <a class="ix" href="./index-chart.html?ix=microcap"  data-src="nifty_microcap250.json" data-name="NIFTY MICROCAP 250" data-kind="eod"></a>
+      </div>
+    </div>
+
+    <!-- sector heatmap: CORS-open niftyindices live feed (same source the Indices page reads) -->
+    <a class="bt" id="tHeat" href="./markets.html?v=sectors">
+      <div class="bt-h"><span>SECTOR PULSE · 1D</span><span class="to" id="heatTs">sectors →</span></div>
+      <div class="heat" id="heat"></div>
+    </a>
+
+    <!-- market breadth: committed market_breadth.json (EOD, lazy-loaded) -->
+    <a class="bt" id="tBreadth" href="./market-mood.html">
+      <div class="bt-h"><span>BREADTH · NIFTY 500</span><span class="to" id="brDate"></span></div>
+      <div class="big" id="brNums"><b class="skel">000</b></div>
+      <div class="bar" id="brBar"></div>
+    </a>
+
+    <!-- FII/DII flows: committed fii_dii.json -->
+    <a class="bt" id="tFlows" href="./fii-dii.html">
+      <div class="bt-h"><span>FII / DII · CASH</span><span class="to" id="flDate"></span></div>
+      <div class="big" id="flNums"><b class="skel">+₹000 cr</b></div>
+      <div class="foot">provisional daily net · flows page →</div>
+    </a>
+
+    <!-- overnight world markets: global.json seed + LIVE 1-day move via the quotes Worker (?quotes=) -->
+    <a class="bt" id="tGlobal" href="./global.html">
+      <div class="bt-h"><span>OVERNIGHT · WORLD MARKETS</span><span class="to" id="globalTs">global cues →</span></div>
+      <div class="gxg" id="globalGrid"></div>
+    </a>
+
+    <!-- IPO pipeline: ipos.json -->
+    <a class="bt" id="tIpo" href="./ipos.html">
+      <div class="bt-h"><span>IPO PIPELINE</span></div>
+      <div class="colv" id="ipoBody"><b class="skel">0 open</b></div>
+      <div class="foot">IPOs page →</div>
+    </a>
+
+    <!-- tools row -->
+    <div class="bt" id="tTools">
+      <div class="bt-h" style="flex:none"><span>TOOLS</span></div>
+      <div class="tools">
+        <a class="tool" href="./stock-backtest.html">Backtest</a>
+        <a class="tool" href="./strategy-mixer.html">Strategy Mixer</a>
+        <a class="tool" href="./all-picks.html">All Picks</a>
+        <a class="tool" href="./mutual-funds.html">Mutual Funds</a>
+        <a class="tool" href="./watchlist.html">Watchlist</a>
+        <a class="tool" href="./announcements.html">Announcements</a>
+        <a class="tool" href="./actions.html">Ex-Dates</a>
+        <a class="tool" href="./global.html">Global Cues</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TILE GRID — rendered from window.SW_NAV (single source of truth in theme.js) -->
+  <div id="tileSections"></div>
+
+</main>
+
+
+<script>
+(function () {
+  'use strict';
+
+  // ---- index tiles (same data plumbing as the old ticker, bento layout) ------
+  // levels of 1 lakh+ (BSE SME IPO ≈ 1,21,244) drop the paise so the figure fits a 1/6-width card
+  var fmt = function (n) { var d = Math.abs(n) >= 100000 ? 0 : 2; return n.toLocaleString('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d }); };
+
+  function spark(closes, up) {
+    var pts = closes.slice(-30);
+    if (pts.length < 2) return '';
+    var lo = Math.min.apply(null, pts), hi = Math.max.apply(null, pts), rng = hi - lo || 1;
+    var W = 96, H = 22, pad = 3;
+    var s = pts.map(function (v, i) {
+      var x = (i / (pts.length - 1)) * W;
+      var y = H - pad - ((v - lo) / rng) * (H - 2 * pad);
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    }).join(' ');
+    var col = up ? 'var(--up)' : 'var(--down)';
+    return '<svg class="spark" viewBox="0 0 96 22" preserveAspectRatio="none"><polyline fill="none" stroke="' +
+      col + '" stroke-width="1.8" points="' + s + '"/></svg>';
+  }
+
+  function badge(el, live) {
+    if (live) return ' <span class="lv">● LIVE</span>';
+    return ' <span class="ac">AT CLOSE</span>';
+  }
+  function paint(el, price, prevClose, series, live) {
+    if (price == null || prevClose == null) return;
+    var chg = ((price - prevClose) / prevClose) * 100, up = chg >= 0;
+    el._painted = true;
+    el.innerHTML =
+      '<div class="nm">' + el.getAttribute('data-name') + badge(el, live) + '</div>' +
+      '<div class="px">' + fmt(price) + '</div>' +
+      '<div class="chg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>' +
+      spark(series && series.length > 1 ? series : el._daily || [], up);
+  }
+
+  // 1) seed from the committed daily-close JSON — always available, never blank.
+  //    The GIFT card has no committed JSON (live-only): skeleton now, first live
+  //    fetch paints it, refreshLive shows "—" if every route fails.
+  function loadStatic(el) {
+    el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
+      '<div class="px skel">00,000.00</div><div class="chg skel">0.00%</div>';
+    if (!el.getAttribute('data-src')) return Promise.resolve();
+    return fetch('./' + el.getAttribute('data-src'), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        var px = j.px || {}, dates = Object.keys(px).sort();
+        if (dates.length < 2) throw 0;
+        el._daily = dates.map(function (d) { return px[d]; });
+        el._pxDates = dates; el._px = px;
+        var last = px[dates[dates.length - 1]], prev = px[dates[dates.length - 2]];
+        paint(el, last, prev, null, false);
+      })
+      .catch(function () {
+        el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
+          '<div class="px" style="font-size:14px;color:var(--text-faint)">—</div>';
+      });
+  }
+
+  // 2) live intraday quote from Yahoo — OUR Cloudflare Worker first (reliable, cached),
+  //    then the public CORS-proxy chain as fallback (see scripts/LIVE_FEED_SETUP.md)
+  var WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+  // Every leg gets a DEADLINE. A public CORS proxy that returns an error advances the chain; one
+  // that HANGS used to stall it forever, and the GIFT card — the only card with no committed JSON
+  // to fall back on — sat on its "00,000.00" skeleton indefinitely, which reads as a blank price.
+  // Measured 2026-08-27 from the browser: corsproxy.io 44 ms, allorigins/get dead (TypeError),
+  // allorigins/raw and codetabs BOTH still open at 8 s. Deadline > any real route by ~25x.
+  function fetchT(url, ms) {
+    var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var opt = { cache: 'no-store' };
+    if (ctl) opt.signal = ctl.signal;
+    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, ms || 6000);
+    return fetch(url, opt).then(
+      function (r) { clearTimeout(timer); return r; },
+      function (e) { clearTimeout(timer); throw e; }
+    );
+  }
+  var PROXIES = [
+    function (u) { var m = /chart\/([^?]+)/.exec(u); return { url: WORKER + '/?chart=' + (m ? m[1] : ''), wrap: false }; },
+    function (u) { return { url: 'https://corsproxy.io/?url=' + encodeURIComponent(u), wrap: false }; },
+    function (u) { return { url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(u), wrap: true }; }
+  ];
+  function fetchLive(sym) {
+    var y = 'https://query1.finance.yahoo.com/v8/finance/chart/' + sym + '?interval=1m&range=1d';
+    var i = 0;
+    function tryNext() {
+      if (i >= PROXIES.length) return Promise.reject('all proxies failed');
+      var p = PROXIES[i++](y);
+      return fetchT(p.url)
+        .then(function (r) { if (!r.ok) throw 0; return r.text(); })
+        .then(function (t) {
+          var j = JSON.parse(p.wrap ? JSON.parse(t).contents : t);
+          var res = j.chart.result[0], m = res.meta;
+          var series = [];
+          if (res.timestamp && res.indicators && res.indicators.quote) {
+            var cl = res.indicators.quote[0].close || [];
+            for (var k = 0; k < cl.length; k++) if (cl[k] != null) series.push(cl[k]);
+          }
+          var price = m.regularMarketPrice, prev = m.chartPreviousClose != null ? m.chartPreviousClose : m.previousClose;
+          if (price == null || prev == null) throw 0;
+          return { price: price, prev: prev, series: series, at: m.regularMarketTime };
+        })
+        .catch(function () { return tryNext(); });
+    }
+    return tryNext();
+  }
+  // Yahoo's intraday meta.chartPreviousClose for ^ index symbols can lag a session: on
+  // 2026-09-29 every Indian index quoted Friday 25-Sep as "previous close" (VIX read +10.3%
+  // vs NSE's -2.32%), while Yahoo's own daily bars and our committed JSON had Monday right.
+  // So the previous close comes from the committed daily closes: the latest one dated before
+  // the live bar's IST day, if it is within 6 days (a stale file falls back to Yahoo's).
+  function storePrev(el, at, yprev) {
+    var ds = el._pxDates;
+    if (!ds || !ds.length || !at) return yprev;
+    var day = new Date(at * 1000 + 5.5 * 3600000).toISOString().slice(0, 10);
+    for (var i = ds.length - 1; i >= 0; i--) {
+      if (ds[i] < day) {
+        return (Date.parse(day) - Date.parse(ds[i]) <= 6 * 86400000) ? el._px[ds[i]] : yprev;
+      }
+    }
+    return yprev;
+  }
+
+  // GIFT NIFTY (Nifty futures at NSE IX) — Yahoo doesn't carry it. Primary: our
+  // Worker's ?gift=1 route (quote + sparkline series, see scripts/live-quote-worker.js).
+  // Fallback: public CORS proxies straight to the exchange's API (quote only).
+  var GIFT_API = 'https://www.nseix.com/api/derivatives-watch?inst_type1=IDX&type=live';
+  function pickGiftRow(j) {
+    // most-traded NIFTY futures contract = the quoted "GIFT Nifty" number
+    // (and rollover moves the pick to the new front month automatically)
+    var rows = ((j && j.data) || []).filter(function (x) {
+      return x && x.SYMBOL === 'NIFTY' && x.INSTRUMENTTYPE === 'FUTIDX' && x.LASTPRICE != null;
+    });
+    if (!rows.length) return null;
+    rows.sort(function (a, b) { return (b.CONTRACTSTRADED || 0) - (a.CONTRACTSTRADED || 0); });
+    return rows[0];
+  }
+  function fetchGift() {
+    return fetchT(WORKER + '/?gift=1')
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (j) {
+        if (j.price == null || j.prevClose == null) throw 0;
+        return { price: j.price, prev: j.prevClose, series: j.series || [] };
+      })
+      .catch(function () {
+        var i = 1;                       // PROXIES[0] is the Worker's Yahoo route — skip it here
+        function tryNext() {
+          if (i >= PROXIES.length) return Promise.reject('gift: all routes failed');
+          var p = PROXIES[i++](GIFT_API);
+          return fetchT(p.url)
+            .then(function (r) { if (!r.ok) throw 0; return r.text(); })
+            .then(function (t) {
+              var f = pickGiftRow(JSON.parse(p.wrap ? JSON.parse(t).contents : t));
+              if (!f || f.CLOSE == null) throw 0;
+              return { price: f.LASTPRICE, prev: f.CLOSE, series: [] };
+            })
+            .catch(function () { return tryNext(); });
+        }
+        return tryNext();
+      });
+  }
+
+  function refreshLive(el) {
+    var gift = el.getAttribute('data-kind') === 'gift';
+    return (gift ? fetchGift() : fetchLive(el.getAttribute('data-ysym')))
+      .then(function (q) { paint(el, q.price, gift ? q.prev : storePrev(el, q.at, q.prev), q.series, gift ? giftOpen() : marketOpen()); })
+      .catch(function () {
+        // keep last good paint; the live-only GIFT card has none to keep
+        if (!el._painted) el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
+          '<div class="px" style="font-size:14px;color:var(--text-faint)" title="' +
+          (gift ? 'No route to the NSE IX feed reached us this time — tap to open the exchange page.'
+                : 'The live quote feed did not answer — the daily close above is still current.') +
+          '">—</div>';
+      });
+  }
+
+  // IST clock helpers. NSE cash: Mon–Fri 09:15–15:30 (small pad). IST = UTC+5:30.
+  function istNow() { return new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000); }
+  function marketOpen() {
+    var ist = istNow(), day = ist.getDay(), mins = ist.getHours() * 60 + ist.getMinutes();
+    return day >= 1 && day <= 5 && mins >= 9 * 60 && mins <= 15 * 60 + 45;
+  }
+  // GIFT Nifty trades Mon–Fri 06:30–15:40 IST and 16:35–02:45 IST next day (small pad)
+  function giftOpen() {
+    var ist = istNow(), day = ist.getDay(), mins = ist.getHours() * 60 + ist.getMinutes();
+    if (day >= 1 && day <= 5 && ((mins >= 385 && mins <= 945) || mins >= 990)) return true;
+    return day >= 2 && day <= 6 && mins <= 170;   // evening session's past-midnight tail
+  }
+
+  // ---- status line -----------------------------------------------------------
+  var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function statusLine() {
+    var ist = istNow(), mins = ist.getHours() * 60 + ist.getMinutes();
+    var d = DAYS[ist.getDay()] + ' ' + ist.getDate() + ' ' + MONS[ist.getMonth()];
+    var st;
+    if (marketOpen()) st = '<span class="on">● NSE market open</span> · closes 15:30 IST';
+    else if (giftOpen()) st = '<span class="on">● GIFT session live</span> · NSE ' + (mins < 555 ? 'opens 09:15' : 'closed 15:30') + ' IST';
+    else st = 'Markets closed · NSE opens Mon–Fri 09:15 IST';
+    document.getElementById('ctrStatus').innerHTML = d + ' · ' + st;
+  }
+
+  // ---- polling: each card refreshes only while its own market is open --------
+  var cards = [].slice.call(document.querySelectorAll('#indices .ix'));
+  var timer = null;
+  function pollOnce(all) {
+    statusLine();
+    cards.forEach(function (el) {
+      if (el.getAttribute('data-kind') === 'eod') return;   // end-of-day only: the committed close IS the value
+      var open = el.getAttribute('data-kind') === 'gift' ? giftOpen() : marketOpen();
+      if (all || open) refreshLive(el);
+    });
+    if (all || marketOpen()) loadHeat();
+  }
+  function startPolling() {
+    if (timer) return;
+    timer = setInterval(function () {
+      if (document.hidden) return;              // pause when tab not visible
+      pollOnce(false);
+    }, 45000);
+  }
+  Promise.all(cards.map(loadStatic)).then(function () {
+    pollOnce(true);      // one live fetch on load (shows last traded price even when closed)
+    startPolling();
+  });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) pollOnce(false); });
+
+  // ---- sector heatmap: CORS-open niftyindices feed (the Indices page's source) --
+  var SECTORS = [
+    ['NIFTY IT', 'IT'], ['NIFTY PHARMA', 'Pharma'], ['NIFTY AUTO', 'Auto'],
+    ['NIFTY ENERGY', 'Energy'], ['NIFTY FMCG', 'FMCG'], ['NIFTY PSU BANK', 'PSU Bank'],
+    ['NIFTY BANK', 'Banks'], ['NIFTY REALTY', 'Realty'], ['NIFTY METAL', 'Metals']
+  ];
+  var heatEl = document.getElementById('heat');
+  heatEl.innerHTML = SECTORS.map(function (s) {
+    return '<div class="hc" style="background:var(--surface-3)"><span class="n">' + s[1] + '</span><span class="v skel">0.0%</span></div>';
+  }).join('');
+  function loadHeat() {
+    fetch('https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        var rows = {}, ts = '';
+        ((j && j.data) || []).forEach(function (r) {
+          rows[String(r.indexName || '').toUpperCase()] = r;
+        });
+        heatEl.innerHTML = SECTORS.map(function (s) {
+          var r = rows[s[0]], chg = r ? parseFloat(r.percChange) : NaN;
+          if (r && r.timeVal) ts = r.timeVal;
+          if (isNaN(chg)) return '<div class="hc" style="background:var(--surface-3)"><span class="n">' + s[1] + '</span><span class="v" style="color:var(--text-faint)">—</span></div>';
+          var up = chg >= 0, a = Math.min(.22, .05 + Math.abs(chg) * .13);
+          var base = up ? '52,211,153' : '248,113,113';
+          return '<div class="hc" style="background:rgba(' + base + ',' + a.toFixed(2) + ')">' +
+            '<span class="n">' + s[1] + '</span>' +
+            '<span class="v ' + (up ? 'pos' : 'neg') + '">' + (up ? '+' : '−') + Math.abs(chg).toFixed(2) + '%</span></div>';
+        }).join('');
+        // "25-Aug-2026 13:10" -> "13:10 IST"
+        var m = /(\d{2}:\d{2})\s*$/.exec(ts || '');
+        document.getElementById('heatTs').textContent = m ? m[1] + ' IST →' : 'sectors →';
+      })
+      .catch(function () { /* keep last paint (or skeletons) */ });
+  }
+
+  // ---- lazy tiles (bigger fetches wait until after first paint) --------------
+  function lazy(fn, ms) { window.addEventListener('load', function () { setTimeout(fn, ms); }); }
+
+  // FII/DII flows (9 KB)
+  lazy(function () {
+    fetch('./fii_dii.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+      var rows = Array.isArray(j) ? j : (j.rows || j.data || []);
+      var r = rows[rows.length - 1]; if (!r || r.fiiNet == null) throw 0;
+      function cr(v) { return (v >= 0 ? '+' : '−') + '₹' + Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 }) + ' cr'; }
+      document.getElementById('flNums').innerHTML =
+        '<span class="lb">FII</span><b class="' + (r.fiiNet >= 0 ? 'pos' : 'neg') + '">' + cr(r.fiiNet) + '</b>' +
+        '<span class="lb">DII</span><b class="' + (r.diiNet >= 0 ? 'pos' : 'neg') + '">' + cr(r.diiNet) + '</b>';
+      var m = /^\d{4}-(\d{2})-(\d{2})$/.exec(r.date || '');
+      if (m) document.getElementById('flDate').textContent = (+m[2]) + ' ' + MONS[(+m[1]) - 1];
+    }).catch(function () { document.getElementById('flNums').innerHTML = '<b style="color:var(--text-faint)">—</b>'; });
+  }, 150);
+
+  // IPO pipeline (7 KB). upcoming rows: [sym,name,board,open,close,band,size,status,sub×]
+  lazy(function () {
+    fetch('./ipos.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+      var up = (j.upcoming || []), open = up.filter(function (r) { return r && r[7] === 'Active'; });
+      var subs = open.map(function (r) { return r[8]; }).filter(function (v) { return v != null; });
+      var bestSub = subs.length ? Math.max.apply(null, subs) : null;
+      // the listed[] window is long — count only the week up to the newest list date
+      var dates = (j.listed || []).map(function (r) { return Date.parse(r && r[3] || ''); }).filter(function (t) { return !isNaN(t); });
+      var newest = dates.length ? Math.max.apply(null, dates) : 0;
+      var week = dates.filter(function (t) { return newest - t < 7 * 86400000; }).length;
+      document.getElementById('ipoBody').innerHTML =
+        '<div><b>' + (open.length ? open.length + ' open issue' + (open.length > 1 ? 's' : '') : 'No open issues') + '</b></div>' +
+        (bestSub != null ? '<div>best sub <b>' + bestSub.toFixed(1) + '×</b></div>' : '') +
+        (week ? '<div>' + week + ' listing' + (week > 1 ? 's' : '') + ' this week</div>' : '');
+    }).catch(function () { document.getElementById('ipoBody').innerHTML = '<b style="color:var(--text-faint)">—</b>'; });
+  }, 450);
+
+  // Market breadth (~200 KB, EOD — lazy)
+  lazy(function () {
+    fetch('./market_breadth.json').then(function (r) { return r.json(); }).then(function (j) {
+      var n = (j.dates || []).length; if (!n) throw 0;
+      var adv = j.adv[n - 1], dec = j.dec[n - 1], p200 = j.pct200 && j.pct200[n - 1];
+      document.getElementById('brNums').innerHTML =
+        '<b class="pos">' + adv + '</b><span class="lb">adv</span>' +
+        '<b class="neg">' + dec + '</b><span class="lb">dec</span>' +
+        (p200 != null ? '<span class="lb" style="margin-left:auto">' + Math.round(p200) + '% above 200-DMA</span>' : '');
+      var t = adv + dec || 1;
+      document.getElementById('brBar').innerHTML =
+        '<i style="width:' + (adv / t * 100).toFixed(1) + '%;background:var(--up)"></i><i style="flex:1;background:var(--down)"></i>';
+      var d = String(j.dates[n - 1]);   // 20260814
+      if (d.length === 8) document.getElementById('brDate').textContent = 'EOD ' + (+d.slice(6, 8)) + ' ' + MONS[(+d.slice(4, 6)) - 1];
+    }).catch(function () { document.getElementById('brNums').innerHTML = '<b style="color:var(--text-faint)">—</b>'; });
+  }, 600);
+
+  // Overnight world markets — ten most-watched pre-market cues for India (US majors,
+  // Asia, gold/crude, Bitcoin, the dollar). The committed global.json (CI-refreshed)
+  // seeds the tiles instantly and supplies each symbol's recent-trend sparkline, then
+  // the 1-day move is made LIVE via the quotes Worker: one ?quotes= call batches all
+  // ten VERBATIM Yahoo symbols (incl. futures GC=F / FX INR=X) and returns ltp +
+  // prevClose, so the headline number and its direction are current — not a day-old
+  // snapshot. Refreshes every 60 s while the tab is visible. Live value on hover.
+  var G_PICK = [
+    { id: 'spx',    y: '^GSPC',    lbl: 'S&P 500' },
+    { id: 'ndq',    y: '^IXIC',    lbl: 'Nasdaq' },
+    { id: 'dji',    y: '^DJI',     lbl: 'Dow Jones' },
+    { id: 'nkx',    y: '^N225',    lbl: 'Nikkei 225' },
+    { id: 'hsi',    y: '^HSI',     lbl: 'Hang Seng' },
+    { id: 'gold',   y: 'GC=F',     lbl: 'Gold' },
+    { id: 'brent',  y: 'BZ=F',     lbl: 'Brent Crude' },
+    { id: 'btc',    y: 'BTC-USD',  lbl: 'Bitcoin' },
+    { id: 'dxy',    y: 'DX-Y.NYB', lbl: 'Dollar (DXY)' },
+    { id: 'usdinr', y: 'INR=X',    lbl: 'USD/INR' }
+  ];
+  var GWORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+  var gGrid = document.getElementById('globalGrid');
+  var gSeed = {};   // id -> { spark, dp, d1, val, _date } from committed global.json
+  var gLiveTs = '';                                 // HH:MM IST of the last live quotes refresh
+  function hmIST(ms) {
+    try { return new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }); }
+    catch (e) { return ''; }
+  }
+
+  function gTile(p, chg, up, val, sp) {
+    var chgHtml = (chg == null)
+      ? '<div class="gchg" style="color:var(--text-faint)">—</div>'
+      : '<div class="gchg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>';
+    return '<div class="gx"' + (val ? ' title="' + p.lbl + ' · ' + val + '"' : '') + '>' +
+      '<div class="gnm">' + p.lbl + '</div>' + chgHtml + (sp || '') + '</div>';
+  }
+  if (gGrid) {   // skeleton straight away so the card never paints empty
+    gGrid.innerHTML = G_PICK.map(function (p) {
+      return '<div class="gx"><div class="gnm">' + p.lbl + '</div><div class="gchg skel">0.00%</div></div>';
+    }).join('');
+  }
+  function paintGlobal(liveById) {
+    if (!gGrid) return;
+    var live = false;
+    gGrid.innerHTML = G_PICK.map(function (p) {
+      var seed = gSeed[p.id] || {}, lv = liveById && liveById[p.id];
+      if (lv) { live = true; return gTile(p, lv.chg, lv.up, lv.val, spark(seed.spark || [], lv.up)); }
+      if (seed.d1 != null) { var up = seed.d1 >= 0; return gTile(p, seed.d1, up, seed.val, spark(seed.spark || [], up)); }
+      return gTile(p, null, false, null, '');
+    }).join('');
+    var ts = document.getElementById('globalTs');
+    if (ts) ts.innerHTML = live
+      ? '<span style="color:var(--up)">● live</span>' + (gLiveTs ? ' <span style="color:var(--text-faint)">· ' + gLiveTs + ' IST</span>' : '') + ' →'
+      : (gSeed._date ? gSeed._date + ' →' : 'global cues →');
+  }
+  // 1) seed from committed global.json — instant, always available, gives the sparklines
+  function seedGlobal() {
+    return fetch('./global.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+      var byId = {}, grp = j.groups || {};
+      Object.keys(grp).forEach(function (k) { (grp[k] || []).forEach(function (r) { if (r && r.id) byId[r.id] = r; }); });
+      (j.fx || []).forEach(function (r) { if (r && r.id) byId[r.id] = r; });
+      G_PICK.forEach(function (p) {
+        var r = byId[p.id]; if (!r) return;
+        var dp = r.dp == null ? 2 : r.dp;
+        gSeed[p.id] = { spark: r.spark || [], dp: dp, d1: r.d1,
+          val: r.last != null ? r.last.toLocaleString('en-IN', { minimumFractionDigits: dp, maximumFractionDigits: dp }) : null };
+      });
+      var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(j.as_of || ''));
+      if (m) gSeed._date = (+m[3]) + ' ' + MONS[(+m[2]) - 1];
+    }).catch(function () { /* leave skeletons; live may still fill */ });
+  }
+  // 2) LIVE 1-day move via the quotes Worker (batched; verbatim symbols incl. =)
+  function liveGlobal() {
+    var q = G_PICK.map(function (p) { return p.y; }).join(',');
+    return fetch(GWORKER + '/?quotes=' + encodeURIComponent(q), { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (j) {
+        var d = j.data || {}, liveById = {}, any = false;
+        G_PICK.forEach(function (p) {
+          var row = d[p.y]; if (!row || row.ltp == null || !row.prevClose) return;
+          var chg = (row.ltp - row.prevClose) / row.prevClose * 100;
+          var dp = (gSeed[p.id] && gSeed[p.id].dp != null) ? gSeed[p.id].dp : 2;
+          liveById[p.id] = { chg: chg, up: chg >= 0,
+            val: row.ltp.toLocaleString('en-IN', { minimumFractionDigits: dp, maximumFractionDigits: dp }) };
+          any = true;
+        });
+        if (!any) throw 0;
+        gLiveTs = hmIST(j.asOf || Date.now());
+        return liveById;
+      });
+  }
+  lazy(function () {
+    if (!gGrid) return;
+    seedGlobal().then(function () {
+      paintGlobal(null);                    // committed values + sparklines (never blank)
+      function go() { liveGlobal().then(paintGlobal).catch(function () { /* keep last good paint */ }); }
+      go();                                 // live top-up now …
+      setInterval(function () { if (!document.hidden) go(); }, 60000);   // … and every 60 s while visible
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) go(); });
+    });
+  }, 250);
+
+  // ---- tile grid from the shared nav ----------------------------------------
+  var DESC = {
+    'nse-bse-dashboard.html': 'NSE/BSE dashboard — prices, 52-week highs, delivery & fundamentals.',
+    'markets.html':           'Sectors, NSE indices and the day\'s top movers on one screen — live prices, stocks and chart side by side.',
+    'movers.html':            'Top gainers & losers over 1 day to 1 year, with a sector pulse heatmap.',
+    'daily-moves.html':       'Every stock of an index day by day in one red-green grid, with FII/DII flows and 52-week distance.',
+    'indices.html':           'All ~131 NSE indices live — returns, P/E, P/B, yield & constituents.',
+    'sectors.html':           'Sector & industry index browser with performance and constituents.',
+    'monthly-returns.html':   'Month-by-month returns for every index — seasonality & vs-Nifty alpha.',
+    'market-mood.html':       'Nifty 500 turnover vs its 12-month average, plus daily market breadth.',
+    'macro.html':             'The macro pulse — rates, inflation, PMIs, flows & the Buffett gauge.',
+    'capex.html':             'Government vs private capex — Budget targets, monthly spend, and India Inc’s filed cash-flow capex.',
+    'global.html':            'Overnight global cues — world indices, commodities, crypto & FX.',
+    'watchlist.html':         'Your starred stocks with notes — synced across your devices.',
+    'fii-dii.html':           'FII & DII daily buy/sell flows in cash and derivatives.',
+    'shareholding.html':      'Quarterly FII & DII holdings per stock, with an accumulation backtest.',
+    'deals.html':             'Bulk & block deals — who bought big, who sold, and at what price.',
+    'insider.html':           'Promoter & insider trades from SAST/PIT filings.',
+    'delivery.html':          'Unusual delivery-volume spikes — quiet accumulation flags.',
+    'volume.html':            'Unusual traded volume with delivery confirmation & an F&O lens.',
+    'bank-credit.html':       'RBI bank-loan growth y/y, tracked fortnightly.',
+    'discovery.html':         'Auto-computed stock buckets — order wins, fund raises, excellent results, breakouts & themes.',
+    'ideas.html':             'Daily deep-research ideas on ₹200–2,000 cr small caps — filings-driven scan, primary-source thesis, and a self-scoring track record.',
+    'commodities.html':       'Commodity Watch — unit prices and volumes for every HS code India trades, WPI items and daily spot, mapped to the listed names that benefit or suffer.',
+    'bull-runs.html':         'Bull-run survivors — which names carried through every major up-phase.',
+    'strategy-phases.html':   'Strategy Phases Lab — how each saved strategy behaves across market phases.',
+    'portfolio.html':         'Private portfolio — live holdings, P&L and book vs broker.',
+    'pf-glance.html':         'Portfolio at a glance — the one-screen summary.',
+    'terminal.html':          'Live terminal — quotes, orders and positions through the broker proxy.',
+    'private-import.html':    'Restore shared strategies into this browser.',
+    'quarterly-results.html': 'Season scoreboard, multi-year growth trends, live declared feed, results calendar & every company’s numbers.',
+    'announcements.html':     'Every NSE filing of the last month — filter by symbol, date & category.',
+    'ipos.html':              'IPO pipeline & fresh listings with post-listing performance.',
+    'actions.html':           'Every upcoming ex-date — dividends, splits, bonuses & rights.',
+    'mutual-funds.html':      'Browse and compare funds by returns, category and rating.',
+    'backtest.html':          'SIP & lumpsum backtests on any mutual fund, with rolling returns.',
+    'stock-backtest.html':    'Backtest factor strategies over 25+ years of Indian market data.',
+    'saved-strategies.html':  'Curated shareable strategies you can clone and tweak.',
+    'all-picks.html':         'Every strategy\'s current basket on one page, priced live.',
+    'strategy-mixer.html':    'Blend several strategies with ₹ weights — combined growth, drawdown, overlap & correlation.',
+    'backtest-history.html':  'The open community log of every backtest run on the site.',
+    'live-tracking.html':     'Forward-tracking of saved strategies against live prices.',
+    'status.html':            'Data health — every feed’s freshness and row counts at a glance.',
+    'data-checks.html':       'Data checks — every number read against a second, independent source; where they disagree.',
+    'results-coverage.html':  'Declared vs parsed results this quarter — what’s missing and why.',
+    'analytics.html':         'Page-view stats across the site.',
+    'insurer-inbox.html':     'Manual-fill queue for insurer quarterly results.'
+  };
+  var SUB = { Markets: 'Live dashboards', Funds: 'Beyond equities', Tools: 'Build your edge', Admin: 'Owner-only tools' };
+  var EXT = { 'fno-dashboard': 'Futures & options — OI buildup, PCR and rollover trends.' };
+
+  function descFor(href) {
+    var file = href.replace(/^\.\//, '').split('/').pop().toLowerCase();
+    if (DESC[file]) return DESC[file];
+    for (var k in EXT) if (href.indexOf(k) >= 0) return EXT[k];
+    return '';
+  }
+  function tile(it) {
+    var href = it[0], ext = href.indexOf('http') === 0;
+    return '<a class="tile" href="' + href + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' +
+      '<div class="ic">' + it[1] + '</div><div>' +
+      '<div class="tt">' + it[2] + '<span class="arrow">↗</span></div>' +
+      '<div class="td">' + descFor(href) + '</div></div></a>';
+  }
+  var nav = window.SW_NAV;
+  if (nav) {
+    var html = '';
+    nav.groups.forEach(function (g) {
+      var items = g.g === 'Tools' ? [nav.cta].concat(g.items) : g.items;
+      html += '<div class="sec-h"><h2>' + g.g + '</h2><span class="grp">' + (SUB[g.g] || '') + '</span></div>' +
+        '<section class="tiles">' + items.map(tile).join('') + '</section>';
+    });
+    document.getElementById('tileSections').innerHTML = html;
+  }
+
+  // ---- command bar -----------------------------------------------------------
+  // A REAL input, so it is always typable: focusing it hands off to theme.js's
+  // palette (suggestions + keyboard nav), and if that isn't there — a stale cached
+  // theme.js, JS blocked — the plain GET to stock.html?sym= still does the job.
+  // It must never navigate anywhere the visitor didn't ask for.
+  var hs = document.getElementById('heroSrch'), hsIn = hs && hs.querySelector('.hs-in');
+  if (hs && hsIn) {
+    var toPalette = function () {
+      if (!window.swSearch) return false;
+      hsIn.blur();
+      window.swSearch.open(hsIn.value.trim());
+      return true;
+    };
+    hsIn.addEventListener('focus', toPalette);
+    hs.addEventListener('submit', function (e) {
+      var v = hsIn.value.trim();
+      if (toPalette() || !v) e.preventDefault();       // palette took it, or nothing typed
+      else hsIn.value = v.toUpperCase();               // plain fallback: ./stock.html?sym=SYM
+    });
+  }
+})();
+</script>
+</body>
+</html>

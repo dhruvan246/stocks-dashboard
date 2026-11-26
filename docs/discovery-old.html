@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex" />
+<!-- OLD VIEW of discovery.html, kept so the header's New / Old switch has somewhere to go. Frozen copy: fix bugs in discovery.html, not here. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Smart Money Picks</title>
+<meta name="description" content="Smart Money Picks — auto-computed stock buckets from NSE filings and market data: order wins, fund raising, excellent results by quarter, breakouts, corrections, sector themes. No hand-picking, no paywall." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .bkt{cursor:pointer;transition:transform var(--tr,.15s),box-shadow var(--tr,.15s),border-color var(--tr,.15s)}
+  .bkt:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg,0 10px 30px -12px rgba(0,0,0,.25));border-color:var(--accent,var(--accent))}
+  .gpill{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:6px 14px;border-radius:var(--radius-sm);cursor:pointer;user-select:none;
+         background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border));transition:background .12s,color .12s}
+  .gpill:hover{border-color:var(--accent,var(--border-strong))}
+  .gpill.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
+  .cnt{display:inline-block;font-size:11px;font-weight:800;padding:2px 9px;border-radius:var(--radius-sm);background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text))}
+  .docbtn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--radius);
+          background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text));border:1px solid var(--border-strong,color-mix(in srgb,var(--accent) 38%,transparent));white-space:nowrap}
+  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
+  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
+  /* triage marks: 👍 interesting / 👎 rejected */
+  .tribtn{cursor:pointer;user-select:none;font-size:12px;opacity:.28;padding:0 2px;display:inline-block;transition:opacity .12s,transform .12s;filter:grayscale(1)}
+  .tribtn:hover{opacity:.9;transform:scale(1.25);filter:none}
+  .tribtn.on{opacity:1;filter:none}
+  .tribtn.on[data-v="in"]{color:#10b981}
+  .tribtn.on[data-v="out"]{color:var(--neg)}
+  tr.tri-in>td:first-child{box-shadow:inset 3px 0 0 #10b981}
+  tr.tri-out{opacity:.42}
+  tr.tri-out:hover{opacity:.85}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+
+  <!-- ================= bucket grid view ================= -->
+  <div id="gridView">
+    <div class="mb-4">
+      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Smart Money Picks <span class="text-slate-400 font-semibold text-base">· fundamental triggers</span></h1>
+      <p class="text-sm text-slate-500 mt-1">Stocks grouped by what's actually happening to them — order wins, fund raises, great or weak results, breakouts, sector themes. Every bucket is <b>computed automatically from exchange filings and market data</b> (nothing hand-picked) and refreshes through the day. <span id="updated" class="text-slate-400"></span></p>
+    </div>
+
+    <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading buckets…</div>
+
+    <div id="controls" class="hidden mb-4 flex flex-wrap items-center gap-2">
+      <div id="gpills" class="flex flex-wrap gap-2 sw-strip"></div>  <!-- phone: one scrolling line (2026-10-13) -->
+      <input id="q" type="text" placeholder="Search buckets…" autocomplete="off"
+             class="ml-auto w-48 px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+    <div id="groups"></div>
+  </div>
+
+  <!-- ================= bucket detail view ================= -->
+  <div id="detailView" class="hidden">
+    <button id="back" class="mb-4 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">← All buckets</button>
+    <div class="mb-4">
+      <h1 id="dTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight"></h1>
+      <p id="dDesc" class="text-sm text-slate-500 mt-1"></p>
+    </div>
+    <!-- filters + sort (Order Wins only) -->
+    <div id="ordCtl" class="hidden card p-3 mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+      <label class="flex items-center gap-2 text-[13px] font-semibold text-slate-600">Market Cap
+        <select id="fMcap" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="all">All</option>
+          <option value="lt500">Under ₹500 cr</option>
+          <option value="500-2000">₹500 – 2,000 cr</option>
+          <option value="2000-10000">₹2,000 – 10,000 cr</option>
+          <option value="gt10000">Over ₹10,000 cr</option>
+        </select></label>
+      <label class="flex items-center gap-2 text-[13px] font-semibold text-slate-600">P/E (TTM)
+        <select id="fPe" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="all">All</option>
+          <option value="lt15">Under 15</option>
+          <option value="15-30">15 – 30</option>
+          <option value="30-60">30 – 60</option>
+          <option value="gt60">Over 60</option>
+          <option value="na">Loss / NA</option>
+        </select></label>
+      <label class="flex items-center gap-2 text-[13px] font-semibold text-slate-600 ml-auto">Sort by
+        <select id="fSort" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="date">Latest first</option>
+          <option value="ordval">Largest order</option>
+          <option value="mcap">Largest market cap</option>
+          <option value="pe">Lowest P/E</option>
+        </select></label>
+    </div>
+    <div class="card p-4 mb-4">
+      <div class="flex flex-wrap items-center gap-3 mb-2">
+        <div id="dCount" class="text-sm font-semibold text-slate-700"></div>
+        <label class="ml-auto flex items-center gap-1.5 text-[12px] font-semibold text-slate-500 cursor-pointer" title="Marks you make with the thumbs are remembered — rejected rows fade out (or hide entirely with this on)">
+          <input id="triHide" type="checkbox" class="accent-blue-600"> Hide rejected
+        </label>
+      </div>
+      <div class="sw-cards overflow-x-auto rounded-lg border border-slate-100">
+        <table class="w-full text-sm min-w-[760px]">
+          <thead id="dHead" class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100"></thead>
+          <tbody id="dBody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+      <div class="text-center mt-3"><button id="dMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button></div>
+    </div>
+  </div>
+
+  <p class="text-[11px] text-slate-500 mt-2">Buckets are screens computed from public NSE/BSE data — announcements (last ~31 days), quarterly filings and daily prices. For research &amp; education only, not recommendations. Results buckets: PAT is owners-attributable, consolidated preferred.</p>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
+const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN');
+const pct = (n, signed) => n == null ? '—' : '<span class="' + (n >= 0 ? 'pos' : 'neg') + '">' + (signed && n > 0 ? '+' : '') + n.toFixed(1) + '%</span>';
+const slink = (sym, name) => '<span class="sw-star" data-sym="' + esc(sym) + '"></span> ' +
+                             '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name || '') + '">' + esc(sym) + '</a>' +
+                             '<span class="whitespace-nowrap ml-1"><span class="tribtn' + (TRI[sym] === 'in' ? ' on' : '') + '" data-tri="' + esc(sym) + '" data-v="in" title="Mark interesting"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></span>' +
+                             '<span class="tribtn' + (TRI[sym] === 'out' ? ' on' : '') + '" data-tri="' + esc(sym) + '" data-v="out" title="Reject — fades (or hides) this stock everywhere on this page"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg></span></span>' +
+                             (name ? '<div class="text-[11px] text-slate-400 font-normal max-w-[180px] truncate">' + esc(name) + '</div>' : '');
+
+/* ---- triage: 👍 interesting / 👎 rejected, remembered across visits.
+   Owner browsers sync through Supabase kv 'TRIAGE' (all devices); everyone else
+   keeps a private browser-local list — same model as the watchlist. ---- */
+let TRI = {};                                   // sym -> 'in' | 'out'
+let triHide = false; try { triHide = localStorage.getItem('sw_triage_hide') === '1'; } catch (e) {}
+const triOwner = () => !!(window.swSync && swSync.isOwner());
+async function triLoad(){
+  let arr = null;
+  if (triOwner()) arr = await swSync.kvGet('TRIAGE');
+  else { try { arr = JSON.parse(localStorage.getItem('sw_triage_local') || '[]'); } catch (e) { arr = []; } }
+  TRI = {}; (Array.isArray(arr) ? arr : []).forEach(e => { if (e && e.s && e.st) TRI[e.s] = e.st; });
+  if (curB) renderDetailRows();
+}
+async function triSave(){
+  const arr = Object.keys(TRI).map(s => ({ s, st: TRI[s], ts: Date.now() }));
+  if (triOwner()) await swSync.kvSet('TRIAGE', arr);
+  else try { localStorage.setItem('sw_triage_local', JSON.stringify(arr)); } catch (e) {}
+}
+function triToggle(sym, v){
+  TRI[sym] === v ? delete TRI[sym] : TRI[sym] = v;    // click again to clear
+  renderDetailRows(); triSave();
+}
+(function triBoot(){ window.swSync ? triLoad() : setTimeout(triBoot, 250); })();
+
+let DATA = null, BUCKETS = {}, curGroup = 'All', shown = 100, curB = null;
+
+const GROUP_ICON = { 'Triggers (last 31 days)': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', 'Smart money': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>', 'Price & Value': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>', 'Results — computed from filings': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>', 'Results history': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>', 'Sector themes': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg>' };
+
+function renderGrid(){
+  const q = $('q').value.trim().toLowerCase();
+  let h = '';
+  for (const g of DATA.groups){
+    if (curGroup !== 'All' && g.g !== curGroup) continue;
+    const bks = g.buckets.filter(b => !q || b.t.toLowerCase().includes(q));
+    if (!bks.length) continue;
+    h += '<div class="mt-6 mb-3 flex items-baseline gap-2"><span aria-hidden="true" class="self-center text-slate-400">' + (GROUP_ICON[g.g] || '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 12.5-8.58 3.91a2 2 0 0 1-1.66 0L2.6 12.5"/><path d="m22 17.5-8.58 3.91a2 2 0 0 1-1.66 0L2.6 17.5"/></svg>') + '</span>' +
+         '<h2 class="text-base font-extrabold text-slate-800">' + esc(g.g) + '</h2>' +
+         '<span class="text-[11px] text-slate-400 font-semibold">' + bks.length + ' buckets</span></div>' +
+         '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">';
+    for (const b of bks){
+      h += '<div class="card bkt p-4" data-k="' + esc(b.k) + '" role="button" tabindex="0">' +
+        '<div class="flex items-start justify-between gap-2">' +
+          '<div class="text-[15px] font-bold text-slate-800 leading-snug">' + esc(b.t) + '</div>' +
+          '<span class="cnt shrink-0">' + inr(b.n) + '</span></div>' +
+        '<div class="text-[12.5px] text-slate-500 mt-1.5 leading-relaxed">' + esc(b.d) + '</div></div>';
+    }
+    h += '</div>';
+  }
+  $('groups').innerHTML = h || '<div class="text-sm text-slate-400 py-10 text-center">No buckets match.</div>';
+}
+
+const HEADS = {
+  ann: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-left px-3">Latest</th><th class="text-right px-3">Filings</th><th class="text-left px-3 w-[48%]">What happened</th><th class="text-right px-3">Doc</th></tr>',
+  ord: '<tr><th class="text-left py-2.5 px-3 whitespace-nowrap">Date Of Info.</th><th class="text-left px-3">Company</th><th class="text-right px-3">Market Cap (in Cr.)</th><th class="text-right px-3">TTM PE</th><th class="text-left px-3 w-[46%]">Order details</th><th class="text-right px-3">Read</th></tr>',
+  res: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">PAT (₹ cr)</th><th class="text-right px-3">Year ago</th><th class="text-right px-3">PAT YoY</th><th class="text-right px-3">Revenue YoY</th></tr>',
+  px:  '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Mcap (₹ cr)</th><th class="text-right px-3">Price</th><th class="text-right px-3">vs 52-wk high</th><th class="text-right px-3">P/E (TTM)</th></tr>',
+  deal:'<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Net bought (₹ cr)</th><th class="text-right px-3">Bought (₹ cr)</th><th class="text-right px-3">Buyers</th><th class="text-left px-3">Latest</th><th class="text-left px-3 w-[30%]">Biggest buyer</th></tr>',
+  spike:'<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Spikes</th><th class="text-right px-3">Delivered (₹ cr)</th><th class="text-right px-3">Best multiple</th><th class="text-left px-3">Latest</th></tr>',
+  sec: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Mcap (₹ cr)</th><th class="text-right px-3">vs 52-wk high</th><th class="text-left px-3">Sub-industry</th></tr>'
+};
+
+function rowHtml(b, r){
+  if (b.type === 'ann'){
+    const doc = r[5] ? '<a class="docbtn" href="' + esc(encodeURI(r[5].indexOf('http') === 0 ? r[5] : PDF_PREFIX + r[5])) + '" target="_blank" rel="noopener">📄</a>' : '<span class="text-slate-300">—</span>';
+    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + r[3] + '</td>' +
+           '<td class="py-2.5 px-3 text-right text-slate-600">' + r[2] + '</td><td class="py-2.5 px-3 text-[12.5px] text-slate-600 leading-relaxed">' + esc(r[4]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + doc + '</td>';
+  }
+  if (b.type === 'ord'){
+    const doc = r[6] ? '<a class="docbtn" href="' + esc(encodeURI(r[6].indexOf('http') === 0 ? r[6] : PDF_PREFIX + r[6])) + '" target="_blank" rel="noopener">Read</a>' : '<span class="text-slate-300">—</span>';
+    return '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + r[4] + '</td>' +
+           '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right text-slate-600">' + (r[3] == null ? '—' : r[3] + 'x') + '</td>' +
+           '<td class="py-2.5 px-3 text-[12.5px] text-slate-700 leading-relaxed">' + esc(r[5]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + doc + '</td>';
+  }
+  if (b.type === 'deal'){
+    const f = v => v == null ? '—' : (v >= 100 ? Math.round(v).toLocaleString('en-IN') : v.toFixed(1));
+    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right"><span class="' + (r[2] >= 0 ? 'pos' : 'neg') + '">' + (r[2] >= 0 ? '+' : '−') + f(Math.abs(r[2])) + '</span></td>' +
+           '<td class="py-2.5 px-3 text-right text-slate-600">' + f(r[3]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + r[4] + '</td>' +
+           '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + esc(r[5]) + '</td>' +
+           '<td class="py-2.5 px-3 text-[12px] text-slate-500">' + esc(r[6]) + '</td>';
+  }
+  if (b.type === 'spike'){
+    const f = v => v == null ? '—' : (v >= 100 ? Math.round(v).toLocaleString('en-IN') : v.toFixed(1));
+    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right font-semibold">' + r[2] + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + f(r[3]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right text-slate-600">' + r[4] + '×</td>' +
+           '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + esc(r[5]) + '</td>';
+  }
+  if (b.type === 'res')
+    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right text-slate-500">' + inr(r[3]) + '</td><td class="py-2.5 px-3 text-right">' + pct(r[4], true) + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + pct(r[5], true) + '</td>';
+  if (b.type === 'px')
+    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right">' + inr(r[3]) + '</td><td class="py-2.5 px-3 text-right">' + pct(r[4]) + '</td>' +
+           '<td class="py-2.5 px-3 text-right text-slate-600">' + (r[5] == null ? '—' : r[5]) + '</td>';
+  return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
+         '<td class="py-2.5 px-3 text-right">' + pct(r[3]) + '</td><td class="py-2.5 px-3 text-[12px] text-slate-500">' + esc(r[4]) + '</td>';
+}
+
+// Order Wins filters/sort. ord row: [sym,name,mcap,pe,date,remark,file,orderCr]
+function ordFilter(r){
+  const mc = r[2], pe = r[3];
+  switch ($('fMcap').value){
+    case 'lt500':      if (!(mc != null && mc < 500)) return false; break;
+    case '500-2000':   if (!(mc != null && mc >= 500 && mc < 2000)) return false; break;
+    case '2000-10000': if (!(mc != null && mc >= 2000 && mc < 10000)) return false; break;
+    case 'gt10000':    if (!(mc != null && mc >= 10000)) return false; break;
+  }
+  switch ($('fPe').value){
+    case 'lt15':  if (!(pe != null && pe < 15)) return false; break;
+    case '15-30': if (!(pe != null && pe >= 15 && pe < 30)) return false; break;
+    case '30-60': if (!(pe != null && pe >= 30 && pe < 60)) return false; break;
+    case 'gt60':  if (!(pe != null && pe >= 60)) return false; break;
+    case 'na':    if (pe != null) return false; break;
+  }
+  return true;
+}
+const _num = (v, dir) => v == null ? (dir < 0 ? -Infinity : Infinity) : v;   // nulls sort last
+function ordSort(a, b){
+  switch ($('fSort').value){
+    case 'ordval': return _num(b[7], -1) - _num(a[7], -1);
+    case 'mcap':   return _num(b[2], -1) - _num(a[2], -1);
+    case 'pe':     return _num(a[3], 1) - _num(b[3], 1);
+    default:       return a[4] < b[4] ? 1 : a[4] > b[4] ? -1 : 0;   // date desc
+  }
+}
+function viewRows(){
+  let rows = curB.type === 'ord' ? curB.rows.filter(ordFilter).sort(ordSort) : curB.rows;
+  if (triHide) rows = rows.filter(r => TRI[r[0]] !== 'out');
+  return rows;
+}
+function renderDetailRows(){
+  const rows = viewRows();
+  const upto = Math.min(shown, rows.length);
+  let h = '';
+  for (let i = 0; i < upto; i++){
+    const st = TRI[rows[i][0]];
+    h += '<tr class="align-top hover:bg-slate-50' + (st === 'in' ? ' tri-in' : st === 'out' ? ' tri-out' : '') + '">' + rowHtml(curB, rows[i]) + '</tr>';
+  }
+  $('dBody').innerHTML = h;
+  if (window.swWatch) swWatch.paintAll($('dBody'));
+  const hid = triHide ? Object.keys(TRI).filter(s => TRI[s] === 'out').length : 0;
+  $('dCount').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + rows.length.toLocaleString('en-IN') + ' stocks' + (hid ? ' (rejected hidden)' : '');
+  $('dMore').classList.toggle('hidden', upto >= rows.length);
+}
+
+function openBucket(k, push){
+  const b = BUCKETS[k]; if (!b) return;
+  curB = b; shown = 100;
+  $('dTitle').textContent = b.t;
+  $('dDesc').textContent = b.d;
+  $('dHead').innerHTML = HEADS[b.type] || HEADS.sec;
+  const isOrd = b.type === 'ord';
+  $('ordCtl').classList.toggle('hidden', !isOrd);
+  if (isOrd){ $('fMcap').value = 'all'; $('fPe').value = 'all'; $('fSort').value = 'date'; }
+  renderDetailRows();
+  $('gridView').classList.add('hidden');
+  $('detailView').classList.remove('hidden');
+  if (push !== false) location.hash = 'b=' + encodeURIComponent(k);
+  window.scrollTo(0, 0);
+}
+function closeBucket(push){
+  $('detailView').classList.add('hidden');
+  $('gridView').classList.remove('hidden');
+  if (push !== false && location.hash) history.pushState('', '', location.pathname);
+}
+function applyHash(){
+  const m = /b=([^&]+)/.exec(location.hash);
+  if (m && BUCKETS[decodeURIComponent(m[1])]) openBucket(decodeURIComponent(m[1]), false);
+  else closeBucket(false);
+}
+
+async function load(){
+  try {
+    const res = await fetch('./discovery.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    DATA = await res.json();
+    for (const g of DATA.groups) for (const b of g.buckets) BUCKETS[b.k] = b;
+    $('updated').textContent = 'Updated ' + DATA.updated + '.';
+    const names = ['All'].concat(DATA.groups.map(g => g.g));
+    $('gpills').innerHTML = names.map(n =>
+      '<button type="button" class="gpill' + (n === 'All' ? ' on' : '') + '" data-g="' + esc(n) + '">' + esc(n === 'All' ? 'All' : n) + '</button>').join('');
+    $('gpills').addEventListener('click', e => {
+      const el = e.target.closest('.gpill'); if (!el) return;
+      curGroup = el.getAttribute('data-g');
+      document.querySelectorAll('.gpill').forEach(p => p.classList.toggle('on', p === el));
+      renderGrid();
+    });
+    $('q').addEventListener('input', renderGrid);
+    $('groups').addEventListener('click', e => {
+      const el = e.target.closest('.bkt'); if (el) openBucket(el.getAttribute('data-k'));
+    });
+    $('groups').addEventListener('keydown', e => {
+      const el = e.target.closest('.bkt'); if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openBucket(el.getAttribute('data-k')); }
+    });
+    $('back').addEventListener('click', () => closeBucket());
+    $('dMore').addEventListener('click', () => { shown += 200; renderDetailRows(); });
+    $('triHide').checked = triHide;
+    $('triHide').addEventListener('change', () => {
+      triHide = $('triHide').checked;
+      try { localStorage.setItem('sw_triage_hide', triHide ? '1' : ''); } catch (e) {}
+      shown = 100; renderDetailRows();
+    });
+    $('dBody').addEventListener('click', e => {
+      const t = e.target.closest('.tribtn'); if (!t) return;
+      e.preventDefault(); e.stopPropagation();
+      triToggle(t.getAttribute('data-tri'), t.getAttribute('data-v'));
+    });
+    ['fMcap', 'fPe', 'fSort'].forEach(id => $(id).addEventListener('change', () => { shown = 100; renderDetailRows(); }));
+    window.addEventListener('hashchange', applyHash);
+    renderGrid();
+    $('status').classList.add('hidden');
+    $('controls').classList.remove('hidden');
+    applyHash();
+  } catch (e) {
+    $('status').innerHTML = 'Could not load discovery data (' + esc(e.message) + '). Please try again in a minute.';
+  }
+}
+load();
+</script>
+</body>
+</html>

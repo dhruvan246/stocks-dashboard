@@ -31236,6 +31236,14 @@ shows its last close — the tooltip says so.
 
 ## §ONE-SCREEN-KIT — shared list → detail → chart layout; Indices page rebuilt on it (2026-11-26, user: "continue with changing the other page designs like u did for sector page")
 
+- **New / Old view switch (user, 2026-11-26).** Every rebuilt page keeps its previous design as a frozen copy `docs/<page>-old.html`
+  (46 files; Markets maps to `sectors-old` / `indices-old` / `movers-old` by its `v=` view). New is the default. `theme.js` (top of
+  the file: `OLD_PAGES`, `viewTwin`, `buildViewSwitch`) draws a `New | Old` pill left of the theme pill (its own line above `main`
+  on phones), stores the choice in localStorage `sw_view`, and redirects a new page to its old copy while the choice is `old`.
+  When a page is rebuilt on the kit: save its last pre-kit version as `<page>-old.html` (add the `noindex` meta) and add its name
+  to `OLD_PAGES`. The old copies are frozen: bugs are fixed in the new page only, and an old copy can stop working when a data
+  file it reads changes shape. Nav highlighting treats `x-old.html` as `x.html`.
+
 - **Kit:** `docs/theme.css` ends with the `os-*` block (`.os-vbar`, `.os-sg` segmented groups, `.os-btn`, `.os-grid` three panes, `.os-row`, `.os-stats`, phone rules at 899px; the chart pane is a size container, so the stats strip drops to 3 columns when the pane is under 640px). `docs/os-kit.js` = `window.OSKit`: number/date helpers, `gunzipJSON`, `loadStockBars(sym)` (sf-data bars), `loadIndexBars(key)` (`idx_ohlc/<f>.json`; days with no open/high/low are drawn as a flat tick at the close), `aggBars`, `Chart` (lightweight-charts 5.2.1, EMA 21/50/200, volume, live line, theme rebuild), `fitGrid`. No other page used an `os-` class when this shipped (grep 2026-11-26: only indices.html). sectors.html still has its own `.sg/.tbtn/.tp` copies — move it to the kit when next touched.
 - **`docs/indices.html`:** pane 1 = indices of the chosen group (search by name or member symbol, sort, breadth); pane 2 = members of the selected index with price and the chosen period's change; pane 3 = chart of the index, or of the member clicked. Periods Today / 1W / 1M / 3M / 6M / 1Y. 3M / 6M for feed rows are computed from `_closes.bin` (91 / 182 days back) and carried to the live level. Heatmap is the second tab. The old stat cards and the member pop-up are gone (breadth is in the pane headers).
 - **Members:** the 28 pipeline indices read `indicesHistory` inside `dash_slim.bin` (list in force on the rewound date); the 53 extra ones read `nse_extra_indices` (`memAt`). Stock returns come from the `dash_slim.bin` series; `stock_data.bin` (20 MB) is fetched only when the period or the rewound date reaches past `recentCutoffOff`. A member whose ticker has no price shows "—" and is counted in the note (measured: Nifty 50 on 2020-03-23 → HDFC; dated lists carry today's ticker for renamed members, e.g. INDUSTOWER).

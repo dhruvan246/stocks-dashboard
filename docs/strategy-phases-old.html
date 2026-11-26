@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex" />
+<!-- OLD VIEW of strategy-phases.html, kept so the header's New / Old switch has somewhere to go. Frozen copy: fix bugs in strategy-phases.html, not here. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>STOCKSWORLD · Strategy Phases Lab</title>
+<meta name="description" content="Unlisted research page: top strategies from the 4.44M exhaustive grid, per market phase." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .pcard{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg);
+    padding:12px 14px;cursor:pointer;min-width:150px;flex:1;transition:.15s;user-select:none}
+  .pcard:hover{border-color:var(--accent,var(--accent))}
+  .pcard.on{border-color:var(--accent,var(--accent));box-shadow:0 0 0 1px var(--accent,#2563eb) inset}
+  .pcard .t{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint,var(--text-faint))}
+  .pcard .v{font-size:20px;font-weight:800;margin-top:2px}
+  .pcard .s{font-size:11px;color:var(--text-muted,var(--text-muted));margin-top:2px}
+  .pcard.info{cursor:default}
+  .vcard{background:var(--surface,var(--surface));border:1.5px solid var(--border,var(--border));border-radius:var(--radius-lg);
+    padding:9px 16px;cursor:pointer;user-select:none;transition:.15s;text-align:left;min-width:138px}
+  .vcard:hover{border-color:var(--accent,var(--accent));transform:translateY(-1px)}
+  .vcard .n{font-size:14px;font-weight:800;letter-spacing:-.01em}
+  .vcard .m{font-size:11px;color:var(--text-muted,var(--text-muted));margin-top:1px}
+  .vcard.on{border-color:var(--accent,var(--accent));box-shadow:0 0 0 1.5px var(--accent,#2563eb) inset}
+  .vcard.on .n{color:var(--accent,var(--accent-text))}
+  .vcard.off{opacity:.45;cursor:not-allowed}
+  .vcard .cmp{display:none;font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--text-faint,var(--text-faint));margin-top:2px}
+  .vcard.off .cmp{display:block}
+  .vcard:focus-visible{outline:2px solid var(--accent,var(--accent));outline-offset:2px}
+  .pos{color:var(--pos)} html[data-theme="dark"] .pos{color:var(--pos)}
+  .warn{color:var(--warn)} html[data-theme="dark"] .warn{color:var(--warn)}
+  table{border-collapse:collapse;width:100%;min-width:960px}
+  th{position:sticky;top:0;background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text-muted));
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:8px 9px;
+    cursor:pointer;user-select:none;white-space:nowrap;z-index:1}
+  th.num,td.num{text-align:right}
+  td{padding:6px 9px;border-top:1px solid var(--border,var(--border));font-size:13px}
+  td.mono{font-family:ui-monospace,Consolas,monospace}
+  .fam{display:inline-block;background:var(--surface-2,var(--surface-2));border-radius:4px;padding:1px 7px;
+    font-size:12px;white-space:nowrap;color:var(--text-muted,var(--text-muted))}
+  /* Earnings basis. Std and con must be told apart at a glance because a merged card can hold the
+     SAME rule twice, once per basis; 'any' means the rule reads no earnings at all, so it is
+     deliberately quiet rather than a third competing colour. */
+  .bchip{display:inline-block;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:700;
+    letter-spacing:.03em;white-space:nowrap;border:1px solid transparent}
+  .b-std{background:var(--accent-soft);color:var(--accent-text);border-color:color-mix(in srgb,var(--accent) 38%,transparent)}
+  .b-con{background:var(--pos-soft);color:var(--pos);border-color:#a7f3d0}
+  .b-any{background:transparent;color:var(--text-muted,var(--text-faint));border-color:var(--border,var(--border));font-weight:600}
+  html[data-theme="dark"] .b-std{background:#312e81;color:#c7d2fe;border-color:#4338ca}
+  html[data-theme="dark"] .b-con{background:#064e3b;color:#a7f3d0;border-color:#047857}
+  html[data-theme="dark"] .b-any{background:transparent;color:var(--text-muted);border-color:var(--border-strong)}
+  .shell{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg);overflow-x:auto}
+  input[type=search]{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border-strong));color:var(--text,var(--text));
+    border-radius:var(--radius);padding:7px 11px;font-size:13px;min-width:230px}
+  html[data-theme="dark"] input[type=search]{border-color:var(--border-strong);color:var(--text)}
+  /* Phones: the strategy's identity (Rank by + Filters) leads the row instead of
+     trailing 600px off-screen — see headFor(). Cap the filter cell so the whole
+     expression wraps inside the viewport rather than running past its edge. */
+  @media(max-width:700px){
+    /* min-width, or auto table-layout collapses this column to its minimum
+       content width; overflow-wrap (not word-break) so that minimum stays a
+       whole token wide instead of one character. */
+    #tbl th[data-c="f"],#tbl td.mono:not(.num){min-width:186px;max-width:206px;
+      white-space:normal;overflow-wrap:break-word;line-height:1.35}
+  }
+</style>
+</head>
+<body class="min-h-screen">
+<main class="max-w-6xl mx-auto px-3 sm:px-5 py-5">
+  <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">Strategy Phases Lab</h1>
+  <p class="text-[13px] mt-1" style="color:var(--text-muted,#64748b)">
+    <span id="nTested">4,440,600</span> strategies tested (every sort factor × direction × all 1–3 filter combos) · survivorship-free engine ·
+    <span id="uname">Nifty 500</span> · <span id="vdesc"><b>every strategy = a TOP-5 basket, equal-weight, rebalanced monthly (reset)</b></span>.
+    Unlisted research page. <span id="builtAt"></span>
+    <a href="./bull-runs.html" class="underline" style="color:var(--accent,#2563eb)">Bull-Run Survivors →</a>
+  </p>
+
+  <div class="flex flex-wrap items-center gap-2 mt-3" id="upills">
+    <span class="flab" style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)">Universe</span>
+  </div>
+  <div class="flex flex-wrap items-center gap-2 mt-2" id="vpills">
+    <span class="flab" style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)">Basket</span>
+  </div>
+
+  <div class="flex flex-wrap gap-2.5 mt-3" id="cards"></div>
+  <div class="mt-3" id="ywrap" style="display:none">
+    <div class="flab" style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)">Year-wise · top 1000 each</div>
+    <div class="flex flex-wrap gap-2.5 mt-1.5" id="ycards"></div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-3 mt-4">
+    <input type="search" id="q" placeholder="Search filters / factor… e.g. delivPct" aria-label="Search">
+    <span class="fam" style="font-weight:700" id="basketChip">Top-5 basket · equal-weight · monthly reset</span>
+    <span id="count" class="text-[12px]" style="color:var(--text-muted,#64748b)"></span>
+  </div>
+
+  <div class="shell mt-2">
+    <table id="tbl"><thead id="th"></thead><tbody id="tb"></tbody></table>
+  </div>
+  <p class="text-[11.5px] mt-3" style="color:var(--text-faint,#94a3b8)" id="foot"></p>
+
+</main>
+<script>
+(async function(){
+  // Every variant = one universe × one basket shape. The Nifty 50 grids (2026-11-03) are the same
+  // 4.44M-strategy test run on the point-in-time Nifty 50, benchmarked against the Nifty 50 index.
+  // Nifty 100 (2026-11-03): same test on the point-in-time Nifty 100, without the barred factors, vs the Nifty 100 index.
+  // Nifty Next 50 (2026-11-04): the same on the point-in-time Nifty Next 50, vs the Nifty Next 50 index.
+  const SUFS={r5:'',h5:'_h5',r3:'_r3',h3:'_h3',fno:'_fno_h3',n50r5:'_n50_r5',n50h5:'_n50_h5',n50r3:'_n50_r3',n50h3:'_n50_h3',
+              n100r5:'_n100_r5',n100h5:'_n100_h5',n100r3:'_n100_r3',n100h3:'_n100_h3',
+              nn50r5:'_nn50_r5',nn50h5:'_nn50_h5',nn50r3:'_nn50_r3',nn50h3:'_nn50_h3'};
+  const RIDE='ride winners (hold — exits replaced, winners kept)', RESET='rebalanced monthly (reset)';
+  const VDESC={r5:['5',RESET,'Nifty 500'],h5:['5',RIDE,'Nifty 500'],r3:['3',RESET,'Nifty 500'],h3:['3',RIDE,'Nifty 500'],
+               fno:['3',RIDE,'F&O stocks (survivorship-free)'],
+               n50r5:['5',RESET,'Nifty 50'],n50h5:['5',RIDE,'Nifty 50'],n50r3:['3',RESET,'Nifty 50'],n50h3:['3',RIDE,'Nifty 50'],
+               n100r5:['5',RESET,'Nifty 100'],n100h5:['5',RIDE,'Nifty 100'],n100r3:['3',RESET,'Nifty 100'],n100h3:['3',RIDE,'Nifty 100'],
+               nn50r5:['5',RESET,'Nifty Next 50'],nn50h5:['5',RIDE,'Nifty Next 50'],nn50r3:['3',RESET,'Nifty Next 50'],nn50h3:['3',RIDE,'Nifty Next 50']};
+  const UNIV={n500:{label:'Nifty 500',bench:'Nifty 500',vars:['r5','h5','r3','h3']},
+              n100:{label:'Nifty 100',bench:'Nifty 100',vars:['n100r5','n100h5','n100r3','n100h3']},
+              nn50:{label:'Nifty Next 50',bench:'Nifty Next 50',vars:['nn50r5','nn50h5','nn50r3','nn50h3']},
+              n50:{label:'Nifty 50',bench:'Nifty 50',vars:['n50r5','n50h5','n50r3','n50h3']},
+              fno:{label:'F&O stocks',bench:'Nifty 500',vars:['fno']}};
+  const uOf = v => Object.keys(UNIV).find(u=>UNIV[u].vars.includes(v));
+  const VLABEL = v => (VDESC[v][0]==='5'?'Top 5':'Top 3')+' · '+(VDESC[v][1]===RIDE?'Ride winners':'Monthly reset');
+  const isHold = v => VDESC[v][1]===RIDE;
+  const DATA={}; let curVar='r5';
+  let R=null,P=null,C=null,cards=null,YRS=[],PI={};
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const fmtTot = v => (v>=0?'+':'') + (Math.abs(v)>=1000 ? (v/100).toFixed(1)+'x' : v.toFixed(0)+'%');
+  async function loadVar(v){
+    if(DATA[v]) return DATA[v];
+    const res = await fetch('./strategy_phases'+SUFS[v]+'.json', {cache:'no-cache'});
+    if(!res.ok) throw new Error('not ready');
+    DATA[v] = await res.json(); return DATA[v];
+  }
+  // A variant's grid may still be computing: its JSON is absent → its card greys out.
+  const OFF={}; // v -> true when its JSON is not served
+  function paintPills(){
+    const u=uOf(curVar);
+    document.querySelectorAll('#upills .vcard').forEach(b=>b.classList.toggle('on', b.dataset.u===u));
+    document.querySelectorAll('#vpills .vcard').forEach(b=>{
+      b.style.display = uOf(b.dataset.v)===u ? '' : 'none';
+      b.classList.toggle('on', b.dataset.v===curVar);
+      b.classList.toggle('off', !!OFF[b.dataset.v]);
+      b.title = OFF[b.dataset.v] ? 'still computing — check back soon' : '';});
+  }
+  async function pick(v){
+    try{ const j=await loadVar(v); OFF[v]=false; curVar=v; applyData(j); }
+    catch(err){ OFF[v]=true; paintPills(); return false; }
+    return true;
+  }
+  const up=document.getElementById('upills'), vp=document.getElementById('vpills');
+  up.insertAdjacentHTML('beforeend', Object.keys(UNIV).map(u=>
+    '<button class="vcard" data-u="'+u+'"><div class="n">'+UNIV[u].label+'</div><div class="m">bench '+UNIV[u].bench+'</div></button>').join(''));
+  vp.insertAdjacentHTML('beforeend', Object.keys(SUFS).map(v=>{const parts=VLABEL(v).split(' · ');
+    return '<button class="vcard" data-v="'+v+'"><div class="n">'+parts[0]+'</div><div class="m">'+parts[1]+'</div><div class="cmp">⏳ computing…</div></button>';}).join(''));
+  vp.addEventListener('click',e=>{const b=e.target.closest('.vcard');if(b)pick(b.dataset.v);});
+  // Switching universe keeps the basket shape when that universe has it (Top 5 reset ↔ Top 5 reset).
+  up.addEventListener('click',async e=>{const b=e.target.closest('.vcard');if(!b)return;
+    const vs=UNIV[b.dataset.u].vars; if(vs.includes(curVar)){paintPills();return;}
+    const same=vs.find(v=>VDESC[v][0]===VDESC[curVar][0]&&VDESC[v][1]===VDESC[curVar][1]);
+    for(const v of [same, ...vs].filter(Boolean)) if(!OFF[v] && await pick(v)) return;
+    // nothing in that universe is served yet: show its (greyed) baskets so the reader sees why
+    const prev=curVar; curVar=vs[0]; paintPills(); curVar=prev;
+    document.querySelectorAll('#vpills .vcard.on').forEach(x=>x.classList.remove('on'));});
+  // probe which variants exist (they appear incrementally as their grids finish)
+  Object.keys(SUFS).filter(v=>v!=='r5').forEach(v=>{
+    fetch('./strategy_phases'+SUFS[v]+'.json',{method:'HEAD',cache:'no-cache'}).then(r=>{
+      OFF[v]=!r.ok; paintPills();}).catch(()=>{});});
+
+  function buildCards(){
+    // Built FROM R.phases, not hardcoded — adding a phase to the build script (the 2018-20 bear
+    // window, 2026-08-11) must not require editing the page. Phase 0 is the whole cycle and shows
+    // CAGR; every later phase is a slice and shows total return.
+    // Multi-year windows show CAGR (a 22-year total return reads as an unusable 7,250x); the short
+    // slices show total return. Which one is the phase's own `metric`, set by the build script.
+    const DEFS = P.map((p,i)=>({ key:p.key, title:p.card||p.label, sub:p.start+' → '+p.end,
+        big:()=> p.metric==='cagr' ? C[cards[p.key][0]].p[i][0].toFixed(1)+'% CAGR'
+                                   : fmtTot(C[cards[p.key][0]].p[i][1]) }))
+      .concat([{ key:'all4', title:'⭐ Best in ALL '+P.length, sub:'consistency ranking', big:()=>'Top 100' }]);
+    document.getElementById('cards').innerHTML = DEFS.map(d=>'<div class="pcard" data-k="'+d.key+'" role="button" tabindex="0">'+
+        '<div class="t">'+d.title+'</div><div class="v pos">'+d.big()+'</div><div class="s">'+d.sub+'</div></div>').join('') +
+      // Null-safe: a phase whose window predates the daily NIFTY500 series (starts 2012) can come
+      // back with bench null. The build recovers it from index_monthly, but never crash if it can't.
+      '<div class="pcard info"><div class="t">'+benchName()+' benchmark</div><div class="v">'+
+        (P[0].bench&&P[0].bench.cagr!=null?P[0].bench.cagr.toFixed(1)+'%':'—')+
+        ' <span class="text-[12px] font-semibold">CAGR full cycle</span></div>'+
+      '<div class="s">'+P.slice(1).map(p=>p.label.split(' ')[0]+' '+
+        (p.bench&&p.bench.totRet!=null?fmtTot(p.bench.totRet):'—')).join(' · ')+'</div></div>';
+    const yw=document.getElementById('ywrap');
+    if(YRS.length){ yw.style.display='';
+      document.getElementById('ycards').innerHTML = YRS.map(y=>'<div class="pcard" data-k="'+y.key+'" role="button" tabindex="0">'+
+        '<div class="t">'+y.label+'</div><div class="v pos">'+fmtTot(y.rows[0].tot)+'</div>'+
+        '<div class="s">best of '+lakh(NPOOL)+' · bench '+(y.bench?(y.bench.totRet>=0?'+':'')+y.bench.totRet+'%':'—')+'</div></div>').join('')+
+        (cards.allY?'<div class="pcard" data-k="allY" role="button" tabindex="0">'+
+        '<div class="t">⭐ Best in ALL years</div><div class="v pos">Top 100</div>'+
+        '<div class="s">worst yearly rank across all '+YRS.length+'</div></div>':'');
+    } else { yw.style.display='none'; document.getElementById('ycards').innerHTML=''; }
+  }
+  // Factors the user barred after a payload was built (2026-11-03). A payload built since then has
+  // already dropped them and re-ranked (they are in R.excluded); an older one still carries them, so
+  // hide its rows here. Its cards then show fewer rows: nothing is promoted into the gaps.
+  const HIDE_FIELDS=['rangePos','bollB','turnover','stoch','postDrift','beta','volSurge','turnSurge','riskMom','macd','vol'], HIDE_SORTS=[];
+  function hideBarred(j){
+    const ex=j.excluded||[], hide=HIDE_FIELDS.filter(f=>!ex.includes(f));
+    const exS=j.excludedSorts||[], hideS=HIDE_SORTS.filter(f=>!exS.includes(f));
+    if((!hide.length&&!hideS.length)||!j.combos) return;
+    const re=hide.length?new RegExp('(^|[^A-Za-z])('+hide.join('|')+')([^A-Za-z]|$)'):null;
+    const bad=j.combos.map(c=>(re&&(re.test(c.s)||re.test(c.f||'')))||hideS.includes(c.s+':'+c.d));
+    const keep=x=>!bad[typeof x==='number'?x:x.i];
+    for(const k in j.cards) if(Array.isArray(j.cards[k])) j.cards[k]=j.cards[k].filter(keep);
+    (j.years||[]).forEach(y=>{ if(Array.isArray(y.rows)) y.rows=y.rows.filter(keep); });
+    j.excluded=ex.concat(hide); j.excludedSorts=exS.concat(hideS);
+  }
+  function applyData(j){
+    hideBarred(j);
+    R=j; P=R.phases; C=R.combos; cards=R.cards; YRS=R.years||[];
+    PI={}; P.forEach((p,i)=>PI[p.key]=i);
+    document.getElementById('builtAt').textContent='Built '+R.built+'.';
+    // earnBasis is stamped by gridmega_phases_build.js; absent (older JSONs) = consolidated
+    // with standalone fallback, the engine default — say nothing for that case.
+    HAS_BASIS = !!(C && C.length && C[0].b);
+    // Pool size is per-payload now: a merged build ranks (strategy × basis) pairs, so it is
+    // larger than the 4,440,600 strategies a single-basis build ranks.
+    NPOOL = R.totalCombos || 4440600;
+    document.getElementById('nTested').textContent = NPOOL.toLocaleString('en-IN');
+    const BN={std:'standalone',con:'consolidated',conOnly:'consolidated-only'};
+    const basisNote = R.earnBasis==='merged'
+      ? ' · '+(R.bases||['std','con']).map(b=>BN[b]||b).join(' + ')+' earnings, ranked together'
+      : R.earnBasis && R.earnBasis!=='con' ? ' · '+(BN[R.earnBasis]||R.earnBasis)+' earnings' : '';
+    // Barred factors must be VISIBLE: a reader who knows the grid searches indRank/composite would
+    // otherwise read their absence as "they never won" rather than "they were excluded".
+    const EXN={indRank:'industry rank',composite:'quality-momentum composite',rangePos:'range position',bollB:'Bollinger %B',turnover:'turnover',stoch:'stochastic',postDrift:'post-results drift',beta:'beta',volSurge:'volume surge',turnSurge:'turnover surge',riskMom:'risk-adjusted momentum',macd:'MACD',vol:'volatility',
+               'vol:high':'sorting by highest volatility'};
+    const exNote=(R.excluded&&R.excluded.length)
+      ? ' <span style="font-weight:400">Excluded from every card: '+R.excluded.concat((R.excludedSorts||[]).filter(x=>!R.excluded.includes(x.split(':')[0]))).map(f=>EXN[f]||f).join(', ').replace(/, ([^,]*)$/,' and $1')+'</span>' : '';
+    document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket on '+VDESC[curVar][2]+', equal-weight, '+VDESC[curVar][1]+basisNote+'</b>'+exNote;
+    document.getElementById('uname').textContent=UNIV[uOf(curVar)].label;
+    document.getElementById('basketChip').textContent=(uOf(curVar)!=='n500'?UNIV[uOf(curVar)].label+' · ':'')+'Top-'+VDESC[curVar][0]+' basket · equal-weight · '+(isHold(curVar)?'ride winners':'monthly reset')+basisNote;
+    cur='all4'; sortK=null; needle=''; document.getElementById('q').value='';
+    buildCards(); paintPills(); render();
+  }
+  const yearOf = k => YRS.find(y=>y.key===k);
+  let cur='all4', sortK=null, sortAsc=true, needle='';
+  const famOf = c => c.d+'-'+c.s;
+  const BLBL={std:'STD',con:'CON',any:'—'};
+  const BTIP={std:'Standalone earnings (parent company only)',
+              con:'Consolidated earnings (group, incl. subsidiaries)',
+              any:'Reads no earnings factor — identical under either basis'};
+  // Only show the Basis column when the payload actually carries one (older JSONs do not).
+  let HAS_BASIS=false;
+  // Size of the ranked pool this payload came from (see applyData) — a merged build ranks
+  // (strategy x basis) pairs, so 'out of N' must come from the data, never a baked-in constant.
+  let NPOOL=4440600;
+  const lakh = n => (n/100000).toFixed(1).replace(/\.0$/,'')+' lakh';
+  const MQ = window.matchMedia('(max-width:700px)');
+  const narrow = () => MQ.matches;
+  // Rotate / resize across the breakpoint → rebuild the header in the other order.
+  // Watch resize AS WELL AS the media query: a MediaQueryList 'change' does not fire
+  // in every embedded context, and losing it strands the phone column order on a
+  // desktop-width screen. Both paths no-op unless the breakpoint actually flipped.
+  let wasNarrow = narrow(), rzT = null;
+  const onViewport = () => { if (!R || narrow() === wasNarrow) return; wasNarrow = narrow(); render(); };
+  if (MQ.addEventListener) MQ.addEventListener('change', onViewport);
+  else if (MQ.addListener) MQ.addListener(onViewport);
+  window.addEventListener('resize', () => { if (rzT) clearTimeout(rzT); rzT = setTimeout(onViewport, 150); }, { passive: true });
+  function rowsFor(k){
+    if(k==='all4') return cards.all4.map((x,j)=>({rk:j+1, c:C[x.i], worst:x.worst, ranks:x.ranks}));
+    if(k==='allY') return cards.allY.map((x,j)=>({rk:j+1, c:C[x.i], worst:x.worst, yr:x.yrets}));
+    const Y=yearOf(k); if(Y) return Y.rows.map((r,j)=>({rk:j+1, c:C[r.i], y:r}));
+    return cards[k].map((ci,j)=>({rk:j+1, c:C[ci]}));
+  }
+  function headFor(k){
+    const base = k==='all4'
+      ? [['rk','#'],['worst','Worst rank']].concat(
+          P.map((p,i)=>['r'+i, (p.short||p.key)+(p.metric==='cagr'?' CAGR %':' tot %')]), [['dd','Full DD %']])
+      : k==='allY'
+        ? [['rk','#'],['worst','Worst yr rank'],['dd','Full DD %']].concat(YRS.map((y,j)=>['y'+j,"’"+y.key.slice(3)+' %']))
+        : k==='full'
+          ? [['rk','#'],['r0','CAGR %'],['tot','Total %'],['dd','Max DD %'],['win','Win %']]
+          : [['rk','#'],['tot','Total %'],['cg','CAGR %'],['dd','Max DD %'],['win','Win %']];
+    // The identity columns trail the numbers on desktop (the numbers are what you
+    // scan), but on a phone that puts them ~600px past the right edge of a table
+    // that scrolls sideways — you'd see nothing but figures and never learn WHICH
+    // strategy a row is. Lead with them there; theme.js then pins 'Rank by' (its
+    // pin2 rule pins column 2 when column 1 is a bare rank gutter), so the name
+    // stays put while the numbers slide under it.
+    // 'Basis' rides with the identity columns: which earnings basis (standalone / consolidated)
+    // produced the row. In a merged build the SAME rule can appear twice, once per basis, so
+    // without this column two rows would look identical and disagree on every number.
+    const ident = HAS_BASIS ? [['fam','Rank by'],['b','Basis'],['f','Filters']]
+                            : [['fam','Rank by'],['f','Filters']];
+    return narrow() ? [base[0]].concat(ident, base.slice(1)) : base.concat(ident);
+  }
+  function valOf(r,k,col){
+    if(col==='rk')return r.rk; if(col==='worst')return r.worst;
+    if(col==='fam')return famOf(r.c); if(col==='f')return r.c.f;
+    if(col==='b')return BLBL[r.c.b]||r.c.b||'';
+    if(r.yr&&col[0]==='y'){ return r.yr[+col.slice(1)]; }
+    if(r.y){ return col==='tot'?r.y.tot:col==='cg'?r.y.cg:col==='dd'?r.y.dd:r.y.win; }
+    if(k==='all4'){ if(col==='dd') return r.c.p[0][2];
+      const i=+col.slice(1); return P[i].metric==='cagr' ? r.c.p[i][0] : r.c.p[i][1]; }
+    const pi = PI[k]||0;
+    const ph=r.c.p[pi];
+    return col==='r0'?ph[0]:col==='cg'?ph[0]:col==='tot'?ph[1]:col==='dd'?ph[2]:ph[3];
+  }
+  function render(){
+    const head = headFor(cur);
+    document.getElementById('th').innerHTML = '<tr>'+head.map(([ck,l])=>
+      '<th data-c="'+ck+'" class="'+(ck==='fam'||ck==='f'?'':'num')+'">'+l+(sortK===ck?(sortAsc?' ▴':' ▾'):'')+'</th>').join('')+'</tr>';
+    let rows = rowsFor(cur);
+    if(needle) rows = rows.filter(r=>r.c.f.toLowerCase().includes(needle)||famOf(r.c).toLowerCase().includes(needle)||(r.c.b||'').toLowerCase().includes(needle));
+    if(sortK) rows.sort((a,b)=>{const x=valOf(a,cur,sortK),y=valOf(b,cur,sortK);
+      return (typeof x==='number'?x-y:String(x).localeCompare(String(y)))*(sortAsc?1:-1);});
+    document.getElementById('tb').innerHTML = rows.map(r=>{
+      const cells = head.map(([ck])=>{
+        if(ck==='fam')return '<td><span class="fam">'+esc(famOf(r.c))+'</span></td>';
+        if(ck==='b'){const b=r.c.b||'';
+          return '<td><span class="bchip b-'+esc(b)+'" title="'+esc(BTIP[b]||'')+'">'+esc(BLBL[b]||b)+'</span></td>';}
+        if(ck==='f')return '<td class="mono" style="font-size:12px">'+esc(r.c.f)+'</td>';
+        let v=valOf(r,cur,ck), txt;
+        // In the consistency table a phase column is a TOTAL return unless that phase declares
+        // metric:'cagr' (the multi-year windows), in which case it is a plain percentage.
+        const isPhaseTot = cur==='all4' && /^r[0-9]+$/.test(ck) && P[+ck.slice(1)].metric!=='cagr';
+        if(ck==='rk'||ck==='worst')txt=v.toLocaleString('en-IN');
+        else if(ck==='tot'||isPhaseTot||(cur==='allY'&&ck[0]==='y'))txt=fmtTot(v);
+        else txt=v.toFixed(1);
+        // A bear phase makes negative phase returns real, so colour them like the year columns.
+        const isPhaseCagr = cur==='all4' && /^r[0-9]+$/.test(ck) && P[+ck.slice(1)].metric==='cagr';
+        const cls=(ck==='dd'&&v>35)?' warn':((ck==='tot'||ck==='cg'||isPhaseCagr||isPhaseTot||(cur==='allY'&&ck[0]==='y'&&v<0))?(v<0?' warn':' pos font-semibold'):'');
+        return '<td class="num mono'+cls+'">'+txt+'</td>';});
+      return '<tr>'+cells.join('')+'</tr>';}).join('');
+    document.getElementById('count').textContent = rows.length.toLocaleString('en-IN')+' strategies'+(needle?' · matching "'+needle+'"':'');
+    document.querySelectorAll('.pcard[data-k]').forEach(el=>el.classList.toggle('on',el.dataset.k===cur));
+    const Y=yearOf(cur), pi=PI[cur]||0;
+    document.getElementById('foot').textContent = cur==='all4'
+      ? 'Worst rank = a strategy’s poorest rank across the '+P.length+' phases (out of '+lakh(NPOOL)+'). Lower = consistently elite. Total-% columns are absolute returns for each phase — the 2018-20 bear phase is the only one that is not carved out of the post-Covid bull run, so it is where most “consistent” strategies fall apart. All rows: '+basketDesc()+'.'
+      : cur==='allY'
+      ? 'Worst yearly rank = a strategy’s poorest rank across all '+YRS.length+' calendar years (out of '+lakh(NPOOL)+'). Year columns are absolute total returns. All rows: '+basketDesc()+'.'
+      : Y ? 'Year '+Y.start+' → '+Y.end+' ('+Y.years+'y). Total % is absolute. Benchmark '+benchName()+': '+(Y.bench?fmtTot(Y.bench.totRet):'—')+' total. All rows: '+UNIV[uOf(curVar)].label+' universe, '+basketDesc()+'.'
+      : 'Phase '+P[pi].start+' → '+P[pi].end+' ('+P[pi].years+'y). Total % is absolute (not annualised). Benchmark '+benchName()+': '+(P[pi].bench&&P[pi].bench.totRet!=null?fmtTot(P[pi].bench.totRet):'—')+' total. All rows: '+UNIV[uOf(curVar)].label+' universe, '+basketDesc()+'.';
+  }
+  function basketDesc(){ return 'top-'+VDESC[curVar][0]+' equal-weight, '+(isHold(curVar)?'ride winners (hold)':'monthly reset'); }
+  // The JSON names its own benchmark (benchName, Nifty 50 grids onward); older JSONs = Nifty 500.
+  function benchName(){ return (R&&R.benchName)||'Nifty 500'; }
+  const onCard=e=>{const el=e.target.closest('.pcard[data-k]');if(!el)return;cur=el.dataset.k;sortK=null;render();};
+  const onKey=e=>{if(e.key!=='Enter'&&e.key!==' ')return;const el=e.target.closest('.pcard[data-k]');if(!el)return;e.preventDefault();cur=el.dataset.k;sortK=null;render();};
+  const cardsEl=document.getElementById('cards');
+  cardsEl.addEventListener('click',onCard); cardsEl.addEventListener('keydown',onKey);
+  document.getElementById('ycards').addEventListener('click',onCard);
+  document.getElementById('ycards').addEventListener('keydown',onKey);
+  document.getElementById('q').addEventListener('input',e=>{needle=e.target.value.trim().toLowerCase();render();});
+  document.getElementById('th').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;
+    const ck=th.dataset.c; if(sortK===ck)sortAsc=!sortAsc;else{sortK=ck;sortAsc=(ck==='rk'||ck==='worst'||ck==='dd'||ck==='fam'||ck==='f');} render();});
+  applyData(await loadVar('r5'));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex" />
+<!-- OLD VIEW of fii-dii.html, kept so the header's New / Old switch has somewhere to go. Frozen copy: fix bugs in fii-dii.html, not here. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · FII/DII</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  .pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
+  .nsdl-tag{display:inline-block;font-size:9px;font-weight:700;line-height:1;padding:2px 4px;border-radius:4px;background:var(--accent-soft);color:var(--accent-text);vertical-align:middle}
+  html[data-theme="dark"] .nsdl-tag{background:#312e81;color:#c7d2fe}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  th[data-s]{cursor:pointer;user-select:none}
+  th[data-s]:hover{color:var(--accent-text)}
+  .tab.active{border-color:var(--accent);color:var(--accent-text);font-weight:700}
+  /* Holdings tab breaks out of the narrow reading column so its wide table isn't clipped */
+  #pane-holdings{width:min(1240px,96vw);margin-left:50%;transform:translateX(-50%);}
+  #shpFrame{width:100%;}
+  @media (min-width:1100px){ html.sw-has-side #pane-holdings{width:100%;margin-left:0;transform:none;} }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-lg mx-auto px-4 py-6">
+  <div id="status" class="text-sm text-slate-500">Loading FII/DII data…</div>
+
+  <div id="content" class="hidden">
+    <div class="flex flex-wrap gap-1 border-b border-slate-200 mb-4 text-sm">
+      <button class="tab active px-3 py-2 border-b-2 border-transparent" data-tab="cash">Cash segment</button>
+      <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="fo">F&amp;O (derivatives)</button>
+      <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="holdings">Holdings (per stock)</button>
+    </div>
+
+    <!-- ===================== CASH ===================== -->
+    <section id="pane-cash">
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <div id="cashViewBtns" class="inline-flex rounded-lg border border-slate-200 overflow-hidden text-sm font-semibold"></div>
+        <span class="text-[11px] text-slate-400">Daily provisional flows · Monthly &amp; Yearly since 2014 · scroll down for deep dives</span>
+      </div>
+
+      <!-- ---------- DAILY ---------- -->
+      <div id="view-daily">
+      <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" data-jump="Overview"></div>
+      <div class="card p-4 mb-4" data-jump="Table">
+        <div class="text-sm font-semibold text-slate-700 mb-2">Daily table <span class="text-[11px] font-normal text-slate-400">(click a header to sort · hover a row for the buy/sell breakdown)</span></div>
+        <div id="nsdlNote" class="hidden text-[11px] text-slate-500 mb-2"></div>
+        <div class="overflow-x-auto tscroll rounded-lg border border-slate-100" style="--tscroll-h:20rem">
+          <table class="w-full text-sm" id="tbl">
+            <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+              <th data-s="date" class="text-left py-2 px-1">Date</th>
+              <th data-s="fiiNet" class="text-right px-1">FII net</th>
+              <th data-s="diiNet" class="text-right px-1">DII net</th>
+              <th data-s="nifty" class="text-right px-1">Nifty 50</th>
+              <th data-s="chg" class="text-right px-1">Chg%</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card p-4 mb-4" data-jump="Net flow">
+        <div class="text-sm font-semibold text-slate-700 mb-2">Daily net flow — <span class="text-blue-700">FII</span> vs <span class="text-amber-600">DII</span> <span class="text-slate-400 font-normal">(bars, ₹cr)</span> &amp; <span class="text-slate-500">Nifty 50</span> <span class="text-slate-400 font-normal">(line)</span></div>
+        <div id="chartNet" class="overflow-x-auto"></div>
+      </div>
+      <div class="card p-4 mb-4" data-jump="Cumulative">
+        <div class="text-sm font-semibold text-slate-700 mb-2">Cumulative net flow over the window — <span class="text-blue-700">FII</span> &amp; <span class="text-amber-600">DII</span></div>
+        <div id="chartCum"></div>
+      </div>
+      <p class="text-[11px] text-slate-500 mt-5">Cash-segment provisional figures (₹ crore). <b>Net</b> = buy − sell; positive = net buying. Hover a row for the buy/sell breakdown (shown when NSE has published it). Source: NSE + NiftyTrader.</p>
+      </div><!-- /view-daily -->
+
+      <!-- ---------- MONTHLY ---------- -->
+      <div id="view-monthly" class="hidden">
+        <div id="monCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" data-jump="Overview"></div>
+        <div class="card p-4 mb-4" data-jump="Net flow">
+          <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <div class="text-sm font-semibold text-slate-700">Monthly net flow — <span class="text-blue-700">FII</span> vs <span class="text-amber-600">DII</span> <span class="text-slate-400 font-normal">(bars, ₹cr)</span> &amp; <span class="text-slate-500">Nifty 50</span> <span class="text-slate-400 font-normal">(line)</span></div>
+            <div id="monRangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
+          </div>
+          <div id="monChart" class="overflow-x-auto"></div>
+        </div>
+        <div class="card p-4" data-jump="Table">
+          <div class="text-sm font-semibold text-slate-700 mb-2">Monthly table <span class="text-[11px] font-normal text-slate-400">(₹ crore · newest first · Chg% = Nifty month-on-month)</span></div>
+          <div class="overflow-x-auto tscroll rounded-lg border border-slate-100" style="--tscroll-h:30rem">
+            <table class="w-full text-sm">
+              <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>
+                <th class="text-left py-2 px-2">Month</th>
+                <th class="text-right px-2">FII net</th>
+                <th class="text-right px-2">DII net</th>
+                <th class="text-right px-2">Combined</th>
+                <th class="text-right px-2">Nifty close</th>
+                <th class="text-right px-2">Chg%</th>
+              </tr></thead>
+              <tbody id="monBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-500 mt-5">Monthly net = sum of daily provisional cash flows in the calendar month (₹ crore). <b>Combined</b> = FII + DII. Nifty close is the month-end close; <b>Chg%</b> is month-on-month. History from Jul 2014. Source: NSE via NiftyTrader.</p>
+      </div><!-- /view-monthly -->
+
+      <!-- ---------- YEARLY ---------- -->
+      <div id="view-yearly" class="hidden">
+        <div id="yrCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" data-jump="Overview"></div>
+        <div class="card p-4 mb-4" data-jump="Net flow">
+          <div class="text-sm font-semibold text-slate-700 mb-2">Yearly net flow — <span class="text-blue-700">FII</span> vs <span class="text-amber-600">DII</span> <span class="text-slate-400 font-normal">(bars, ₹cr)</span> &amp; <span class="text-slate-500">Nifty 50 year-end</span> <span class="text-slate-400 font-normal">(line)</span></div>
+          <div id="yrChart" class="overflow-x-auto"></div>
+        </div>
+        <div class="card p-4" data-jump="Table">
+          <div class="text-sm font-semibold text-slate-700 mb-2">Yearly table <span class="text-[11px] font-normal text-slate-400">(₹ crore · newest first · Chg% = Nifty year-on-year)</span></div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+                <th class="text-left py-2 px-2">Year</th>
+                <th class="text-right px-2">FII net</th>
+                <th class="text-right px-2">DII net</th>
+                <th class="text-right px-2">Combined</th>
+                <th class="text-right px-2">Nifty close</th>
+                <th class="text-right px-2">Chg%</th>
+              </tr></thead>
+              <tbody id="yrBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-500 mt-5">Yearly net = sum of monthly flows in the calendar year (₹ crore). 2014 is partial (Jul–Dec). Nifty close is the year-end close; <b>Chg%</b> is year-on-year.</p>
+      </div><!-- /view-yearly -->
+
+      <!-- ============ DEEP DIVES (what other sites don't show) ============ -->
+      <div id="deepdives" class="mt-8">
+        <div class="flex items-center gap-2 mb-3">
+          <h2 class="text-base font-bold text-slate-900">Deep dives</h2>
+          <span class="text-[11px] text-slate-400">12 years of flow, read four ways</span>
+          <div class="ml-auto flex items-center gap-1 text-xs">
+            <span class="text-slate-500 font-medium mr-1">Focus:</span>
+            <div id="focusBtns" class="inline-flex rounded-lg border border-slate-200 overflow-hidden font-semibold"></div>
+          </div>
+        </div>
+
+        <!-- 1. HEATMAP -->
+        <div class="card p-4 mb-4" data-jump="Heatmap">
+          <div class="text-sm font-semibold text-slate-700 mb-0.5"><span id="hmTitle">FII</span> monthly net-flow heatmap <span class="text-slate-400 font-normal">(₹ ’000 cr · green = net buy, red = net sell)</span></div>
+          <div class="text-[11px] text-slate-400 mb-3">Every month since 2014 in one grid — spot the regimes at a glance.</div>
+          <div id="heatmap" class="overflow-x-auto"></div>
+        </div>
+
+        <!-- 2. TUG OF WAR -->
+        <div class="card p-4 mb-4" data-jump="Tug of war">
+          <div class="text-sm font-semibold text-slate-700 mb-0.5">FII vs DII — the tug of war <span class="text-slate-400 font-normal">(cumulative net since Jan 2014, ₹ lakh cr)</span></div>
+          <div class="text-[11px] text-slate-400 mb-3">How domestic money (<span class="text-amber-600 font-semibold">DII</span>) has absorbed the foreign exit (<span class="text-blue-700 font-semibold">FII</span>).</div>
+          <div id="tugStat" class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4"></div>
+          <div id="tugChart"></div>
+        </div>
+
+        <!-- 3. SEASONALITY -->
+        <div class="card p-4 mb-4" data-jump="Seasonality">
+          <div class="text-sm font-semibold text-slate-700 mb-0.5"><span id="seasTitle">FII</span> seasonality <span class="text-slate-400 font-normal">(average net flow by calendar month, ₹cr)</span></div>
+          <div class="text-[11px] text-slate-400 mb-3">Which months institutions have tended to buy or sell — averaged across every year on record.</div>
+          <div id="seasChart"></div>
+        </div>
+
+        <!-- 4. FLOW vs RETURNS -->
+        <div class="card p-4 mb-4" data-jump="Flow vs returns">
+          <div class="text-sm font-semibold text-slate-700 mb-0.5">Does <span id="frTitle">FII</span> flow move the market? <span class="text-slate-400 font-normal">(monthly net vs Nifty's same-month return)</span></div>
+          <div class="text-[11px] text-slate-400 mb-3">Each dot is one month. If flow drove price, dots would line up bottom-left to top-right.</div>
+          <div id="frVerdict" class="mb-3"></div>
+          <div id="frChart"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== F&O ===================== -->
+    <section id="pane-fo" class="hidden">
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <div id="foViewBtns2" class="inline-flex rounded-lg border border-slate-200 overflow-hidden text-sm font-semibold"></div>
+        <div id="foLotBtns" class="inline-flex rounded-lg border border-slate-200 overflow-hidden text-sm font-semibold" title="Index futures only"></div>
+        <span class="text-[11px] text-slate-400">Daily positions &amp; turnover · Monthly = month-end snapshot since 2012 · <b>Lot-adjusted</b> = index &amp; stock futures contracts restated in today's lot sizes</span>
+      </div>
+      <div id="fo-daily">
+      <div id="foCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" data-jump="Overview"></div>
+      <div id="foChartsSection">
+      <div class="flex items-center gap-2 mb-3 text-xs">
+        <span class="text-slate-500 font-medium">Chart view:</span>
+        <div id="foViewBtns" class="flex gap-1"></div>
+        <span class="text-slate-400">— overlay = shared plot · split = stacked panes (Nifty on top)</span>
+      </div>
+      <div class="card p-4 mb-4" data-jump="Index futures">
+        <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+          <div class="text-sm font-semibold text-slate-700"><span class="text-red-700">FII Index-Futures net</span> vs <span class="text-amber-600">Nifty 50</span> <span class="text-slate-400 font-normal">(long − short, <span class="foLL">contracts</span>; hover for values)</span></div>
+          <div id="foRangeBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
+        </div>
+        <div id="foChart"></div>
+      </div>
+      <div class="card p-4 mb-4" data-jump="Long/Short">
+        <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+          <div class="text-sm font-semibold text-slate-700"><span class="text-blue-700">FII Long/Short ratio</span> vs <span class="text-amber-600">Nifty 50</span> <span class="text-slate-400 font-normal">(index futures; ratio &lt; 1 = net short — does positioning lead price?)</span></div>
+          <div id="foRatioBtns" class="flex flex-wrap items-center gap-1 text-xs"></div>
+        </div>
+        <div id="foRatioChart"></div>
+      </div>
+      </div><!-- /foChartsSection -->
+      <div id="foTablesSection">
+      <div class="card p-4 mb-4" data-jump="Buy/Sell">
+        <div class="text-sm font-semibold text-slate-700 mb-2">FII derivative buy / sell — latest day <span id="foDate1" class="text-slate-400 font-normal"></span> <span class="text-slate-400 font-normal">(₹ crore)</span></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+            <th class="text-left py-2 px-1">Instrument</th><th class="text-right px-1">Buy</th><th class="text-right px-1">Sell</th><th class="text-right px-1">Net</th></tr></thead>
+            <tbody id="foBS"></tbody></table>
+        </div>
+      </div>
+      <div class="card p-4" data-jump="Participants">
+        <div class="text-sm font-semibold text-slate-700 mb-2">Participant net positions — latest day <span id="foDate2" class="text-slate-400 font-normal"></span> <span class="text-slate-400 font-normal">(no. of contracts · Idx-Fut &amp; Stk-Fut columns <span class="foLL">contracts</span>)</span></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+            <th class="text-left py-2 px-1">Participant</th>
+            <th class="text-right px-1">Idx-Fut long</th><th class="text-right px-1">Idx-Fut short</th><th class="text-right px-1">Idx-Fut net</th>
+            <th class="text-right px-1">Stk-Fut net</th><th class="text-right px-1">Total long</th><th class="text-right px-1">Total short</th></tr></thead>
+            <tbody id="foOI"></tbody></table>
+        </div>
+      </div>
+      <div class="card p-4 mt-4" data-jump="Day-wise">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <div class="text-sm font-semibold text-slate-700">Day-wise positions <span class="text-slate-400 font-normal">(open interest, <span id="foDailyLL">no. of contracts</span>)</span></div>
+          <div class="flex items-center gap-2 text-xs flex-wrap">
+            <label class="flex items-center gap-1 text-slate-600">Participant
+              <select id="foDP" class="border border-slate-300 rounded-md px-2 py-1 bg-white font-semibold text-blue-700">
+                <option value="FII">FII</option><option value="DII">DII</option><option value="Pro">Pro</option><option value="Client">Client</option></select></label>
+            <label class="flex items-center gap-1 text-slate-600">Instrument
+              <select id="foDI" class="border border-slate-300 rounded-md px-2 py-1 bg-white">
+                <option value="futIdx">Index Futures</option><option value="futStk">Stock Futures</option><option value="tot">All (total)</option></select></label>
+            <select id="foDN" class="border border-slate-300 rounded-md px-2 py-1 bg-white">
+              <option value="30">Last 30 days</option><option value="90">Last 90 days</option><option value="365">Last 1 year</option><option value="all">All</option></select>
+          </div>
+        </div>
+        <div class="overflow-x-auto tscroll rounded-lg border border-slate-100" style="--tscroll-h:28rem">
+          <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>
+            <th class="text-left py-2 px-3">Date</th>
+            <th class="text-right px-3">Long</th><th class="text-right px-3">Short</th><th class="text-right px-3">Net</th><th class="text-right px-3">Long:Short</th></tr></thead>
+            <tbody id="foDaily"></tbody></table>
+        </div>
+      </div>
+      </div><!-- /foTablesSection -->
+      </div><!-- /fo-daily -->
+
+      <!-- ---------- F&O MONTHLY (month-end snapshot) ---------- -->
+      <div id="fo-monthly" class="hidden">
+        <div id="foMonCards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" data-jump="Overview"></div>
+        <div class="flex items-center gap-2 mb-3 text-xs">
+          <span class="text-slate-500 font-medium">Chart view:</span>
+          <div id="foMonViewBtns" class="flex gap-1"></div>
+          <span class="text-slate-400">— month-end FII index-futures net position vs Nifty</span>
+        </div>
+        <div class="card p-4 mb-4" data-jump="Index futures">
+          <div class="text-sm font-semibold text-slate-700 mb-2"><span class="text-red-700">FII Index-Futures net</span> — month-end <span class="text-slate-400 font-normal">(long − short, <span class="foLL">contracts</span>)</span> vs <span class="text-amber-600">Nifty 50</span></div>
+          <div id="foMonChart"></div>
+        </div>
+        <div class="card p-4" data-jump="Positions">
+          <div class="text-sm font-semibold text-slate-700 mb-2">Month-end positions <span class="text-[11px] font-normal text-slate-400">(newest first · net contracts = long − short · idx-fut &amp; stk-fut columns <span class="foLL">contracts</span>)</span></div>
+          <div class="overflow-x-auto tscroll rounded-lg border border-slate-100" style="--tscroll-h:30rem">
+            <table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 sticky top-0 bg-white"><tr>
+              <th class="text-left py-2 px-2">Month</th>
+              <th class="text-right px-2">FII idx-fut net</th>
+              <th class="text-right px-2">FII L/S</th>
+              <th class="text-right px-2">FII stk-fut net</th>
+              <th class="text-right px-2">DII idx-fut net</th>
+              <th class="text-right px-2">Nifty</th>
+            </tr></thead><tbody id="foMonBody"></tbody></table>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-500 mt-3">Month-end = the last trading day's participant open interest in each month (positions are a snapshot, not a monthly sum). <b>Net</b> = long − short; a large negative FII index-futures number = net short / bearish. <b>L/S</b> = long ÷ short (&lt;1 = net short). Since 2012.</p>
+      </div><!-- /fo-monthly -->
+
+      <p class="text-[11px] text-slate-500 mt-5">F&amp;O participant positions = <b>open interest</b> (no. of contracts). <b>Lot-adjusted</b> (index &amp; stock futures): NSE has changed lot sizes many times (Nifty 50 → 75 → 25 → 75 …; stock lots are revised too), so raw contract counts from different years aren't comparable. Each day is restated in today's lot sizes: that day's futures open interest per index / per stock (NSE F&amp;O bhavcopy) ÷ today's lot for it, as a share of the day's contracts — one index factor and one stock factor per day, the same for every participant, since NSE doesn't publish which index or stock a participant holds. Stock splits/bonuses are recognised (open contracts re-sized overnight with a matching price move) and never count as a lot change; stocks no longer in F&amp;O keep their own count. The latest day is unchanged. Totals (which include options) are always NSE's raw counts. <b>Idx-Fut net</b> = index-futures long − short; a large negative FII number = net short / bearish positioning. Buy/sell table is FII-only derivative turnover value. Source: NSE participant-wise OI + FII derivative-stats reports. <span id="updated"></span></p>
+    </section>
+
+    <!-- ===================== Holdings (per stock) ===================== -->
+    <section id="pane-holdings" class="hidden">
+      <div class="mb-3">
+        <h2 class="text-base font-bold text-slate-900">Per-stock FII / DII holdings <a href="./shareholding.html" class="text-xs font-semibold text-indigo-600 hover:underline align-middle ml-1">open full page ↗</a></h2>
+        <p class="text-xs text-slate-500 mt-0.5">Which stocks institutions raised or cut, from quarterly shareholding-pattern filings — refreshed daily as companies file.</p>
+      </div>
+      <iframe id="shpFrame" title="Per-stock FII/DII holdings" class="w-full border-0 block" style="height:1200px" scrolling="no" loading="lazy"></iframe>
+    </section>
+  </div>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const fmt = n => n==null ? '·' : (n<0?'−':'')+Math.abs(Math.round(n)).toLocaleString('en-IN');
+const fmtSigned = n => n==null ? '·' : (n>=0?'+':'−')+Math.abs(Math.round(n)).toLocaleString('en-IN');
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmtDate = d => { const p=d.split('-'); return p[2]+' '+MON[+p[1]-1]+' '+p[0]; };
+let ROWS=[], FO=[], sortKey='date', sortAsc=false, foRange='3y';   // daily table defaults to newest-first
+let NIFTY={}, foRatioRange='3y', CHART_STATE={}, foView='split', foSection='charts';
+let foCustom={from:'',to:''}, foRatioCustom={from:'',to:''};
+let NSDL=[];   // FII rows from NSDL (custodian FPI figures), shown in the daily table before the exchange feed starts
+let MONTHLY=[], YEARLY=[], cashView='daily', focus='fii', monRange='5Y', foMode='daily';
+let foLot='adj'; try{ if(localStorage.getItem('fiiFoLot')==='raw') foLot='raw'; }catch(e){}
+// index-futures contracts n on row r in the current mode: raw = NSE's count; adj = restated in
+// today's lot sizes via the row's lot factor lf (null when the day has no bhavcopy lot data)
+const foIdx = (r, n) => n==null ? null : foLot==='raw' ? n : (r.lf!=null ? n*r.lf : null);
+// same for stock-futures contracts, via the row's stock lot factor lfs
+const foStk = (r, n) => n==null ? null : foLot==='raw' ? n : (r.lfs!=null ? n*r.lfs : null);
+const foLotName = () => foLot==='adj' ? "contracts in today's lot size" : 'contracts';
+function setupFOLot(){
+  const btns=[['adj','Lot-adjusted'],['raw','Raw (NSE)']];
+  $('foLotBtns').innerHTML = btns.map(([k,l],i)=>
+    `<button data-l="${k}" class="px-4 py-1.5 ${i?'border-l border-slate-200':''} ${foLot===k?'bg-blue-600 text-white':'bg-white text-slate-600 hover:bg-slate-50'}">${l}</button>`).join('');
+  $('foLotBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{ foLot=b.dataset.l; try{localStorage.setItem('fiiFoLot',foLot);}catch(e){} setupFOLot(); renderFO(); if(foMode==='monthly') renderFOMonthly(); });
+  document.querySelectorAll('.foLL').forEach(el=>el.textContent=foLotName());
+}
+
+async function load(){
+  let data, fdata={rows:[]}, mdata={rows:[]};
+  try { data = await (await fetch('./fii_dii.json?t='+Date.now())).json(); }
+  catch(e){ $('status').textContent='Could not load fii_dii.json — has the refresh run yet?'; return; }
+  try { fdata = await (await fetch('./fii_fo.json')).json(); } catch(e){}
+  try { mdata = await (await fetch('./fii_dii_monthly.json?t='+Date.now())).json(); } catch(e){}
+  try { NIFTY = (await (await fetch('./nifty.json')).json()).px || {}; } catch(e){ NIFTY={}; }
+  try { NSDL = ((await (await fetch('./fii_nsdl_daily.json?t='+Date.now())).json()).rows) || []; } catch(e){ NSDL=[]; }
+  ROWS = (data.rows||[]).slice();
+  FO = (fdata.rows||[]).slice();
+  MONTHLY = (mdata.rows||[]).slice();
+  if(!ROWS.length){ $('status').textContent='No FII/DII data yet.'; return; }
+  $('updated').textContent = data.updated ? '· updated '+data.updated.replace('T',' ') : '';
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  renderCards(); renderNetChart(); renderCumChart(); renderTable();
+  prepMonthly(); setupCashView(); setupFocus();
+  setupFOLot(); renderFO(); setupFOView();
+  liveFiiDii();
+}
+
+/* ---- live top-up via our Cloudflare Worker (?nse=fiidii): NSE publishes the
+   day's PROVISIONAL cash numbers ~6pm IST — hours before the nightly bake. If
+   the API has a session our baked feed doesn't, append it and re-render.
+   Fails silently (page keeps the baked feed). ---- */
+const WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev';
+const LIVEMON={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+async function liveFiiDii(){
+  try{
+    const j=await (await fetch(WORKER+'/?nse=fiidii',{cache:'no-store'})).json();
+    const rows=(j&&j.data)||[];
+    const conv=s=>{const m=/(\d{2})-([A-Za-z]{3})-(\d{4})/.exec(s||'');return m&&LIVEMON[m[2]]?m[3]+'-'+LIVEMON[m[2]]+'-'+m[1]:null;};
+    let dt=null;
+    rows.forEach(r=>{const d=conv(r.date);if(d&&(!dt||d>dt))dt=d;});
+    if(!dt||!ROWS.length||dt<=ROWS[ROWS.length-1].date) return;   // cron already has this session
+    const rec={date:dt,nifty:null};
+    rows.filter(r=>conv(r.date)===dt).forEach(r=>{
+      const buy=+r.buyValue, sell=+r.sellValue, net=+r.netValue;
+      if(/DII/i.test(r.category)){ rec.diiBuy=buy; rec.diiSell=sell; rec.diiNet=net; }
+      else { rec.fiiBuy=buy; rec.fiiSell=sell; rec.fiiNet=net; }
+    });
+    if(rec.fiiNet==null&&rec.diiNet==null) return;
+    ROWS.push(rec);
+    $('updated').innerHTML=' · <span style="color:var(--pos);font-weight:800">● LIVE</span> today ('+dt+') provisional numbers included — NSE publishes ~6pm IST';
+    renderCards(); renderNetChart(); renderCumChart(); renderTable();
+  }catch(e){ /* keep baked feed */ }
+}
+setInterval(()=>{ if(!document.hidden) liveFiiDii(); },600000);
+
+/* ---------------- CASH ---------------- */
+function renderCards(){
+  const last = ROWS[ROWS.length-1];
+  const cumF = ROWS.reduce((s,r)=>s+(r.fiiNet||0),0), cumD = ROWS.reduce((s,r)=>s+(r.diiNet||0),0);
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('cards').innerHTML =
+    card('FII net · '+last.date, fmtSigned(last.fiiNet)+' cr', last.fiiBuy!=null?('buy '+fmt(last.fiiBuy)+' / sell '+fmt(last.fiiSell)):'', (last.fiiNet||0)>=0?'pos':'neg')
+   +card('DII net · '+last.date, fmtSigned(last.diiNet)+' cr', last.diiBuy!=null?('buy '+fmt(last.diiBuy)+' / sell '+fmt(last.diiSell)):'', (last.diiNet||0)>=0?'pos':'neg')
+   +card('FII — last '+ROWS.length+' days', fmtSigned(cumF)+' cr', 'cumulative net', cumF>=0?'pos':'neg')
+   +card('DII — last '+ROWS.length+' days', fmtSigned(cumD)+' cr', 'cumulative net', cumD>=0?'pos':'neg');
+}
+function renderNetChart(){
+  const r=ROWS, n=r.length;
+  const W=Math.max(720, n*22), H=300, PL=52, PR=52, PT=14, PB=46;
+  const maxA=Math.max(1000, ...r.flatMap(x=>[Math.abs(x.fiiNet||0),Math.abs(x.diiNet||0)]));
+  const nv=r.map(x=>x.nifty).filter(v=>v!=null); const nMin=Math.min(...nv),nMax=Math.max(...nv);
+  const bw=(W-PL-PR)/n, slot=bw*0.36, y0=PT+(H-PT-PB)/2;
+  const yBar=v=>y0-(v/maxA)*((H-PT-PB)/2), xC=i=>PL+bw*(i+0.5), yN=v=>PT+(H-PT-PB)*(1-(v-nMin)/((nMax-nMin)||1));
+  let bars='';
+  r.forEach((x,i)=>{const cx=xC(i),f=x.fiiNet||0,d=x.diiNet||0;
+    bars+=`<rect x="${(cx-slot-1).toFixed(1)}" y="${Math.min(y0,yBar(f)).toFixed(1)}" width="${slot.toFixed(1)}" height="${Math.abs(yBar(f)-y0).toFixed(1)}" fill="${f>=0?'#2563eb':'#93c5fd'}"/>`;
+    bars+=`<rect x="${(cx+1).toFixed(1)}" y="${Math.min(y0,yBar(d)).toFixed(1)}" width="${slot.toFixed(1)}" height="${Math.abs(yBar(d)-y0).toFixed(1)}" fill="${d>=0?'#d97706':'#fcd34d'}"/>`;});
+  let np=''; r.forEach((x,i)=>{ if(x.nifty==null)return; np+=(np?'L':'M')+xC(i).toFixed(1)+' '+yN(x.nifty).toFixed(1)+' ';});
+  let xl=''; const step=Math.ceil(n/12);
+  r.forEach((x,i)=>{ if(i%step)return; xl+=`<text x="${xC(i).toFixed(1)}" y="${H-PB+16}" font-size="9" fill="#94a3b8" text-anchor="middle" transform="rotate(35 ${xC(i).toFixed(1)} ${H-PB+16})">${x.date.slice(5)}</text>`;});
+  let yl=''; for(let k=-1;k<=1;k++){const v=k*maxA,yy=yBar(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${k===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtSigned(v)}</text>`;}
+  let yr=''; for(let k=0;k<=2;k++){const v=nMin+(nMax-nMin)*k/2,yy=yN(v);yr+=`<text x="${W-PR+4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="start">${Math.round(v).toLocaleString('en-IN')}</text>`;}
+  const cross=`<line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>`;
+  const hit=`<rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>`;
+  $('chartNet').innerHTML=`<div class="relative" style="width:${W}px">
+    <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${yl}${yr}${xl}${bars}<path d="${np}" fill="none" stroke="#64748b" stroke-width="1.6"/>${cross}${hit}</svg>
+    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10" style="top:2px"></div>
+  </div>`;
+  // hover: nearest day's FII / DII / Nifty values
+  const wrap=$('chartNet').querySelector('.relative'), svg=wrap.querySelector('svg'), tip=wrap.querySelector('.tip'), cx=wrap.querySelector('.cx');
+  const move=e=>{
+    const rc=svg.getBoundingClientRect(); if(!rc.width)return;
+    const sx=((e.touches?e.touches[0].clientX:e.clientX)-rc.left)/rc.width*W;
+    let i=Math.floor((sx-PL)/bw); i=Math.max(0,Math.min(n-1,i));
+    const x=r[i], px=xC(i);
+    cx.setAttribute('x1',px); cx.setAttribute('x2',px); cx.style.display='';
+    tip.style.left=(px/W*100)+'%';
+    tip.innerHTML=`<div class="font-semibold">${x.date}</div>`
+      +`<div><span style="color:#60a5fa">●</span> FII net: ${fmtSigned(x.fiiNet)} cr</div>`
+      +`<div><span style="color:#fbbf24">●</span> DII net: ${fmtSigned(x.diiNet)} cr</div>`
+      +(x.nifty!=null?`<div><span style="color:#94a3b8">●</span> Nifty: ${x.nifty.toLocaleString('en-IN')}</div>`:'');
+    tip.classList.remove('hidden');
+  };
+  svg.addEventListener('mousemove',move);
+  svg.addEventListener('touchstart',move,{passive:true}); svg.addEventListener('touchmove',move,{passive:true});
+  svg.addEventListener('mouseleave',()=>{tip.classList.add('hidden');cx.style.display='none';});
+}
+function renderCumChart(){
+  const r=ROWS,n=r.length,W=720,H=200,PL=54,PR=14,PT=12,PB=28;
+  let cf=0,cd=0;const F=[],D=[];r.forEach(x=>{cf+=x.fiiNet||0;cd+=x.diiNet||0;F.push(cf);D.push(cd);});
+  const all=F.concat(D),mn=Math.min(0,...all),mx=Math.max(0,...all);
+  const x=i=>PL+(W-PL-PR)*(n<=1?0:i/(n-1)), y=v=>PT+(H-PT-PB)*(1-(v-mn)/((mx-mn)||1));
+  const path=A=>A.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+  let yl='';for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3,yy=y(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${Math.abs(v)<1?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtSigned(v)}</text>`;}
+  $('chartCum').innerHTML=`<div class="relative">
+    <svg viewBox="0 0 ${W} ${H}" class="w-full">${yl}<path d="${path(F)}" fill="none" stroke="#2563eb" stroke-width="2"/><path d="${path(D)}" fill="none" stroke="#d97706" stroke-width="2"/>
+      <line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
+      <circle class="dF" r="3.5" fill="#2563eb" stroke="#fff" stroke-width="1.5" style="display:none"/>
+      <circle class="dD" r="3.5" fill="#d97706" stroke="#fff" stroke-width="1.5" style="display:none"/>
+      <rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>
+    </svg>
+    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[120%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
+  </div>`;
+  // hover: cumulative FII / DII up to the hovered day
+  const wrap=$('chartCum').querySelector('.relative'), svg=wrap.querySelector('svg'), tip=wrap.querySelector('.tip');
+  const cx=wrap.querySelector('.cx'), dF=wrap.querySelector('.dF'), dD=wrap.querySelector('.dD');
+  const move=e=>{
+    const rc=svg.getBoundingClientRect(); if(!rc.width)return;
+    const sx=((e.touches?e.touches[0].clientX:e.clientX)-rc.left)/rc.width*W;
+    let i=Math.round((sx-PL)/(W-PL-PR)*(n-1)); i=Math.max(0,Math.min(n-1,i));
+    const px=x(i), yF=y(F[i]), yD=y(D[i]);
+    cx.setAttribute('x1',px); cx.setAttribute('x2',px); cx.style.display='';
+    dF.setAttribute('cx',px); dF.setAttribute('cy',yF); dF.style.display='';
+    dD.setAttribute('cx',px); dD.setAttribute('cy',yD); dD.style.display='';
+    tip.style.left=(px/W*100)+'%'; tip.style.top=(Math.min(yF,yD)/H*100)+'%';
+    tip.innerHTML=`<div class="font-semibold">${r[i].date}</div>`
+      +`<div><span style="color:#60a5fa">●</span> FII cumulative: ${fmtSigned(F[i])} cr</div>`
+      +`<div><span style="color:#fbbf24">●</span> DII cumulative: ${fmtSigned(D[i])} cr</div>`;
+    tip.classList.remove('hidden');
+  };
+  svg.addEventListener('mousemove',move);
+  svg.addEventListener('touchstart',move,{passive:true}); svg.addEventListener('touchmove',move,{passive:true});
+  svg.addEventListener('mouseleave',()=>{tip.classList.add('hidden');cx.style.display='none';dF.style.display='none';dD.style.display='none';});
+}
+/* Daily-table rows: the exchange feed (ROWS), then, for every day before it starts, NSDL's
+   FII figures (fii_nsdl_daily.json: [tradeDate, buy, sell, net, nsdlReportDate(, [sessions covered])]).
+   NSDL has no DII. Nifty close / change come from nifty.json. Cards and charts use ROWS only. */
+function nsdlRows(){
+  if(!NSDL.length||!ROWS.length) return [];
+  const first=ROWS.reduce((m,r)=>r.date<m?r.date:m, ROWS[0].date);
+  const days=Object.keys(NIFTY).sort(), idx={}; days.forEach((d,i)=>idx[d]=i);
+  return NSDL.filter(a=>a[0]<first).map(a=>{
+    const i=idx[a[0]], c=NIFTY[a[0]], p=(i>0)?NIFTY[days[i-1]]:null;
+    return {date:a[0], fiiBuy:a[1], fiiSell:a[2], fiiNet:a[3], diiNet:null, nsdl:a[4], cov:a[5]||null,
+            nifty:c!=null?c:null, chg:(c!=null&&p)?(c-p)/p*100:null};
+  });
+}
+function renderTable(){
+  const old=nsdlRows();
+  const note=$('nsdlNote');
+  if(old.length){
+    const first=ROWS.reduce((m,r)=>r.date<m?r.date:m, ROWS[0].date);
+    note.innerHTML=`Rows before <b>${first}</b> (back to ${old.reduce((m,r)=>r.date<m?r.date:m, old[0].date)}) are marked <span class="nsdl-tag">NSDL</span>: FII figures from NSDL's daily FPI report (equity, stock exchange), which custodians file the next day. They are not the exchange's same-day provisional numbers used from ${first} on, and NSDL has no DII figure.`;
+    note.classList.remove('hidden');
+  } else note.classList.add('hidden');
+  const r=ROWS.concat(old).sort((a,b)=>{const A=a[sortKey],B=b[sortKey];let c;if(sortKey==='date')c=(A<B?-1:A>B?1:0);else c=(A||0)-(B||0);return sortAsc?c:-c;});
+  const at=v=>v==null?'':v;   // data-attr value ('' = not available)
+  $('tbody').innerHTML=r.map(x=>`<tr class="dtr border-b border-slate-50 hover:bg-slate-50 cursor-default" data-date="${x.date}" data-src="${x.nsdl?'nsdl':''}" data-rep="${x.nsdl||''}" data-cov="${x.cov?x.cov.join(' + '):''}" data-fb="${at(x.fiiBuy)}" data-fs="${at(x.fiiSell)}" data-fn="${at(x.fiiNet)}" data-db="${at(x.diiBuy)}" data-ds="${at(x.diiSell)}" data-dn="${at(x.diiNet)}">
+     <td class="py-1 px-1 font-medium whitespace-nowrap">${x.date}${x.nsdl?` <span class="nsdl-tag">NSDL${x.cov?' · '+x.cov.length+' days':''}</span>`:''}</td>
+     <td class="text-right px-1 ${(x.fiiNet||0)>=0?'pos':'neg'}">${fmtSigned(x.fiiNet)}</td>
+     <td class="text-right px-1 ${x.diiNet==null?'text-slate-400':(x.diiNet>=0?'pos':'neg')}">${fmtSigned(x.diiNet)}</td>
+     <td class="text-right px-1">${x.nifty!=null?x.nifty.toLocaleString('en-IN'):'·'}</td>
+     <td class="text-right px-1 ${(x.chg||0)>=0?'pos':'neg'}">${x.chg!=null?(x.chg>=0?'+':'')+x.chg.toFixed(2)+'%':'·'}</td></tr>`).join('');
+  attachDailyTip();
+}
+document.querySelectorAll('th[data-s]').forEach(th=>th.addEventListener('click',()=>{
+  const k=th.dataset.s; if(sortKey===k)sortAsc=!sortAsc; else {sortKey=k;sortAsc=(k==='date');} renderTable();}));
+
+/* Row-hover tooltip: FII/DII net + (when NSE has published it) the buy/sell split.
+   Uses a position:fixed node so it isn't clipped by the table's scroll box. */
+function attachDailyTip(){
+  let tip=$('dtip');
+  if(!tip){
+    tip=document.createElement('div'); tip.id='dtip';
+    tip.className='fixed hidden pointer-events-none bg-slate-800 text-white text-[11px] leading-tight px-2.5 py-1.5 rounded-md shadow-lg whitespace-nowrap';
+    tip.style.zIndex='60';
+    document.body.appendChild(tip);
+  }
+  const tb=$('tbody');
+  if(tb.__tipWired) return;                 // delegate once; survives re-renders
+  tb.__tipWired=true;
+  const num=v=>(v===''||v==null)?null:+v;
+  const show=e=>{
+    const tr=e.target.closest('tr.dtr'); if(!tr){ tip.classList.add('hidden'); return; }
+    const d=tr.dataset, fn=num(d.fn), dn=num(d.dn), fb=num(d.fb), db=num(d.db);
+    const row=(lbl,col,b,s,net)=>`<div><span style="color:${col}">●</span> ${lbl} net <b>${fmtSigned(net)}</b>`
+      +(b!=null?` <span style="opacity:.75">· buy ${fmt(b)} / sell ${fmt(s)}</span>`:'')+`</div>`;
+    if(d.src==='nsdl'){
+      tip.innerHTML=`<div class="font-semibold mb-0.5">${d.cov||d.date}</div>`
+        +row('FII','#60a5fa',fb,num(d.fs),fn)
+        +`<div style="opacity:.75;font-size:10px;margin-top:2px">NSDL FPI report of ${d.rep}${d.cov?' (covers '+d.cov+' together)':''} · no DII figure</div>`;
+    } else
+    tip.innerHTML=`<div class="font-semibold mb-0.5">${d.date}</div>`
+      +row('FII','#60a5fa',fb,num(d.fs),fn)+row('DII','#fbbf24',db,num(d.ds),dn)
+      +((fb==null&&db==null)?`<div style="opacity:.6;font-size:10px;margin-top:2px">buy/sell not published for this day</div>`:'');
+    tip.classList.remove('hidden');
+    const px=(e.touches?e.touches[0].clientX:e.clientX), py=(e.touches?e.touches[0].clientY:e.clientY);
+    const tw=tip.offsetWidth, th=tip.offsetHeight;
+    let left=px+14, top=py+14;
+    if(left+tw>innerWidth-8) left=px-tw-14;
+    if(top+th>innerHeight-8) top=py-th-14;
+    tip.style.left=Math.max(8,left)+'px'; tip.style.top=Math.max(8,top)+'px';
+  };
+  tb.addEventListener('mousemove',show);
+  tb.addEventListener('mouseleave',()=>tip.classList.add('hidden'));
+  tb.addEventListener('touchstart',show,{passive:true});
+  document.addEventListener('touchstart',e=>{ if(!e.target.closest('#tbody')) tip.classList.add('hidden'); },{passive:true});
+}
+
+/* ================= MONTHLY / YEARLY / DEEP DIVES ================= */
+const fmtLc = v => v==null ? '·' : (v>=0?'+':'−')+'₹'+Math.abs(v/1e5).toFixed(2)+' L cr';   // ₹ lakh crore
+const seriesVal = (r,f)=> f==='dii' ? r.diiNet : r.fiiNet;
+const SER = {fii:{c:'#2563eb',cl:'#93c5fd',lbl:'FII'}, dii:{c:'#d97706',cl:'#fcd34d',lbl:'DII'}};
+
+function prepMonthly(){
+  MONTHLY.forEach((r,i)=>{
+    const prev = i>0 ? MONTHLY[i-1].close : null;
+    r.mom  = (r.close!=null && prev!=null && prev) ? (r.close-prev)/prev*100 : null;
+    r.comb = (r.fiiNet||0)+(r.diiNet||0);
+    const p = r.ym.split('-'); r.year=+p[0]; r.mon=+p[1]; r.label = MON[r.mon-1]+' '+r.year;
+  });
+  const yo={};
+  MONTHLY.forEach(r=>{ const y=r.year;
+    const o = yo[y] || (yo[y]={year:y,fiiNet:0,diiNet:0,close:null,months:0});
+    o.fiiNet+=r.fiiNet||0; o.diiNet+=r.diiNet||0; o.months++;
+    if(r.close!=null) o.close=r.close;             // last non-null close in the year = year-end
+  });
+  YEARLY = Object.values(yo).sort((a,b)=>a.year-b.year);
+  YEARLY.forEach((r,i)=>{ const prev=i>0?YEARLY[i-1].close:null;
+    r.mom=(r.close!=null&&prev!=null&&prev)?(r.close-prev)/prev*100:null; r.comb=r.fiiNet+r.diiNet; });
+}
+
+/* primary Daily / Monthly / Yearly switch */
+function setupCashView(){
+  const btns=[['daily','Daily'],['monthly','Monthly'],['yearly','Yearly']];
+  const draw=()=>{
+    $('cashViewBtns').innerHTML = btns.map(([k,l],i)=>
+      `<button data-v="${k}" class="px-4 py-1.5 ${i?'border-l border-slate-200':''} ${cashView===k?'bg-blue-600 text-white':'bg-white text-slate-600 hover:bg-slate-50'}">${l}</button>`).join('');
+    $('cashViewBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{cashView=b.dataset.v; draw();});
+    $('view-daily').classList.toggle('hidden',cashView!=='daily');
+    $('view-monthly').classList.toggle('hidden',cashView!=='monthly');
+    $('view-yearly').classList.toggle('hidden',cashView!=='yearly');
+    if(cashView==='monthly') renderMonthly();
+    if(cashView==='yearly')  renderYearly();
+  };
+  draw();
+}
+
+/* FII / DII focus for the deep dives */
+function setupFocus(){
+  if(!MONTHLY.length){ $('deepdives').classList.add('hidden'); return; }
+  const btns=[['fii','FII'],['dii','DII']];
+  const draw=()=>{
+    $('focusBtns').innerHTML = btns.map(([k,l],i)=>
+      `<button data-f="${k}" class="px-3 py-1 ${i?'border-l border-slate-200':''} ${focus===k?(k==='fii'?'bg-blue-600':'bg-amber-600')+' text-white':'bg-white text-slate-600 hover:bg-slate-50'}">${l}</button>`).join('');
+    $('focusBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{focus=b.dataset.f; draw();});
+    ['hmTitle','seasTitle','frTitle'].forEach(id=>$(id).textContent=SER[focus].lbl);
+    renderHeatmap(); renderSeasonality(); renderFlowReturns();
+  };
+  renderTugOfWar();   // focus-independent — render once
+  draw();
+}
+
+/* grouped FII+DII bars + Nifty line, with crosshair hover. items:[{label,fii,dii,line}] */
+function groupedBarLine(elId, items, opt){
+  const n=items.length;
+  if(!n){ $(elId).innerHTML='<div class="text-xs text-slate-400 py-8 text-center">No data.</div>'; return; }
+  const W=Math.max(680, n*(opt.barW||46)), H=300, PL=58, PR=58, PT=16, PB=52;
+  const maxA=Math.max(1000, ...items.flatMap(x=>[Math.abs(x.fii||0),Math.abs(x.dii||0)]));
+  const lv=items.map(x=>x.line).filter(v=>v!=null), lMin=lv.length?Math.min(...lv):0, lMax=lv.length?Math.max(...lv):1;
+  const bw=(W-PL-PR)/n, slot=bw*0.32, y0=PT+(H-PT-PB)/2;
+  const yBar=v=>y0-(v/maxA)*((H-PT-PB)/2), xC=i=>PL+bw*(i+0.5), yL=v=>PT+(H-PT-PB)*(1-(v-lMin)/((lMax-lMin)||1));
+  let bars='';
+  items.forEach((x,i)=>{ const cx=xC(i),f=x.fii||0,d=x.dii||0;
+    bars+=`<rect x="${(cx-slot-1).toFixed(1)}" y="${Math.min(y0,yBar(f)).toFixed(1)}" width="${slot.toFixed(1)}" height="${Math.abs(yBar(f)-y0).toFixed(1)}" fill="${f>=0?'#2563eb':'#93c5fd'}"/>`;
+    bars+=`<rect x="${(cx+1).toFixed(1)}" y="${Math.min(y0,yBar(d)).toFixed(1)}" width="${slot.toFixed(1)}" height="${Math.abs(yBar(d)-y0).toFixed(1)}" fill="${d>=0?'#d97706':'#fcd34d'}"/>`; });
+  let np=''; items.forEach((x,i)=>{ if(x.line==null)return; np+=(np?'L':'M')+xC(i).toFixed(1)+' '+yL(x.line).toFixed(1)+' '; });
+  let xl=''; const step=Math.ceil(n/14);
+  items.forEach((x,i)=>{ if(i%step)return; xl+=`<text x="${xC(i).toFixed(1)}" y="${H-PB+16}" font-size="9" fill="#94a3b8" text-anchor="middle" transform="rotate(35 ${xC(i).toFixed(1)} ${H-PB+16})">${x.label}</text>`; });
+  let yl=''; for(let k=-1;k<=1;k++){const v=k*maxA,yy=yBar(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${k===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtSigned(v)}</text>`;}
+  let yr=''; for(let k=0;k<=2;k++){const v=lMin+(lMax-lMin)*k/2,yy=yL(v);yr+=`<text x="${W-PR+4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="start">${Math.round(v).toLocaleString('en-IN')}</text>`;}
+  const cross=`<line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>`;
+  const hit=`<rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>`;
+  $(elId).innerHTML=`<div class="relative" style="width:${W}px">
+    <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${yl}${yr}${xl}${bars}<path d="${np}" fill="none" stroke="#64748b" stroke-width="1.6"/>${cross}${hit}</svg>
+    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10" style="top:2px"></div>
+  </div>`;
+  const wrap=$(elId).querySelector('.relative'), svg=wrap.querySelector('svg'), tip=wrap.querySelector('.tip'), cx=wrap.querySelector('.cx');
+  const move=e=>{ const rc=svg.getBoundingClientRect(); if(!rc.width)return;
+    const sx=((e.touches?e.touches[0].clientX:e.clientX)-rc.left)/rc.width*W;
+    let i=Math.floor((sx-PL)/bw); i=Math.max(0,Math.min(n-1,i)); const x=items[i], px=xC(i);
+    cx.setAttribute('x1',px); cx.setAttribute('x2',px); cx.style.display=''; tip.style.left=(px/W*100)+'%';
+    tip.innerHTML=`<div class="font-semibold">${x.label}</div>`
+      +`<div><span style="color:#60a5fa">●</span> FII: ${fmtSigned(x.fii)} cr</div>`
+      +`<div><span style="color:#fbbf24">●</span> DII: ${fmtSigned(x.dii)} cr</div>`
+      +(x.line!=null?`<div><span style="color:#94a3b8">●</span> Nifty: ${Math.round(x.line).toLocaleString('en-IN')}</div>`:'');
+    tip.classList.remove('hidden'); };
+  svg.addEventListener('mousemove',move);
+  svg.addEventListener('touchstart',move,{passive:true}); svg.addEventListener('touchmove',move,{passive:true});
+  svg.addEventListener('mouseleave',()=>{tip.classList.add('hidden');cx.style.display='none';});
+}
+
+function renderMonthly(){
+  if(!MONTHLY.length){ $('monBody').innerHTML='<tr><td colspan="6" class="py-4 text-slate-400 text-xs">No monthly data yet.</td></tr>'; return; }
+  const last=MONTHLY[MONTHLY.length-1];
+  const t12=MONTHLY.slice(-12); const f12=t12.reduce((s,r)=>s+(r.fiiNet||0),0), d12=t12.reduce((s,r)=>s+(r.diiNet||0),0);
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('monCards').innerHTML =
+     card('FII · '+last.label, fmtSigned(last.fiiNet)+' cr', 'this month (running)', (last.fiiNet||0)>=0?'pos':'neg')
+    +card('DII · '+last.label, fmtSigned(last.diiNet)+' cr', 'this month (running)', (last.diiNet||0)>=0?'pos':'neg')
+    +card('FII · last 12 months', fmtSigned(f12)+' cr', 'trailing net', f12>=0?'pos':'neg')
+    +card('DII · last 12 months', fmtSigned(d12)+' cr', 'trailing net', d12>=0?'pos':'neg');
+  // range buttons for the chart
+  const R={'1Y':12,'3Y':36,'5Y':60,'ALL':1e9};
+  $('monRangeBtns').innerHTML=Object.keys(R).map(k=>`<button data-r="${k}" class="px-2 py-1 rounded ${monRange===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${k}</button>`).join('');
+  $('monRangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{monRange=b.dataset.r; renderMonthly();});
+  const nkeep=R[monRange], chartRows=MONTHLY.slice(Math.max(0,MONTHLY.length-nkeep));
+  groupedBarLine('monChart', chartRows.map(r=>({label:r.label.replace(' ',' '), fii:r.fiiNet, dii:r.diiNet, line:r.close})), {barW:Math.min(46, Math.max(20, 900/chartRows.length))});
+  // table — newest first
+  $('monBody').innerHTML = MONTHLY.slice().reverse().map(r=>`<tr class="border-b border-slate-50">
+    <td class="py-1.5 px-2 font-medium text-slate-700">${r.label}</td>
+    <td class="text-right px-2 ${(r.fiiNet||0)>=0?'pos':'neg'}">${fmtSigned(r.fiiNet)}</td>
+    <td class="text-right px-2 ${(r.diiNet||0)>=0?'pos':'neg'}">${fmtSigned(r.diiNet)}</td>
+    <td class="text-right px-2 ${r.comb>=0?'pos':'neg'}">${fmtSigned(r.comb)}</td>
+    <td class="text-right px-2">${r.close!=null?r.close.toLocaleString('en-IN'):'·'}</td>
+    <td class="text-right px-2 ${(r.mom||0)>=0?'pos':'neg'}">${r.mom!=null?(r.mom>=0?'+':'')+r.mom.toFixed(1)+'%':'·'}</td></tr>`).join('');
+}
+
+function renderYearly(){
+  if(!YEARLY.length){ $('yrBody').innerHTML='<tr><td colspan="6" class="py-4 text-slate-400 text-xs">No data.</td></tr>'; return; }
+  const fTot=YEARLY.reduce((s,r)=>s+r.fiiNet,0), dTot=YEARLY.reduce((s,r)=>s+r.diiNet,0);
+  const bestD=YEARLY.reduce((a,b)=>b.diiNet>a.diiNet?b:a), worstF=YEARLY.reduce((a,b)=>b.fiiNet<a.fiiNet?b:a);
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('yrCards').innerHTML =
+     card('FII since 2014', fmtLc(fTot), 'cumulative net', fTot>=0?'pos':'neg')
+    +card('DII since 2014', fmtLc(dTot), 'cumulative net', dTot>=0?'pos':'neg')
+    +card('Biggest DII year', '+'+(bestD.diiNet/1e5).toFixed(2)+' L cr', bestD.year, 'pos')
+    +card('Biggest FII exit', '−'+Math.abs(worstF.fiiNet/1e5).toFixed(2)+' L cr', worstF.year, 'neg');
+  groupedBarLine('yrChart', YEARLY.map(r=>({label:String(r.year), fii:r.fiiNet, dii:r.diiNet, line:r.close})), {barW:64});
+  $('yrBody').innerHTML = YEARLY.slice().reverse().map(r=>`<tr class="border-b border-slate-50">
+    <td class="py-1.5 px-2 font-medium text-slate-700">${r.year}${r.months<12?' <span class="text-[10px] text-slate-400">('+r.months+'m)</span>':''}</td>
+    <td class="text-right px-2 ${r.fiiNet>=0?'pos':'neg'}">${fmtSigned(r.fiiNet)}</td>
+    <td class="text-right px-2 ${r.diiNet>=0?'pos':'neg'}">${fmtSigned(r.diiNet)}</td>
+    <td class="text-right px-2 ${r.comb>=0?'pos':'neg'}">${fmtSigned(r.comb)}</td>
+    <td class="text-right px-2">${r.close!=null?r.close.toLocaleString('en-IN'):'·'}</td>
+    <td class="text-right px-2 ${(r.mom||0)>=0?'pos':'neg'}">${r.mom!=null?(r.mom>=0?'+':'')+r.mom.toFixed(1)+'%':'·'}</td></tr>`).join('');
+}
+
+/* -------- deep dive 1: heatmap -------- */
+function renderHeatmap(){
+  const byYear={};
+  MONTHLY.forEach(r=>{ (byYear[r.year]=byYear[r.year]||{})[r.mon]=seriesVal(r,focus); });
+  const years=Object.keys(byYear).map(Number).sort((a,b)=>b-a);   // newest on top
+  const maxA=Math.max(1, ...MONTHLY.map(r=>Math.abs(seriesVal(r,focus)||0)));
+  const cell=v=>{
+    if(v==null) return `<td class="text-center text-slate-300" style="min-width:42px">·</td>`;
+    const a=(0.14+0.86*Math.sqrt(Math.abs(v)/maxA)).toFixed(2);
+    const bg = v>=0 ? `rgba(21,128,61,${a})` : `rgba(185,28,28,${a})`;
+    const fg = a>0.5 ? '#fff' : (v>=0?'#166534':'#991b1b');
+    return `<td class="text-center tabular-nums" style="min-width:42px;background:${bg};color:${fg}" title="${v>=0?'+':'−'}₹${Math.abs(Math.round(v)).toLocaleString('en-IN')} cr">${v>=0?'+':'−'}${Math.abs(Math.round(v/1000))}</td>`;
+  };
+  const head=`<tr class="text-[10px] uppercase text-slate-500"><th class="text-left px-2 py-1 sticky left-0 bg-white">Year</th>${MON.map(m=>`<th class="px-1 py-1">${m}</th>`).join('')}</tr>`;
+  const body=years.map(y=>`<tr class="text-[11px] font-medium"><td class="text-left px-2 py-1 font-bold text-slate-600 sticky left-0 bg-white">${y}</td>${MON.map((_,i)=>cell(byYear[y][i+1]!==undefined?byYear[y][i+1]:null)).join('')}</tr>`).join('');
+  $('heatmap').innerHTML=`<table class="w-full text-sm border-separate" style="border-spacing:2px">${head}${body}</table>`;
+}
+
+/* -------- deep dive 2: tug of war -------- */
+function renderTugOfWar(){
+  const n=MONTHLY.length; if(!n){ return; }
+  let cf=0,cd=0; const F=[],D=[];
+  MONTHLY.forEach(r=>{ cf+=r.fiiNet||0; cd+=r.diiNet||0; F.push(cf); D.push(cd); });
+  const fTot=cf, dTot=cd;
+  const absorb = fTot<0 ? (dTot/-fTot) : null;
+  const st=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('tugStat').innerHTML =
+     st('FII net · 12 yrs', fmtLc(fTot), 'foreign flow', fTot>=0?'pos':'neg')
+    +st('DII net · 12 yrs', fmtLc(dTot), 'domestic flow', dTot>=0?'pos':'neg')
+    +st('DII absorption', absorb!=null?absorb.toFixed(1)+'×':'—', absorb!=null?('₹'+absorb.toFixed(1)+' DII buying per ₹1 FII sold'):'', absorb!=null&&absorb>=1?'pos':'neg');
+  // chart: two cumulative lines in lakh cr
+  const W=720,H=230,PL=54,PR=14,PT=14,PB=30;
+  const all=F.concat(D), mn=Math.min(0,...all), mx=Math.max(0,...all);
+  const x=i=>PL+(W-PL-PR)*(n<=1?0:i/(n-1)), y=v=>PT+(H-PT-PB)*(1-(v-mn)/((mx-mn)||1));
+  const path=A=>A.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+  let yl='';for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4,yy=y(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${Math.abs(v)<1?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${(v/1e5).toFixed(1)}</text>`;}
+  let xl='';const step=Math.ceil(n/8);
+  MONTHLY.forEach((r,i)=>{if(i%step && i!==n-1)return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${r.ym}</text>`;});
+  $('tugChart').innerHTML=`<div class="relative">
+    <svg viewBox="0 0 ${W} ${H}" class="w-full">${yl}${xl}
+      <path d="${path(F)}" fill="none" stroke="#2563eb" stroke-width="2.2"/><path d="${path(D)}" fill="none" stroke="#d97706" stroke-width="2.2"/>
+      <line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
+      <circle class="dF" r="3.5" fill="#2563eb" stroke="#fff" stroke-width="1.5" style="display:none"/>
+      <circle class="dD" r="3.5" fill="#d97706" stroke="#fff" stroke-width="1.5" style="display:none"/>
+      <rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/></svg>
+    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[120%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
+    <div class="text-[10px] text-slate-400 mt-1">Y-axis ₹ lakh crore · <span class="text-blue-700 font-semibold">FII</span> vs <span class="text-amber-600 font-semibold">DII</span> cumulative since Jan 2014</div></div>`;
+  const wrap=$('tugChart').querySelector('.relative'), svg=wrap.querySelector('svg'), tip=wrap.querySelector('.tip');
+  const cx=wrap.querySelector('.cx'), dF=wrap.querySelector('.dF'), dD=wrap.querySelector('.dD');
+  const move=e=>{ const rc=svg.getBoundingClientRect(); if(!rc.width)return;
+    const sx=((e.touches?e.touches[0].clientX:e.clientX)-rc.left)/rc.width*W;
+    let i=Math.round((sx-PL)/(W-PL-PR)*(n-1)); i=Math.max(0,Math.min(n-1,i));
+    const px=x(i),yF=y(F[i]),yD=y(D[i]);
+    cx.setAttribute('x1',px);cx.setAttribute('x2',px);cx.style.display='';
+    dF.setAttribute('cx',px);dF.setAttribute('cy',yF);dF.style.display='';
+    dD.setAttribute('cx',px);dD.setAttribute('cy',yD);dD.style.display='';
+    tip.style.left=(px/W*100)+'%'; tip.style.top=(Math.min(yF,yD)/H*100)+'%';
+    tip.innerHTML=`<div class="font-semibold">${MONTHLY[i].label}</div>`
+      +`<div><span style="color:#60a5fa">●</span> FII: ${fmtLc(F[i])}</div>`
+      +`<div><span style="color:#fbbf24">●</span> DII: ${fmtLc(D[i])}</div>`;
+    tip.classList.remove('hidden'); };
+  svg.addEventListener('mousemove',move);
+  svg.addEventListener('touchstart',move,{passive:true}); svg.addEventListener('touchmove',move,{passive:true});
+  svg.addEventListener('mouseleave',()=>{tip.classList.add('hidden');cx.style.display='none';dF.style.display='none';dD.style.display='none';});
+}
+
+/* -------- deep dive 3: seasonality -------- */
+function renderSeasonality(){
+  const sum=Array(12).fill(0), cnt=Array(12).fill(0);
+  MONTHLY.forEach(r=>{ const v=seriesVal(r,focus); if(v!=null){ sum[r.mon-1]+=v; cnt[r.mon-1]++; } });
+  const avg=sum.map((s,i)=>cnt[i]?s/cnt[i]:null);
+  const W=720,H=220,PL=56,PR=14,PT=16,PB=28, n=12;
+  const maxA=Math.max(1,...avg.map(v=>Math.abs(v||0)));
+  const bw=(W-PL-PR)/n, y0=PT+(H-PT-PB)/2, yB=v=>y0-(v/maxA)*((H-PT-PB)/2), xC=i=>PL+bw*(i+0.5);
+  const col=SER[focus];
+  let bars='',lbls='';
+  avg.forEach((v,i)=>{ if(v==null)return; const cx=xC(i),bh=Math.abs(yB(v)-y0),ww=bw*0.6;
+    bars+=`<rect x="${(cx-ww/2).toFixed(1)}" y="${Math.min(y0,yB(v)).toFixed(1)}" width="${ww.toFixed(1)}" height="${bh.toFixed(1)}" rx="2" fill="${v>=0?col.c:col.cl}"><title>${MON[i]}: avg ${fmtSigned(v)} cr (${cnt[i]} yrs)</title></rect>`;
+    lbls+=`<text x="${cx.toFixed(1)}" y="${v>=0?yB(v)-4:yB(v)+11}" font-size="8.5" fill="#64748b" text-anchor="middle">${Math.round(v/1000)}k</text>`;
+    lbls+=`<text x="${cx.toFixed(1)}" y="${H-10}" font-size="9" fill="#94a3b8" text-anchor="middle">${MON[i]}</text>`; });
+  let yl='';for(let k=-1;k<=1;k++){const v=k*maxA,yy=yB(v);yl+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${k===0?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtSigned(v)}</text>`;}
+  $('seasChart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" class="w-full">${yl}${bars}${lbls}</svg>`;
+}
+
+/* -------- deep dive 4: flow vs returns -------- */
+function renderFlowReturns(){
+  const pts=MONTHLY.filter(r=>r.mom!=null && seriesVal(r,focus)!=null).map(r=>({x:seriesVal(r,focus), y:r.mom, label:r.label}));
+  const n=pts.length;
+  if(n<3){ $('frVerdict').innerHTML=''; $('frChart').innerHTML='<div class="text-xs text-slate-400 py-6 text-center">Not enough data.</div>'; return; }
+  const mx=pts.reduce((s,p)=>s+p.x,0)/n, my=pts.reduce((s,p)=>s+p.y,0)/n;
+  let sxy=0,sxx=0,syy=0; pts.forEach(p=>{const dx=p.x-mx,dy=p.y-my; sxy+=dx*dy; sxx+=dx*dx; syy+=dy*dy;});
+  const r = sxy/(Math.sqrt(sxx*syy)||1);
+  const b = sxy/(sxx||1), a = my-b*mx;
+  const abs=Math.abs(r);
+  const strength = abs<0.2?'essentially no':abs<0.4?'a weak':abs<0.6?'a moderate':'a strong';
+  const dir = r>=0?'positive':'negative';
+  const verdict = abs<0.2
+    ? `<b>${SER[focus].lbl} flow barely moves Nifty month-to-month (r = ${r.toFixed(2)}).</b> The dots are a cloud, not a line — flow is a sentiment gauge, not a market-timing signal.`
+    : `<b>${strength} ${dir} link (r = ${r.toFixed(2)}).</b> Months of heavier ${SER[focus].lbl} ${r>=0?'buying':'buying'} have tended to coincide with ${r>=0?'stronger':'weaker'} Nifty months — but far from one-to-one.`;
+  $('frVerdict').innerHTML=`<div class="rounded-lg bg-slate-50 border border-slate-200 px-3 py-2 text-[12px] text-slate-600">${verdict}</div>`;
+  const W=720,H=280,PL=50,PR=16,PT=16,PB=40;
+  const xs=pts.map(p=>p.x), ys=pts.map(p=>p.y);
+  const xMn=Math.min(...xs),xMx=Math.max(...xs),yMn=Math.min(...ys),yMx=Math.max(...ys);
+  const X=v=>PL+(W-PL-PR)*(v-xMn)/((xMx-xMn)||1), Y=v=>PT+(H-PT-PB)*(1-(v-yMn)/((yMx-yMn)||1));
+  const x0=X(0), y0=Y(0);
+  const col=SER[focus].c;
+  let dots=pts.map(p=>`<circle cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="3.2" fill="${col}" fill-opacity="0.55"><title>${p.label}: ${fmtSigned(p.x)} cr · Nifty ${p.y>=0?'+':''}${p.y.toFixed(1)}%</title></circle>`).join('');
+  const rx0=xMn, rx1=xMx, reg=`<line x1="${X(rx0).toFixed(1)}" y1="${Y(a+b*rx0).toFixed(1)}" x2="${X(rx1).toFixed(1)}" y2="${Y(a+b*rx1).toFixed(1)}" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5 3"/>`;
+  const axes=`<line x1="${PL}" y1="${y0.toFixed(1)}" x2="${W-PR}" y2="${y0.toFixed(1)}" stroke="#cbd5e1"/><line x1="${x0.toFixed(1)}" y1="${PT}" x2="${x0.toFixed(1)}" y2="${H-PB}" stroke="#cbd5e1"/>`;
+  const lab=`<text x="${W-PR}" y="${(y0-4).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">→ ${SER[focus].lbl} net buy (₹cr)</text>`
+    +`<text x="${(x0+4).toFixed(1)}" y="${PT+8}" font-size="9" fill="#94a3b8" text-anchor="start">↑ Nifty monthly %</text>`;
+  $('frChart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" class="w-full">${axes}${reg}${dots}${lab}</svg>`;
+}
+
+/* ---------------- F&O ---------------- */
+const RANGES={'1y':365,'3y':1095,'5y':1825,'all':1e9};
+function dMinus(dstr, months){const d=new Date(dstr+'T00:00:00'); d.setMonth(d.getMonth()-months); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function filterRange(arr, rng, custom){
+  if(rng==='custom') return arr.filter(p=>(!custom.from||p.d>=custom.from)&&(!custom.to||p.d<=custom.to));
+  const cut=RANGES[rng]; if(cut>=1e9) return arr;
+  const last=arr.length?new Date(arr[arr.length-1].d):new Date();
+  return arr.filter(p=>(last-new Date(p.d))/864e5<=cut);
+}
+function rangeUI(elId, cur, custom, fromId, toId){
+  const span=FO.length?{min:FO[0].date,max:FO[FO.length-1].date}:{min:'',max:''};
+  $(elId).innerHTML = ['1y','3y','5y','all','custom'].map(k=>`<button data-r="${k}" class="px-2 py-1 rounded ${cur===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${k==='custom'?'Custom':k.toUpperCase()}</button>`).join('')
+    + (cur==='custom'?`<input type="date" id="${fromId}" value="${custom.from||''}" min="${span.min}" max="${span.max}" class="border border-slate-300 rounded px-1.5 py-0.5 text-[11px]"/><span class="text-slate-400 text-[11px]">→</span><input type="date" id="${toId}" value="${custom.to||''}" min="${span.min}" max="${span.max}" class="border border-slate-300 rounded px-1.5 py-0.5 text-[11px]"/>`:'');
+}
+function renderFO(){
+  if(!FO.length){ $('foCards').innerHTML='<div class="text-xs text-slate-400 col-span-4">No F&O data yet — the next refresh will add it.</div>'; return; }
+  const last = FO[FO.length-1];
+  const oi=last.oi||{};
+  const lastBS = [...FO].reverse().find(r=>r.bs);          // newest row that has buy/sell value
+  const bs = lastBS ? lastBS.bs : {};
+  const fiiIdx = oi.FII ? oi.FII.futIdx : null;
+  const fiiIdxNet = fiiIdx ? foIdx(last, fiiIdx[0]-fiiIdx[1]) : null;
+  const ratio = fiiIdx && fiiIdx[1] ? (fiiIdx[0]/fiiIdx[1]) : null;
+  const diiIdxNet = oi.DII ? foIdx(last, oi.DII.futIdx[0]-oi.DII.futIdx[1]) : null;
+  const bsNetTotal = ['idxFut','idxOpt','stkFut','stkOpt'].reduce((s,k)=>s+(bs[k]?bs[k][0]-bs[k][1]:0),0);
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('foCards').innerHTML =
+    card('FII Index-Fut net · '+last.date, fmtSigned(fiiIdxNet), fiiIdx?('long '+fmt(foIdx(last,fiiIdx[0]))+' / short '+fmt(foIdx(last,fiiIdx[1]))):'', (fiiIdxNet||0)>=0?'pos':'neg')
+   +card('FII long/short ratio', ratio!=null?ratio.toFixed(2):'·', ratio!=null?(ratio<1?'net short (bearish)':'net long (bullish)'):'', (ratio||0)>=1?'pos':'neg')
+   +card('FII F&O net turnover · '+(lastBS?lastBS.date:''), fmtSigned(bsNetTotal)+' cr', 'buy − sell, all instruments', bsNetTotal>=0?'pos':'neg')
+   +card('DII Index-Fut net', fmtSigned(diiIdxNet), foLotName(), (diiIdxNet||0)>=0?'pos':'neg');
+
+  // charts and tables are shown together (merged)
+
+  // view toggle (overlay / split) — applies to both charts
+  $('foViewBtns').innerHTML = [['overlay','Overlay'],['split','Split']].map(([k,lbl])=>`<button data-v="${k}" class="px-2.5 py-1 rounded font-semibold ${foView===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${lbl}</button>`).join('');
+  $('foViewBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foView=b.dataset.v; renderFO();});
+
+  // chart 1: FII index-fut net position + Nifty overlay (with range + custom dates)
+  rangeUI('foRangeBtns', foRange, foCustom, 'foFrom', 'foTo');
+  $('foRangeBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foRange=b.dataset.r; if(foRange==='custom'&&!foCustom.from){const ld=FO[FO.length-1].date; foCustom.from=dMinus(ld,6); foCustom.to=ld;} renderFO();});
+  if(foRange==='custom'){ $('foFrom').onchange=e=>{foCustom.from=e.target.value; renderFO();}; $('foTo').onchange=e=>{foCustom.to=e.target.value; renderFO();}; }
+  let series = filterRange(FO.map(r=>({d:r.date, v: r.oi&&r.oi.FII ? foIdx(r, r.oi.FII.futIdx[0]-r.oi.FII.futIdx[1]) : null})).filter(p=>p.v!=null), foRange, foCustom);
+  $('foChart').innerHTML = dualChart('foChart', series, {baseline:true, color:'#b91c1c', areaFill:'#fee2e2', label:'FII net', fmt:fmtSigned, unit:foLot==='adj'?'contracts (today’s lots)':'contracts'});
+  attachHover('foChart');
+
+  // chart 2: FII long/short ratio + Nifty overlay (with range + custom dates)
+  rangeUI('foRatioBtns', foRatioRange, foRatioCustom, 'foRatioFrom', 'foRatioTo');
+  $('foRatioBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foRatioRange=b.dataset.r; if(foRatioRange==='custom'&&!foRatioCustom.from){const ld=FO[FO.length-1].date; foRatioCustom.from=dMinus(ld,6); foRatioCustom.to=ld;} renderFO();});
+  if(foRatioRange==='custom'){ $('foRatioFrom').onchange=e=>{foRatioCustom.from=e.target.value; renderFO();}; $('foRatioTo').onchange=e=>{foRatioCustom.to=e.target.value; renderFO();}; }
+  let rseries = filterRange(FO.map(r=>{const f=r.oi&&r.oi.FII?r.oi.FII.futIdx:null; return {d:r.date, v: (f&&f[1])? f[0]/f[1] : null};}).filter(p=>p.v!=null), foRatioRange, foRatioCustom);
+  $('foRatioChart').innerHTML = dualChart('foRatioChart', rseries, {baseline:false, color:'#2563eb', label:'L/S ratio', fmt:v=>v.toFixed(2), unit:''});
+  attachHover('foRatioChart');
+
+  // buy/sell table (latest day that has values)
+  $('foDate1').textContent = '('+(lastBS?lastBS.date:'n/a')+')';
+  const names={idxFut:'Index Futures',idxOpt:'Index Options',stkFut:'Stock Futures',stkOpt:'Stock Options'};
+  $('foBS').innerHTML = ['idxFut','idxOpt','stkFut','stkOpt'].map(k=>{const b=bs[k];if(!b)return '';const net=b[0]-b[1];
+    return `<tr class="border-b border-slate-50"><td class="py-1 px-1 font-medium">${names[k]}</td>
+      <td class="text-right px-1 text-slate-500">${fmt(b[0])}</td><td class="text-right px-1 text-slate-500">${fmt(b[1])}</td>
+      <td class="text-right px-1 ${net>=0?'pos':'neg'}">${fmtSigned(net)}</td></tr>`;}).join('');
+
+  // participant OI table (latest day)
+  $('foDate2').textContent = '('+last.date+')';
+  $('foOI').innerHTML = ['FII','DII','Pro','Client'].map(p=>{const o=oi[p];if(!o)return '';
+    const idxNet=foIdx(last, o.futIdx[0]-o.futIdx[1]), stkNet=foStk(last, o.futStk[0]-o.futStk[1]);
+    return `<tr class="border-b border-slate-50"><td class="py-1 px-1 font-medium">${p}</td>
+      <td class="text-right px-1 text-slate-500">${fmt(foIdx(last,o.futIdx[0]))}</td><td class="text-right px-1 text-slate-500">${fmt(foIdx(last,o.futIdx[1]))}</td>
+      <td class="text-right px-1 ${(idxNet||0)>=0?'pos':'neg'}">${fmtSigned(idxNet)}</td>
+      <td class="text-right px-1 ${(stkNet||0)>=0?'pos':'neg'}">${fmtSigned(stkNet)}</td>
+      <td class="text-right px-1 text-slate-500">${fmt(o.totL)}</td><td class="text-right px-1 text-slate-500">${fmt(o.totS)}</td></tr>`;}).join('');
+
+  // day-wise positions table
+  ['foDP','foDI','foDN'].forEach(id=>{const el=$(id); if(el && !el.__wired){el.__wired=true; el.onchange=renderFODaily;}});
+  renderFODaily();
+}
+function renderFODaily(){
+  if(!FO.length) return;
+  const p=$('foDP').value, inst=$('foDI').value, nv=$('foDN').value;
+  const rows=FO.filter(r=>r.oi&&r.oi[p]).slice().reverse();   // newest first
+  const sel=(nv==='all')?rows:rows.slice(0, +nv);
+  $('foDailyLL').textContent = inst==='tot' ? 'no. of contracts' : foLotName();
+  $('foDaily').innerHTML = sel.map(r=>{const o=r.oi[p]; let L,S;
+    if(inst==='futStk'){L=foStk(r,o.futStk[0]);S=foStk(r,o.futStk[1]);}
+    else if(inst==='tot'){L=o.totL;S=o.totS;}
+    else {L=foIdx(r,o.futIdx[0]);S=foIdx(r,o.futIdx[1]);}
+    const net=(L==null||S==null)?null:L-S, tot=(L||0)+(S||0), lp = tot? Math.round(L/tot*100) : null;
+    const ratio = lp==null ? '·' : `<span class="${lp>=50?'pos':'text-slate-500'}">${lp}</span>:<span class="${lp<50?'neg':'text-slate-500'}">${100-lp}</span>`;
+    return `<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="py-1.5 px-3 font-medium text-slate-700">${fmtDate(r.date)}</td>
+      <td class="text-right px-3 text-slate-600">${fmt(L)}</td><td class="text-right px-3 text-slate-600">${fmt(S)}</td>
+      <td class="text-right px-3 font-semibold ${(net||0)>=0?'pos':'neg'}">${fmtSigned(net)}</td>
+      <td class="text-right px-3 font-medium tabular-nums">${ratio}</td></tr>`;}).join('')
+    || '<tr><td colspan="5" class="py-3 px-3 text-slate-400 text-xs">No data for this selection.</td></tr>';
+}
+
+/* ---- F&O Daily / Monthly switch ---- */
+function setupFOView(){
+  const btns=[['daily','Daily'],['monthly','Monthly']];
+  const draw=()=>{
+    $('foViewBtns2').innerHTML = btns.map(([k,l],i)=>
+      `<button data-m="${k}" class="px-4 py-1.5 ${i?'border-l border-slate-200':''} ${foMode===k?'bg-blue-600 text-white':'bg-white text-slate-600 hover:bg-slate-50'}">${l}</button>`).join('');
+    $('foViewBtns2').querySelectorAll('button').forEach(b=>b.onclick=()=>{foMode=b.dataset.m; draw();});
+    $('fo-daily').classList.toggle('hidden',foMode!=='daily');
+    $('fo-monthly').classList.toggle('hidden',foMode!=='monthly');
+    if(foMode==='monthly') renderFOMonthly();
+  };
+  draw();
+}
+// month-end snapshot per month: last trading day's participant OI in each calendar month
+function foMonthlyRows(){
+  const bym={}; FO.forEach(r=>{ if(r.oi&&r.oi.FII) bym[r.date.slice(0,7)]=r; });  // FO is asc -> last wins
+  const monClose={}; MONTHLY.forEach(m=>{ monClose[m.ym]=m.close; });
+  return Object.keys(bym).sort().map(ym=>{
+    const r=bym[ym], oi=r.oi, fi=oi.FII.futIdx, fs=oi.FII.futStk, di=oi.DII?oi.DII.futIdx:null;
+    const nifty = NIFTY[r.date]!=null ? NIFTY[r.date] : (monClose[ym]!=null ? monClose[ym] : null);
+    return { ym, date:r.date, idxNet:foIdx(r, fi[0]-fi[1]), stkNet:foStk(r, fs[0]-fs[1]),
+             ratio: fi[1]? fi[0]/fi[1] : null, diiIdxNet: di? foIdx(r, di[0]-di[1]) : null, nifty };
+  });
+}
+function renderFOMonthly(){
+  const rows=foMonthlyRows();
+  if(!rows.length){ $('foMonBody').innerHTML='<tr><td colspan="6" class="py-4 text-slate-400 text-xs">No F&O data yet.</td></tr>'; $('foMonChart').innerHTML=''; $('foMonCards').innerHTML=''; return; }
+  const mlabel=ym=>{const p=ym.split('-');return MON[+p[1]-1]+' '+p[0];};
+  const last=rows[rows.length-1], prev=rows[rows.length-2];
+  const chg = (prev&&last.idxNet!=null&&prev.idxNet!=null)? last.idxNet-prev.idxNet : null;
+  const card=(t,v,sub,cls)=>`<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">${t}</div><div class="text-lg font-bold ${cls||''}">${v}</div><div class="text-[11px] text-slate-400">${sub||''}</div></div>`;
+  $('foMonCards').innerHTML =
+     card('FII idx-fut · '+mlabel(last.ym), fmtSigned(last.idxNet), 'month-end net '+foLotName(), (last.idxNet||0)>=0?'pos':'neg')
+    +card('MoM change', chg!=null?fmtSigned(chg):'·', 'vs previous month-end', (chg||0)>=0?'pos':'neg')
+    +card('FII long/short', last.ratio!=null?last.ratio.toFixed(2):'·', last.ratio!=null?(last.ratio<1?'net short (bearish)':'net long (bullish)'):'', (last.ratio||0)>=1?'pos':'neg')
+    +card('DII idx-fut', last.diiIdxNet!=null?fmtSigned(last.diiIdxNet):'·', 'month-end net '+foLotName(), (last.diiIdxNet||0)>=0?'pos':'neg');
+  $('foMonViewBtns').innerHTML = [['overlay','Overlay'],['split','Split']].map(([k,l])=>`<button data-v="${k}" class="px-2.5 py-1 rounded font-semibold ${foView===k?'bg-blue-600 text-white':'bg-slate-100 text-slate-600'}">${l}</button>`).join('');
+  $('foMonViewBtns').querySelectorAll('button').forEach(b=>b.onclick=()=>{foView=b.dataset.v; renderFOMonthly();});
+  const series=rows.filter(r=>r.idxNet!=null).map(r=>({d:r.date, v:r.idxNet}));
+  $('foMonChart').innerHTML = dualChart('foMonChart', series, {baseline:true, color:'#b91c1c', areaFill:'#fee2e2', label:'FII idx-fut net', fmt:fmtSigned, unit:foLot==='adj'?'contracts (today’s lots)':'contracts'});
+  attachHover('foMonChart');
+  $('foMonBody').innerHTML = rows.slice().reverse().map(r=>`<tr class="border-b border-slate-50 hover:bg-slate-50">
+    <td class="py-1.5 px-2 font-medium text-slate-700">${mlabel(r.ym)}</td>
+    <td class="text-right px-2 ${(r.idxNet||0)>=0?'pos':'neg'}">${fmtSigned(r.idxNet)}</td>
+    <td class="text-right px-2 ${(r.ratio||0)>=1?'pos':'neg'}">${r.ratio!=null?r.ratio.toFixed(2):'·'}</td>
+    <td class="text-right px-2 ${(r.stkNet||0)>=0?'pos':'neg'}">${fmtSigned(r.stkNet)}</td>
+    <td class="text-right px-2 ${(r.diiIdxNet||0)>=0?'pos':'neg'}">${r.diiIdxNet!=null?fmtSigned(r.diiIdxNet):'·'}</td>
+    <td class="text-right px-2">${r.nifty!=null?Math.round(r.nifty).toLocaleString('en-IN'):'·'}</td></tr>`).join('');
+}
+// Dual chart with two view modes (foView): 'overlay' = primary + Nifty on one plot (dual axes);
+// 'split' = TradingView-style stacked panes (Nifty on top, primary below), shared time axis.
+// opts: {baseline:bool (zero area), color, areaFill, label, fmt, unit}
+const NIFTY_COLOR='#f59e0b';
+function dualChart(cid, series, opts){
+  const n=series.length;
+  if(!n) return '<div class="text-xs text-slate-400 py-8 text-center">No data in this range.</div>';
+  const split = foView==='split';
+  const W=720, H=split?300:240, PL=58, PR=58, PT=14, PB=30;
+  const x=i=>PL+(W-PL-PR)*(n<=1?0:i/(n-1));
+  const vs=series.map(p=>p.v); let mn=Math.min(...vs),mx=Math.max(...vs);
+  if(opts.baseline){ mn=Math.min(0,mn); mx=Math.max(0,mx); }
+  if(mn===mx) mx=mn+1;
+  const nv=series.map(p=>NIFTY[p.d]).filter(v=>v!=null);
+  const nMn=nv.length?Math.min(...nv):0, nMx=nv.length?Math.max(...nv):1;
+  let y, yN, grid='';
+  if(split){
+    const gap=22, avail=H-PT-PB-gap, topH=avail*0.52;
+    const topY0=PT, topY1=PT+topH, botY0=topY1+gap, botY1=H-PB;
+    yN=v=>topY1-(v-nMn)/((nMx-nMn)||1)*(topY1-topY0);
+    y =v=>botY1-(v-mn)/((mx-mn)||1)*(botY1-botY0);
+    for(let k=0;k<=2;k++){const v=nMn+(nMx-nMn)*k/2,yy=yN(v);grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="#f1f5f9"/><text x="${W-PR+4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="${NIFTY_COLOR}" text-anchor="start">${Math.round(v).toLocaleString('en-IN')}</text>`;}
+    for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3,yy=y(v);grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${opts.baseline&&Math.abs(v)<1e-6?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="${opts.color}" text-anchor="end">${opts.fmt(v)}</text>`;}
+    grid+=`<text x="${PL}" y="${(topY0+9).toFixed(1)}" font-size="9" font-weight="600" fill="${NIFTY_COLOR}">NIFTY 50</text><text x="${PL}" y="${(botY0+9).toFixed(1)}" font-size="9" font-weight="600" fill="${opts.color}">${opts.label}</text>`;
+  } else {
+    y =v=>PT+(H-PT-PB)*(1-(v-mn)/((mx-mn)||1));
+    yN=v=>PT+(H-PT-PB)*(1-(v-nMn)/((nMx-nMn)||1));
+    for(let k=0;k<=3;k++){const v=mn+(mx-mn)*k/3,yy=y(v);grid+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="${opts.baseline&&Math.abs(v)<1e-6?'#cbd5e1':'#f1f5f9'}"/><text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="${opts.color}" text-anchor="end">${opts.fmt(v)}</text>`;}
+    for(let k=0;k<=3;k++){const v=nMn+(nMx-nMn)*k/3,yy=yN(v);grid+=`<text x="${W-PR+4}" y="${(yy+3).toFixed(1)}" font-size="9" fill="${NIFTY_COLOR}" text-anchor="start">${Math.round(v).toLocaleString('en-IN')}</text>`;}
+  }
+  let area='';
+  if(opts.baseline){ const yb=y(0); area=`<path d="M ${x(0).toFixed(1)} ${yb.toFixed(1)} `+series.map((p,i)=>'L'+x(i).toFixed(1)+' '+y(p.v).toFixed(1)).join(' ')+` L ${x(n-1).toFixed(1)} ${yb.toFixed(1)} Z" fill="${opts.areaFill||'#fee2e2'}" opacity="0.45"/>`; }
+  const ppath=series.map((p,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(p.v).toFixed(1)).join(' ');
+  let npath=''; series.forEach((p,i)=>{const v=NIFTY[p.d]; if(v==null)return; npath+=(npath?'L':'M')+x(i).toFixed(1)+' '+yN(v).toFixed(1)+' ';});
+  let xl=''; const step=Math.ceil(n/10);
+  series.forEach((p,i)=>{if(i%step)return; xl+=`<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${p.d.slice(2,7)}</text>`;});
+  CHART_STATE[cid]={pts:series.map((p,i)=>({px:x(i),py:y(p.v),pyN:NIFTY[p.d]!=null?yN(NIFTY[p.d]):null,v:p.v,d:p.d,nifty:NIFTY[p.d]})), W,H, label:opts.label, fmt:opts.fmt, unit:opts.unit||'', color:opts.color};
+  const cross=`<line class="cx" x1="0" x2="0" y1="${PT}" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>`;
+  const dot=`<circle class="dt" r="4" fill="${opts.color}" stroke="#fff" stroke-width="1.5" style="display:none"/>`;
+  const dotN=`<circle class="dtN" r="3.5" fill="${NIFTY_COLOR}" stroke="#fff" stroke-width="1.5" style="display:none"/>`;
+  const overlay=`<rect x="${PL}" y="${PT}" width="${(W-PL-PR).toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"/>`;
+  return `<div class="relative">
+    <svg viewBox="0 0 ${W} ${H}" class="w-full block">${grid}${xl}${area}<path d="${npath}" fill="none" stroke="${NIFTY_COLOR}" stroke-width="1.7"/><path d="${ppath}" fill="none" stroke="${opts.color}" stroke-width="2"/>${cross}${dotN}${dot}${overlay}</svg>
+    <div class="tip absolute hidden pointer-events-none -translate-x-1/2 -translate-y-[135%] bg-slate-800 text-white text-[11px] leading-tight px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-10"></div>
+  </div>`;
+}
+function attachHover(cid){
+  const wrap=document.getElementById(cid); if(!wrap)return;
+  const svg=wrap.querySelector('svg'), st=CHART_STATE[cid]; if(!svg||!st||!st.pts.length)return;
+  const tip=wrap.querySelector('.tip'), cross=wrap.querySelector('.cx'), dot=wrap.querySelector('.dt'), dotN=wrap.querySelector('.dtN');
+  const move=e=>{
+    const r=svg.getBoundingClientRect(); if(!r.width)return;
+    const sx=(e.clientX-r.left)/r.width*st.W;
+    let best=0,bd=1e9; for(let i=0;i<st.pts.length;i++){const d=Math.abs(st.pts[i].px-sx); if(d<bd){bd=d;best=i;}}
+    const p=st.pts[best];
+    cross.setAttribute('x1',p.px); cross.setAttribute('x2',p.px); cross.style.display='';
+    dot.setAttribute('cx',p.px); dot.setAttribute('cy',p.py); dot.style.display='';
+    if(p.pyN!=null){ dotN.setAttribute('cx',p.px); dotN.setAttribute('cy',p.pyN); dotN.style.display=''; } else dotN.style.display='none';
+    tip.style.left=(p.px/st.W*100)+'%'; tip.style.top=(Math.min(p.py,p.pyN==null?p.py:p.pyN)/st.H*100)+'%';
+    tip.innerHTML=`<div class="font-semibold">${fmtDate(p.d)}</div><div><span style="color:${st.color}">●</span> ${st.label}: ${st.fmt(p.v)} ${st.unit}</div>`+(p.nifty!=null?`<div><span style="color:${NIFTY_COLOR}">●</span> Nifty: ${Math.round(p.nifty).toLocaleString('en-IN')}</div>`:'');
+    tip.classList.remove('hidden');
+  };
+  svg.addEventListener('mousemove',move);
+  svg.addEventListener('mouseleave',()=>{tip.classList.add('hidden');cross.style.display='none';dot.style.display='none';dotN.style.display='none';});
+}
+
+/* ---------------- tabs ---------------- */
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  $('pane-cash').classList.toggle('hidden', t.dataset.tab!=='cash');
+  $('pane-fo').classList.toggle('hidden', t.dataset.tab!=='fo');
+  $('pane-holdings').classList.toggle('hidden', t.dataset.tab!=='holdings');
+  // lazy-load the embedded holdings page only when its tab is first opened
+  if(t.dataset.tab==='holdings'){ const f=$('shpFrame'); if(!f.src) f.src='./shareholding.html?embed=1'; }
+}));
+// size the holdings iframe to its content so there's no nested scrollbar
+window.addEventListener('message', e=>{ if(e.data&&e.data.sw_embed_height){ $('shpFrame').style.height=(e.data.sw_embed_height+24)+'px'; } });
+load();
+</script>
+</body>
+</html>

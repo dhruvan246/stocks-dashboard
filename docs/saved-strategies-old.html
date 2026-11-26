@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex" />
+<!-- OLD VIEW of saved-strategies.html, kept so the header's New / Old switch has somewhere to go. Frozen copy: fix bugs in saved-strategies.html, not here. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Saved Strategies</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<script src="./bt-names.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./bt-sync.js"></script>
+<script src="./bt-identity.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .pos{color:var(--pos)}.neg{color:var(--neg)}
+  /* .sw-sn (Save serial pill) now lives in theme.css — shared by every page that lists strategies. */
+  /* long strategy names on the KPI tiles stay one tidy line */
+  .sw-stat .sw-d{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  /* Sort arrow via ::after, NOT a text node: theme.js builds each phone card's label from the
+     header's textContent, so an arrow in the DOM would ride along into every card row. */
+  th[data-sort]{cursor:pointer;user-select:none}
+  th[data-sort]:hover{color:var(--text)}
+  th[data-sort][data-dir]::after{font-size:9px;margin-left:3px;vertical-align:1px}
+  th[data-sort][data-dir="asc"]::after{content:"▲"}
+  th[data-sort][data-dir="desc"]::after{content:"▼"}
+  .sortrow{display:none}
+  @media(max-width:640px){ .sortrow{display:flex} }
+  /* Phone card mode (theme.js turns this table into cards ≤640px): every other
+     cell is a "label — value" line, but the first one IS the card's title — a
+     name, a meta line and the filter list stacked together. Squeezed into the
+     59% left over after the "Strategy" label it wraps to a column ~180px wide,
+     so let it span the whole card instead. The empty data-label suppresses the
+     label; cardifyTable only stamps one when the attribute is absent. */
+  @media(max-width:640px){
+    #list table.sw-cardify tbody td:first-child{
+      display:block!important;text-align:left!important;padding:9px 0 10px!important}
+  }
+  /* ☆ + 🗑 now share ONE cell → the phone card shows a single compact, right-aligned
+     action row instead of two lonely full-width icon rows (the old mobile "wtf"). */
+  @media(max-width:640px){
+    #list table.sw-cardify tbody td.sw-actcell{
+      justify-content:flex-end!important;gap:28px!important;padding:6px 2px 8px!important}
+    #list table.sw-cardify tbody td.sw-actcell button{font-size:20px;line-height:1;padding:2px}
+  }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
+    <h1 class="text-xl md:text-2xl font-bold text-slate-900">Saved Strategies</h1>
+    <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
+  </div>
+  <p class="text-xs text-slate-500 mb-4">Strategies you saved, ranked by survivorship-free CAGR. Click a strategy to open its page — live picks, backtests &amp; rewind live there. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
+  <div id="ssStats" class="hidden grid-cols-2 lg:grid-cols-4 gap-3 mb-4"></div>
+  <div class="flex items-center gap-1.5 mb-3 flex-wrap">
+    <div class="flex items-center gap-1.5 sw-strip min-w-0">  <!-- phone: the four tabs on one scrolling line (2026-10-13) -->
+    <button id="tabBest" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> Best return</button>
+    <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/></svg> New</button>
+    <button id="tabCustom" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg> Custom period</button>
+    <button id="tabFav" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favourites</button>
+    </div>
+    <!-- Membership (universe) picker — applies to EVERY tab: pick Nifty 500 and the list shows only
+         Nifty-500 strategies, pick F&O and only F&O ones. Options are built from the universes the
+         saved strategies actually use, with per-tab counts. -->
+    <div id="uniRow" class="flex items-center gap-1.5 w-full sm:w-auto sm:ml-auto">
+      <label for="uniSel" class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Membership</label>
+      <select id="uniSel" title="Show only strategies built on this universe" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold"></select>
+    </div>
+  </div>
+  <!-- Best-return market-cycle presets (shown only on the Best-return tab). Results are precomputed and
+       stored as a Supabase snapshot, so clicking a wave loads instantly. -->
+  <div id="waveRow" class="hidden items-center gap-2 flex-wrap mb-3 sw-strip">
+    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Best return over</span>
+    <button data-preset="w1" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Wave 1 <span class="opacity-60">Mar’20–Sep’21</span></button>
+    <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Wave 2 <span class="opacity-60">Mar’23–Sep’24</span></button>
+    <button data-preset="w3" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Wave 3 <span class="opacity-60">Mar’26–date</span></button>
+    <button data-preset="cycle" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg> Entire cycle <span class="opacity-60">Mar’20–date</span></button>
+    <!-- 📈 Today's topper — the one preset that is NOT a baked window: it ranks every strategy by what
+         it is doing right now, on the basket it actually holds, so it computes on click. -->
+    <button data-preset="live" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Today’s topper <span class="opacity-60">live</span></button>
+    <span id="waveSnapInfo" class="text-[11px] text-slate-400 ml-auto"></span>
+    <button id="liveRefresh" class="hidden text-[11px] font-semibold text-indigo-600 hover:underline">↻ Refresh quotes</button>
+    <button id="waveUpdate" class="hidden text-[11px] font-semibold text-indigo-600 hover:underline">↻ Update snapshot</button>
+  </div>
+  <!-- Custom-period compare bar: pick any window, hit Compute → every strategy runs a real backtest over
+       exactly that window and the list re-sorts best-first by that window's CAGR. -->
+  <div id="customBar" class="hidden items-center gap-2.5 flex-wrap bg-white border border-slate-200 rounded-lg px-3 py-2.5 mb-3">
+    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Custom window</span>
+    <input id="cFrom" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/>
+    <span class="text-slate-400">→</span>
+    <input id="cTo" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/>
+    <label class="text-[11px] font-semibold text-slate-500 ml-1">Stocks
+      <input id="cTopN" type="number" min="1" max="50" placeholder="saved" title="Qualifying count (Top-N) to force on every strategy. Leave blank to use each strategy's own saved count." class="ml-1 border border-slate-300 rounded-lg px-2 py-1.5 text-sm w-20"/>
+    </label>
+    <button id="cCompute" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700">Compute</button>
+    <span id="cProgress" class="text-[11px] text-slate-400">pick a range (and optionally a stock count) and hit Compute — each strategy runs a real backtest over exactly this window</span>
+    <div class="w-full h-1 bg-slate-100 rounded overflow-hidden"><div id="cBar" class="h-full bg-indigo-500 transition-all" style="width:0%"></div></div>
+  </div>
+  <div id="status" class="text-xs text-slate-500 mb-3"></div>
+  <!-- Phone-only sort control: ≤640px theme.js reflows the table into cards and hides the
+       <thead>, so the clickable column headers vanish with it. Same columns, same state. -->
+  <div id="sortRow" class="sortrow items-center gap-2 mb-2"></div>
+  <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  <!-- shown only under 📈 Today's topper — says exactly what the two live numbers are measured on -->
+  <p id="liveFoot" class="hidden text-[11px] text-slate-400 mt-3 leading-relaxed">Both numbers are measured on the basket each strategy <b>actually holds</b> — the top-N its rule screened at its last month-end rebalance — not on today's screen. <b>Today</b> is the equal-weight move of those stocks from yesterday's close to the live price (Yahoo NSE, ~15-min delay), and reads “—” until quotes arrive; <b>Since reb.</b> runs from their entry prices on the rebalance date. Same maths, same code as the <a href="./all-picks.html" class="text-indigo-600 hover:underline">🎯 All Picks</a> board, where each basket's stocks are listed one by one.</p>
+</main>
+
+<!-- Lightweight "computing" overlay for the custom-period compare (determinate, not a spinner: the
+     count/bar advance each time a strategy finishes — a spinner can't animate through simulate()'s
+     synchronous blocks anyway). -->
+<!-- Owner's "what to bake" chooser (opened by ↻ Update snapshot): baking everything takes long, so the
+     owner can bake only the strategies that have no result yet, or only the membership on screen. -->
+<div id="bakeDlg" class="hidden fixed inset-0 z-50 bg-slate-900/30 flex items-start justify-center pt-24 px-4">
+  <div class="bg-white shadow-xl rounded-xl border border-slate-200 p-4 w-full max-w-sm" role="dialog" aria-modal="true" aria-labelledby="bakeTtl">
+    <div id="bakeTtl" class="text-sm font-bold text-slate-800 mb-1">Update snapshot</div>
+    <div class="text-[11px] text-slate-500 mb-3">Choose what to recalculate. Everything else keeps the results it already has.</div>
+    <div id="bakeOpts" class="flex flex-col gap-2"></div>
+    <div class="text-right"><button id="bakeCancel" class="mt-3 text-xs font-semibold text-slate-500 hover:underline">Cancel</button></div>
+  </div>
+</div>
+<div id="cOverlay" class="hidden fixed inset-0 z-40 bg-slate-900/25 backdrop-blur-[1px] flex items-start justify-center pt-32 pointer-events-none">
+  <div class="bg-white shadow-xl rounded-xl border border-slate-200 px-5 py-4 text-center w-72">
+    <div class="text-2xl mb-1 text-slate-400"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg></div>
+    <div id="cOvText" class="text-sm font-semibold text-slate-800">Computing…</div>
+    <div class="w-full h-1.5 bg-slate-100 rounded overflow-hidden mt-2.5"><div id="cOvBar" class="h-full bg-indigo-500 transition-all" style="width:0%"></div></div>
+    <div id="cOvNote" class="text-[11px] text-slate-400 mt-1.5">running a real backtest for each strategy</div>
+  </div>
+</div>
+
+
+<!-- Today's Picks modal -->
+<div id="modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm overflow-y-auto p-3 sm:p-6">
+  <div class="max-w-5xl mx-auto card shadow-2xl">
+    <div class="flex items-start justify-between gap-3 p-4 border-b border-slate-200">
+      <div>
+        <h2 id="mTitle" class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">Today's Picks</h2>
+        <p id="mSub" class="text-[11px] text-slate-500 mt-0.5"></p>
+      </div>
+      <button id="mClose" class="text-slate-400 hover:text-slate-700 text-xl leading-none px-1">×</button>
+    </div>
+    <div class="p-4 space-y-4">
+      <!-- controls -->
+      <div class="flex flex-wrap items-end gap-3">
+        <div><label class="block text-[11px] font-semibold text-slate-500 mb-1">As of date</label><input id="mDate" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/></div>
+        <div><label class="block text-[11px] font-semibold text-slate-500 mb-1">Capital ₹</label><input id="mCap" type="number" value="100000" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm w-32"/></div>
+        <button id="mRefresh" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700">↻ Refresh / Re-allocate</button>
+        <button id="mLive" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-rose-600 text-white hover:bg-rose-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Go Live</button>
+        <button id="mLiveCfg" class="text-slate-400 hover:text-slate-700 text-base px-1" title="Set live-feed Worker URL"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button id="mCsv" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download CSV</button>
+        <span id="mSort" class="text-[11px] text-slate-400 ml-auto"></span>
+      </div>
+      <div id="mFilters" class="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2"></div>
+
+      <!-- hold calculator -->
+      <div class="bg-violet-50 border border-violet-200 rounded-lg px-3 py-2.5 flex flex-wrap items-end gap-3">
+        <span class="text-xs font-semibold text-violet-700">Hold (buy once, no churn)</span>
+        <div><label class="block text-[10px] text-slate-500 mb-0.5">From</label><input id="hFrom" type="date" class="border border-slate-300 rounded px-2 py-1 text-xs"/></div>
+        <div><label class="block text-[10px] text-slate-500 mb-0.5">To</label><input id="hTo" type="date" class="border border-slate-300 rounded px-2 py-1 text-xs"/></div>
+        <button id="hCompute" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-violet-600 text-white hover:bg-violet-700"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Compute hold</button>
+        <span id="hOut" class="text-[11px] text-slate-600"></span>
+      </div>
+
+      <!-- summary -->
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="text-[11px] text-slate-500">Deployed</div><div id="sDeployed" class="text-lg font-bold text-slate-900">—</div></div>
+        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="text-[11px] text-slate-500">Cash remaining</div><div id="sCash" class="text-lg font-bold text-slate-900">—</div></div>
+        <div class="bg-slate-50 rounded-lg p-3 text-center"><div class="text-[11px] text-slate-500">Qualifying / Top-N</div><div id="sQual" class="text-lg font-bold text-slate-900">—</div></div>
+      </div>
+
+      <!-- basket -->
+      <div class="overflow-x-auto tscroll" style="--tscroll-h:26rem">
+        <table class="w-full text-sm">
+          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+            <th class="text-left py-2 pr-2">#</th><th class="text-left pr-3">Symbol</th>
+            <th class="text-right px-2">Chg %</th><th class="text-right px-2">% 52wHi</th><th class="text-right px-2">% 52wLo</th>
+            <th class="text-right px-2">RSI</th><th class="text-right px-2">Close ₹</th><th class="text-right px-2">Live ₹</th><th class="text-right px-2">Day %</th><th class="text-right px-2">Shares</th><th class="text-right px-2">Allocation</th></tr></thead>
+          <tbody id="mBody"></tbody>
+        </table>
+      </div>
+      <p class="text-[11px] text-slate-500"><b>How to use:</b> place LIMIT buy orders for these shares. Allocation totals ≤ capital (whole-share rounding). <b>During market hours (9:15–15:30 IST)</b> the basket auto-refreshes every 60s on the live (~15-min delayed) price — <b>Chg% · %52wHi · %52wLo · RSI · Live ₹ · Day %</b> all update live. <b>After 15:30</b> it shows the <b>official daily close from the bhavcopy</b> (the true last-30-min VWAP close, which no live tick can reproduce). The <i>basket itself</i> is always chosen from the last full close — intraday re-screening isn't possible from a single live tick.</p>
+
+      <!-- also qualifying -->
+      <div id="mAlsoWrap" class="hidden">
+        <button id="mAlsoToggle" class="text-xs font-semibold text-slate-600 hover:text-slate-900">▸ Also qualifying (<span id="mAlsoN">0</span>) — passed filters, ranked below Top-N</button>
+        <div id="mAlso" class="hidden overflow-x-auto tscroll mt-2" style="--tscroll-h:24rem"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="./backtest-engine.js"></script>
+<script src="./live-perf.js"></script>
+<script src="./strategy-hover-card.js"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+let CUR = null;          // currently-open strategy in the modal
+const PERF = {};         // in-memory perf cache keyed by strategy id
+
+const FREQ = { 1: 'Monthly', 3: 'Quarterly', 6: 'Half-yearly', 12: 'Yearly' };
+const SORTL = { changePercent: 'Change % desc', rsi: 'RSI', d52: '% from 52w High', d52_low_pct: '% from 52w Low', indRank: 'Industry rank', mcap: 'Mcap', hist_mcap: 'Hist mcap', profitYoyPct: 'Net Profit Qtr Growth YoY %', profitBase: 'Net Profit (year-ago Q)', profitAccel: 'Profit-growth acceleration', profitTTM: 'Profit growth TTM %', profitStreak: 'Profit-growth streak', postDrift: 'Post-result drift %', composite: 'Quality-Momentum composite', fiiPct: 'FII holding %', fiiChgPp: 'FII holding change QoQ (pp)', diiPct: 'DII holding %', diiChgPp: 'DII holding change QoQ (pp)' };
+
+// PRIVATE strategies live ONLY in this browser (bt_private_strategies / bt_private_history keys):
+// merged into every view, never written to the shared keys, so no sync path can publish them.
+function privStrategies() { return loadLS('bt_private_strategies').map(s => Object.assign({}, s, { _priv: true })); }
+function strategies() {
+  const priv = privStrategies();
+  if (!priv.length) return loadLS('bt_strategies');
+  const pk = new Set(priv.map(s => identityKey(s.cfg)));   // private wins: hide any shared copy of the same identity
+  return loadLS('bt_strategies').filter(s => !pk.has(identityKey(s.cfg))).concat(priv);
+}
+function clampDate(d, lo, hi) { return d < lo ? lo : d > hi ? hi : d; }
+
+/* ---------- strategy list (Trendlyne-style) ----------
+   Saved Strategies is a flat LIST: one row per UNIQUE strategy (identity = everything except the
+   date window). Click a row to reveal ALL its saved backtests — every window it was ever run over,
+   pulled from the shared Backtest History — each showing its saved CAGR/MaxDD + Picks/Backtest.
+   Any future run of the same strategy lands in History and auto-appears under its row. */
+// identityKey / ruleKey / winKey / bakeGroups now live in bt-identity.js — ONE definition,
+// shared with the CI bake (scripts/bake_full.mjs) so a baked result and its lookup can never drift.
+function windowEnd(c) { return (typeof SF !== 'undefined' && SF && SF.end) ? SF.end : (c.end || 'today'); }
+let HIST = [];                 // shared backtest history — used only to look up each saved window's metrics
+const DETAIL = {};             // id -> {id,name,cfg} for each backtest shown, so Picks/Backtest can resolve it
+// A strategy's backtests are ITS OWN saved windows (the entries you saved), not every visitor's run.
+// Metrics for a window come from the matching history run (same strategy + same start + same method),
+// so a degenerate short-window run by someone else can't inflate a strategy's shown CAGR or its sort.
+function metricsFor(cfg) {
+  const k = identityKey(cfg), wk = winKey(cfg);
+  let best = null;
+  for (const h of HIST) {
+    if (!h.cfg || identityKey(h.cfg) !== k) continue;
+    if (winKey(h.cfg) !== wk) continue;                 // same window + method + stock count
+    if (h.m && h.m.cagr != null && (!best || (h.ts || 0) > (best.ts || 0))) best = h;
+  }
+  return best ? best.m : null;
+}
+// All backtests for a strategy = EVERY history run of it + its saved windows, deduped by window+method.
+// A new backtest you run (saved to History) — ANY window, including short ones — shows up here
+// automatically. No min-length filter: the headline CAGR uses the LONGEST window (canonicalCagr), so a
+// short run adds a card + bumps the count but can't inflate the headline or the sort.
+function backtestsFor(savedVars, sidSet) {
+  if (!savedVars.length) return [];
+  const k = identityKey(savedVars[0].cfg), byWin = new Map();
+  const consider = (id, c, name, m, ts) => {
+    const wk = winKey(c);                                         // window + method + stock count
+    const score = (m && m.cagr != null ? 1e15 : 0) + (ts || 0);   // prefer entries WITH metrics, then newest
+    const prev = byWin.get(wk);
+    if (!prev || score > prev._score) byWin.set(wk, { id, cfg: c, name, m: m || {}, _score: score });
+  };
+  // A run belongs here if it carries this strategy's id (sid — stamped on runs launched from the
+  // strategy page; survives ✏️ edits of the config) OR its config matches the identity (legacy runs).
+  // Both paths must also match this row's STOCK COUNT — the sid survives a ✏️ edit of topN, so without
+  // the guard a run re-launched at 200 stocks would list itself under the top-5 row.
+  const n0 = savedVars[0].cfg.topN != null ? savedVars[0].cfg.topN : '';
+  const sameN = c => (c.topN != null ? c.topN : '') === n0;
+  for (const h of HIST) if (h.cfg && sameN(h.cfg) && ((h.sid && sidSet && sidSet.has(h.sid)) || identityKey(h.cfg) === k)) consider(h.id, h.cfg, h.label || h.name, h.m, h.ts);
+  for (const v of savedVars) consider(v.id, v.cfg, v.name, metricsFor(v.cfg), v.ts);   // safety net for saved windows
+  return [...byWin.values()].sort((a, b) => (a.cfg.start || '').localeCompare(b.cfg.start || '') || (a.cfg.method || '').localeCompare(b.cfg.method || '') || ((a.cfg.topN || 0) - (b.cfg.topN || 0)));
+}
+// Headline CAGR for the column + sort = this strategy's LONGEST-window run, so a short lucky window
+// can't inflate it. (Stock counts are their own rows since 2026-08-03, so there are no longer variants
+// to reconcile here — every run in `list` is the same rule at the same count.)
+function canonicalCagr(list) {
+  let best = null;                                         // longest window wins; equal windows → higher CAGR
+  for (const b of list) {
+    const m = b.m || {}, c = b.cfg; if (m.cagr == null) continue;
+    const dur = (c.start && c.end) ? (Date.parse(c.end) - Date.parse(c.start)) : 0;
+    if (!best || dur > best.dur || (dur === best.dur && m.cagr > best.cagr)) best = { dur, cagr: m.cagr };
+  }
+  return best ? best.cagr : -Infinity;
+}
+function detailCard(b) {
+  const c = b.cfg, m = b.m || {};
+  DETAIL[b.id] = { id: b.id, name: b.name, cfg: c };
+  const cagr = (m.cagr != null) ? `<span class="font-bold ${m.cagr >= 0 ? 'pos' : 'neg'}">${pct(m.cagr)}</span>` : '<span class="text-slate-400">—</span>';
+  const dd = (m.maxDD != null) ? `<span class="font-bold neg">-${(+m.maxDD).toFixed(1)}%</span>` : '<span class="text-slate-400">—</span>';
+  const fin = (m.finalV != null) ? `₹1L → ${fmtINR(m.finalV)}` : '&nbsp;';
+  const meth = c.method ? `<span class="text-[10px] font-semibold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5 ml-1">${c.method === 'hold' ? 'hold' : 'reset'}</span>` : '';
+  const nTag = c.topN != null ? `<span class="text-[10px] font-semibold text-indigo-600 bg-indigo-50 rounded px-1.5 py-0.5 ml-1">top-${c.topN}</span>` : '';
+  return `<div class="bg-white border border-slate-200 rounded-lg p-3" data-variant="${esc(b.id)}">
+    <div class="text-[11px] font-semibold text-slate-700">${esc(c.start)} → ${esc(windowEnd(c))}${nTag}${meth}</div>
+    <div class="flex items-center justify-between mt-1.5">
+      <div class="text-sm">CAGR: ${cagr}</div>
+      <div class="text-sm">MaxDD: ${dd}</div>
+    </div>
+    <div class="text-[10px] text-slate-400 mt-0.5">${fin}</div>
+    <div class="grid grid-cols-2 gap-2 mt-2">
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-blue-600 text-white hover:bg-blue-700" data-picks="${esc(b.id)}"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Today's Picks</button>
+      <button class="px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-800 text-white hover:bg-slate-900" data-bt="${esc(b.id)}"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Backtest</button>
+    </div>
+  </div>`;
+}
+function loadFavs() { try { return new Set(JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]')); } catch(e) { return new Set(); } }
+function saveFavs(s) { localStorage.setItem('bt_fav_strategies', JSON.stringify([...s])); }
+// Stars saved BEFORE the stock-count split carry the rule-only key, so honour both forms — otherwise
+// every existing favourite silently un-stars itself the day this ships. A legacy star lights up every
+// count of its rule; un-starring clears both forms so the star actually turns off.
+function isFav(favs, c) { return favs.has(identityKey(c)) || favs.has(ruleKey(c)); }
+function toggleFav(k) {
+  const s = loadFavs(), legacy = k.replace(/\|[^|]*$/, '');   // strip the trailing |topN → pre-split key
+  if (s.has(k) || s.has(legacy)) { s.delete(k); s.delete(legacy); } else s.add(k);
+  saveFavs(s); render();
+}
+
+/* ---------- membership (universe) filter — one picker, applies to EVERY tab ----------
+   A strategy's universe lives in cfg as `indexName` ('Nifty 500', '__FNO__', …) OR `mcapFloor`
+   (a turnover bucket) OR neither (all stocks) — the same three shapes stock-backtest.html's Universe
+   dropdown writes. uniKey() flattens those into one comparable string, exactly like uniValue()
+   on strategy-backtest.html. '*' is the sentinel for "every membership" — note '' is already a
+   real universe ("All stocks"), so it can't double as the show-everything value. */
+function uniKey(c) { return c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:' + c.mcapFloor : ''); }
+/* Saved mixes as memberships (2026-11-22, user: "under a new membership … everywhere") — the SAME '__MIX__<label>'
+ * choices All Picks offers, from the Mixer's named mixes (mix_presets_v1, synced through SETTINGS). A mix holds
+ * identityKeys, so membership is the two-form test the stars use. KEEP IN SYNC with all-picks.html. */
+function loadMixes() { try { const v = JSON.parse(localStorage.getItem('mix_presets_v1') || '[]');
+  return Array.isArray(v) ? v.filter(p => p && p.label && Array.isArray(p.sel)) : []; } catch (e) { return []; } }
+const isMixUni = k => k.slice(0, 7) === '__MIX__';
+function mixSet(k) { const m = loadMixes().find(p => p.label === k.slice(7)); return m ? new Set(m.sel) : null; }
+// does this strategy belong to the active membership? (a universe, or a saved mix)
+function inUni(c) { if (UNI === '*') return true;
+  if (isMixUni(UNI)) { const s = mixSet(UNI); return !s || s.has(identityKey(c)) || s.has(ruleKey(c)); }
+  return uniKey(c) === UNI; }
+function uniText(k) { return isMixUni(k) ? k.slice(7) : universeLabel(k.slice(0, 5) === 'mcap:' ? { mcapFloor: +k.slice(5) } : { indexName: k }); }
+// Display order: indices broad-to-narrow, then F&O, then turnover buckets ascending, then All stocks.
+const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', 'Nifty Microcap 250', 'Nifty SME Emerge', '__FNO__'];
+function uniRank(k) {
+  const i = UNI_ORDER.indexOf(k); if (i >= 0) return i;
+  if (k.slice(0, 5) === 'mcap:') return 100 + (+k.slice(5) || 0) / 1e9;
+  return 200;                                              // '' = All stocks, last
+}
+let UNI = localStorage.getItem('bt_uni_filter') || '*';    // sticky across tabs AND visits
+// All Picks adds a '__FAV__' (⭐ favourites) choice to this SHARED key; this page has its own Favourites
+// tab, so fall back to All here. '__MIX__<label>' (a saved mix) is a choice on this page too.
+if (UNI === '__FAV__') UNI = '*';
+// Rebuild the picker from the universes present in `rows` (the CURRENT tab's set, before the universe
+// filter) so each option carries a count that means something on the tab you're looking at. The active
+// pick is always kept selectable even at 0, otherwise the <select> would silently jump to another value.
+function buildUniSelect(rows) {
+  const mixes = loadMixes();
+  // a mix deleted on another device would leave the <select> with no matching value → show all
+  if (isMixUni(UNI) && !mixes.some(m => m.label === UNI.slice(7))) UNI = '*';
+  const counts = new Map();
+  for (const g of rows) { const k = uniKey(g.rep.cfg); counts.set(k, (counts.get(k) || 0) + 1); }
+  if (UNI !== '*' && !isMixUni(UNI) && !counts.has(UNI)) counts.set(UNI, 0);
+  const mixOpts = mixes.map(m => { const s = new Set(m.sel), n = rows.filter(g => s.has(identityKey(g.rep.cfg)) || s.has(ruleKey(g.rep.cfg))).length;
+    return `<option value="${esc('__MIX__' + m.label)}">${esc(m.label)} (${n})</option>`; }).join('');
+  const keys = [...counts.keys()].sort((a, b) => uniRank(a) - uniRank(b) || a.localeCompare(b));
+  $('uniSel').innerHTML = `<option value="*">All memberships (${rows.length})</option>` + mixOpts +
+    keys.map(k => `<option value="${esc(k)}">${esc(uniText(k))} (${counts.get(k)})</option>`).join('');
+  $('uniSel').value = UNI;
+}
+function setUni(v) { UNI = v || '*'; localStorage.setItem('bt_uni_filter', UNI); render(); }
+
+let VIEW = 'best';   // 'best' = Best return (over the selected wave, from snapshot), 'new', 'fav', 'custom'
+const CUSTOM = new Map();   // identityKey -> {cagr, ret, maxDD, finalV, start, end} for the active window (wave or custom)
+let CUSTOM_WIN = null;      // {start,end,topN,wave?} the window CUSTOM currently holds
+let BEST_WAVE = 'w1';       // which market-cycle wave the Best-return tab is showing
+let WAVE_SNAP = null;       // { date, w1:{start,end,topN,results:{idKey:{ret,cagr,maxDD,topN}}}, w2, w3, cycle }
+// True when the list should show per-window RETURN results (Custom tab, or Best tab with a wave loaded).
+function windowMode() { return VIEW === 'custom' || (VIEW === 'best' && CUSTOM_WIN && CUSTOM_WIN.wave && CUSTOM.size > 0); }
+// This row's result in the active window. lookupResult (the stock-count-aware snapshot lookup) and
+// the wave metadata live in strategy-hover-card.js — one definition, shared with All Picks.
+function waveResult(c) { return lookupResult(k => CUSTOM.get(k), c); }
+
+/* ---------- 📈 Today's topper — the live leaderboard ----------
+ * The fifth Best-return preset, and the only one that isn't a baked window: it ranks every saved
+ * strategy by what it is doing RIGHT NOW. Two numbers per strategy, both measured on the basket it
+ * ACTUALLY HOLDS — the top-N its rule screened at its last month-end rebalance, NOT today's screen:
+ *   Today      — equal-weight move of those stocks from yesterday's close to the live quote
+ *   Since reb. — the same stocks from their entry prices on that rebalance date
+ * The maths is ./live-perf.js, the same file the 🎯 All Picks board runs on, so the two pages can't
+ * report different numbers for one strategy on one day.
+ * Computed on click and never baked: a quote is ~15 minutes old at best and meaningless an hour
+ * later. It needs the engine (ensureEngine — ~80 MB, once a day), which is why it isn't the default
+ * preset: the four wave buttons stay instant. */
+const LIVEPERF = new Map();        // identityKey -> {rebDate, n, day, ret, noData} | {skip}
+const LIVEHELD = new Map();        // identityKey -> its held legs [{sym,tkr,entry,live,ret,day}] — see refreshLivePerf
+let LIVE_DATE = '';                // the screen date the baskets above were formed for
+let LIVE_AT = 0;                   // when the quotes were fetched (ms)
+let LIVE_N = 0;                    // how many stocks actually came back quoted
+let LIVE_BUSY = false, LIVE_ERR = '';
+function liveMode() { return VIEW === 'best' && BEST_WAVE === 'live'; }
+function livePerf(c) { return LIVEPERF.get(identityKey(c)) || null; }
+// The line in the preset row: what these numbers are, and how old.
+function liveStampText() {
+  if (LIVE_ERR) return LIVE_ERR;
+  if (LIVE_BUSY) return 'pricing every strategy’s held basket…';
+  if (!LIVEPERF.size) return 'ranked on the basket each strategy holds — click to compute';
+  const at = new Date(LIVE_AT).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  return LIVE_N ? `🟢 live · ${LIVE_N} quotes at ${at}`
+                : `no live quotes — priced at the ${(typeof SF !== 'undefined' && SF) ? SF.end : 'last'} close`;
+}
+// Apply whichever Best-return preset is selected. A wave loads its baked results into CUSTOM;
+// 📈 Today's topper has none, so it clears that window state — windowMode() stays off and the two
+// live columns take the place of the single Return/CAGR one.
+function applyBestWave() {
+  if (BEST_WAVE === 'live') { CUSTOM.clear(); CUSTOM_WIN = null; return true; }
+  return loadWaveIntoCustom(BEST_WAVE);
+}
+async function computeLivePerf(force) {
+  if (LIVE_BUSY) return;
+  if (LIVEPERF.size && !force) return;            // already priced this visit — ↻ Refresh quotes re-runs it
+  const groups0 = [...buildGroups(strategies()).values()];
+  if (!groups0.length) return;
+  LIVE_BUSY = true; LIVE_ERR = ''; render();
+  try {
+    setComputeUI(true, 'Loading market data…', 0, 'pricing the basket each strategy holds');
+    if (!await ensureEngine()) { LIVE_ERR = 'Couldn’t load market data — try again.'; return; }
+    // Price the membership you're LOOKING AT first, so the visible list fills first (same trick as
+    // computeWindow); a stable sort keeps each partition's order.
+    const groups = groups0.slice();
+    if (UNI !== '*') groups.sort((a, b) => inUni(b.rep.cfg) - inUni(a.rep.cfg));
+    // ONE quote fan-out for the union of every strategy's universe — the overlay also splices a
+    // synthetic live bar onto each series, which is what makes priceAt() return the live price.
+    setComputeUI(true, 'Fetching live prices…', 0.04);
+    let live = { n: 0, date: SF.end };
+    try { live = await applyLiveOverlay(groups.map(g => g.rep.cfg), m => setComputeUI(true, m, 0.04)); } catch (e) {}
+    const today = live.date || SF.end;
+    const prog = m => setComputeUI(true, m || 'Loading history…', 0.08);
+    // A yearly strategy's last rebalance can be 12 months back; a rebalance before deepFrom needs the
+    // deep parts, or every basket would come back silently EMPTY (factorsAt has no guard of its own).
+    await ensureHistoryFor(today, prog);
+    lpResetTD();                                  // bars may have just been prepended/appended
+    const rebOf = groups.map(g => lpLastRebalance(g.rep.cfg, today));
+    const earliest = rebOf.filter(Boolean).sort()[0];
+    if (earliest && earliest < today) { await ensureHistoryFor(earliest, prog); lpResetTD(); }
+    const priceOff = dayOff(today);
+    LIVEPERF.clear(); LIVEHELD.clear(); lpResetRows();
+    LIVE_DATE = today;
+    for (let i = 0; i < groups.length; i++) {
+      const cfg = groups[i].rep.cfg, k = identityKey(cfg);
+      setComputeUI(true, `Pricing baskets… ${i + 1}/${groups.length}`, 0.1 + 0.9 * (i / groups.length));
+      await lpYield();                             // yield: the screen below is synchronous and blocking
+                                                    // (lpYield, not setTimeout — a hidden tab throttles timers to ~1/min)
+      // An unbounded universe — or an index we hold no membership snapshot for — would screen all
+      // ~4,400 stocks with every factor family on: minutes per strategy. All Picks skips those too.
+      if (!cfg.indexName || !membersAsOf(cfg.indexName, today)) { LIVEPERF.set(k, { skip: 'universe' }); continue; }
+      if (!rebOf[i]) { LIVEPERF.set(k, { skip: 'notstarted' }); continue; }
+      const rebDate = isoOff(lpSnapTD(dayOff(rebOf[i])));   // a month-end can be a weekend/holiday
+      let heldRows;
+      try { heldRows = lpBasketAt(cfg, rebDate, cfg.topN || 5); }
+      catch (e) { LIVEPERF.set(k, { skip: 'error' }); continue; }
+      const held = heldRows.map(r => lpPriceHold({ sym: r.sym, tkr: r.tkr, entry: r.price }, priceOff, null, true));
+      LIVEHELD.set(k, held);                       // fixed until the next rebalance — see refreshLivePerf
+      // noData is read off the RAW basketAt array — .map() returns a NEW array, which drops the flag.
+      LIVEPERF.set(k, { rebDate, n: held.length, noData: !!heldRows.noData,
+                        day: lpAvg(held, 'day'), ret: lpAvg(held, 'ret') });
+      if (i % 5 === 4) render();                   // stream the leaderboard in as it fills
+    }
+    // `quoted` = quotes that came back; `n` = series that got a synthetic bar spliced on, which is 0
+    // when the daily bin already covers today. Report the quotes — that's what the stamp claims.
+    LIVE_AT = Date.now(); LIVE_N = live.quoted != null ? live.quoted : (live.n || 0);
+  } finally {
+    LIVE_BUSY = false;
+    setComputeUI(false, null, 1);                  // null = leave the Custom tab's own hint text alone
+    render();
+  }
+}
+/* ↻ Refresh quotes. A strategy's basket is FIXED between rebalances, so a refresh needs new quotes
+   and arithmetic — never the minute-long re-screen. It falls back to the full path whenever the
+   stored baskets can't be trusted: no engine yet, nothing priced, the saved list changed under us
+   (a strategy added or deleted has a basket we've never screened), or the screen date has rolled
+   over — past a month-end that moves every monthly strategy's anchor to a NEW basket. */
+async function refreshLivePerf() {
+  if (LIVE_BUSY) return;
+  if (!ENGINE_READY || !LIVEPERF.size) return computeLivePerf(true);
+  const cfgs = [...buildGroups(strategies()).values()].map(g => g.rep.cfg);
+  const keys = cfgs.map(identityKey);
+  if (keys.length !== LIVEPERF.size || keys.some(k => !LIVEPERF.has(k))) return computeLivePerf(true);
+  let rolled = false;                      // the screen date moved on — hand over to the full path
+  LIVE_BUSY = true; LIVE_ERR = ''; render();
+  try {
+    setComputeUI(true, 'Fetching live prices…', 0.2, 'refreshing quotes — the baskets are unchanged');
+    let live = { n: 0, quoted: 0, date: SF.end };
+    try { live = await applyLiveOverlay(cfgs, m => setComputeUI(true, m, 0.5)); } catch (e) {}
+    const today = live.date || SF.end;
+    rolled = today !== LIVE_DATE;
+    if (!rolled) {
+      const priceOff = dayOff(today);
+      for (const [k, held] of LIVEHELD) {
+        const r = LIVEPERF.get(k); if (!r || r.skip) continue;
+        held.forEach(h => lpPriceHold(h, priceOff, null, true));
+        r.day = lpAvg(held, 'day'); r.ret = lpAvg(held, 'ret');
+      }
+      LIVE_AT = Date.now(); LIVE_N = live.quoted != null ? live.quoted : (live.n || 0);
+    }
+  } finally {
+    // Clearing the flag here and re-screening BELOW, not inside the finally: computeLivePerf sets
+    // LIVE_BUSY itself, and calling it from in here would run this block's cleanup over the top of
+    // the run it just started — busy flag off, overlay hidden, mid-flight.
+    LIVE_BUSY = false;
+    if (!rolled) { setComputeUI(false, null, 1); render(); }
+  }
+  if (rolled) await computeLivePerf(true);  // a new session can move every monthly anchor to a new basket
+}
+/* The two live cells for one row. Every "no number" state says WHICH one it is — "in cash" (the
+   screen ran and nothing passed), "no data" (it couldn't run), "not started" (its first rebalance
+   predates the price history) and "—" (no live quote yet) are four different facts, and reporting
+   them all as a dash would assert things we haven't measured. */
+function liveCells(c) {
+  const td = (inner, tip) => `<td class="px-2 py-3 text-right text-sm whitespace-nowrap"${tip ? ` title="${esc(tip)}"` : ''}>${inner}</td>`;
+  const dash = (txt, tip) => td(`<span class="text-slate-300 text-xs">${txt}</span>`, tip);
+  const r = livePerf(c);
+  if (!r) return LIVE_BUSY ? dash('…', 'still pricing') + dash('…', 'still pricing')
+                           : dash('—', 'not priced yet') + dash('—', 'not priced yet');
+  if (r.skip === 'universe') {
+    const t = 'Unbounded universe (all stocks / a turnover floor) — screening it needs a whole-market pass per strategy, so the All Picks board skips it too';
+    return dash('skipped', t) + dash('—', t);
+  }
+  if (r.skip === 'notstarted') {
+    const t = 'Its last rebalance falls before the price history begins — there is no basket to price';
+    return dash('not started', t) + dash('—', t);
+  }
+  if (r.skip === 'error') return dash('—', 'Couldn’t screen this basket') + dash('—', 'Couldn’t screen this basket');
+  if (!r.n) {
+    const t = r.noData ? 'No factor data on ' + r.rebDate + ' — the screen couldn’t run, which is not the same as nothing qualifying'
+                       : 'Nothing passed the filters at the ' + r.rebDate + ' rebalance — the strategy is holding cash';
+    return dash(r.noData ? 'no data' : 'in cash', t) + dash('—', t);
+  }
+  const stocks = r.n + ' stock' + (r.n > 1 ? 's' : '');
+  const day = r.day == null
+    ? dash('—', `No live quote yet for the ${stocks} held since ${r.rebDate}`)
+    : td(`<span class="font-bold ${r.day >= 0 ? 'pos' : 'neg'}">${pct(r.day)}</span>`,
+         `Equal-weight move of the ${stocks} held since the ${r.rebDate} rebalance, from yesterday's close`);
+  const ret = r.ret == null
+    ? dash('—', `No price yet for the ${stocks} held since ${r.rebDate}`)
+    : td(`<span class="font-bold ${r.ret >= 0 ? 'pos' : 'neg'}">${pct(r.ret)}</span>
+          <span class="block text-[10px] text-slate-400 mt-0.5">since ${esc(r.rebDate)} · ${esc(stocks)}</span>`,
+         `The same ${stocks} from their entry prices on ${r.rebDate}`);
+  return day + ret;
+}
+
+/* ---------- per-wave columns (🆕 New tab) ----------
+   The snapshot already holds every strategy's return for ALL FOUR market-cycle windows, so the New
+   tab can show them side by side with no compute and no engine download — the Best-return tab only
+   ever loads one wave at a time. Columns appear only once at least one wave is baked; before the
+   snapshot arrives (early paint) they'd be four empty columns, so they stay off. */
+// WAVE_NAME / WAVE_ICON / WAVE_ORDER / PERIOD_PRESETS, snapFor, snapResult, monLabel and
+// waveColWindow live in strategy-hover-card.js — one definition of what "Wave 1" means on the site.
+function waveColsOn() { return VIEW === 'new' && !!WAVE_SNAP && WAVE_ORDER.some(k => { const w = snapFor(k); return w && w.results; }); }
+// One per-wave return cell: the RETURN over that window (bold, signed), with the run's CAGR, drawdown
+// and stock count riding along in the tooltip so the column stays one line wide.
+function waveCell(key, c) {
+  const r = snapResult(key, c);
+  if (!r || r.ret == null) return `<td class="px-2 py-3 text-right"><span class="text-slate-300 text-xs" title="${esc(WAVE_NAME[key] + ' ' + waveColWindow(key) + ' — ' + waveMissingWhy())}">—</span></td>`;
+  const tip = `${WAVE_NAME[key]} ${waveColWindow(key)} · return ${pct(r.ret)}`
+    + (r.cagr != null ? ` · CAGR ${pct(r.cagr)}` : '')
+    + (r.maxDD != null ? ` · MaxDD -${r.maxDD.toFixed(1)}%` : '')
+    + (r.topN != null ? ` · top-${r.topN}` : '');
+  // Every window carries its annualised rate in brackets (user, 2026-08-27): an absolute +1001%
+  // says nothing about the pace it was made at, and the four windows are different lengths, so
+  // absolutes alone can't be compared across columns. ⚠️ On a window SHORTER than a year the CAGR
+  // is an extrapolation — Wave 3 is ~5 months — so it reads bigger than the money actually made;
+  // that is what the (CAGR …) label is for, and simulate() computes it, we never invent one.
+  const ann = (r.cagr != null) ? ` <span class="text-[11px] font-normal text-slate-500">(CAGR ${pct(r.cagr)})</span>` : '';
+  return `<td class="px-2 py-3 text-right text-sm whitespace-nowrap" title="${esc(tip)}"><span class="font-semibold ${r.ret >= 0 ? 'pos' : 'neg'}">${pct(r.ret)}</span>${ann}</td>`;
+}
+// Load a wave's precomputed results (from the snapshot) into CUSTOM so render() shows them. Returns false if absent.
+function loadWaveIntoCustom(key) {
+  const w = WAVE_SNAP && WAVE_SNAP[key];
+  CUSTOM.clear();
+  if (w && w.results) {
+    for (const k in w.results) CUSTOM.set(k, w.results[k]);
+    CUSTOM_WIN = { start: w.start, end: w.end, topN: w.topN != null ? w.topN : null, wave: key };
+    return true;
+  }
+  CUSTOM_WIN = { start: (PERIOD_PRESETS[key] || {}).from, end: 'date', topN: null, wave: key };   // marker only; no data
+  return false;
+}
+function highlightWave(key) {
+  document.querySelectorAll('.preset').forEach(b => {
+    const on = b.dataset.preset === key;
+    b.classList.toggle('!bg-indigo-600', on); b.classList.toggle('!text-white', on);
+  });
+}
+function setView(v){
+  VIEW = v;
+  const on = 'bg-indigo-600 text-white shadow', off = 'bg-slate-100 text-slate-600 hover:bg-slate-200';
+  $('tabBest').className   = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'best'   ? on : off);
+  $('tabNew').className    = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'new'    ? on : off);
+  $('tabCustom').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'custom' ? on : off);
+  $('tabFav').className    = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'fav'    ? on : off);
+  $('customBar').classList.toggle('hidden', v !== 'custom');
+  $('customBar').classList.toggle('flex',  v === 'custom');
+  $('waveRow').classList.toggle('hidden', v !== 'best');
+  $('waveRow').classList.toggle('flex',  v === 'best');
+  if (v === 'best') {
+    highlightWave(BEST_WAVE);
+    const has = applyBestWave();
+    $('waveSnapInfo').textContent = liveMode() ? liveStampText()
+      : has ? (WAVE_SNAP && WAVE_SNAP.date ? `snapshot ${WAVE_SNAP.date}` : '')
+      : (WAVE_SNAP ? 'this wave not baked' : 'not baked yet — showing full-history CAGR');
+  }
+  render();
+  // Coming back to the tab with 📈 Today's topper still selected re-uses what was already priced
+  // (computeLivePerf is a no-op unless forced), so switching tabs never re-downloads anything.
+  if (liveMode()) computeLivePerf(false);
+}
+/* ---------- year-wise returns + market cycles, shown on hover of the strategy name ----------
+   Moved to strategy-hover-card.js (2026-08-27) so 🎯 All Picks can show the same card. This page
+   keeps only the wiring: scWire hands the module live GETTERS for the two things it reads, so a
+   re-pulled history or a freshly baked snapshot is picked up with nothing to remember; render()
+   calls scRegister per row and scAttach after painting. */
+scWire({ hist: () => HIST, snap: () => WAVE_SNAP });
+// Group saved entries by strategy identity → one entry each; its backtests = its saved windows
+// (dedup by start+method). Also attaches g.list (all runs) and g.cagr (headline full-period CAGR).
+function buildGroups(items) {
+  const groups = new Map();
+  for (const it of items) {
+    const k = identityKey(it.cfg);
+    if (!groups.has(k)) groups.set(k, { rep: it, vars: new Map(), allIds: new Set() });
+    const g = groups.get(k);
+    g.allIds.add(it.id);                                  // every entry id — runs link back by sid
+    if ((it.ts || 0) > (g.rep.ts || 0)) g.rep = it;
+    const vk = winKey(it.cfg);
+    const prev = g.vars.get(vk);
+    if (!prev || (it.ts || 0) > (prev.ts || 0)) g.vars.set(vk, it);
+  }
+  for (const g of groups.values()) { g.list = backtestsFor([...g.vars.values()], g.allIds); g.cagr = canonicalCagr(g.list); }
+  return groups;
+}
+/* ---------- column sorting (every tab) ----------
+ * SORT.key null means "leave the tab's own default order alone" — Best/Custom rank by the
+ * window's return, New by when you saved it. Clicking a header takes over from there; the
+ * key is re-validated on every render because the columns themselves change per tab (the
+ * New tab swaps one CAGR column for four wave ones). */
+let SORT = { key: null, asc: false };
+// The columns this tab is currently showing, in header order.
+function sortCols(wcols, wmode, lmode) {
+  const cols = [{ key: 'name', label: 'Strategy' }];
+  if (lmode) { cols.push({ key: 'live_day', label: 'Today' }); cols.push({ key: 'live_ret', label: 'Since reb.' }); }
+  else if (!wcols) cols.push({ key: 'main', label: wmode ? 'Return' : 'CAGR' });
+  else WAVE_ORDER.forEach(k => cols.push({ key: k, label: WAVE_NAME[k] }));
+  return cols;
+}
+// What the arrow should mark: an explicit sort, else the column the tab's default order uses
+// (New sorts by save time, which is no column at all, so it gets none).
+function effSort() { return SORT.key ? SORT : { key: liveMode() ? 'live_day' : VIEW === 'new' ? null : 'main', asc: false }; }
+function sortValue(g, key) {
+  const c = g.rep.cfg;
+  // 📈 Today's topper: a skipped/not-started/in-cash row has no number at all, so it sinks either
+  // way the arrow points rather than filling the top of the leaderboard with dashes.
+  if (key === 'live_day' || key === 'live_ret') {
+    const r = livePerf(c), v = r ? r[key === 'live_day' ? 'day' : 'ret'] : null;
+    return v == null ? null : v;
+  }
+  if (key === 'main') {
+    if (windowMode()) { const r = waveResult(c); return (r && r.ret != null) ? r.ret : null; }
+    return isFinite(g.cagr) ? g.cagr : null;
+  }
+  const r = snapResult(key, c);                       // w1 / w2 / w3 / cycle
+  return (r && r.ret != null) ? r.ret : null;
+}
+function sortRows(rows) {
+  if (!SORT.key) return rows;                          // tab default already applied
+  const dir = SORT.asc ? 1 : -1;
+  return rows.sort((a, b) => {
+    if (SORT.key === 'name') return String(a.rep.name || '').localeCompare(String(b.rep.name || ''), 'en', { numeric: true, sensitivity: 'base' }) * dir;
+    const x = sortValue(a, SORT.key), y = sortValue(b, SORT.key);
+    // "not in the snapshot yet" is absent, not zero — it sinks either way, so flipping the
+    // arrow never fills the top of the list with dashes.
+    if (x == null && y == null) return 0;
+    if (x == null) return 1;
+    if (y == null) return -1;
+    return (x - y) * dir;
+  });
+}
+function paintSortRow(cols) {
+  const eff = effSort();
+  $('sortRow').innerHTML =
+    '<label for="sortSel" class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Sort</label>' +
+    '<select id="sortSel" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold">' +
+      `<option value=""${SORT.key ? '' : ' selected'}>Default</option>` +
+      cols.map(c => `<option value="${c.key}"${SORT.key === c.key ? ' selected' : ''}>${esc(c.label)}</option>`).join('') +
+    '</select>' +
+    `<button id="sortDir" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold" title="${eff.asc ? 'Ascending' : 'Descending'}">${eff.asc ? '▲' : '▼'}</button>`;
+  $('sortSel').onchange = e => {
+    const k = e.target.value;
+    SORT = k ? { key: k, asc: k === 'name' } : { key: null, asc: false };
+    render();
+  };
+  $('sortDir').onclick = () => {
+    const e2 = effSort();
+    SORT = { key: SORT.key || e2.key, asc: !e2.asc };
+    if (!SORT.key) SORT = { key: null, asc: false };
+    render();
+  };
+}
+function onSortClick(e) {
+  const th = e.target.closest('th[data-sort]'); if (!th) return;
+  const k = th.dataset.sort;
+  // same column toggles; a new one opens A→Z for the name, biggest-first for the numbers
+  if (SORT.key === k) SORT.asc = !SORT.asc; else SORT = { key: k, asc: k === 'name' };
+  render();
+}
+
+// Save serial: DDMMYY + a counter for that day, in save order (oldest = -01). DERIVED from each
+// entry's `ts` rather than stored on it, so it needs no write to the shared list (a whole-array
+// push is what cost 6 strategies on 2026-08-28) and every browser computes the same value. Keyed by
+// IDENTITY so All Picks / the strategy page / the Mixer print the SAME tag — saveSerials() lives in
+// bt-identity.js (one definition, no drift). It is a LABEL, not a sort key — DDMMYY doesn't sort
+// chronologically as text; the table orders by ts/CAGR as before. `items` already private-wins-merged
+// by strategies(), and its private entries carry _priv, so saveSerials reproduces this list unchanged.
+let SERIAL = new Map();
+
+function render() {
+  const items = strategies();
+  SERIAL = saveSerials(items);
+  $('sortRow').innerHTML = '';                        // rebuilt below; stays empty on every empty state
+  const OWNER = !!(window.btSync && btSync.isOwner());   // only the owner sees delete controls
+  // The 📈 Today's topper stamp and its ↻ sit in the preset row, which render() doesn't own — but
+  // they move with the computed numbers, so refresh them on every paint.
+  if (liveMode()) $('waveSnapInfo').textContent = liveStampText();
+  $('liveRefresh').classList.toggle('hidden', !liveMode());
+  $('liveFoot').classList.toggle('hidden', !liveMode());
+  $('uniRow').classList.toggle('hidden', !items.length);   // paired with 'flex' like waveRow/customBar — a bare `hidden` loses to `flex`
+  $('uniRow').classList.toggle('flex', !!items.length);
+  if (!items.length) {
+    $('ssStats').classList.add('hidden'); $('ssStats').classList.remove('grid');
+    $('list').className = '';
+    $('list').innerHTML = `<div class="card p-10 text-center">
+      <div class="text-4xl mb-3">⭐</div>
+      <div class="font-bold text-slate-900 mb-1">No saved strategies yet</div>
+      <p class="text-xs text-slate-500 max-w-md mx-auto mb-5">Build a screen in the strategy builder, run it, and hit “Save as Strategy” — it lands here ranked by survivorship-free CAGR, with live picks and rewind on its own page.</p>
+      <a href="./stock-backtest.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg> Create a strategy</a>
+    </div>`;
+    return;
+  }
+  const groups = buildGroups(items);
+  // At-a-glance strip — computed across ALL strategies (never narrowed by tab or membership).
+  // Metrics come from the world-writable shared history: finite-check every number, esc() every name.
+  {
+    let best = null, newest = null, beat = 0, scored = 0;
+    for (const g of groups.values()) {
+      if (isFinite(g.cagr) && (best == null || g.cagr > best.c)) best = { c: g.cagr, name: g.rep.name, cfg: g.rep.cfg };
+      if (!newest || (g.rep.ts || 0) > (newest.ts || 0)) newest = g.rep;
+      let bb = null;
+      for (const b of g.list) { const m = b.m || {}; if (typeof m.cagr === 'number' && isFinite(m.cagr) && (bb == null || m.cagr > bb.c)) bb = { c: m.cagr, bench: m.benchCagr }; }
+      if (bb && typeof bb.bench === 'number' && isFinite(bb.bench)) { scored++; if (bb.c >= bb.bench) beat++; }
+    }
+    const newestDate = newest && newest.ts ? new Date(newest.ts).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+    $('ssStats').classList.remove('hidden'); $('ssStats').classList.add('grid');
+    $('ssStats').innerHTML =
+      `<div class="sw-stat"><div class="sw-lb">Strategies</div><div class="sw-v">${groups.size}</div><div class="sw-d">${items.length} saved variant${items.length === 1 ? '' : 's'}</div></div>
+       <div class="sw-stat"><div class="sw-lb">Best CAGR</div><div class="sw-v ${best && best.c < 0 ? 'neg' : 'pos'}">${best ? pct(best.c) : '—'}</div><div class="sw-d" title="${best ? 'Code-name: ' + esc(nameWithBasis(best.name, best.cfg)) : ''}">${best ? esc(strategyEnglish(best.cfg)) : 'run a backtest to rank them'}</div></div>
+       <div class="sw-stat"><div class="sw-lb">Beat Nifty 500</div><div class="sw-v ${scored ? (beat >= scored / 2 ? 'pos' : 'neg') : ''}">${scored ? beat + ' / ' + scored : '—'}</div><div class="sw-d">${scored ? 'on each one’s best saved run' : 'no scored runs yet'}</div></div>
+       <div class="sw-stat"><div class="sw-lb">Latest save</div><div class="sw-v" style="font-size:22px">${newestDate}</div><div class="sw-d" title="${newest ? 'Code-name: ' + esc(nameWithBasis(newest.name, newest.cfg)) : ''}">${newest ? esc(strategyEnglish(newest.cfg)) : ''}</div></div>`;
+  }
+  const favs = loadFavs();
+  // sort: 'new' = most-recently-saved; 'custom' = by the computed custom-window CAGR (uncomputed sink to the bottom); else headline CAGR
+  const wmode = windowMode(), lmode = liveMode();
+  const cKey = g => { const r = waveResult(g.rep.cfg); return (r && r.cagr != null) ? r.ret : -Infinity; };
+  // Today's topper's own default order: best move today first, unpriced rows last.
+  const dKey = g => { const r = livePerf(g.rep.cfg); return (r && r.day != null) ? r.day : -Infinity; };
+  let rows = [...groups.values()].sort((a, b) =>
+    lmode          ? (dKey(b) - dKey(a)) :
+    VIEW === 'new' ? ((b.rep.ts || 0) - (a.rep.ts || 0)) :
+    wmode          ? (cKey(b) - cKey(a)) :
+                     (b.cagr - a.cagr));
+  if (VIEW === 'fav') {
+    rows = rows.filter(g => isFav(favs, g.rep.cfg));
+    if (!rows.length) {
+      buildUniSelect(rows);
+      $('list').className = '';
+      $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm">No favourites yet. Click the star on any strategy to add it here.</div>';
+      return;
+    }
+  }
+  // Membership filter — LAST, so the picker's counts describe this tab and the tab's own empty state
+  // ("no favourites yet") still wins over the narrower "none in this membership" one.
+  buildUniSelect(rows);
+  if (UNI !== '*') {
+    const all = rows.length;
+    rows = rows.filter(g => inUni(g.rep.cfg));
+    if (!rows.length) {
+      $('list').className = '';
+      $('list').innerHTML = `<div class="card p-8 text-center text-slate-400 text-sm">No <b>${esc(uniText(UNI))}</b> strategies in this tab.
+        <button id="uniClear" class="text-indigo-600 hover:underline font-semibold">Show all ${all}</button></div>`;
+      $('uniClear').onclick = () => setUni('*');
+      return;
+    }
+  }
+  $('list').className = 'card overflow-x-auto';
+  // The 🆕 New tab REPLACES the CAGR column with each strategy's return in all four market-cycle
+  // windows, straight from the baked snapshot (see waveCell). CAGR is dropped because Full cycle's
+  // bracketed CAGR is the same number for most rows — the headline takes the longest saved run, which
+  // is usually the cycle window. When the snapshot hasn't loaded, wcols is false and the CAGR column
+  // stays, so the tab is never left with no numbers at all. On the other tabs that same <th> carries
+  // the window RETURN, so it must never be dropped there.
+  // <br> in the wave headers — not a block span — because theme.js's mobile card reflow builds each
+  // cell's label from the header text and turns <br> into a space.
+  const wcols = waveColsOn();
+  // The New tab swaps one CAGR column for four wave ones, so a sort carried over from another
+  // tab can name a column that no longer exists — drop back to the tab's own order if so.
+  const COLS = sortCols(wcols, wmode, lmode);
+  if (SORT.key && !COLS.some(c => c.key === SORT.key)) SORT = { key: null, asc: false };
+  const eff = effSort();
+  const dirAttr = k => (eff.key === k ? ` data-dir="${eff.asc ? 'asc' : 'desc'}"` : '');
+  rows = sortRows(rows);
+  paintSortRow(COLS);
+  const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
+    <th data-sort="name"${dirAttr('name')} class="text-left font-semibold px-4 py-2.5">Strategy</th>
+    ${lmode ? `<th data-sort="live_day"${dirAttr('live_day')} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Equal-weight move of the basket the strategy holds, from yesterday's close to the live price">📈 Today<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">since prev close</span></th>
+    <th data-sort="live_ret"${dirAttr('live_ret')} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="The same held basket from its entry prices on the last rebalance date">Since reb.<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">held basket</span></th>` : ''}
+    ${lmode || wcols ? '' : `<th data-sort="main"${dirAttr('main')} class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''}` : 'Return · window') : 'CAGR'}</th>`}
+    ${!lmode && wcols ? WAVE_ORDER.map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc((snapFor(k) && snapFor(k).date) || (WAVE_SNAP && WAVE_SNAP.date) || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
+    <th class="px-2 py-2.5"></th>
+  </tr></thead>`;
+  YRG.clear();
+  const body = rows.map((g, gi) => {
+    const it = g.rep, c = it.cfg;
+    scRegister(it.id, it, g.allIds);                      // hover target → its strategy, for the card
+    const expr = filterExpr(c) || 'no filters';
+    const list = g.list, n = list.length, best = g.cagr;
+    const counts = [...new Set([...g.vars.values()].map(v => v.cfg.topN).filter(v => v != null))].sort((a, b) => a - b);
+    const countLabel = (counts.length ? counts.join('/') : c.topN) + ' stocks';
+    let cagrCell = isFinite(best) ? `<span class="font-bold ${best >= 0 ? 'pos' : 'neg'}">${pct(best)}</span>` : '<span class="text-slate-400">—</span>';
+    if (wmode) {
+      const cr = waveResult(c);
+      cagrCell = cr && cr.cagr != null
+        ? `<span class="font-bold ${cr.ret >= 0 ? 'pos' : 'neg'}">${pct(cr.ret)}</span>
+           <span class="text-[11px] font-normal text-slate-500"> (CAGR ${pct(cr.cagr)})</span>
+           <span class="block text-[10px] text-slate-400 mt-0.5">DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
+        : (CUSTOM_WIN ? `<span class="text-slate-300 text-xs" title="${esc(CUSTOM_WIN.wave ? waveMissingWhy() : 'This strategy hasn’t been run over the chosen window yet — hit Compute.')}">no data</span>`
+                      : '<span class="text-slate-400 text-xs">not computed</span>');
+    }
+    return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-openrow="${esc(it.id)}" title="Open strategy page">
+      <td class="px-4 py-3" data-label="">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0"><svg class="sw-i" style="font-size:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+          <span class="min-w-0">
+            <span class="block font-semibold text-indigo-700 leading-snug"><span data-yrs="${esc(it.id)}" title="Code-name: ${esc(nameWithBasis(it.name, c))}">${esc(strategyEnglish(c))}</span></span>
+            <span class="block text-[11px] text-slate-500 truncate"><span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIAL.get(identityKey(c)) || '—')}</span>${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
+            ${(c.filters || []).length ? `<span class="block text-[11px] text-slate-400 truncate" title="${esc(expr)}">Filters: ${esc(expr)}</span>` : ''}
+          </span>
+        </div>
+      </td>
+      ${lmode ? liveCells(c) : wcols ? WAVE_ORDER.map(k => waveCell(k, c)).join('') : `<td class="px-3 py-3 text-right text-sm whitespace-nowrap">${cagrCell}</td>`}
+      <td class="sw-actcell px-2 py-3 text-center whitespace-nowrap"><button class="text-base leading-none transition align-middle" data-favtoggle="${esc(identityKey(c))}" title="${isFav(favs, c) ? 'Remove from favourites' : 'Add to favourites'}">${isFav(favs, c) ? '<svg class="sw-i" style="color:#f59e0b" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' : '<svg class="sw-i" style="color:#94a3b8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'}</button>${OWNER ? `<button class="text-slate-300 hover:text-red-500 text-sm align-middle ml-3" data-delgroup="${esc(identityKey(c))}" title="Delete strategy"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>` : ''}</td>
+    </tr>`;
+  }).join('');
+  $('list').innerHTML = `<table class="w-full text-sm border-collapse sw-cards">${header}<tbody>${body}</tbody></table>`;
+  // wiring
+  $('list').querySelectorAll('[data-favtoggle]').forEach(b => b.onclick = (e) => {
+    e.stopPropagation(); toggleFav(b.dataset.favtoggle);
+  });
+  scAttach($('list'));   // hover a strategy name → its years + market cycles (strategy-hover-card.js)
+  // Row click opens the strategy page (parameters + run history). Inner buttons (👁, 🎯, ☆, 🗑)
+  // handle their own clicks — don't also navigate when one of them is pressed.
+  $('list').querySelectorAll('[data-openrow]').forEach(tr => tr.onclick = (e) => {
+    if (e.target.closest('button')) return;
+    location.href = './strategy-backtest.html?id=' + encodeURIComponent(tr.dataset.openrow);
+  });
+  $('list').querySelectorAll('[data-delgroup]').forEach(b => b.onclick = (e) => {
+    e.stopPropagation(); const k = b.dataset.delgroup;
+    if (!confirm('Delete this strategy from the saved list?')) return;
+    // two stores: shared (synced) and private (this browser) — never write merged views back to either
+    saveLS('bt_strategies', loadLS('bt_strategies').filter(x => identityKey(x.cfg) !== k));
+    saveLS('bt_private_strategies', loadLS('bt_private_strategies').filter(x => identityKey(x.cfg) !== k));
+    if (window.btSync) btSync.pushStrategies(); render();
+  });
+  $('list').querySelectorAll('[data-bt]').forEach(b => b.onclick = () => {
+    const it = DETAIL[b.dataset.bt] || strategies().find(x => x.id === b.dataset.bt); if (!it) return;
+    // find the matching saved history run for this exact window → its stored result is shown instantly (no re-run)
+    const k = identityKey(it.cfg), wk = winKey(it.cfg); let h = null;
+    for (const x of HIST) { if (x.cfg && identityKey(x.cfg) === k && winKey(x.cfg) === wk && x.m && x.m.cagr != null) { if (!h || (x.ts || 0) > (h.ts || 0)) h = x; } }
+    const saved = h ? { m: h.m, yby: h.yby, label: h.label } : null;
+    // 📈 opens the stored result SNAPSHOT instantly — no 17 MB + 90 MB engine download. If no snapshot
+    // exists yet it falls back to a one-time recompute that caches it, so the next open is instant too.
+    localStorage.setItem('bt_load', JSON.stringify({ cfg: it.cfg, saved, view: 'snapshot' }));
+    location.href = './stock-backtest.html';
+  });
+  $('list').querySelectorAll('[data-picks]').forEach(b => b.onclick = () => openPicks(b.dataset.picks));
+  // eye in the Backtests column → open this strategy's dedicated page (params + run history + per-run eye)
+  $('list').querySelectorAll('[data-open]').forEach(b => b.onclick = (e) => {
+    e.stopPropagation();
+    location.href = './strategy-backtest.html?id=' + encodeURIComponent(b.dataset.open);
+  });
+}
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+/* ---------- live performance (computed lazily, one card at a time) ---------- */
+async function computeAllPerf() {
+  for (const it of strategies()) {
+    await lpYield();                           // yield so the UI stays responsive (timer-free — see live-perf.js)
+    const box = document.querySelector(`[data-perf="${it.id}"]`);
+    if (!box) continue;
+    try {
+      const c = { ...it.cfg };
+      c.start = clampDate(c.start, SF.start, SF.end);
+      c.end = clampDate(c.end, SF.start, SF.end);
+      await ensureHistoryFor(c.start, m => { $('status').textContent = m || ''; });   // pre-2020 windows pull the deep parts once
+      const res = simulate(c);
+      PERF[it.id] = res;
+      box.innerHTML = `<div class="text-[11px] text-slate-500 mb-1">Backtest performance</div>
+        <div class="flex items-center justify-between">
+          <div class="text-sm">CAGR: <span class="font-bold ${res.cagr >= 0 ? 'pos' : 'neg'}">${pct(res.cagr)}</span></div>
+          <div class="text-sm">MaxDD: <span class="font-bold neg">-${res.maxDD.toFixed(2)}%</span></div>
+        </div>
+        <div class="text-[10px] text-slate-400 mt-1">${c.start} → ${c.end} · ₹1L → ${fmtINR(res.finalV)}</div>`;
+    } catch (e) {
+      box.querySelector('.text-slate-400') && (box.innerHTML = `<div class="text-[11px] text-red-500">Could not compute: ${esc(e.message)}</div>`);
+    }
+  }
+}
+
+/* ---------- custom-period compare: run a REAL backtest for every strategy over one chosen window,
+   then re-sort the list best-first by that window's CAGR (loads the engine on demand, once). ---------- */
+// `note` (optional) is the small grey line under the bar — it names the JOB, which is not always a
+// backtest: 📈 Today's topper prices baskets that were screened once, it doesn't re-run anything.
+function setComputeUI(on, txt, frac, note) {
+  if (note != null) $('cOvNote').textContent = note;
+  $('cOverlay').classList.toggle('hidden', !on);
+  $('cCompute').disabled = on;
+  const w = Math.round((frac || 0) * 100) + '%';
+  $('cBar').style.width = w; $('cOvBar').style.width = w;
+  if (txt != null) { $('cProgress').textContent = txt; $('cOvText').textContent = txt; }
+}
+// Core: backtest EVERY strategy over [from,to] (optional Top-N override). Returns a results object
+// { idKey: {ret,cagr,maxDD,finalV,topN} }. onProgress(done,total) drives the overlay; `sink` (a Map) is
+// filled live for streaming. `existing` pre-seeds already-computed strategies (within-wave RESUME — they
+// are skipped). `onChunk(out)` is awaited after EVERY fresh compute — a single 6-year backtest can take
+// ~40s, so one batch may only finish a handful; saving per-strategy is what guarantees forward progress.
+async function computeWindow(from, to, topN, onProgress, sink, existing, onChunk, only) {
+  let groups = [...buildGroups(strategies()).values()];
+  if (only) groups = groups.filter(only);                      // partial bake: just these strategies
+  // Compute the membership you're LOOKING AT first (results stream in, so the visible list fills
+  // immediately); the rest still run afterwards, so switching membership later isn't blank. Stable
+  // sort keeps each partition's order. No-op for the headless wave bake — UNI is '*' there.
+  if (UNI !== '*') groups.sort((a, b) => inUni(b.rep.cfg) - inUni(a.rep.cfg));
+  const out = existing ? Object.assign({}, existing) : {};
+  let done = 0;
+  if (sink) for (const k in out) sink.set(k, out[k]);
+  await ensureHistoryFor(from);   // no-op for wave presets (Mar'20+); custom pre-2020 windows load the deep parts once
+  for (const g of groups) {
+    const idk = identityKey(g.rep.cfg);
+    done++;
+    if (out[idk]) { if (onProgress) onProgress(done, groups.length); continue; }   // resume: already computed
+    await lpYield();                                           // yield so the overlay can paint before the next (blocking)
+                                                               // backtest — timer-free, so a hidden tab (or the headless CI
+                                                               // bake) isn't throttled to one strategy a minute
+    const cap = g.rep.cfg.capital || 100000;
+    const c = { ...g.rep.cfg, start: from, end: to, capital: cap };
+    if (topN != null) c.topN = topN;
+    try {
+      const res = simulate(c);
+      const row = { ret: (res.finalV / cap - 1) * 100, cagr: res.cagr, maxDD: res.maxDD, finalV: res.finalV, topN: c.topN };
+      out[idk] = row;
+      if (sink) sink.set(idk, row);
+      if (onChunk) { try { await onChunk(out); } catch (e) {} }   // persist after each — batches may only finish a few
+    } catch (e) { /* leave uncomputed */ }
+    if (onProgress) onProgress(done, groups.length);
+  }
+  return out;
+}
+async function computeCustom() {
+  const items = strategies();
+  if (!items.length) { $('cProgress').textContent = 'No saved strategies to compare.'; return; }
+  setComputeUI(true, 'Loading market data…', 0, 'running a real backtest for each strategy');
+  if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data — try again.', 0); return; }
+  const from = clampDate($('cFrom').value || SF.start, SF.start, SF.end);
+  const to   = clampDate($('cTo').value   || SF.end,   SF.start, SF.end);
+  if (from >= to) { setComputeUI(false, 'Pick From earlier than To.', 0); return; }
+  $('cFrom').value = from; $('cTo').value = to;                 // reflect clamping to available data
+  const nRaw = parseInt($('cTopN').value, 10);
+  const topN = (Number.isFinite(nRaw) && nRaw >= 1) ? Math.min(50, nRaw) : null;
+  CUSTOM.clear(); CUSTOM_WIN = { start: from, end: to, topN };
+  await computeWindow(from, to, topN, (done, total) => {
+    setComputeUI(true, `${done}/${total} — this can take a minute…`, done / total);
+    if (done % 3 === 0) render();                               // stream results in as they land
+  }, CUSTOM);
+  setComputeUI(false, `sorted best-first over ${from} → ${to}${topN != null ? ` · top-${topN}` : ' · each strategy’s own stock count'}`, 1);
+  render();
+}
+// PERIOD_PRESETS / WAVE_ORDER: strategy-hover-card.js, loaded above.
+// Which windows a bake run should compute: a comma list of the above; default = the daily set.
+function bakeWaveList() {
+  const raw = new URLSearchParams(location.search).get('waves');
+  if (!raw) return WAVE_ORDER;
+  const want = raw.split(',').map(s => s.trim()).filter(k => PERIOD_PRESETS[k]);
+  return want.length ? want : WAVE_ORDER;
+}
+// Best-return wave click: instant from the snapshot. If a wave has no snapshot yet, the owner can bake it.
+function runPreset(key) {
+  if (key === 'live') {                      // 📈 Today's topper — computed on click, never baked
+    BEST_WAVE = 'live';
+    highlightWave(key);
+    applyBestWave();
+    render();
+    if (LIVEPERF.size) refreshLivePerf(); else computeLivePerf(false);   // a re-click re-quotes rather than showing stale prices
+    return;
+  }
+  if (!PERIOD_PRESETS[key]) return;
+  BEST_WAVE = key;
+  highlightWave(key);
+  const has = loadWaveIntoCustom(key);
+  render();
+  if (!has) {
+    const owner = !!(window.btSync && btSync.isOwner());
+    $('waveSnapInfo').innerHTML = owner
+      ? 'This wave isn’t baked yet — click <b>↻ Update snapshot</b>.'
+      : 'This wave isn’t baked yet.';
+  } else {
+    $('waveSnapInfo').textContent = WAVE_SNAP && WAVE_SNAP.date ? `snapshot ${WAVE_SNAP.date}` : '';
+  }
+}
+/* ---- Partial bake (owner): the full bake below recomputes every wave for every strategy, which takes
+   long. These two modes compute only a SUBSET and merge it into the stored snapshot, leaving every
+   other strategy's result exactly as it is:
+     'missing' — strategies that have no result yet in a wave (e.g. just-saved ones)
+     'uni'     — every strategy of the Membership on screen (universe or saved mix)
+   Each wave is merged into the NEWEST stored snapshot (re-read just before the write), so a daily CI
+   bake that finished meanwhile is not overwritten with this tab's older copy. */
+function bakeMissingKeys() {
+  const waves = bakeWaveList(), miss = new Set();
+  for (const g of buildGroups(strategies()).values()) {
+    const idk = identityKey(g.rep.cfg);
+    if (waves.some(k => !(WAVE_SNAP && WAVE_SNAP[k] && WAVE_SNAP[k].results && WAVE_SNAP[k].results[idk]))) miss.add(idk);
+  }
+  return miss;
+}
+async function bakePartial(mode) {
+  const setMsg = m => { $('waveSnapInfo').textContent = m; };
+  setComputeUI(true, 'Loading market data…', 0, 'running a real backtest for each strategy'); setMsg('Loading market data…');
+  if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data.', 0); setMsg('Couldn’t load market data — try again.'); return false; }
+  const waves = bakeWaveList();
+  let computed = 0, wanted = 0, saved = true;
+  for (let wi = 0; wi < waves.length; wi++) {
+    const key = waves[wi], p = PERIOD_PRESETS[key];
+    const from = clampDate(p.from, SF.start, SF.end);
+    const to   = clampDate(p.to || SF.end, SF.start, SF.end);
+    const cur = (WAVE_SNAP && WAVE_SNAP[key] && WAVE_SNAP[key].results) || {};
+    const only = mode === 'uni' ? g => inUni(g.rep.cfg) : g => !cur[identityKey(g.rep.cfg)];
+    const n = [...buildGroups(strategies()).values()].filter(only).length;
+    wanted += n;
+    if (!n) continue;
+    const out = await computeWindow(from, to, null, (done, total) => {
+      setComputeUI(true, `Baking ${key} — ${done}/${total} strategies…`, (wi + done / total) / waves.length);
+      setMsg(`Baking ${key} ${done}/${total} (${wi + 1}/${waves.length} waves)`);
+    }, null, null, null, only);
+    computed += Object.keys(out).length;
+    let base = null;
+    try { base = await btSync.snapGet('waves'); } catch (e) {}
+    if (!base || typeof base !== 'object') base = (WAVE_SNAP && typeof WAVE_SNAP === 'object') ? Object.assign({}, WAVE_SNAP) : {};
+    const w = base[key] || {};
+    base[key] = Object.assign({ start: from, end: to, topN: null }, w, { results: Object.assign({}, w.results, out) });
+    if (!base.date) base.date = SF.end;
+    let ok = false;
+    try { ok = await btSync.snapSet('waves', base); } catch (e) {}
+    if (!ok) saved = false;
+    WAVE_SNAP = base;
+  }
+  setComputeUI(false, '', 1);
+  setMsg(!saved ? 'Computed, but could not save — try again.'
+       : `updated ${computed}/${wanted} results · snapshot ${WAVE_SNAP && WAVE_SNAP.date || ''}`);
+  if (VIEW === 'best') { highlightWave(BEST_WAVE); applyBestWave(); }
+  render();
+  return saved;
+}
+function openBakeMenu() {
+  const all = buildGroups(strategies()), nAll = all.size;
+  const nMiss = bakeMissingKeys().size;
+  const nUni = UNI === '*' ? 0 : [...all.values()].filter(g => inUni(g.rep.cfg)).length;
+  const opts = [['missing', 'Only strategies with no results yet', nMiss, 'New strategies get their numbers; nothing else is touched. Fastest.']];
+  if (UNI !== '*') opts.push(['uni', 'Only “' + uniText(UNI) + '”', nUni, 'Recalculates every strategy of the Membership picked on this page.']);
+  opts.push(['all', 'Everything', nAll, 'Recalculates every strategy in every window. Slowest.']);
+  $('bakeOpts').innerHTML = opts.map(([m, t, n, d]) =>
+    `<button data-bake="${m}"${n ? '' : ' disabled'} class="text-left border border-slate-200 rounded-lg px-3 py-2 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
+       <div class="text-xs font-semibold text-slate-800">${esc(t)} <span class="text-slate-400 font-normal">(${n})</span></div>
+       <div class="text-[11px] text-slate-500">${esc(d)}</div></button>`).join('');
+  const close = () => $('bakeDlg').classList.add('hidden');
+  $('bakeOpts').querySelectorAll('[data-bake]').forEach(b => b.onclick = () => {
+    close();
+    const m = b.dataset.bake;
+    if (m === 'all') computeAndSaveWaves(false); else bakePartial(m);
+  });
+  $('bakeCancel').onclick = close;
+  $('bakeDlg').onclick = e => { if (e.target === $('bakeDlg')) close(); };
+  $('bakeDlg').classList.remove('hidden');
+}
+/* Compute all waves for every strategy and persist a snapshot to Supabase (bt_snapshots id 'waves') via
+   the public write token in bt-sync.js — no owner secret. Saves INCREMENTALLY after each wave and
+   RESUMES (skips waves already baked for the current data date), so a killed/timed-out bake still makes
+   progress and re-running finishes it. Called by the owner's ↻ button and headless ?bakewaves=1. */
+async function computeAndSaveWaves(headless) {
+  const setOut = m => { let o = $('bakeOut'); if (!o) { o = document.createElement('div'); o.id = 'bakeOut'; document.body.appendChild(o); } o.textContent = m; };
+  const setMsg = m => { $('waveSnapInfo').textContent = m; if (headless) setOut(m); };
+  setComputeUI(true, 'Loading market data…', 0, 'running a real backtest for each strategy'); setMsg('Loading market data…');
+  if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data.', 0); if (headless) setOut('Bake error: market data'); return false; }
+  const today = SF.end;
+  const groupCountAll = buildGroups(strategies()).size;
+  // Bake SESSION: all batches of one CI run share it (?session=<run id>) so they resume each other. A new
+  // run — the next daily bake, or an owner ↻ click — gets a NEW session and recomputes EVERY wave from
+  // scratch. That's deliberate: fundamentals/data fixes change results even when the price data-date
+  // hasn't moved, so a day's bake must never reuse yesterday's numbers.
+  const session = new URLSearchParams(location.search).get('session') || String(Date.now());
+  // Start from the LIVE snapshot so previously-good results stay visible while the new ones bake — a
+  // fresh wave is computed into `pending` and only PROMOTED over `results` once it's complete. So an
+  // interrupted or failed bake never destroys the numbers the page is already serving.
+  const payload = (WAVE_SNAP && typeof WAVE_SNAP === 'object') ? Object.assign({}, WAVE_SNAP) : {};
+  payload.bakeSession = session;
+  const waves = bakeWaveList();                                  // the daily set, or a ?waves= subset of it
+  const freshDone = key => payload[key] && payload[key].sess === session &&
+                           payload[key].results && Object.keys(payload[key].results).length >= groupCountAll;
+  for (let wi = 0; wi < waves.length; wi++) {
+    const key = waves[wi], p = PERIOD_PRESETS[key];
+    if (freshDone(key)) continue;                                // already recomputed in THIS session
+    const from = clampDate(p.from, SF.start, SF.end);
+    const to   = clampDate(p.to || today, SF.start, SF.end);
+    // resume this session's partial work for this wave (kept beside the live results, not over them)
+    const prior = (payload[key] && payload[key].pendingSess === session) ? payload[key].pending : null;
+    const saveChunk = async out => {
+      payload[key] = Object.assign({}, payload[key], { pending: out, pendingSess: session });
+      try { await btSync.snapSet('waves', payload); } catch (e) {}
+      WAVE_SNAP = payload;
+    };
+    const results = await computeWindow(from, to, null, (done, total) => {
+      const frac = (wi + done / total) / waves.length;
+      setComputeUI(true, `Baking ${key} — ${done}/${total} strategies…`, frac);
+      setMsg(`Baking ${key} ${done}/${total} (${wi + 1}/${waves.length} waves)`);
+    }, null, prior, saveChunk);
+    // promote: this wave is complete → it becomes the live results, pending dropped
+    payload[key] = { start: from, end: to, topN: null, results, sess: session };
+    payload.date = today;
+    try { await btSync.snapSet('waves', payload); } catch (e) {}
+    WAVE_SNAP = payload;
+  }
+  const complete = waves.every(freshDone);
+  setComputeUI(false, '', 1);
+  setMsg(complete ? `snapshot ${payload.date}` : `partial snapshot ${payload.date}`);
+  if (headless) setOut(complete ? '✅ Done · waves baked ' + payload.date : 'partial — re-run to finish (' + waves.filter(freshDone).length + '/' + waves.length + ' waves)');
+  if (VIEW === 'best') { highlightWave(BEST_WAVE); applyBestWave(); render(); }
+  return complete;
+}
+
+/* ---------- lazy engine load: the 17 MB + 90 MB market data loads ONLY when Today's Picks needs it,
+   so first-time visitors who just browse the list + open results (👁) never download it. ---------- */
+let ENGINE_READY = false, ENGINE_LOADING = null;
+async function ensureEngine() {
+  if (ENGINE_READY) return true;
+  if (!ENGINE_LOADING) ENGINE_LOADING = loadEngineData(m => { $('status').textContent = m || ''; })
+    .then(() => { ENGINE_READY = true; $('status').textContent = `Survivorship-free data ${SF.start} → ${SF.end} · ${SF.nTot} stocks (${SF.nDead} delisted).`; })
+    .catch(() => { ENGINE_LOADING = null; });
+  await ENGINE_LOADING;
+  return ENGINE_READY;
+}
+
+/* ---------- Today's Picks modal ---------- */
+async function openPicks(id) {
+  const it = DETAIL[id] || strategies().find(x => x.id === id); if (!it) return;
+  CUR = it;
+  $('mTitle').innerHTML = `Today's Picks · ${esc(strategyEnglish(it.cfg))}`;
+  $('mFilters').innerHTML = '<span class="text-slate-500">Loading market data…</span>';
+  $('modal').classList.remove('hidden');
+  if (!await ensureEngine()) { $('mFilters').innerHTML = '<span class="text-amber-600">Couldn’t load market data — try again.</span>'; return; }
+  if (CUR !== it) return;   // user closed or switched while it loaded
+  $('mFilters').innerHTML = `<b>Universe:</b> ${esc(universeLabel(it.cfg))} &nbsp;·&nbsp; <b>Rank:</b> ${SORTL[it.cfg.sortBy] || it.cfg.sortBy} (${it.cfg.dir}) &nbsp;·&nbsp; <b>Filters:</b> ${esc(filterExpr(it.cfg) || 'none')}`;
+  $('mSort').textContent = 'Sort: ' + (SORTL[it.cfg.sortBy] || it.cfg.sortBy);
+  $('mCap').value = it.cfg.capital || 100000;
+  $('mDate').min = SF.start; $('mDate').max = SF.end; $('mDate').value = SF.end;
+  $('hFrom').min = SF.start; $('hFrom').max = SF.end; $('hTo').min = SF.start; $('hTo').max = SF.end;
+  $('hFrom').value = SF.start; $('hTo').value = SF.end; $('hOut').textContent = '';
+  LIVE = null;
+  refreshPicks();
+  // during market hours, auto-go-live and keep it refreshing; after 15:30 the bhavcopy close stands
+  startLive();
+}
+function closeModal() { stopLive(); $('modal').classList.add('hidden'); CUR = null; }
+
+let LAST_BASKET = null, LIVE = null, LIVE_TIMER = null;   // LIVE = {ts, data:{SYM:{ltp,prevClose}}}
+function liveLtp(sym) { return (LIVE && LIVE.data[sym] && LIVE.data[sym].ltp != null) ? LIVE.data[sym].ltp : null; }
+/* NSE continuous session: Mon–Fri 09:15–15:30 IST. Computed from absolute time so it's correct
+   regardless of the viewer's own timezone. Trading holidays aren't excluded — on a holiday the
+   feed just returns the prior close, so the basket stays at its last value (harmless). The official
+   close is the VWAP of the last 30 min and only exists in the evening bhavcopy, never in a live
+   tick — so after 15:30 we stop fetching live and let the (bhavcopy-sourced) daily close stand. */
+function marketOpen() {
+  const d = new Date(Date.now() + 330 * 60000);             // shift epoch into IST
+  const dow = d.getUTCDay(); if (dow === 0 || dow === 6) return false;
+  const mins = d.getUTCHours() * 60 + d.getUTCMinutes();
+  return mins >= 555 && mins <= 930;                         // 09:15 … 15:30 IST
+}
+function stopLive() { if (LIVE_TIMER) { clearInterval(LIVE_TIMER); LIVE_TIMER = null; } }
+// Keep the basket live while the market and the modal are both open; auto-stop at 15:30.
+function startLive() {
+  stopLive();
+  if (!localStorage.getItem('live_worker_url')) return;
+  goLive(true);                                              // always fetch once on modal open
+  if (!marketOpen()) return;                                 // 60s refresh only during market hours
+  LIVE_TIMER = setInterval(() => {
+    if (!CUR || !marketOpen()) { stopLive(); if (CUR) refreshPicks(); return; }
+    goLive(true);
+  }, 60000);
+}
+/* When Go Live is on (and we're viewing "today"), recompute the screen metrics — Chg%, %52wHi,
+   %52wLo, RSI — off the LIVE price instead of the last daily close. The loaded price history is
+   split-adjusted while the live LTP is the raw market price; they differ only by a constant scale,
+   so we map the live print into adjusted space via the raw last close, then reuse the engine math. */
+function liveMetrics(r, ltp) {
+  const tkr = r.tkr, s = SERIES[tkr]; if (!s) return null;
+  const rawLast = META[tkr] && META[tkr].raw; if (!rawLast || !r.price) return null;
+  const off = dayOff(SF.end);
+  const liveAdj = r.price * (ltp / rawLast);                       // live price in the adjusted series' units
+  const lookOff = off - Math.round((CUR.cfg.lookback || 0) * 30.44);
+  const p0 = priceAt(tkr, lookOff);
+  const chg = (p0 && p0 > 0) ? (liveAdj / p0 - 1) * 100 : r.chg;   // return over the strategy's lookback window
+  const hl = hl52(tkr, off);                                       // fold the live print into the 52w high/low
+  const hi = Math.max(hl ? hl.hi : liveAdj, liveAdj), low = Math.min(hl ? hl.low : liveAdj, liveAdj);
+  return { chg, d52: (hi - liveAdj) / hi * 100, d52low: (liveAdj - low) / low * 100, rsi: rsiLive(tkr, off, Math.round(liveAdj * 100)) };
+}
+// Wilder RSI(14), seeded exactly like the engine's rsi14 but with the live print as the most recent close.
+function rsiLive(tkr, off, liveX) {
+  const s = SERIES[tkr]; if (!s) return null;
+  const i = idxLE(s.d, off); if (i < 15) return null;
+  const start = Math.max(1, i - 100), a = [];
+  for (let k = start - 1; k <= i; k++) a.push(s.p[k]);
+  const t = new Date(), today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+  if (SF.end < today) a.push(liveX); else a[a.length - 1] = liveX; // new trading day → append; same day → replace last close
+  const n = 14; let avgG = 0, avgL = 0, k = 1, cnt = 0;
+  for (; k < a.length && cnt < n; k++, cnt++) { const ch = a[k] - a[k - 1]; if (ch > 0) avgG += ch; else avgL -= ch; }
+  avgG /= n; avgL /= n;
+  for (; k < a.length; k++) { const ch = a[k] - a[k - 1]; avgG = (avgG * (n - 1) + (ch > 0 ? ch : 0)) / n; avgL = (avgL * (n - 1) + (ch < 0 ? -ch : 0)) / n; }
+  if (avgG + avgL === 0) return 50;
+  return 100 - 100 / (1 + avgG / (avgL || 1e-9));
+}
+function refreshPicks() {
+  if (!CUR) return;
+  const date = clampDate($('mDate').value || SF.end, SF.start, SF.end);
+  $('mDate').value = date;
+  const cap = +$('mCap').value || 100000;
+  const liveTag = LIVE
+    ? `<span class="text-rose-600 font-semibold">🔴 LIVE</span> · Chg%/52w/RSI off live price · ${LIVE_TIMER ? 'auto-refresh 60s · ' : ''}fetched ${new Date(LIVE.ts).toLocaleTimeString('en-IN')} · Yahoo NSE (~15 min delay)`
+    : 'official daily close (bhavcopy)';
+  $('mSub').innerHTML = `As of ${date} · ${liveTag} · ${SF.nDead} delisted names included`;
+  const ranked = screenAsOf(CUR.cfg, date);
+  const picks = ranked.slice(0, CUR.cfg.topN);
+  // Effective price: live LTP > raw market close (when screening "today") > adjusted close.
+  // The adjusted series level can drift from the market price on stocks with old corporate
+  // actions (it's return-consistent, not level-consistent) — raw is the real ₹ to trade at.
+  const atLatest = date === SF.end;
+  const baseOf = r => (atLatest && META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price;
+  const per = cap / (picks.length || 1); let deployed = 0;
+  const rows = picks.map(r => {
+    const base = baseOf(r);
+    const ltp = liveLtp(r.sym);
+    const px = ltp != null ? ltp : base;
+    const shares = Math.floor(per / px); const alloc = shares * px; deployed += alloc;
+    const row = { ...r, base, px, shares, alloc };
+    if (ltp != null && atLatest) {                       // live: recompute Chg% / %52wHi / %52wLo / RSI off the live price
+      const lm = liveMetrics(r, ltp);
+      if (lm) { row.chg = lm.chg; row.d52 = lm.d52; row.d52low = lm.d52low; row.rsi = lm.rsi; }
+    }
+    return row;
+  });
+  LAST_BASKET = { date, rows };
+  $('sDeployed').textContent = fmtINR(deployed);
+  $('sCash').textContent = fmtINR(cap - deployed);
+  $('sQual').textContent = `${ranked.length} / ${CUR.cfg.topN}`;
+  $('mBody').innerHTML = rows.length ? rows.map((r, i) => {
+    const live = liveLtp(r.sym); const pc = (LIVE && LIVE.data[r.sym]) ? LIVE.data[r.sym].prevClose : null;
+    let displayLive = live;
+    let delta = (live != null && pc) ? (live / pc - 1) * 100 : null;
+    if (live == null) {
+      // Fallback: bhavcopy close + series-based day return (always available, no live feed needed)
+      displayLive = r.base;
+      const s = SERIES[r.tkr];
+      if (s && s.d && s.p && s.p.length >= 2) {
+        const endOff = dayOff(SF.end);
+        const idx = idxLE(s.d, endOff);
+        if (idx >= 1 && s.p[idx] > 0 && s.p[idx - 1] > 0) delta = (s.p[idx] / s.p[idx - 1] - 1) * 100;
+      }
+    }
+    return `<tr class="border-b border-slate-50">
+    <td class="py-1.5 pr-2 text-slate-400">${i + 1}</td>
+    <td class="pr-3 font-semibold">${stockLink(r.sym,'text-indigo-700 hover:underline')}</td>
+    <td class="text-right px-2 ${r.chg >= 0 ? 'pos' : 'neg'}">${pct(r.chg)}</td>
+    <td class="text-right px-2">${r.d52.toFixed(2)}%</td>
+    <td class="text-right px-2">${r.d52low.toFixed(2)}%</td>
+    <td class="text-right px-2">${r.rsi == null ? '—' : r.rsi.toFixed(2)}</td>
+    <td class="text-right px-2">${r.base.toFixed(2)}</td>
+    <td class="text-right px-2 ${live != null ? 'font-semibold text-rose-600' : ''}">${displayLive != null ? displayLive.toFixed(2) : '—'}</td>
+    <td class="text-right px-2 ${delta == null ? 'text-slate-300' : delta >= 0 ? 'pos' : 'neg'}">${delta == null ? '—' : pct(delta)}</td>
+    <td class="text-right px-2 font-semibold">${r.shares}</td>
+    <td class="text-right px-2">${fmtINR(r.alloc)}</td></tr>`;
+  }).join('')
+    : '<tr><td colspan="11" class="py-4 text-center text-slate-400">No stocks qualify on this date.</td></tr>';
+  // also qualifying
+  const also = ranked.slice(CUR.cfg.topN);
+  if (also.length) {
+    $('mAlsoWrap').classList.remove('hidden'); $('mAlsoN').textContent = also.length;
+    $('mAlso').innerHTML = `<table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
+      <th class="text-left py-1 pr-2">#</th><th class="text-left pr-3">Symbol</th><th class="text-right px-2">Chg %</th><th class="text-right px-2">% 52wHi</th><th class="text-right px-2">% 52wLo</th><th class="text-right px-2">RSI</th><th class="text-right px-2">Close ₹</th></tr></thead>
+      <tbody>${also.map((r, i) => `<tr class="border-b border-slate-50"><td class="py-1 pr-2 text-slate-400">${CUR.cfg.topN + i + 1}</td><td class="pr-3 font-medium">${stockLink(r.sym,'text-indigo-700 hover:underline')}</td><td class="text-right px-2 ${r.chg >= 0 ? 'pos' : 'neg'}">${pct(r.chg)}</td><td class="text-right px-2">${r.d52.toFixed(2)}%</td><td class="text-right px-2">${r.d52low.toFixed(2)}%</td><td class="text-right px-2">${r.rsi == null ? '—' : r.rsi.toFixed(2)}</td><td class="text-right px-2">${baseOf(r).toFixed(2)}</td></tr>`).join('')}</tbody></table>`;
+  } else { $('mAlsoWrap').classList.add('hidden'); }
+}
+function downloadCSV() {
+  if (!LAST_BASKET || !LAST_BASKET.rows.length) return;
+  const head = ['Rank', 'Symbol', 'Change%', 'Pct_from_52wHigh', 'Pct_from_52wLow', 'RSI', 'Close', 'Live', 'DayPct', 'Shares', 'Allocation'];
+  const lines = [head.join(',')].concat(LAST_BASKET.rows.map((r, i) => {
+    const live = liveLtp(r.sym); const pc = (LIVE && LIVE.data[r.sym]) ? LIVE.data[r.sym].prevClose : null;
+    const delta = (live != null && pc) ? (live / pc - 1) * 100 : null;
+    return [i + 1, r.sym, r.chg.toFixed(2), r.d52.toFixed(2), r.d52low.toFixed(2), r.rsi == null ? '' : r.rsi.toFixed(2),
+      (r.base != null ? r.base : r.price).toFixed(2), live == null ? '' : live.toFixed(2), delta == null ? '' : delta.toFixed(2), r.shares, Math.round(r.alloc)].join(',');
+  }));
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `picks_${(CUR ? CUR.name : 'strategy').replace(/[^a-z0-9]+/gi, '_')}_${LAST_BASKET.date}.csv`;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+/* ---------- live feed (via user-deployed Cloudflare Worker) ---------- */
+function setWorkerUrl() {
+  const cur = localStorage.getItem('live_worker_url') || '';
+  const v = prompt('Paste your Cloudflare Worker URL for live quotes.\n(Setup guide: scripts/LIVE_FEED_SETUP.md — looks like https://xxx.workers.dev)', cur);
+  if (v == null) return cur;
+  const t = v.trim();
+  if (t && /^https?:\/\//.test(t)) { localStorage.setItem('live_worker_url', t); return t; }
+  if (t === '') { localStorage.removeItem('live_worker_url'); return ''; }
+  alert('That doesn\'t look like a URL (must start with https://).'); return cur;
+}
+async function goLive(silent) {
+  if (!CUR || !LAST_BASKET) return;
+  let wurl = localStorage.getItem('live_worker_url') || '';
+  if (!wurl) { if (silent) return; wurl = setWorkerUrl(); if (!wurl) return; }
+  const syms = LAST_BASKET.rows.map(r => r.sym);
+  if (!syms.length) { alert('No stocks in the basket to fetch.'); return; }
+  const btn = $('mLive'); const prev = btn.innerHTML; btn.textContent = 'Fetching…'; btn.disabled = true;
+  try {
+    const sep = wurl.includes('?') ? '&' : '?';
+    const res = await fetch(wurl + sep + 'symbols=' + encodeURIComponent(syms.join(',')));
+    if (!res.ok) throw new Error('Worker returned HTTP ' + res.status);
+    const d = await res.json();
+    if (!d || !d.data || !Object.keys(d.data).length) throw new Error('no quotes returned (symbols may be BSE-only, or the source is rate-limiting)');
+    LIVE = { ts: d.asOf || Date.now(), data: d.data };
+    refreshPicks();
+  } catch (e) {
+    if (!silent) alert('Live fetch failed: ' + e.message + '\n\nCheck the Worker URL (⚙ button) and that opening it in a browser returns JSON.\nSee scripts/LIVE_FEED_SETUP.md.');
+    else { const s = $('mSub'); if (s) s.innerHTML += ' · <span class="text-orange-500 text-[10px]">⚠ live: ' + e.message + '</span>'; }
+  } finally { btn.innerHTML = prev; btn.disabled = false; }
+}
+function runHold() {
+  if (!CUR) return;
+  const from = clampDate($('hFrom').value || SF.start, SF.start, SF.end);
+  const to = clampDate($('hTo').value || SF.end, SF.start, SF.end);
+  const cap = +$('mCap').value || 100000;
+  if (from >= to) { $('hOut').textContent = 'Pick From < To.'; return; }
+  const h = computeHold(CUR.cfg, from, to, cap);
+  const cls = h.retPct >= 0 ? 'pos' : 'neg';
+  $('hOut').innerHTML = `Buy ${h.rows.length} on ${from}, hold to ${to}: <b class="${cls}">${pct(h.retPct)}</b> · ${fmtINR(h.startVal)} → <b>${fmtINR(h.endVal)}</b>`;
+}
+
+/* ---------- boot ---------- */
+$('clearAll').onclick = () => { if (confirm('Delete ALL shared strategies for everyone?')) { saveLS('bt_strategies', []); if (window.btSync) btSync.pushStrategies(); render(); } };
+if ($('clearAll') && !(window.btSync && btSync.isOwner())) $('clearAll').style.display = 'none';   // visitors can't clear the shared list
+$('mClose').onclick = closeModal;
+$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
+$('mRefresh').onclick = () => { LIVE = null; refreshPicks(); startLive(); };
+$('mDate').onchange = () => { LIVE = null; stopLive(); refreshPicks(); if ($('mDate').value === SF.end) startLive(); };   // live only when viewing "today" during market hours
+$('mCsv').onclick = downloadCSV;
+$('mLive').onclick = () => { if (marketOpen()) startLive(); else goLive(); };   // manual: keep-live during the session, one-shot snapshot after the close
+$('mLiveCfg').onclick = setWorkerUrl;
+$('hCompute').onclick = runHold;
+$('mAlsoToggle').onclick = () => { const a = $('mAlso'); a.classList.toggle('hidden'); $('mAlsoToggle').innerHTML = $('mAlsoToggle').innerHTML.replace(a.classList.contains('hidden') ? '▾' : '▸', a.classList.contains('hidden') ? '▸' : '▾'); };
+
+/* ---------- ?logpicks=1 — headless daily picks-logger (driven by scripts/log_picks.mjs) ----------
+   For every unique saved strategy: compute TODAY'S top-N picks at the data end-date with entry
+   prices, upsert them into Supabase sw_picks_log (one row per data-day per strategy — the
+   append-only paper-trade memory), then rebuild the full forward-tracking NAV series from the
+   whole log and expose it as window.__SW_TRACK for the driver to save as docs/live_tracking.json.
+   Completion signal (bake-style): a #logpicksOut div whose text ends '✅ LogPicks done' / 'LogPicks error'. */
+function hash36(str){ let h = 5381; for (let i = 0; i < str.length; i++) h = (h * 33 + str.charCodeAt(i)) >>> 0; return h.toString(36); }
+function summarizeCfg(c){ return { sortBy: c.sortBy, dir: c.dir, topN: c.topN, freq: c.freq, indexName: c.indexName || '',
+  mcapFloor: c.mcapFloor || 0, lookback: c.lookback || 1, earnBasis: c.earnBasis || 'con',
+  filters: (c.filters || []).map(f => f.field + ' ' + f.op + ' ' + f.val) }; }
+function buildTracking(logs, byId){
+  const bySid = {};
+  (logs || []).forEach(r => { if (r && r.sid && r.p) (bySid[r.sid] = bySid[r.sid] || []).push(r); });
+  const cfgBySid = {}; Object.keys(byId).forEach(k => cfgBySid['st' + hash36(k)] = byId[k]);
+  const mkey = d => (+d.slice(0, 4)) * 12 + (+d.slice(5, 7) - 1);
+  const niftyDays = new Set(), strats = [];
+  for (const sid of Object.keys(bySid)){
+    const rows = bySid[sid].sort((a, b) => a.day < b.day ? -1 : 1);
+    const freq = Math.max(1, (rows[rows.length - 1].p.f | 0) || 1);   // rebalance every `freq` months
+    let nav = 100, hold = null, lastBucket = -1;
+    const series = [];
+    for (const r of rows){
+      const off = dayOff(r.day);
+      if (hold){ let v = 0; for (const h of hold){ let px = markPrice(h.t, off); if (px == null) px = h.lp; else h.lp = px; v += h.u * px; } nav = v; }
+      const bucket = Math.floor(mkey(r.day) / freq);
+      const picks = r.p.picks || [];
+      if (bucket !== lastBucket && picks.length){                     // rotate into that day's picks at logged prices
+        const per = nav / picks.length;
+        hold = picks.filter(p => p.p > 0).map(p => ({ t: p.t, u: per / p.p, lp: p.p }));
+        lastBucket = bucket;
+      }
+      series.push([r.day, Math.round(nav * 1000) / 1000]);
+      niftyDays.add(r.day);
+    }
+    const last = rows[rows.length - 1];
+    strats.push({ sid, name: last.p.n || 'Strategy', freq, topN: last.p.tn || (last.p.picks || []).length,
+      cfg: cfgBySid[sid] ? summarizeCfg(cfgBySid[sid].cfg) : null,
+      since: rows[0].day, points: series.length, nav: series,
+      ret: Math.round((nav - 100) * 100) / 100,
+      latest: { day: last.day, picks: (last.p.picks || []).map(p => ({ s: p.s, p: p.p })) } });
+  }
+  const niftyPx = {};
+  niftyDays.forEach(d => { const v = nearestNifty(d); if (v) niftyPx[d] = Math.round(v * 100) / 100; });
+  strats.sort((a, b) => b.ret - a.ret);
+  return { updated: (typeof SF !== 'undefined' && SF && SF.end) || '', strategies: strats, niftyPx };
+}
+async function runLogPicks(){
+  const out = document.createElement('div'); out.id = 'logpicksOut';
+  out.style.cssText = 'position:fixed;bottom:8px;left:8px;z-index:99;background:#0f172a;color:#a5f3fc;font:12px monospace;padding:8px 12px;border-radius:8px;max-width:92vw';
+  document.body.appendChild(out);
+  const say = t => { out.textContent = t; console.log('[logpicks]', t); };
+  try {
+    say('waiting for sync layer…');
+    for (let i = 0; i < 150 && !window.swSync; i++) await new Promise(r => setTimeout(r, 200));
+    if (!window.swSync) throw new Error('swSync never loaded');
+    say('loading engine + market data…');
+    await ensureEngine();
+    // Canonical variant per RULE (ruleKey, not identityKey) = longest window. Deliberately rule-level,
+    // not per stock count: the sid logged to sw_picks_log is 'st'+hash36(this key), so switching it to
+    // the split key would orphan every tracking series ever recorded. One rule → one logged basket.
+    const byId = {};
+    for (const s of strategies()){
+      if (!s || !s.cfg) continue;
+      const k = ruleKey(s.cfg);
+      if (!byId[k] || (s.cfg.start || '9999') < (byId[k].cfg.start || '9999')) byId[k] = s;
+    }
+    const ids = Object.keys(byId), day = SF.end;
+    let done = 0, fails = 0;
+    for (const k of ids){
+      const s = byId[k], sid = 'st' + hash36(k);
+      try {
+        const picks = screenAsOf(s.cfg, day).slice(0, s.cfg.topN || 5)
+          .map(r => ({ s: r.sym, t: r.tkr, p: Math.round(r.price * 100) / 100 }));
+        const ok = await swSync.picksSet(day, sid, { n: s.name || 'Strategy', f: s.cfg.freq || 1, tn: s.cfg.topN || 5, picks });
+        if (ok !== true) fails++;
+      } catch (e) { fails++; console.warn('logpicks fail', s && s.name, e); }
+      done++; say('logging picks ' + done + '/' + ids.length + (fails ? ' (' + fails + ' failed)' : ''));
+    }
+    say('rebuilding tracking series from the full log…');
+    const logs = await swSync.picksGet(null, 800);
+    window.__SW_TRACK = buildTracking(logs, byId);
+    say(fails ? 'LogPicks error: ' + fails + '/' + ids.length + ' strategies failed to log' :
+                '✅ LogPicks done — ' + ids.length + ' strategies @ ' + day);
+  } catch (e) { say('LogPicks error: ' + (e && e.message || e)); }
+}
+
+// Wire the tab / preset controls + default the custom window. Split out of boot() so it can
+// run up-front, before any network, so the buttons work the instant the first paint lands.
+function wireUI() {
+  // delegated on #list, whose innerHTML render() replaces wholesale — the listener outlives it
+  $('list').addEventListener('click', onSortClick);
+  $('tabBest').onclick   = () => setView('best');
+  $('tabNew').onclick    = () => setView('new');
+  $('tabCustom').onclick = () => setView('custom');
+  $('tabFav').onclick    = () => setView('fav');
+  $('uniSel').onchange   = () => setUni($('uniSel').value);
+  // default the custom window to 2021-01-01 → today (Compute clamps to the data range)
+  const t = new Date(), today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+  if (!$('cFrom').value) $('cFrom').value = '2021-01-01';
+  if (!$('cTo').value)   $('cTo').value = today;
+  $('cCompute').onclick = () => { document.querySelectorAll('.preset').forEach(b => b.classList.remove('!bg-indigo-600', '!text-white')); computeCustom(); };
+  document.querySelectorAll('.preset').forEach(b => b.onclick = () => runPreset(b.dataset.preset));
+  $('liveRefresh').onclick = () => refreshLivePerf();   // re-quote + re-price; re-screens only if the set moved
+}
+
+(async function boot() {
+  const params = new URLSearchParams(location.search);
+  const headless = params.get('logpicks') || params.get('bakewaves');   // CI modes render no UI
+  const localBefore = loadLS('bt_strategies');                          // snapshot before the shared pull replaces local
+  const localHistBefore = loadLS('bt_history');                         // ditto for history — btSync.pull() overwrites local with the shared array
+  const vParam = params.get('view');
+  const initialView = vParam === 'new' ? 'new' : vParam === 'fav' ? 'fav' : vParam === 'custom' ? 'custom' : 'best';
+
+  // ---- INSTANT FIRST PAINT (before any network) --------------------------------
+  // pullStrategies() persists the shared list to localStorage, so every repeat visit
+  // already has the strategies cached. Render them NOW instead of waiting on the three
+  // Supabase round-trips below — otherwise a cold free-tier DB waking up (several
+  // seconds) leaves the page blank even though we have everything needed to paint.
+  // The background pull then refreshes the list in place. Skipped in headless CI modes.
+  if (!headless) {
+    HIST = localHistBefore.concat(loadLS('bt_private_history'));        // provisional; the shared pull overwrites it (private re-merged after)
+    wireUI();
+    setView(initialView);
+    $('status').textContent = strategies().length ? 'Syncing latest…' : '';
+  }
+
+  if (window.btSync) {
+    try { await btSync.pullStrategies(); } catch (e) {}                 // shared strategy definitions (replaces local with the shared list)
+    try { HIST = await btSync.pull() || []; } catch (e) { HIST = []; }  // shared backtest history (all windows)
+    try { WAVE_SNAP = await btSync.snapGet('waves'); }
+    catch (e) { WAVE_SNAP = null; }
+  } else if (headless) { HIST = localHistBefore; }
+  // One-time migration: the "private strategy" (🔒) feature is removed — publish anything still
+  // sitting in this browser's private store back to the shared list/history so it's visible to
+  // everyone again, then wipe the private store so nothing stays hidden going forward.
+  {
+    const privS = loadLS('bt_private_strategies'), privH = loadLS('bt_private_history');
+    if (privS.length || privH.length) {
+      const shared = loadLS('bt_strategies'), haveS = new Set(shared.map(s => s.id));
+      saveLS('bt_strategies', shared.concat(privS.filter(s => !haveS.has(s.id))));
+      saveLS('bt_private_strategies', []);
+      const sharedH = loadLS('bt_history'), haveH = new Set(sharedH.map(h => h && h.id));
+      const newH = privH.filter(h => h && !haveH.has(h.id));
+      saveLS('bt_history', sharedH.concat(newH));
+      saveLS('bt_private_history', []);
+      HIST = HIST.concat(newH);
+      if (window.btSync) {
+        try { await btSync.pushStrategies(); } catch (e) {}
+        for (const h of newH) { try { await btSync.append(h); } catch (e) {} }
+      }
+    }
+  }
+  // Surface any backtest run recorded on THIS browser that the shared pull didn't return yet (sync lag,
+  // or the DB was paused/unreachable when the run auto-saved). Without this, a window you JUST ran can be
+  // missing from its strategy's expanded list until the shared history catches up. Merge local-only runs
+  // in and re-publish them so they persist for everyone (self-heals a failed earlier append).
+  {
+    const haveH = new Set(HIST.map(h => h && h.id));
+    const histLocalOnly = localHistBefore.filter(h => h && h.id && !haveH.has(h.id));
+    if (histLocalOnly.length) {
+      HIST = HIST.concat(histLocalOnly);
+      saveLS('bt_history', HIST);                                       // re-persist so a paused-DB run survives the pull
+      if (window.btSync) for (const h of histLocalOnly) { try { await btSync.append(h); } catch (e) {} }
+    }
+  }
+  HIST = HIST.concat(loadLS('bt_private_history'));   // private runs (this browser only) — display merge, never synced
+  // Preserve strategies saved locally on THIS browser that the shared list doesn't have (saved while not the
+  // owner, so never published) — otherwise the pull silently drops them and a just-created strategy vanishes.
+  const pulled = loadLS('bt_strategies'); const have = new Set(pulled.map(s => s.id));
+  // Only heal a RECENT save. `localBefore` is read before the pull, so a browser that hasn't synced
+  // since someone deleted a strategy still holds it and would re-publish it — resurrecting it for
+  // everyone. A publish that failed is minutes old; a strategy missing from the shared list days
+  // after it was saved was deleted on purpose, so leave it deleted.
+  const HEAL_WINDOW_MS = 24 * 60 * 60 * 1000;
+  const pKeys = new Set(privStrategies().map(s => identityKey(s.cfg)));   // 🔒 private identities never re-publish
+  const localOnly = localBefore.filter(s => s && s.local && !have.has(s.id)
+    && !pKeys.has(identityKey(s.cfg))
+    && (Date.now() - (s.ts || 0)) < HEAL_WINDOW_MS);
+  if (localOnly.length) { saveLS('bt_strategies', pulled.concat(localOnly)); if (window.btSync) { try { await btSync.pushStrategies(); } catch (e) {} } }   // publish local-only strategies (open list; self-heals an earlier failed publish)
+  if (params.get('logpicks')) { await runLogPicks(); return; }   // headless daily picks-logger — skips the UI
+  if (params.get('bakewaves')) { await computeAndSaveWaves(true); return; }   // headless wave-snapshot baker
+  // ---- refresh paint with the freshly pulled shared data -----------------------
+  wireUI();   // was wired in the early paint too — idempotent .onclick assignments
+  if (window.btSync && btSync.isOwner()) { $('waveUpdate').classList.remove('hidden'); $('waveUpdate').onclick = openBakeMenu; }
+  setView(initialView);   // re-render now that strategies / HIST / WAVE_SNAP reflect the shared pull
+  // Don't eager-load the 17 MB + 90 MB engine — the list + 👁 results work from saved data alone.
+  // Market data loads on demand only when you open Today's Picks (ensureEngine), so first paint is instant.
+  $('status').textContent = strategies().length
+    ? 'Click a strategy to open its page — live picks, backtests, rewind & edit.'
+    : '';
+})();
+</script>
+</body>
+</html>

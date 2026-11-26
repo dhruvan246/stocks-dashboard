@@ -4,6 +4,54 @@
  * remembered per browser (localStorage 'sw_theme') and shared across all pages. */
 (function () {
   'use strict';
+  // ---- New / Old view (user, 2026-11-26): every rebuilt page keeps its previous design as
+  // <page>-old.html. New is the default; the header's New | Old switch stores the choice
+  // (localStorage 'sw_view') and it then applies to every page that has an old copy. ----
+  var OLD_PAGES = 'actions announcements backtest backtest-history bank-credit bull-runs capex chart commodities coverage daily-moves data-checks deals delivery discovery employees fii-dii fill-coverage fno-up3 global ideas index index-chart indices insider insurer-inbox ipos live-tracking macro market-mood monthly-returns movers mutual-funds nse-bse-dashboard options-backtest quarterly-results results-coverage saved-strategies sectors shareholding status stock strategy-mixer strategy-phases volume watchlist'.split(' ');
+  var MKT = { sectors: 1, indices: 1, movers: 1 };
+  function viewPref() { try { return localStorage.getItem('sw_view') === 'old' ? 'old' : 'new'; } catch (e) { return 'new'; } }
+  function viewTwin() {            // -> { cur:'new'|'old', url: the same page in the other view } or null
+    var f = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    var q = new URLSearchParams(location.search), m = /^(.+)-old\.html$/.exec(f), qs;
+    if (m) {
+      if (MKT[m[1]]) { q.set('v', m[1]); return { cur: 'old', url: './markets.html?' + q.toString() + location.hash }; }
+      return { cur: 'old', url: './' + m[1] + '.html' + location.search + location.hash };
+    }
+    var n = f.replace(/\.html$/, '');
+    if (n === 'markets') { var v = q.get('v'); if (!MKT[v]) v = 'sectors'; q.delete('v'); qs = q.toString();
+      return { cur: 'new', url: './' + v + '-old.html' + (qs ? '?' + qs : '') + location.hash }; }
+    if (OLD_PAGES.indexOf(n) >= 0 && !MKT[n]) return { cur: 'new', url: './' + n + '-old.html' + location.search + location.hash };
+    return null;
+  }
+  (function () { var t = viewTwin(); if (t && t.cur === 'new' && viewPref() === 'old') location.replace(t.url); })();
+  function buildViewSwitch(themeBox) {
+    var t = viewTwin(); if (!t || !themeBox || !themeBox.parentNode || document.getElementById('sw-view-switch')) return;
+    var box = document.createElement('div');
+    box.id = 'sw-view-switch'; box.className = 'sw-theme-switch';
+    box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Page design');
+    box.style.marginRight = '6px';
+    [['new', 'New', 'New one-screen design (default)'], ['old', 'Old', 'The previous design of this page']].forEach(function (o) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = o[1]; b.title = o[2];
+      b.setAttribute('aria-pressed', t.cur === o[0] ? 'true' : 'false');
+      b.style.cssText = 'width:auto;padding:0 9px;font-size:12px;font-weight:600';
+      b.addEventListener('click', function () {
+        if (t.cur === o[0]) return;
+        try { localStorage.setItem('sw_view', o[0]); } catch (e) {}
+        location.href = t.url;
+      });
+      box.appendChild(b);
+    });
+    // phones: the header row is already full (logo, Create, Menu, theme) — the switch goes on its own line above the page
+    var mn = document.querySelector('main');
+    if (window.matchMedia && window.matchMedia('(max-width: 767px)').matches && mn && mn.parentNode) {
+      var ln = document.createElement('div'); ln.id = 'sw-view-line';
+      ln.style.cssText = 'display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:8px 14px 0;font-size:12px;color:var(--text-faint)';
+      ln.appendChild(document.createTextNode('Page design')); box.style.marginRight = '0'; ln.appendChild(box);
+      mn.parentNode.insertBefore(ln, mn);
+      return;
+    }
+    themeBox.parentNode.insertBefore(box, themeBox);
+  }
   // ---- inline SVG icon set (Lucide-style 24px strokes) — ONE place, used by the nav,
   // page tabs, footer, bottom bar, theme switch, search palette and the home tiles.
   // Emoji used to sit in these slots; they rendered differently on every OS. ----
@@ -172,6 +220,7 @@
     if (host) { host.appendChild(box); }
     else { box.classList.add('floating'); document.body.appendChild(box); }
     updateUI(document.documentElement.getAttribute('data-theme'));
+    try { buildViewSwitch(box); } catch (e) {}
   }
 
   // =========================================================================
@@ -576,7 +625,7 @@
   function buildSidebar() {
     try {
       if (document.querySelector('.sw-side') || !document.querySelector('header.sw-header')) return;
-      var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+      var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase().replace(/-old\.html$/, '.html');
       var on = function (href) { return href.indexOf('http') !== 0 && href.replace('./', '').toLowerCase() === here; };
       var link = function (it) {
         var ext = it[0].indexOf('http') === 0, a = on(it[0]);
@@ -601,7 +650,7 @@
   function buildNav() {
     var nav = document.querySelector('header nav'); if (!nav) return;
     try {
-      var here = (location.pathname.split('/').pop() || '').toLowerCase();
+      var here = (location.pathname.split('/').pop() || '').toLowerCase().replace(/-old\.html$/, '.html');
       var isActive = function (href) { return href.indexOf('http') !== 0 && href.replace('./', '').toLowerCase() === here; };
       var link = function (it) {
         var href = it[0], icn = it[1], lb = it[2], ext = href.indexOf('http') === 0;
@@ -1019,7 +1068,7 @@
 
   function buildGlossary() {
     if (document.querySelector('.sw-gloss')) return;                 // a page shipping its own stays untouched
-    var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase().replace(/-old\.html$/, '.html');
     if (GLOSS_SKIP.indexOf(here) >= 0) return;
 
     var d = document.createElement('details');
@@ -1177,7 +1226,7 @@
   // =========================================================================
   function buildBottomBar() {
     if (document.querySelector('.sw-bbar')) return;
-    var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase().replace(/-old\.html$/, '.html');
     var inMarkets = NAV_GROUPS[0].items.some(function (it) {
       return it[0].replace('./', '').toLowerCase() === here;
     });
@@ -1430,7 +1479,7 @@
   // =========================================================================
   function buildTabs() {
     try {
-      var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+      var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase().replace(/-old\.html$/, '.html');
       var grp = null;
       PAGE_GROUPS.forEach(function (g) {
         if (!grp && g.tabs.some(function (t) { return t[0].replace('./', '').toLowerCase() === here; })) grp = g;
