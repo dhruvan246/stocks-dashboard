@@ -31350,3 +31350,19 @@ User (after the §250a question): "Yes, pull them".
   20:00 local; a bar with open = high = low = close, or whose high/low do not contain open and close, keeps its close
   only (QSI 3,036 such days, SET 2,491, MOEX 1,287 — Candles start later than Line for those, the page says so).
 - **Licence note:** these are TradingView-delivered exchange data republished on a public page; the user asked for it.
+
+## §250c — Chile IPSA from findic.cl, closes only, nightly (2026-11-26)
+
+User: "add chile from another source".
+
+- **Source:** `https://findic.cl/api/ipsa/<YYYY>` (a Chilean public indicators feed; answers the repo client), one call per
+  year 1989 → now, in `fetch_findic` of `fetch_world_indices.py` (`findic:ipsa`). CLOSE only — the page draws Line and
+  says candles are not available. 9,444 closes 1989-01-02 → 2026-11-25; no weekend dates, no gap over 10 days; the only
+  day moves over 12% are 2008-10-13, 2020-03-16 and 2020-03-18.
+- **Which index:** the headline IPSA. S&P ran it until 2026-08-31, MSCI from 2026-09-01 (press reports read 2026-11-26);
+  the feed is continuous across that date (11,315.26 → 11,386.24). Its 2026-11-25 value 10,416.24 equals Yahoo's
+  `MXIPSAGC.SN` "MSCI IPSA (con dividendos)" that day — the ONLY cell checked against a second source. TradingView's
+  `BCS:MXIPSAPC` (≈5,100, "without dividends", 60 bars) is a different series and is not used.
+- **Not found:** open/high/low for any date. Yahoo holds one bar for `MXIPSAGC.SN`/`MXIPSAPC.SN`, 404 for `^IPSA`;
+  spglobal.com answers 403; Banco Central de Chile's API needs an account.
+- A failed or empty year fails the whole pull (the existing file is kept); today's value is kept only from 20:00 Santiago.

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """World stock indices (one or more per country) for docs/chart.html — daily open/high/low/close, full history.
 
-Sources: China CSI 300 from the index owner (csindex.com.cn) and Vietnam's VN-Index from VNDIRECT's chart feed
-(fetch_csindex / fetch_vndirect below — Yahoo holds no daily history for either); everything else from the
+Sources: China CSI 300 from the index owner (csindex.com.cn), Vietnam's VN-Index from VNDIRECT's chart feed and
+Chile's IPSA (closes only) from findic.cl (fetch_csindex / fetch_vndirect / fetch_findic below — Yahoo holds no daily history for either); everything else from the
 Yahoo Finance chart API, one call per index, the whole daily history Yahoo holds
   https://query1.finance.yahoo.com/v8/finance/chart/<symbol>?period1=<1950>&period2=<now>&interval=1d
 Every index in WORLD below was probed on 2026-11-24; an index Yahoo does not answer for is simply not
@@ -50,7 +50,7 @@ WORLD = [
     ("IBOV", "^BVSP", "Bovespa", "Brazil", ["BOVESPA", "BVSP", "BRAZIL"]),
     ("MEXBOL", "^MXX", "S&P/BMV IPC", "Mexico", ["IPC", "MXX", "MEXICO"]),
     ("MERVAL", "^MERV", "S&P Merval", "Argentina", ["MERV", "ARGENTINA"]),
-    ("IPSA", "^IPSA", "S&P IPSA", "Chile", ["CHILE"]),
+    ("IPSA", "findic:ipsa", "IPSA", "Chile", ["CHILE", "SPIPSA"]),
     # --- Europe
     ("FTSE", "^FTSE", "FTSE 100", "United Kingdom", ["UKX", "UK100", "FTSE100"]),
     ("FTSE250", "^FTMC", "FTSE 250", "United Kingdom", ["MCX250", "FTMC"]),
@@ -202,7 +202,25 @@ def fetch_vndirect(sym):
     return _clean(rows, 7)
 
 
-OTHER = {"csindex": (fetch_csindex, "China Securities Index Co. "), "vndirect": (fetch_vndirect, "VNDIRECT ")}
+def fetch_findic(code):
+    """findic.cl (a Chilean public indicators feed): the IPSA's daily CLOSE only, one call per calendar year, from
+    1989-01-02. Measured 2026-11-26: 9,444 closes, no weekend dates, no gap over 10 days, continuous across the
+    2026-09-01 hand-over from S&P to MSCI (11,315.26 → 11,386.24); its 2026-11-25 value 10,416.24 equals Yahoo's
+    MXIPSAGC.SN (MSCI IPSA with dividends) that day. A year that fails or comes back empty fails the whole pull —
+    a series with a hole is never written. _clean(-8): today's value is kept only from 20:00 Santiago time."""
+    rows, last = [], dt.date.today().year
+    for y in range(1989, last + 1):
+        j = json.loads(_get("https://findic.cl/api/%s/%d" % (code, y)))
+        ser = j.get("serie") or []
+        if not ser and y < last:
+            raise ValueError("findic: no rows for %d" % y)
+        rows += [(r["fecha"][:10], None, None, None, float(r["valor"])) for r in ser if r.get("valor") is not None]
+        time.sleep(0.3)
+    return _clean(rows, -8)
+
+
+OTHER = {"csindex": (fetch_csindex, "China Securities Index Co. "), "vndirect": (fetch_vndirect, "VNDIRECT "),
+         "findic": (fetch_findic, "findic.cl ")}
 
 
 def pack(code, label, rows):
