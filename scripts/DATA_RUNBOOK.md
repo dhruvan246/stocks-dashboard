@@ -31255,6 +31255,7 @@ shows its last close — the tooltip says so.
   Dropped on purpose (told to the user): Sectors' Cards view, the index-vs-Nifty-500 pop-up with peer table, watchlist stars, m-cap weighting outside
   Monthly, the member-average "Indices" level. Check after any edit: all three modes, Heatmap, Monthly, Rewind to 2020-03-23 (Nifty 50 = 7,610.25, −12.98%),
   the three stub URLs, and that a failed live feed shows the "not live" line instead of yesterday's moves labelled Today.
+- **Daily Moves (2026-11-26)** is on the kit: index list (left, replaces the Index dropdown) → day-by-day colour grid (middle; FII/DII/long:short/index rows pinned) → chart + the picked cell's figures (right; the four old tiles are the stats row when no stock is picked). Data engine (`stitch`, `go`, `rosterAt`, `compute`, `exportCsv`) is byte-for-byte the old one. Two traps: (1) on phones `theme.js` turns a table's parent into the `.sw-scrollx` scroller ONLY when the table is its only element child — keep `#grid` holding nothing but the table (`#more` sits after it), or sticky headers and `scrollLatest` break; (2) a sticky cell with a translucent background (`--accent-soft`) shows scrolled cells through it — layer it over `var(--surface)`.
 
 ## §SECTORS-TRACKER — sectors.html: live prices, Rewind, and 53 NSE sector/theme indices outside the 28 (2026-11-25, user: "live data i want", "add all missing", "rewind button")
 
