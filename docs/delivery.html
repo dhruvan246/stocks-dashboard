@@ -8,24 +8,63 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
-  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
-  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:var(--radius-sm);white-space:nowrap}
-  .chip.mult{background:#ede9fe;color:#6d28d9}
-  html[data-theme="dark"] .chip.mult{background:rgba(139,92,246,.18);color:#c4b5fd}
-  .vbtn{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;
-        background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border))}
-  .vbtn.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
-  select,input[type=text]{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);font-size:13px;padding:7px 10px}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(520px,1.2fr) 300px minmax(0,1fr)}
+  #lHead,#lList .os-row{grid-template-columns:var(--cols)}
+  #lList .os-row{font-size:12.5px} #lList .os-row .n,#lList .os-row .cl{text-align:left}
+  #lHead span[data-k]{cursor:pointer;user-select:none} #lHead span[data-k]:hover{color:var(--text)}
+  #lHead span.srt{color:var(--accent-text)}
+  .os-row .cl{color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .os-row .fl{color:var(--text-faint)} .os-row .mu{font-weight:600}
+  .tg{display:inline-block;font-size:9.5px;font-weight:700;line-height:1;padding:2px 4px;border-radius:4px;letter-spacing:.02em}
+  .tg.b{background:var(--pos-soft,rgba(16,185,129,.14));color:var(--pos)} .tg.s{background:var(--neg-soft,rgba(244,63,94,.12));color:var(--neg)}
+  .tg.k{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+  .tg.p{background:var(--warn-soft,rgba(245,158,11,.16));color:var(--warn)}
+  #season{font-size:12px;color:var(--text-muted);padding:0 2px 8px;line-height:1.5}
+  #season b{color:var(--text);font-weight:600} #season a{color:var(--accent-text);cursor:pointer;font-weight:600}
+  #season .d{color:var(--text-faint);margin:0 7px}
+  html[data-theme] .os-bar input[type="search"],html[data-theme] .os-bar select{border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;padding:4px 7px;height:28px;min-height:0;width:auto;max-width:170px}
+  html[data-theme] .os-bar input[type="search"]{width:190px}
+  #dBody{cursor:default}
+  .kv{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 12px;min-height:31px;border-bottom:1px solid var(--border)}
+  .kv span{color:var(--text-muted)} .kv b{font-weight:600;color:var(--text);white-space:nowrap}
+  .kv b.os-pos{color:var(--pos)} .kv b.os-neg{color:var(--neg)}
+  .sh{padding:9px 12px 5px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);border-bottom:1px solid var(--border);background:var(--surface-2)}
+  .nm{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:12.5px;line-height:1.4}
+  .dl{padding:7px 12px;border-bottom:1px solid var(--border);font-size:12.5px;line-height:1.45}
+  .dl.cur{background:var(--accent-soft)}
+  .dl .t{display:flex;align-items:center;gap:6px} .dl .t b{margin-left:auto;font-weight:600;color:var(--text)}
+  .dl .t .dt{color:var(--text-muted)}
+  .dl .c{display:flex;gap:8px;justify-content:space-between;color:var(--text-muted);margin-top:1px}
+  .dl .c .cli{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--text)} .dl .c .cli:hover{text-decoration:underline;color:var(--accent-text)}
+  .dl .c .qp{white-space:nowrap;color:var(--text-faint)}
+  #cStats{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #cStats div{border-bottom:0 !important}
+  #cStats i{display:block;font-style:normal;font-size:11px;margin-top:2px;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  #how summary{cursor:pointer;color:var(--text-muted)} #how p{margin-top:6px}
+  #fbtn{display:none}
+  @media (max-width:1280px) and (min-width:900px){
+    #grid{grid-template-columns:minmax(420px,1.2fr) minmax(0,1fr);grid-template-rows:minmax(0,1.1fr) minmax(0,1fr)}
+    #pL{grid-row:1 / span 2} #pD{grid-column:2;grid-row:1} #pC{grid-column:2;grid-row:2}
+    #pC .os-stats{display:none}
+  }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)}
+    #fbtn{display:inline-flex} .os-bar:not(.open) .fx{display:none !important}
+    #pD .os-list{max-height:420px !important}
+    #cStats{grid-template-columns:repeat(2,minmax(0,1fr))} #cStats div:nth-child(2n){border-right:0} #cStats div:nth-child(-n+2){border-bottom:1px solid var(--border) !important}
+    html[data-theme] .os-bar input[type="search"]{width:150px}
+  }
+  @container (max-width:520px){ #cStats{grid-template-columns:repeat(2,minmax(0,1fr))} #cStats div:nth-child(2n){border-right:0} #cStats div:nth-child(-n+2){border-bottom:1px solid var(--border) !important} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -34,88 +73,97 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Delivery Spikes <span class="text-slate-400 font-semibold text-base">· quiet accumulation made visible</span></h1>
-    <p class="text-sm text-slate-500 mt-1">Stocks where the <b>delivered quantity</b> (shares actually taken home, not day-traded) jumped to a multiple of the stock's own 20-session baseline — with delivery ≥30% of volume, ≥₹1 cr delivered and the <b>price up</b> on the day. That combination usually means somebody is accumulating. <span id="updated" class="text-slate-400"></span></p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Delivery Spikes</h1>
+    <div class="os-vtabs" id="views" role="tablist" aria-label="List"></div>
+    <div class="os-asof" id="asof"></div>
   </div>
-
-  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading delivery data…</div>
+  <div id="status" class="os-empty">Loading delivery data…</div>
 
   <div id="content" class="hidden">
-    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+    <div class="os-bar">
+      <input id="q" type="search" placeholder="Search stock…  ( / )" autocomplete="off" aria-label="Search stock" />
+      <select id="fDays" aria-label="Period"><option value="1">Latest session</option><option value="5">Last 5 sessions</option><option value="10" selected>Last 10 sessions</option><option value="0">Full window</option></select>
+      <button id="fbtn" type="button" class="os-btn" aria-expanded="false" title="Show or hide the other filters">Filters</button>
+      <select class="fx" id="fVal" aria-label="Minimum delivered value"><option value="1">≥ ₹1 cr</option><option value="5">≥ ₹5 cr</option><option value="10">≥ ₹10 cr</option><option value="25">≥ ₹25 cr</option></select>
+      <select class="fx" id="fMult" aria-label="Minimum multiple of baseline"><option value="0">Any spike</option><option value="5">≥ 5× baseline</option><option value="10">≥ 10× baseline</option></select>
+      <select id="fSort" aria-label="Sort spikes" title="Order of the Spikes list"><option value="date">Newest first</option><option value="val">Biggest value</option><option value="mult">Highest multiple</option></select>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>←→</b> change list · <b>Enter</b> open the stock</span>
+    </div>
+    <div id="season"></div>
 
-    <div class="mb-3 flex flex-wrap items-center gap-2">
-      <div class="flex gap-1.5">
-        <span id="vSpikes" class="vbtn on">Spikes</span>
-        <span id="vStocks" class="vbtn">Repeat stocks</span>
-        <span id="vToday" class="vbtn">Biggest today</span>
-      </div>
-      <input id="q" type="text" placeholder="Search stock…" autocomplete="off" class="w-44" />
-      <select id="fVal"><option value="1">≥ ₹1 cr</option><option value="5">≥ ₹5 cr</option><option value="10">≥ ₹10 cr</option><option value="25">≥ ₹25 cr</option></select>
-      <select id="fMult"><option value="0">Any spike</option><option value="5">≥ 5× baseline</option><option value="10">≥ 10× baseline</option></select>
-      <select id="fDays"><option value="1">Latest session</option><option value="5">Last 5 sessions</option><option value="10" selected>Last 10 sessions</option><option value="0">Full window</option></select>
-      <select id="fSort"><option value="date">Newest first</option><option value="val">Biggest value</option><option value="mult">Highest multiple</option></select>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pL" aria-label="List">
+        <div class="os-ph"><span class="ttl" id="lTitle"></span><span class="r" id="count"></span></div>
+        <div class="os-ch" id="lHead"></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="List" tabindex="0"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Detail">
+        <div class="os-ph"><span class="sym" id="dSym"></span><span class="r" id="dTag"></span></div>
+        <div class="os-list" id="dBody"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span class="ttl" id="cTitle"></span><span class="r"><a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a></span></div>
+        <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-stats" id="cStats"></div>
+      </section>
     </div>
 
-    <div class="card sw-cards overflow-x-auto">
-      <table class="w-full text-sm min-w-[860px]">
-        <thead id="tHead" class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-50/60"></thead>
-        <tbody id="tBody"></tbody>
-      </table>
-      <div class="p-3 flex items-center justify-between text-xs text-slate-500">
-        <span id="count"></span>
-        <button id="more" class="hidden px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition">Show more</button>
-      </div>
-    </div>
-
-    <p class="text-[11px] text-slate-500 mt-5">Source: NSE daily full bhavcopy (delivery columns), one file per trading day, refreshed every trading evening (~21:15 IST) plus a next-morning catch-up — missed days self-heal because each date has its own file. Universe: NSE mainboard, market cap ≥ ₹100 cr. Baseline = the stock's own median delivered quantity over the prior 20 sessions (needs ≥10 sessions of history, so recent listings appear after ~2 weeks). Delivered value = close × delivered quantity. Prices are unadjusted — a corporate-action day disqualifies itself via the price filter. A spike is interest, not proof: check who's buying on the Bulk/Block Deals and Insider Trades pages. Educational only — not investment advice.</p>
+    <details id="how"><summary>How these numbers are made</summary>
+      <p>A <b>delivery spike</b> = a stock where the <b>delivered quantity</b> (shares actually taken home, not day-traded) jumped to a multiple of the stock's own 20-session baseline — with delivery ≥30% of volume, ≥₹1 cr delivered and the <b>price up</b> on the day. That combination usually means somebody is accumulating. <b>Repeat stocks</b> adds up each stock's spikes that match your filters; <b>Biggest today</b> is the latest session's largest delivered values, spike or not (only the search box and the minimum value apply to it).</p>
+      <p>Source: NSE daily full bhavcopy (delivery columns), one file per trading day, refreshed every trading evening (~21:15 IST) plus a next-morning catch-up — missed days self-heal because each date has its own file. Universe: NSE mainboard, market cap ≥ ₹100 cr. Baseline = the stock's own median delivered quantity over the prior 20 sessions (needs ≥10 sessions of history, so recent listings appear after ~2 weeks). Delivered value = close × delivered quantity. Prices in the list are unadjusted — a corporate-action day disqualifies itself via the price filter. The chart is the stock's daily price history from this site's own store. A spike is interest, not proof: check who's buying on the Bulk/Block Deals and Insider Trades pages. Educational only — not investment advice.</p>
+    </details>
   </div>
 </main>
 
 <script>
 'use strict';
+const K=window.OSKit;
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const fmtD8 = d => { const s=''+d; return (+s.slice(6))+' '+MON[+s.slice(4,6)-1]+" '"+s.slice(2,4); };
+const fmtD8s = d => { const s=''+d; return (+s.slice(6))+' '+MON[+s.slice(4,6)-1]; };
 const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN');
 const crf = v => v == null ? '—' : v >= 100 ? Math.round(v).toLocaleString('en-IN') : v >= 10 ? v.toFixed(1) : v.toFixed(2);
-const pctc = v => v == null ? '—' : '<span class="' + (v >= 0 ? 'pos':'neg') + '">' + (v > 0 ? '+' : '') + v.toFixed(1) + '%</span>';
-const slink = (sym, name) => '<span class="sw-star" data-sym="' + esc(sym) + '"></span> ' +
-  '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name || '') + '">' + esc(sym) + '</a>' +
-  (name ? '<div class="text-[11px] text-slate-400 font-normal max-w-[190px] truncate">' + esc(name) + '</div>' : '');
+const pctc = v => v == null ? '—' : '<span class="' + (v >= 0 ? 'os-pos':'os-neg') + '">' + (v > 0 ? '+' : '') + v.toFixed(1) + '%</span>';
+const pc1 = v => v == null ? '—' : v.toFixed(1) + '%';
+const stockUrl = s => './stock.html?sym=' + encodeURIComponent(s);
+const star = s => '<span class="sw-star" data-sym="' + esc(s) + '"></span> ';
 
-let DATA = null, view = 'spikes', shown = 250;
+const U0=new URLSearchParams(location.search);
+const VIEWS=[['spikes','Spikes'],['stocks','Repeat stocks'],['today','Biggest today']];
+let DATA = null, view = VIEWS.some(v=>v[0]===U0.get('view')) ? U0.get('view') : 'spikes', shown = 0;
+let LIST=[], AGG={}, TODAY={}, SELSYM=(U0.get('sym')||'').toUpperCase()||null, SELROW=null, sK='n', sDir=-1, CH=null, TOK=0, showTimer=null;
+const PAGE=250;
 
 async function load(){
   try { DATA = await (await fetch('./delivery.json?t=' + Date.now())).json(); }
   catch(e){ $('status').textContent = 'Could not load delivery.json — run scripts/fetch_delivery.py first.'; return; }
   if (!DATA || !DATA.spikes){ $('status').textContent = 'No delivery data yet.'; return; }
-  $('updated').textContent = '· window ' + fmtD8(+DATA.from) + ' → ' + fmtD8(+DATA.to) + ' · updated ' + DATA.updated + ' IST';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
-  renderCards(); render();
-  ['q','fVal','fMult','fDays','fSort'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', () => { shown = 250; render(); }));
-  $('vSpikes').onclick = () => setView('spikes');
-  $('vStocks').onclick = () => setView('stocks');
-  $('vToday').onclick = () => setView('today');
-  $('more').onclick = () => { shown += 250; render(); };
+  if(U0.get('q')) $('q').value=U0.get('q');
+  $('asof').innerHTML = '<span class="os-dot"></span>window ' + fmtD8(+DATA.from) + ' → ' + fmtD8(+DATA.to) + ' · updated ' + esc(DATA.updated) + ' IST';
+  for(const r of (DATA.today||[])) TODAY[r[0]]=r;
+  CH=new K.Chart({chart:$('cChart'),legend:$('cLegend'),msg:$('cMsg'),iv:'D',range:'6M',log:false});
+  wire(); renderCards(); render();
 }
 
-function setView(v){ view = v; shown = 250;
-  ['vSpikes','vStocks','vToday'].forEach(id => $(id).classList.remove('on'));
-  $(v==='spikes'?'vSpikes':v==='stocks'?'vStocks':'vToday').classList.add('on'); render(); }
+function setView(v){ view = v; SELROW=null; render(); }
 
+// the latest-session line (was four cards): same sums, same picks
 function renderCards(){
   const last = +DATA.to, rows = DATA.spikes.filter(r => r[0] === last);
   const tot = rows.reduce((s,r) => s + r[5], 0);
   const big = rows[0], hi = rows.slice().sort((a,b) => b[8]-a[8])[0];
-  const card = (t,v,sub,cls) => '<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">' + t + '</div><div class="text-lg font-bold ' + (cls||'') + '">' + v + '</div><div class="text-[11px] text-slate-400">' + sub + '</div></div>';
-  $('cards').innerHTML =
-     card('Spikes · ' + fmtD8(last), rows.length, 'stocks with a delivery spike')
-    + card('Delivered in spikes', '₹' + crf(tot) + ' cr', 'on ' + fmtD8(last), 'pos')
-    + card('Biggest spike', big ? esc(big[1]) : '—', big ? '₹' + crf(big[5]) + ' cr delivered · ' + big[8] + '× baseline' : 'no spikes this session')
-    + card('Highest multiple', hi ? esc(hi[1]) : '—', hi ? hi[8] + '× its 20-session baseline' : '');
+  const d='<span class="d">·</span>', lk=r=>'<a data-sym="'+esc(r[1])+'" title="Show '+esc(r[1])+'">'+esc(r[1])+'</a>';
+  $('season').innerHTML = '<b>' + fmtD8(last) + '</b>: <b>' + rows.length + '</b> stocks with a delivery spike' + d +
+    'Delivered in spikes <b class="os-pos">₹' + crf(tot) + ' cr</b>' + d +
+    'Biggest spike: ' + (big ? lk(big) + ' ₹' + crf(big[5]) + ' cr delivered · ' + big[8] + '× baseline' : '— no spikes this session') + d +
+    'Highest multiple: ' + (hi ? lk(hi) + ' ' + hi[8] + '× its 20-session baseline' : '—');
 }
 
 function sessCut(days){
@@ -130,79 +178,182 @@ function filtered(){
     r[5] >= minV && r[8] >= minM && (!lo || r[0] >= lo));
 }
 
-const HEAD_SPIKES = '<tr><th class="text-left py-2.5 px-3">Date</th><th class="text-left px-3">Stock</th><th class="text-right px-3">Close</th><th class="text-right px-3">Day chg</th><th class="text-right px-3">Delivered (₹ cr)</th><th class="text-right px-3">Delivery %</th><th class="text-right px-3">Usual %</th><th class="text-center px-3">vs baseline</th></tr>';
-const HEAD_STOCKS = '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Spikes</th><th class="text-right px-3">Delivered across spikes (₹ cr)</th><th class="text-right px-3">Best multiple</th><th class="text-right px-3">Latest spike</th></tr>';
-const HEAD_TODAY = '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Close</th><th class="text-right px-3">Day chg</th><th class="text-right px-3">Delivered (₹ cr)</th><th class="text-right px-3">Delivery %</th></tr>';
-
-function render(){ view==='spikes' ? renderSpikes() : view==='stocks' ? renderStocks() : renderToday(); }
-
-function renderSpikes(){
-  const sort = $('fSort').value;
-  const rows = filtered().slice();
-  if (sort === 'val') rows.sort((a,b) => b[5]-a[5]);
-  else if (sort === 'mult') rows.sort((a,b) => b[8]-a[8]);
-  $('tHead').innerHTML = HEAD_SPIKES;
-  const upto = Math.min(shown, rows.length);
-  let h = '';
-  for (let i = 0; i < upto; i++){ const r = rows[i];
-    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50">'
-      + '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + fmtD8(r[0]) + '</td>'
-      + '<td class="py-2.5 px-3">' + slink(r[1], r[2]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right">' + inr(r[3]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right">' + pctc(r[4]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right font-semibold">' + crf(r[5]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right">' + (r[6] == null ? '—' : r[6].toFixed(1) + '%') + '</td>'
-      + '<td class="py-2.5 px-3 text-right text-slate-500">' + (r[7] == null ? '—' : r[7].toFixed(1) + '%') + '</td>'
-      + '<td class="py-2.5 px-3 text-center"><span class="chip mult">' + r[8] + '×</span></td></tr>';
-  }
-  finish(h, upto, rows.length, 'spikes');
-}
-
-function renderStocks(){
+/* ---- list ---- */
+const COLS={
+  spikes:[['','Date','50px','l'],['','Stock','minmax(104px,1fr)','l'],['','Close','68px','r'],['','Day chg','58px','r'],['','Deliv ₹cr','66px','r'],['','Deliv %','54px','r'],['','Usual %','54px','r'],['','vs base','54px','r']],
+  stocks:[['','Stock','minmax(104px,1fr)','l'],['n','Spikes','54px','r'],['cr','Deliv ₹cr','74px','r'],['best','Best ×','62px','r'],['last','Latest','62px','r']],
+  today:[['','Stock','minmax(104px,1fr)','l'],['','Close','76px','r'],['','Day chg','64px','r'],['','Deliv ₹cr','76px','r'],['','Deliv %','60px','r']] };
+const PHONE={spikes:[0,1,4,7], stocks:[0,1,2,3], today:[0,2,3,4]};
+const TIP={'Deliv ₹cr':'Delivered value = close × delivered quantity, ₹ crore','Deliv %':'Delivered quantity as % of traded volume that day','Usual %':'The stock’s usual delivery %','vs base':'Delivered quantity ÷ the stock’s own median over the prior 20 sessions','Best ×':'Highest multiple of its 20-session baseline among those spikes','Latest':'Date of the latest spike matching the filters'};
+let CUR=[];
+function render(){
+  const F=filtered();
+  // per-stock totals over the spikes matching the filters (the Repeat-stocks table's own arithmetic)
   const agg = {};
-  for (const r of filtered()){
-    const a = agg[r[1]] || (agg[r[1]] = { name:r[2], n:0, cr:0, best:0, last:0 });
-    a.n++; a.cr += r[5]; if (r[8] > a.best) a.best = r[8]; if (r[0] > a.last) a.last = r[0];
+  for (const r of F){
+    const a = agg[r[1]] || (agg[r[1]] = { s:r[1], name:r[2], n:0, cr:0, best:0, last:0, rows:[] });
+    a.n++; a.cr += r[5]; if (r[8] > a.best) a.best = r[8]; if (r[0] > a.last) a.last = r[0]; a.rows.push(r);
   }
-  const rows = Object.entries(agg).map(([s,a]) => [s, a.name, a.n, a.cr, a.best, a.last])
-                     .sort((a,b) => b[2] - a[2] || b[3] - a[3]);
-  $('tHead').innerHTML = HEAD_STOCKS;
-  const upto = Math.min(shown, rows.length);
-  let h = '';
-  for (let i = 0; i < upto; i++){ const r = rows[i];
-    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50">'
-      + '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right font-semibold">' + r[2] + '</td>'
-      + '<td class="py-2.5 px-3 text-right">' + crf(r[3]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right"><span class="chip mult">' + r[4] + '×</span></td>'
-      + '<td class="py-2.5 px-3 text-right whitespace-nowrap text-slate-600">' + fmtD8(r[5]) + '</td></tr>';
+  AGG=agg;
+  if(view==='spikes'){
+    const sort = $('fSort').value; const rows = F.slice();
+    if (sort === 'val') rows.sort((a,b) => b[5]-a[5]);
+    else if (sort === 'mult') rows.sort((a,b) => b[8]-a[8]);
+    LIST=rows;
+    if(SELROW && !rows.includes(SELROW)) SELROW=null;
+    if(!SELROW) SELROW=(SELSYM && rows.find(r=>r[1]===SELSYM)) || rows[0] || null;
+    SELSYM=SELROW?SELROW[1]:null;
+  } else if(view==='stocks'){
+    const get={n:a=>a.n,cr:a=>a.cr,best:a=>a.best,last:a=>a.last}[sK];
+    LIST=Object.values(agg).sort((a,b)=>((get(b)-get(a))*(sDir<0?1:-1)) || (b.n-a.n) || (b.cr-a.cr));
+    if(!SELSYM || !agg[SELSYM]) SELSYM=LIST[0]?LIST[0].s:null;
+  } else {
+    const q = $('q').value.trim().toLowerCase(), minV = +$('fVal').value;
+    LIST = (DATA.today || []).filter(r =>
+      (!q || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)) && (r[4] || 0) >= minV);
+    if(!SELSYM || !LIST.some(r=>r[0]===SELSYM)) SELSYM=LIST[0]?LIST[0][0]:null;
   }
-  finish(h, upto, rows.length, 'stocks');
+  $('views').innerHTML=VIEWS.map(([k,l])=>'<button type="button" role="tab" data-v="'+k+'" class="'+(view===k?'on':'')+'">'+l+'</button>').join('');
+  $('views').querySelectorAll('button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
+  $('fSort').classList.toggle('hidden',view!=='spikes');
+  $('fDays').classList.toggle('hidden',view==='today'); $('fMult').classList.toggle('hidden',view==='today');
+  { const nf=($('fVal').value!=='1')+($('fMult').value!=='0'&&view!=='today'); $('fbtn').textContent='Filters'+(nf?' · '+nf:''); if(nf&&!$('fbtn').dataset.t) $('fbtn').parentNode.classList.add('open'); }
+  const days=+$('fDays').value, per=days===1?'latest session':days?'last '+days+' sessions':'full window';
+  $('lTitle').textContent= view==='spikes'?'Spikes · '+per : view==='stocks'?'Repeat stocks · '+per : 'Biggest delivered value · '+fmtD8(+DATA.to);
+  $('count').textContent=LIST.length.toLocaleString('en-IN')+' '+(view==='spikes'?'spikes':'stocks');
+  renderList(); renderSel(); saveUrl();
+}
+function pickCols(){
+  const all=COLS[view], ph=window.innerWidth<900;
+  CUR = ph ? PHONE[view].map(i=>all[i]) : all;
+  $('pL').style.setProperty('--cols', CUR.map(c=>c[2]).join(' '));
+}
+const al=c=>c[3]==='l'?'text-align:left':'text-align:right';
+const rowSym=r=>view==='spikes'?r[1]:view==='stocks'?r.s:r[0];
+function rowHtml(r,i){
+  let on, m, ttl;
+  if(view==='spikes'){ on=r===SELROW; ttl=r[2]||r[1];
+    m={Date:'<span class="v fl" style="text-align:left">'+fmtD8s(r[0])+'</span>', Stock:'<span class="n">'+star(r[1])+esc(r[1])+'</span>', Close:'<span class="v">'+inr(r[3])+'</span>', 'Day chg':'<span class="v">'+pctc(r[4])+'</span>',
+      'Deliv ₹cr':'<span class="v">'+crf(r[5])+'</span>', 'Deliv %':'<span class="v">'+pc1(r[6])+'</span>', 'Usual %':'<span class="v fl">'+pc1(r[7])+'</span>', 'vs base':'<span class="v mu">'+r[8]+'×</span>'};
+  } else if(view==='stocks'){ on=r.s===SELSYM; ttl=r.name||r.s;
+    m={Stock:'<span class="n">'+star(r.s)+esc(r.s)+'</span>', Spikes:'<span class="v">'+r.n+'</span>', 'Deliv ₹cr':'<span class="v">'+crf(r.cr)+'</span>', 'Best ×':'<span class="v mu">'+r.best+'×</span>', Latest:'<span class="v fl">'+fmtD8s(r.last)+'</span>'};
+  } else { on=r[0]===SELSYM; ttl=r[1]||r[0];
+    m={Stock:'<span class="n">'+star(r[0])+esc(r[0])+'</span>', Close:'<span class="v">'+inr(r[2])+'</span>', 'Day chg':'<span class="v">'+pctc(r[3])+'</span>', 'Deliv ₹cr':'<span class="v">'+crf(r[4])+'</span>', 'Deliv %':'<span class="v">'+pc1(r[5])+'</span>'};
+  }
+  return '<div class="os-row'+(on?' on':'')+'" role="option" aria-selected="'+on+'" data-i="'+i+'" title="'+esc(ttl)+'">'+CUR.map(c=>m[c[1]]).join('')+'</div>';
+}
+function renderList(){
+  pickCols();
+  $('lHead').innerHTML=CUR.map(c=>'<span'+(c[0]?' data-k="'+c[0]+'"':'')+' class="'+(view==='stocks'&&c[0]===sK?'srt':'')+'" style="'+al(c)+'"'+(TIP[c[1]]?' title="'+TIP[c[1]]+'"':'')+'>'+c[1]+(view==='stocks'&&c[0]===sK?(sDir<0?' ▾':' ▴'):'')+'</span>').join('');
+  shown=0; $('lList').innerHTML=''; $('lList').scrollTop=0;
+  if(!LIST.length){ $('lList').innerHTML='<div class="os-empty">Nothing matches these filters.</div>'; return; }
+  renderMore(Math.max(PAGE, selIndex()+40));
+}
+const selIndex=()=>view==='spikes'?LIST.indexOf(SELROW):LIST.findIndex(r=>rowSym(r)===SELSYM);
+function reveal(el){ if(!el) return; const L=$('lList');
+  const top=el.getBoundingClientRect().top-L.getBoundingClientRect().top+L.scrollTop;
+  if(top<L.scrollTop) L.scrollTop=top; else if(top+el.offsetHeight>L.scrollTop+L.clientHeight) L.scrollTop=top+el.offsetHeight-L.clientHeight; }
+function renderMore(upto){
+  const to=Math.min(LIST.length, Math.max(shown+PAGE, upto||0)); if(to<=shown) return;
+  let h=''; for(let i=shown;i<to;i++) h+=rowHtml(LIST[i],i);
+  $('lList').insertAdjacentHTML('beforeend', h); shown=to;
+}
+function select(i,noScroll){
+  if(i<0||i>=LIST.length) return; if(i>=shown) renderMore(i+40);
+  if(view==='spikes'){ SELROW=LIST[i]; SELSYM=SELROW[1]; } else SELSYM=rowSym(LIST[i]);
+  $('lList').querySelectorAll('.os-row.on').forEach(e=>{ e.classList.remove('on'); e.setAttribute('aria-selected','false'); });
+  const el=$('lList').querySelector('.os-row[data-i="'+i+'"]'); if(el){ el.classList.add('on'); el.setAttribute('aria-selected','true'); if(!noScroll) reveal(el); }
+  renderSel(true); saveUrl();
+}
+let LASTSYM=null;
+function renderSel(lazy){ renderDetail(); renderStats(); chartBar(); K.fitGrid($('grid')); reveal($('lList').querySelector('.os-row.on'));
+  if(SELSYM!==LASTSYM||!lazy){ LASTSYM=SELSYM; renderChart(lazy); } }
+
+/* ---- detail: the stock's latest session + its spikes ---- */
+const nameOf=s=>(AGG[s]&&AGG[s].name)||(TODAY[s]&&TODAY[s][1])||((DATA.spikes.find(r=>r[1]===s)||[])[2])||'';
+function renderDetail(){
+  const s=LIST.length?SELSYM:null;
+  if(!s){ $('dSym').textContent='—'; $('dTag').textContent=''; $('dBody').innerHTML='<div class="os-empty">Nothing matches these filters.</div>'; return; }
+  const a=AGG[s], t=TODAY[s], kv=(l,v,c)=>'<div class="kv"><span>'+l+'</span><b class="'+(c||'')+'">'+v+'</b></div>';
+  $('dSym').innerHTML=star(s)+'<a href="'+stockUrl(s)+'" title="Open '+esc(s)+'’s own page">'+esc(s)+'</a>';
+  // in Biggest today the filters on spikes do not apply, so the stock's spikes are listed for the whole window
+  const rows=(view==='today' ? DATA.spikes.filter(r=>r[1]===s) : (a?a.rows:[])).slice().sort((x,y)=>y[0]-x[0]);
+  $('dTag').textContent=rows.length+' spike'+(rows.length===1?'':'s');
+  const nm=nameOf(s); let h=nm?'<div class="nm">'+esc(nm)+'</div>':'';
+  if(view==='spikes'&&SELROW){ const r=SELROW;
+    h+='<div class="sh">Spike on '+fmtD8(r[0])+'</div>'+kv('Close',inr(r[3]))+kv('Day change',pctc(r[4]))+kv('Delivered (₹ cr)',crf(r[5]))+kv('Delivery % of volume',pc1(r[6]))+kv('Usual delivery %',pc1(r[7]))+kv('vs 20-session baseline',r[8]+'×'); }
+  if(view!=='today'&&a){ h+='<div class="sh">Spikes matching the filters</div>'+kv('Spikes',a.n)+kv('Delivered across spikes (₹ cr)',crf(a.cr))+kv('Best multiple',a.best+'×')+kv('Latest spike',fmtD8(a.last)); }
+  if(t){ h+='<div class="sh">Latest session · '+fmtD8(+DATA.to)+'</div>'+kv('Close',inr(t[2]))+kv('Day change',pctc(t[3]))+kv('Delivered (₹ cr)',crf(t[4]))+kv('Delivery % of volume',pc1(t[5])); }
+  h+='<div class="sh">'+(view==='today'?'Its spikes in the whole window':'Its spikes matching the filters')+' · newest first</div>';
+  if(!rows.length) h+='<div class="os-empty" style="padding:14px 12px">No delivery spike in the window for this stock.</div>';
+  rows.forEach(r=>{ h+='<div class="dl'+(r===SELROW&&view==='spikes'?' cur':'')+'"><div class="t"><span class="dt">'+fmtD8(r[0])+'</span><span class="tg k">'+r[8]+'× baseline</span><b>₹'+crf(r[5])+' cr</b></div>'+
+    '<div class="c"><span class="qp">Close '+inr(r[3])+' · '+pctc(r[4])+'</span><span class="qp">Delivery '+pc1(r[6])+' · usual '+pc1(r[7])+'</span></div></div>'; });
+  h+='<a class="os-row" style="grid-template-columns:1fr" href="'+stockUrl(s)+'"><span class="n" style="color:var(--accent-text)">Open '+esc(s)+'’s page →</span></a>';
+  $('dBody').innerHTML=h; $('dBody').scrollTop=0;
+}
+function renderStats(){
+  const s=LIST.length?SELSYM:null; if(!s){ $('cStats').innerHTML=''; return; }
+  const c=(l,v,sub,k)=>'<div><span>'+l+'</span><b class="'+(k||'')+'">'+v+'</b><i>'+sub+'</i></div>';
+  const a=AGG[s], t=TODAY[s];
+  if(view==='today'&&t){ $('cStats').innerHTML=c('Close',inr(t[2]),fmtD8(+DATA.to))+c('Day change',(t[3]>0?'+':'')+t[3].toFixed(1)+'%','on the day',t[3]>=0?'os-pos':'os-neg')+c('Delivered','₹'+crf(t[4])+' cr','close × delivered quantity')+c('Delivery %',pc1(t[5]),'of traded volume'); return; }
+  if(!a){ $('cStats').innerHTML=''; return; }
+  $('cStats').innerHTML=c('Spikes',a.n,'matching the filters')+c('Delivered','₹'+crf(a.cr)+' cr','across those spikes')+c('Best multiple',a.best+'×','of its 20-session baseline')+c('Latest spike',fmtD8(a.last),'');
 }
 
-function renderToday(){
-  const q = $('q').value.trim().toLowerCase(), minV = +$('fVal').value;
-  const rows = (DATA.today || []).filter(r =>
-    (!q || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)) && (r[4] || 0) >= minV);
-  $('tHead').innerHTML = HEAD_TODAY;
-  const upto = Math.min(shown, rows.length);
-  let h = '';
-  for (let i = 0; i < upto; i++){ const r = rows[i];
-    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50">'
-      + '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right">' + pctc(r[3]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right font-semibold">' + crf(r[4]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right">' + (r[5] == null ? '—' : r[5].toFixed(1) + '%') + '</td></tr>';
-  }
-  finish(h, upto, rows.length, 'stocks · ' + fmtD8(+DATA.to));
+/* ---- chart: the selected stock's price ---- */
+function sg(id,items,cur,cb){ const el=$(id);
+  el.innerHTML=items.map(([k,l,t])=>'<button type="button" data-v="'+k+'" class="'+(k===cur?'on':'')+'"'+(t?' title="'+esc(t)+'"':'')+'>'+l+'</button>').join('');
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>cb(b.dataset.v)); }
+function chartBar(){
+  sg('cIv',[['D','D','Daily bars'],['W','W','Weekly bars'],['M','M','Monthly bars']],CH.iv,v=>{ CH.setIv(v); chartBar(); });
+  sg('cRg',['3M','6M','1Y','3Y','Max'].map(k=>[k,k]),CH.range,v=>{ CH.setRange(v); chartBar(); });
+  const s=LIST.length?SELSYM:null;
+  $('cOpen').classList.toggle('hidden',!s); if(s) $('cOpen').href=stockUrl(s);
+  $('cTitle').innerHTML=s?esc(s)+' <span style="font-weight:400;color:var(--text-faint);margin-left:6px">daily price</span>':'Chart';
+}
+function renderChart(lazy){
+  const s=LIST.length?SELSYM:null, tok=++TOK; clearTimeout(showTimer);
+  if(!s){ CH.clear('Pick a row from the list.'); return; }
+  showTimer=setTimeout(async()=>{            // holding an arrow key walks the list; only the row you stop on is fetched
+    $('cMsg').textContent='Loading chart…';
+    try{ const d=await K.loadStockBars(s); if(tok!==TOK) return; if(!d||!d.bars.length) throw 0;
+      CH.show(d,{name:nameOf(s)||s,tag:'NSE',note:''}); }
+    catch(e){ if(tok!==TOK) return; CH.clear('No daily price history on file for '+s+'.'); }
+  },lazy?140:0);
 }
 
-function finish(h, upto, total, unit){
-  $('tBody').innerHTML = h || '<tr><td colspan="8" class="py-10 text-center text-sm text-slate-400">Nothing matches these filters.</td></tr>';
-  if (window.swWatch) swWatch.paintAll($('tBody'));
-  $('count').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + total.toLocaleString('en-IN') + ' ' + unit;
-  $('more').classList.toggle('hidden', upto >= total);
+/* ---- url + controls ---- */
+function saveUrl(){
+  const u=new URLSearchParams();
+  if(view!=='spikes') u.set('view',view);
+  if($('q').value.trim()) u.set('q',$('q').value.trim());
+  if(SELSYM&&LIST.length) u.set('sym',SELSYM);
+  const s=u.toString(); try{ history.replaceState(null,'',location.pathname+(s?'?'+s:'')); }catch(e){}
+}
+function wire(){
+  ['q','fVal','fMult','fDays','fSort'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', () => { SELROW=null; render(); }));
+  $('fbtn').onclick=()=>{ const b=$('fbtn').parentNode; $('fbtn').dataset.t='1'; $('fbtn').setAttribute('aria-expanded',b.classList.toggle('open')); };
+  $('lHead').addEventListener('click',e=>{ const h=e.target.closest('[data-k]'); if(!h||view!=='stocks') return; if(sK===h.dataset.k) sDir=-sDir; else { sK=h.dataset.k; sDir=-1; } render(); });
+  $('lList').addEventListener('click',e=>{ if(e.target.closest('.sw-star')) return; const el=e.target.closest('.os-row[data-i]'); if(el) select(+el.dataset.i,true); });
+  $('lList').addEventListener('dblclick',e=>{ const el=e.target.closest('.os-row[data-i]'); if(el&&SELSYM) location.href=stockUrl(SELSYM); });
+  $('lList').addEventListener('scroll',()=>{ const L=$('lList'); if(shown<LIST.length && L.scrollTop+L.clientHeight>L.scrollHeight-400) renderMore(); });
+  // the latest session's biggest spike may sit outside the current filters: open the filters up so it shows
+  $('season').addEventListener('click',e=>{ const a=e.target.closest('[data-sym]'); if(!a) return;
+    SELSYM=a.dataset.sym; SELROW=null; if(view==='today') view='spikes';
+    if(!AGG[SELSYM]){ $('q').value=''; $('fVal').value='1'; $('fMult').value='0'; } render(); });
+  let rt=null, w0=window.innerWidth;
+  window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ K.fitGrid($('grid')); if((w0<900)!==(window.innerWidth<900)) renderList(); w0=window.innerWidth; },90); });
+  document.addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey) return; const t=e.target, tg=t&&t.tagName;
+    if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA'){ if(e.key==='Escape') t.blur(); return; }
+    const i=selIndex(), step={ArrowDown:1,ArrowUp:-1,PageDown:10,PageUp:-10}[e.key];
+    if(step&&LIST.length){ e.preventDefault(); select(Math.max(0,Math.min(LIST.length-1,i+step))); }
+    else if(e.key==='Home'&&LIST.length){ e.preventDefault(); select(0); }
+    else if(e.key==='End'&&LIST.length){ e.preventDefault(); select(LIST.length-1); }
+    else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ e.preventDefault(); const k=VIEWS.findIndex(v=>v[0]===view); setView(VIEWS[(k+(e.key==='ArrowRight'?1:VIEWS.length-1))%VIEWS.length][0]); }
+    else if(e.key==='Enter'&&SELSYM&&LIST.length){ e.preventDefault(); location.href=stockUrl(SELSYM); }
+    else if(e.key==='/'){ e.preventDefault(); $('q').focus(); $('q').select(); }
+  });
 }
 
 load();
