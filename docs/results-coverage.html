@@ -8,25 +8,48 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .pill{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .5rem;border-radius:var(--radius-sm);font-size:11px;font-weight:700;white-space:nowrap}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(250px,300px) minmax(340px,440px) minmax(0,1fr)}
+  #bHead,.br{grid-template-columns:minmax(0,1fr) 70px}
+  #kHead,.kr{grid-template-columns:minmax(0,1fr) 40px 78px 84px}
+  .kr .n i{font-size:11.5px}
+  #sum{padding:10px 12px;border-bottom:1px solid var(--border)}
+  #sum .g{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+  #sum .g span{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint)}
+  #sum .g b{display:block;font-size:17px;font-weight:700;color:var(--text);line-height:1.25}
+  #sum .g small{display:block;font-size:11px;color:var(--text-faint)}
+  .warn{color:var(--warn,#d19a1c) !important}
+  .bar{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden;display:flex;margin-top:10px}
+  .bar > span{display:block;height:100%}
+  #leg{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:7px;font-size:11px;color:var(--text-faint)}
+  #leg i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
+  #exch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;font-size:12px;color:var(--text-muted)}
+  #exch .bar{margin-top:4px;height:4px} #exch b{float:right;font-weight:600}
+  .pill{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}
   .pill.pending{background:var(--warn-soft);color:var(--warn)}
   .pill.no_pdf{background:var(--neg-soft);color:var(--neg)}
   .pill.filled{background:var(--pos-soft);color:var(--pos)}
   .pill.bse_dup{background:var(--accent-soft);color:var(--accent-text)}
-  .bar{height:.6rem;border-radius:9999px;background:var(--surface-3);overflow:hidden;display:flex}
-  .bar > span{display:block;height:100%}
-  .scrollbar::-webkit-scrollbar{height:8px}
-  .scrollbar::-webkit-scrollbar-thumb{background:#475569;border-radius:4px}
+  .pill.unknown_qe{background:var(--surface-2);color:var(--text-muted)}
+  #dWhy{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;line-height:1.5;color:var(--text-muted)}
+  #dWhy .eta{color:var(--accent-text);font-weight:500;font-size:12.5px;margin-top:2px}
+  #dStats{border-top:0;border-bottom:1px solid var(--border)}
+  html[data-theme] .os-ps input[type="search"]{flex:1 1 0;min-width:0}
+  #status{margin:10px 0}
+  #pD .os-chartwrap{min-height:220px}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55} #how summary{cursor:pointer;color:var(--text-muted)} #how a{color:var(--accent-text)}
+  #pD.nosel #dCtl,#pD.nosel .os-chartwrap,#pD.nosel #dStats{display:none}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(220px,250px) minmax(300px,360px) minmax(0,1fr)} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -35,82 +58,67 @@
   </div>
 </header>
 
-<main class="max-w-screen-lg mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Results coverage <span id="qlabel" class="text-indigo-600"></span></h1>
-    <p class="text-sm text-slate-500 mt-1">Every company that has declared a result this quarter, and whether we actually have its <b>numbers</b> yet. The gap is filled automatically — the XBRL crons handle most names, and a scheduled vision routine reads the rest straight off the filing PDF twice a day.</p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Results coverage <span id="qlabel" style="color:var(--accent-text)"></span></h1>
+    <div class="os-asof" id="asof"></div>
   </div>
+  <div id="status" class="os-empty">Loading coverage…</div>
 
-  <div id="banner" class="card p-4 mb-5 text-sm text-slate-500">Loading coverage…</div>
-
-  <div id="body" class="hidden">
-    <!-- stat cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
-      <div class="card p-4" title="Companies whose result filing has landed in the feed this quarter">
-        <div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Declared</div>
-        <div id="sDeclared" class="text-2xl font-extrabold text-slate-900 mt-1">–</div>
-        <div class="text-[11px] text-slate-400 mt-0.5">results filed this quarter</div>
-      </div>
-      <div class="card p-4" title="Declared companies whose revenue/profit figures we hold">
-        <div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Filled</div>
-        <div id="sFilled" class="text-2xl font-extrabold text-emerald-600 mt-1">–</div>
-        <div id="sFilledPct" class="text-[11px] text-slate-400 mt-0.5">–</div>
-      </div>
-      <div class="card p-4" title="Declared, but we have no numbers yet — the routine's to-do list">
-        <div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Not filled</div>
-        <div id="sOpen" class="text-2xl font-extrabold text-amber-600 mt-1">–</div>
-        <div id="sOpenSub" class="text-[11px] text-slate-400 mt-0.5">–</div>
-      </div>
-      <div class="card p-4" title="Of the filled ones, how many were read off the PDF by the vision routine rather than parsed from XBRL">
-        <div class="text-[11px] font-bold uppercase tracking-wide text-slate-400">Via vision</div>
-        <div id="sVision" class="text-2xl font-extrabold text-indigo-600 mt-1">–</div>
-        <div class="text-[11px] text-slate-400 mt-0.5">filled from the filing PDF</div>
-      </div>
+  <div id="content" class="hidden">
+    <div class="os-bar">
+      <span class="os-hint" style="white-space:normal">Every company that has declared a result this quarter, and whether we have its <b>numbers</b> yet. The gap is filled automatically — XBRL crons first, then a scheduled vision routine reads the rest off the filing PDF.</span>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>← →</b> switch list · <b>/</b> search · <b>Enter</b> stock page</span>
     </div>
 
-    <!-- progress -->
-    <div class="card p-4 mb-5">
-      <div class="flex items-baseline justify-between mb-2">
-        <div class="text-sm font-bold text-slate-700">Coverage</div>
-        <div id="pctBig" class="text-sm font-extrabold text-slate-900">–</div>
-      </div>
-      <div id="bar" class="bar"></div>
-      <div class="flex flex-wrap gap-4 mt-3 text-[11px] text-slate-500">
-        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:var(--pos)"></span>Filled</span>
-        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:#f59e0b"></span>Pending — routine will fill</span>
-        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:var(--neg)"></span>No PDF — needs XBRL</span>
-      </div>
-      <div id="exch" class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-100"></div>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pB" aria-label="Coverage and lists">
+        <div class="os-ph"><span class="ttl">Coverage</span><span class="r" id="pctBig"></span></div>
+        <div id="sum">
+          <div class="g">
+            <div title="Companies whose result filing has landed in the feed this quarter"><span>Declared</span><b id="sDeclared">–</b><small>results filed this quarter</small></div>
+            <div title="Declared companies whose revenue/profit figures we hold"><span>Filled</span><b id="sFilled" class="os-pos">–</b><small id="sFilledPct">–</small></div>
+            <div title="Declared, but we have no numbers yet — the routine's to-do list"><span>Not filled</span><b id="sOpen" class="warn">–</b><small id="sOpenSub">–</small></div>
+            <div title="Of the filled ones, how many were read off the PDF by the vision routine rather than parsed from XBRL"><span>Via vision</span><b id="sVision" style="color:var(--accent-text)">–</b><small>filled from the filing PDF</small></div>
+          </div>
+          <div id="bar" class="bar"></div>
+          <div id="leg"><span><i style="background:#22c55e"></i>Filled</span><span><i style="background:#f59e0b"></i>Pending — routine will fill</span><span><i style="background:#ef4444"></i>No PDF — needs XBRL</span></div>
+          <div id="exch"></div>
+        </div>
+        <div class="os-ch" id="bHead"><span>Still missing numbers</span><span>Companies</span></div>
+        <div class="os-list" id="bList" role="listbox" aria-label="Lists"></div>
+      </section>
+      <section class="os-pane" id="pK" aria-label="Companies">
+        <div class="os-ph"><span class="ttl" id="kTitle"></span><span class="r" id="kCount"></span></div>
+        <div class="os-ps"><input id="kSearch" type="search" placeholder="Find a company" autocomplete="off" aria-label="Find a company" /></div>
+        <div class="os-ch" id="kHead"></div>
+        <div class="os-list" id="kList" role="listbox" aria-label="Companies"></div>
+      </section>
+      <section class="os-pane os-main nosel" id="pD" aria-label="Company detail">
+        <div class="os-ph"><span class="sym" id="dSym"></span><span class="nm" id="dName"></span><span id="dPill"></span>
+          <span class="r"><a class="os-btn hidden" id="dOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a></span></div>
+        <div class="os-stats" id="dStats"></div>
+        <div id="dWhy"></div>
+        <div class="os-ps" id="dCtl"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+      </section>
     </div>
-
-    <!-- open list -->
-    <div class="mb-2 flex items-baseline justify-between gap-3">
-      <h2 class="text-sm font-bold text-slate-700">Still missing numbers</h2>
-      <span id="openCount" class="text-[11px] text-slate-400"></span>
-    </div>
-    <div id="openWrap" class="card overflow-x-auto scrollbar"></div>
-
-    <!-- early + late filers for every other quarter (the vision routine reads these too) -->
-    <div id="lateBox" class="mt-6" hidden>
-      <div class="mb-2 flex items-baseline justify-between gap-3">
-        <h2 class="text-sm font-bold text-slate-700">Filings for other quarters (early or late), still missing numbers</h2>
-        <span id="lateCount" class="text-[11px] text-slate-400"></span>
-      </div>
-      <div id="lateWrap" class="card overflow-x-auto scrollbar"></div>
-    </div>
-
-    <p class="text-[11px] text-slate-400 mt-6">
+    <details id="how"><summary>How to read this page</summary>
       <b>Pending</b> = the filing has an attachment, so the vision routine will read it on its next run (00:15 IST off-season; 4×/day in results season — the switch is automatic, from the filing counts).
       <b>No PDF</b> = the filing carried no attachment to read; these can only be filled when the exchange posts the XBRL.
       Vision-read figures for NSE names are an overlay applied only to empty cells — real XBRL always supersedes them.
       Counts come from the same module the routine uses to pick its work (<code>scripts/results_pending.py</code>), so this page and the routine can never disagree.
-      See also <a href="./quarterly-results.html" class="text-indigo-600 hover:underline font-semibold">Quarterly Results</a> and <a href="./status.html" class="text-indigo-600 hover:underline font-semibold">Data health</a>.
-    </p>
+      The chart is the selected company's stored closing prices (context only; it is not part of the coverage count).
+      See also <a href="./quarterly-results.html">Quarterly Results</a> and <a href="./status.html">Data health</a>.
+    </details>
   </div>
 </main>
 
 <script>
 (function () {
+  var K = window.OSKit, $ = function (id) { return document.getElementById(id); };
+  // ---- unchanged from the old page: formatters, next-run clock, season chip, why/when text, owner lock ----
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
   function fmtCr(v){
     if (!v) return '–';
@@ -173,100 +181,139 @@
 
   if (!SW_OWNER) { swLock(); return; }
 
+
   fetch('./results_coverage.json', {cache:'no-store'})
     .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
     .then(render)
     .catch(function(e){
-      document.getElementById('banner').innerHTML =
-        '<span class="text-rose-600 font-semibold">Could not load coverage data.</span> <span class="text-slate-400">'+esc(e.message)+'</span>';
+      $('status').innerHTML = '<span class="os-neg" style="font-weight:600">Could not load coverage data.</span> ' + esc(e.message);
     });
 
-  function render(d) {
-    SEASON = d.season || null;
-    var s = d.stat, total = s.declared || 1;
-    document.getElementById('qlabel').textContent = '· ' + d.qlabel;
-    document.getElementById('banner').className = 'card p-3 mb-5 text-xs text-slate-500 flex flex-wrap items-center gap-x-2 gap-y-1';
-    document.getElementById('banner').innerHTML =
-      '<b class="text-slate-700">' + esc(d.qlabel) + '</b><span class="text-slate-300">·</span>' +
-      'quarter ending ' + esc(String(d.qe).replace(/(\d{4})(\d{2})(\d{2})/, '$3-$2-$1')) +
-      '<span class="text-slate-300">·</span>rebuilt hourly with the results feed' +
-      seasonChip(d.season) +
-      '<span class="text-slate-300">·</span>updated ' + esc(d.updated);
-    document.getElementById('body').classList.remove('hidden');
+  var D = null, BUCKETS = [], ROWS = [], CH = null, TOK = 0;
+  var S = { b: 0, r: null, q: '', sort: null, dir: -1, pane: 2 };
+  var CS = { iv: 'D', rg: '1Y' };
+  var BL = { pending: 'Pending — routine will fill', no_pdf: 'No PDF — needs XBRL', bse_dup: 'Via BSE', filled: 'Filled' };
 
-    document.getElementById('sDeclared').textContent = s.declared;
-    document.getElementById('sFilled').textContent   = s.filled;
-    document.getElementById('sOpen').textContent     = s.open;
-    document.getElementById('sVision').textContent   = s.vision;
+  function render(d) {
+    D = d; SEASON = d.season || null;
+    var s = d.stat, total = s.declared || 1;
+    $('qlabel').textContent = '· ' + d.qlabel;
+    $('asof').className = 'os-asof live';
+    $('asof').innerHTML = 'quarter ending ' + esc(String(d.qe).replace(/(\d{4})(\d{2})(\d{2})/, '$3-$2-$1')) +
+      ' · rebuilt hourly with the results feed ' + seasonChip(d.season).replace(/<span class="text-slate-300">·<\/span>/g, '· ') + ' · updated ' + esc(d.updated);
+    $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+
+    $('sDeclared').textContent = s.declared;
+    $('sFilled').textContent   = s.filled;
+    $('sOpen').textContent     = s.open;
+    $('sVision').textContent   = s.vision;
     var pct = (s.filled / total * 100);
-    document.getElementById('sFilledPct').textContent = pct.toFixed(1) + '% of declared';
-    document.getElementById('sOpenSub').textContent =
-      s.open === 0 ? 'fully caught up 🎉' : (s.pending + ' pending · ' + s.no_pdf + ' no PDF');
-    document.getElementById('pctBig').textContent = pct.toFixed(1) + '% filled';
+    $('sFilledPct').textContent = pct.toFixed(1) + '% of declared';
+    $('sOpenSub').textContent = s.open === 0 ? 'fully caught up 🎉' : (s.pending + ' pending · ' + s.no_pdf + ' no PDF');
+    $('pctBig').textContent = pct.toFixed(1) + '% filled';
 
     var seg = [['#22c55e', s.filled, 'Filled'], ['#f59e0b', s.pending, 'Pending'], ['#ef4444', s.no_pdf, 'No PDF']];
-    document.getElementById('bar').innerHTML = seg.filter(function(x){return x[1];}).map(function(x){
+    $('bar').innerHTML = seg.filter(function(x){return x[1];}).map(function(x){
       return '<span style="background:'+x[0]+';width:'+(x[1]/total*100)+'%" title="'+x[2]+': '+x[1]+' of '+s.declared+'"></span>';
     }).join('');
 
-    document.getElementById('exch').innerHTML = ['NSE','BSE'].map(function(k){
-      var e = d.byExch[k] || {declared:0,filled:0,open:0};
+    $('exch').innerHTML = ['NSE','BSE'].map(function(k){
+      var e = (d.byExch || {})[k] || {declared:0,filled:0,open:0};
       var p = e.declared ? (e.filled/e.declared*100) : 0;
-      return '<div title="'+k+': '+e.filled+' of '+e.declared+' declared results have numbers">' +
-        '<div class="flex items-baseline justify-between"><span class="text-xs font-bold text-slate-600">'+k+
-        (k==='BSE'?'<span class="font-normal text-slate-400"> only</span>':'')+'</span>' +
-        '<span class="text-xs font-extrabold '+(e.open?'text-amber-600':'text-emerald-600')+'">'+e.filled+'/'+e.declared+'</span></div>' +
-        '<div class="bar mt-1.5"><span style="background:var(--pos);width:'+p+'%"></span></div></div>';
+      return '<div title="'+k+': '+e.filled+' of '+e.declared+' declared results have numbers">' + k + (k==='BSE'?' only':'') +
+        '<b class="'+(e.open?'warn':'os-pos')+'">'+e.filled+'/'+e.declared+'</b>' +
+        '<div class="bar"><span style="background:var(--pos);width:'+p+'%"></span></div></div>';
     }).join('');
 
-    var late = d.late || [], nLate = late.reduce(function(a, g){ return a + g.rows.length; }, 0);
-    document.getElementById('lateBox').hidden = !nLate;
-    document.getElementById('lateCount').textContent = nLate ? nLate + ' filing' + (nLate===1?'':'s') : '';
-    document.getElementById('lateWrap').innerHTML = late.map(function(g){
-      return '<div class="px-3 pt-3 text-[11px] font-bold uppercase tracking-wide text-slate-400">' + esc(g.qlabel) + '</div>' +
-        '<table class="w-full text-sm sw-cards"><tbody>' + g.rows.map(function(r){
-          return '<tr class="border-b border-slate-100 last:border-0">' +
-            '<td class="px-3 py-2"><span class="font-bold text-slate-900">'+esc(r[0])+'</span>' +
-              '<div class="text-[11px] text-slate-400">'+esc(r[1])+'</div></td>' +
-            '<td class="px-3 py-2 text-xs font-semibold text-slate-500">'+esc(r[2])+'</td>' +
-            '<td class="px-3 py-2 text-right tabular-nums text-slate-600">'+fmtCr(r[3])+'</td>' +
-            '<td class="px-3 py-2 text-xs text-slate-500">filed '+esc(r[4])+'</td>' +
-            '<td class="px-3 py-2"><span class="pill '+esc(r[5])+'">'+esc(LBL[r[5]]||r[5])+'</span></td></tr>';
-        }).join('') + '</tbody></table>';
+    // lists: the open rows of this quarter (whole, by status, by exchange), then one list per other quarter
+    var rows = (d.rows || []).map(function (r) { return { r: r, q: d.qlabel, late: false }; });
+    BUCKETS = [{ name: 'All — ' + d.qlabel, rows: rows }];
+    var st = ['pending', 'no_pdf']; rows.forEach(function (x) { if (st.indexOf(x.r[5]) < 0) st.push(x.r[5]); });
+    st.forEach(function (k) { BUCKETS.push({ name: BL[k] || k, rows: rows.filter(function (x) { return x.r[5] === k; }) }); });
+    ['NSE', 'BSE'].forEach(function (k) { BUCKETS.push({ name: k === 'BSE' ? 'BSE only' : k, rows: rows.filter(function (x) { return x.r[2] === k; }) }); });
+    (d.late || []).forEach(function (g) { BUCKETS.push({ name: 'Other quarter (early or late) — ' + g.qlabel, late: true, rows: (g.rows || []).map(function (r) { return { r: r, q: g.qlabel, late: true }; }) }); });
+    wire(); renderBuckets(); renderRows(false); K.fitGrid($('grid'));
+  }
+  function renderBuckets() {
+    $('bList').innerHTML = BUCKETS.map(function (b, i) {
+      return '<div class="os-row br' + (i === S.b ? ' on' : '') + '" role="option" data-i="' + i + '" title="' + esc(b.name) + '"><span class="n">' + esc(b.name) + '</span><span class="m">' + b.rows.length + '</span></div>';
     }).join('');
-
-    var rows = d.rows || [];
-    document.getElementById('openCount').textContent =
-      rows.length ? rows.length + ' compan' + (rows.length===1?'y':'ies') + ' · biggest first' : '';
-    var wrap = document.getElementById('openWrap');
-    if (!rows.length) {
-      wrap.innerHTML = '<div class="p-8 text-center"><div class="text-3xl mb-2">✅</div>' +
-        '<div class="text-sm font-bold text-slate-700">Every declared result has numbers</div>' +
-        '<div class="text-xs text-slate-400 mt-1">Nothing outstanding for ' + esc(d.qlabel) + '.</div></div>';
-      return;
-    }
-    wrap.innerHTML =
-      '<table class="w-full text-sm sw-cards"><thead><tr class="text-[11px] uppercase tracking-wide text-slate-400 border-b border-slate-200">' +
-      '<th class="text-left font-bold px-3 py-2">Company</th>' +
-      '<th class="text-left font-bold px-3 py-2">Exch</th>' +
-      '<th class="text-right font-bold px-3 py-2">M-cap</th>' +
-      '<th class="text-left font-bold px-3 py-2">Declared</th>' +
-      '<th class="text-left font-bold px-3 py-2">Status</th>' +
-      '<th class="text-left font-bold px-3 py-2">Why not filled · when it will be</th>' +
-      '</tr></thead><tbody>' +
-      rows.map(function(r){
-        var w = reason(r[5], r[2]);
-        return '<tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition">' +
-          '<td class="px-3 py-2"><a href="./stock.html?s='+encodeURIComponent(r[0])+'" class="font-bold text-slate-900 hover:text-indigo-600">'+esc(r[0])+'</a>' +
-            '<div class="text-[11px] text-slate-400">'+esc(r[1])+'</div></td>' +
-          '<td class="px-3 py-2 text-xs font-semibold text-slate-500">'+esc(r[2])+'</td>' +
-          '<td class="px-3 py-2 text-right tabular-nums text-slate-600">'+fmtCr(r[3])+'</td>' +
-          '<td class="px-3 py-2 text-xs text-slate-500">'+esc(r[4])+'</td>' +
-          '<td class="px-3 py-2"><span class="pill '+esc(r[5])+'">'+esc(LBL[r[5]]||r[5])+'</span></td>' +
-          '<td class="px-3 py-2 text-xs text-slate-500 min-w-[16rem] max-w-sm">'+esc(w.why)+
-            '<div class="text-[11px] font-semibold text-indigo-600 mt-0.5">'+esc(w.eta)+'</div></td>' +
-        '</tr>';
-      }).join('') + '</tbody></table>';
+  }
+  function renderRows(keep) {
+    var b = BUCKETS[S.b], q = S.q.trim().toLowerCase();
+    var rows = b.rows.filter(function (x) { return !q || (x.r[0] + ' ' + x.r[1]).toLowerCase().indexOf(q) >= 0; });
+    if (S.sort != null) { var k = S.sort, d = S.dir; rows.sort(function (a, c) { var x = a.r[k], y = c.r[k]; return (typeof x === 'number' || typeof y === 'number' ? ((x || 0) - (y || 0)) : String(x).localeCompare(String(y))) * d; }); }
+    ROWS = rows;
+    $('kTitle').textContent = b.name; $('kTitle').title = b.name;
+    $('kCount').textContent = b.rows.length ? (q ? rows.length + ' of ' + b.rows.length : b.rows.length + ' compan' + (b.rows.length === 1 ? 'y' : 'ies') + (S.sort == null && !b.late ? ' · biggest first' : '')) : '';
+    var hs = [[0, 'Company'], [2, 'Exch'], [3, 'M-cap'], [4, b.late ? 'Filed' : 'Declared']];
+    $('kHead').innerHTML = hs.map(function (h) { return '<span data-k="' + h[0] + '"' + (S.sort === h[0] ? ' class="on"' : '') + '>' + h[1] + (S.sort === h[0] ? (S.dir > 0 ? ' ↑' : ' ↓') : '') + '</span>'; }).join('');
+    if (!keep || ROWS.indexOf(S.r) < 0) S.r = ROWS[0] || null;
+    $('kList').innerHTML = ROWS.length ? ROWS.map(function (x, i) { var r = x.r;
+      return '<div class="os-row kr' + (x === S.r ? ' on' : '') + '" role="option" data-i="' + i + '" title="' + esc(r[1]) + '">' +
+        '<span class="n"><b>' + esc(r[0]) + '</b><i>' + esc(r[1]) + '</i></span><span class="m">' + esc(r[2]) + '</span><span class="v">' + fmtCr(r[3]) + '</span><span class="m">' + esc(r[4]) + '</span></div>';
+    }).join('') : (q ? '<div class="os-empty">No company matches “' + esc(S.q.trim()) + '”.</div>' :
+      S.b === 0 ? '<div class="os-empty"><div style="font-size:24px">✅</div><b style="color:var(--text)">Every declared result has numbers</b><br>Nothing outstanding for ' + esc(D.qlabel) + '.</div>' :
+      '<div class="os-empty">No company in this list.</div>');
+    renderDetail();
+  }
+  function segC() {
+    $('cIv').innerHTML = ['D', 'W', 'M'].map(function (x) { return '<button type="button" data-v="' + x + '"' + (x === CS.iv ? ' class="on"' : '') + '>' + x + '</button>'; }).join('');
+    $('cRg').innerHTML = ['3M', '6M', '1Y', '3Y', 'Max'].map(function (x) { return '<button type="button" data-v="' + x + '"' + (x === CS.rg ? ' class="on"' : '') + '>' + x + '</button>'; }).join('');
+  }
+  function renderDetail() {
+    var x = S.r, tok = ++TOK, pd = $('pD');
+    if (!x) { pd.classList.add('nosel'); $('dSym').textContent = 'No company selected'; $('dName').textContent = ''; $('dPill').innerHTML = ''; $('dOpen').classList.add('hidden'); $('dWhy').innerHTML = '<div class="os-empty">Nothing to show for this list.</div>'; return; }
+    pd.classList.remove('nosel');
+    var r = x.r, w = x.late ? { why: 'A filing for another quarter (' + x.q + ') that still has no numbers. The vision routine reads these too.', eta: '' } : reason(r[5], r[2]);
+    $('dSym').textContent = r[0]; $('dName').textContent = r[1]; $('dName').title = r[1];
+    $('dPill').innerHTML = '<span class="pill ' + esc(r[5]) + '">' + esc(LBL[r[5]] || r[5]) + '</span>';
+    $('dOpen').href = './stock.html?s=' + encodeURIComponent(r[0]); $('dOpen').classList.remove('hidden');
+    $('dStats').innerHTML =
+      '<div><span>Exchange</span><b>' + esc(r[2]) + '</b></div>' +
+      '<div><span>M-cap</span><b>' + fmtCr(r[3]) + '</b></div>' +
+      '<div><span>' + (x.late ? 'Filed' : 'Declared') + '</span><b>' + esc(r[4]) + '</b></div>' +
+      '<div><span>Status</span><b>' + esc(LBL[r[5]] || r[5]) + '</b></div>' +
+      '<div><span>Quarter</span><b>' + esc(x.q) + '</b></div>' +
+      '<div title="Next vision run: ' + esc(nextRun()) + '"><span>Next run</span><b>' + esc(nextRun()) + '</b></div>';
+    $('dWhy').innerHTML = (w.why ? esc(w.why) : 'No reason is recorded for the status “' + esc(r[5]) + '”.') + (w.eta ? '<div class="eta">' + esc(w.eta) + '</div>' : '');
+    if (!CH) CH = new K.Chart({ chart: $('cChart'), legend: $('cLegend'), msg: $('cMsg'), iv: CS.iv, range: CS.rg });
+    CH.clear('Loading ' + r[0] + '…');
+    K.loadStockBars(r[0]).then(function (d) { if (tok !== TOK) return; CH.show(d, { name: r[0], tag: d.ohlc ? '' : 'closes' }); })
+      .catch(function () { if (tok !== TOK) return; CH.clear('No price file for ' + r[0] + ' in the chart store.'); });
+  }
+  function markOn(listId, i) {
+    var el = $(listId), cur = el.querySelector('.os-row.on'); if (cur) cur.classList.remove('on');
+    var n = el.querySelector('.os-row[data-i="' + i + '"]'); if (n) { n.classList.add('on'); n.scrollIntoView({ block: 'nearest' }); }
+  }
+  function pickBucket(i) { if (!BUCKETS[i]) return; S.b = i; markOn('bList', i); renderRows(false); }
+  function pickRow(i) { if (!ROWS[i]) return; S.r = ROWS[i]; markOn('kList', i); renderDetail(); }
+  function wire() {
+    segC();
+    $('bList').onclick = function (e) { var r = e.target.closest('.os-row'); if (r) { S.pane = 1; pickBucket(+r.dataset.i); } };
+    $('kList').onclick = function (e) { var r = e.target.closest('.os-row'); if (r) { S.pane = 2; pickRow(+r.dataset.i); } };
+    $('kHead').onclick = function (e) { var s = e.target.closest('span[data-k]'); if (!s) return; var k = +s.dataset.k;
+      if (S.sort === k) S.dir = -S.dir; else { S.sort = k; S.dir = (k === 0 || k === 2) ? 1 : -1; } renderRows(true); };
+    $('kSearch').oninput = function () { S.q = this.value; renderRows(true); };
+    $('cIv').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; CS.iv = b.dataset.v; if (CH) { CH.setIv(CS.iv); CS.rg = CH.range; } segC(); };
+    $('cRg').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; CS.rg = b.dataset.v; segC(); if (CH) CH.setRange(CS.rg); };
+    window.addEventListener('resize', function () { K.fitGrid($('grid')); });
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      var inField = /^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''));
+      if (e.key === 'Escape' && inField) { e.target.blur(); return; }
+      if (inField) return;
+      if (e.key === '/') { e.preventDefault(); $('kSearch').focus(); return; }
+      if (e.key === 'ArrowLeft') { S.pane = 1; e.preventDefault(); return; }
+      if (e.key === 'ArrowRight') { S.pane = 2; e.preventDefault(); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault(); var d = e.key === 'ArrowDown' ? 1 : -1;
+        if (S.pane === 1) { var ni = Math.max(0, Math.min(BUCKETS.length - 1, S.b + d)); if (ni !== S.b) pickBucket(ni); }
+        else { var fi = ROWS.indexOf(S.r), nf = Math.max(0, Math.min(ROWS.length - 1, fi + d)); if (nf !== fi) pickRow(nf); }
+        return;
+      }
+      if (e.key === 'Enter' && S.r) location.href = $('dOpen').href;
+    });
   }
 })();
 </script>
