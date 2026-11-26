@@ -8,29 +8,62 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
-  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
-  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:var(--radius-sm);letter-spacing:.02em}
-  .chip.buy{background:var(--pos-soft);color:var(--pos)}.chip.sell{background:var(--neg-soft);color:var(--neg)}
-  .chip.bulk{background:var(--accent-soft);color:var(--accent-text)}.chip.block{background:var(--warn-soft);color:var(--warn)}
-  html[data-theme="dark"] .chip.buy{background:rgba(16,185,129,.18);color:var(--pos)}
-  html[data-theme="dark"] .chip.sell{background:rgba(244,63,94,.16);color:var(--neg)}
-  html[data-theme="dark"] .chip.bulk{background:rgba(99,102,241,.18);color:var(--accent-text)}
-  html[data-theme="dark"] .chip.block{background:rgba(245,158,11,.16);color:var(--warn)}
-  .vbtn{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;
-        background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border))}
-  .vbtn.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
-  select,input[type=text]{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);font-size:13px;padding:7px 10px}
-  .cli{cursor:pointer}.cli:hover{text-decoration:underline}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(500px,1.2fr) 320px minmax(0,1fr)}
+  #lHead,#lList .os-row{grid-template-columns:var(--cols)}
+  #lList .os-row{font-size:12.5px} #lList .os-row .n,#lList .os-row .cl{text-align:left}
+  #lHead span[data-k]{cursor:pointer;user-select:none} #lHead span[data-k]:hover{color:var(--text)}
+  #lHead span.srt{color:var(--accent-text)}
+  .os-row .cl{color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .os-row .fl{color:var(--text-faint)}
+  .tg{display:inline-block;font-size:9.5px;font-weight:700;line-height:1;padding:2px 4px;border-radius:4px;letter-spacing:.02em}
+  .tg.b{background:var(--pos-soft,rgba(16,185,129,.14));color:var(--pos)} .tg.s{background:var(--neg-soft,rgba(244,63,94,.12));color:var(--neg)}
+  .tg.k{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+  #season{font-size:12px;color:var(--text-muted);padding:0 2px 8px;line-height:1.5}
+  #season b{color:var(--text);font-weight:600} #season a{color:var(--accent-text);cursor:pointer;font-weight:600}
+  #season .d{color:var(--text-faint);margin:0 7px}
+  html[data-theme] .os-bar input[type="search"],html[data-theme] .os-bar select{border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;padding:4px 7px;height:28px;min-height:0;width:auto;max-width:170px}
+  html[data-theme] .os-bar input[type="search"]{width:190px}
+  #dBody{cursor:default}
+  .kv{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 12px;min-height:31px;border-bottom:1px solid var(--border)}
+  .kv span{color:var(--text-muted)} .kv b{font-weight:600;color:var(--text);white-space:nowrap}
+  .kv b.os-pos{color:var(--pos)} .kv b.os-neg{color:var(--neg)}
+  .sh{padding:9px 12px 5px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);border-bottom:1px solid var(--border);background:var(--surface-2)}
+  .nm{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:12.5px;line-height:1.4}
+  .dl{padding:7px 12px;border-bottom:1px solid var(--border);font-size:12.5px;line-height:1.45}
+  .dl.cur{background:var(--accent-soft)}
+  .dl .t{display:flex;align-items:center;gap:6px} .dl .t b{margin-left:auto;font-weight:600;color:var(--text)}
+  .dl .t .dt{color:var(--text-muted)}
+  .dl .c{display:flex;gap:8px;justify-content:space-between;color:var(--text-muted);margin-top:1px}
+  .dl .c .cli{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--text)} .dl .c .cli:hover{text-decoration:underline;color:var(--accent-text)}
+  .dl .c .qp{white-space:nowrap;color:var(--text-faint)}
+  #cStats{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #cStats div{border-bottom:0 !important}
+  #cStats i{display:block;font-style:normal;font-size:11px;margin-top:2px;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  #how summary{cursor:pointer;color:var(--text-muted)} #how p{margin-top:6px}
+  #fbtn{display:none}
+  @media (max-width:1280px) and (min-width:900px){
+    #grid{grid-template-columns:minmax(420px,1.2fr) minmax(0,1fr);grid-template-rows:minmax(0,1.1fr) minmax(0,1fr)}
+    #pL{grid-row:1 / span 2} #pD{grid-column:2;grid-row:1} #pC{grid-column:2;grid-row:2}
+    #pC .os-stats{display:none}
+  }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)}
+    #fbtn{display:inline-flex} .os-bar:not(.open) .fx{display:none !important}
+    #pD .os-list{max-height:420px !important}
+    #cStats{grid-template-columns:repeat(2,minmax(0,1fr))} #cStats div:nth-child(2n){border-right:0} #cStats div:nth-child(-n+2){border-bottom:1px solid var(--border) !important}
+    html[data-theme] .os-bar input[type="search"]{width:150px}
+  }
+  @container (max-width:520px){ #cStats{grid-template-columns:repeat(2,minmax(0,1fr))} #cStats div:nth-child(2n){border-right:0} #cStats div:nth-child(-n+2){border-bottom:1px solid var(--border) !important} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -39,76 +72,85 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Bulk &amp; Block Deals <span class="text-slate-400 font-semibold text-base">· the smart-money tape</span></h1>
-    <p class="text-sm text-slate-500 mt-1">Every disclosed <b>bulk deal</b> (a client trading &gt;0.5% of a company's shares in a day) and <b>block deal</b> (large negotiated trades in the special block windows) on NSE. Who bought, who sold, and for how much. <span id="updated" class="text-slate-400"></span></p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Bulk &amp; Block Deals</h1>
+    <div class="os-vtabs" id="views" role="tablist" aria-label="List by"></div>
+    <div class="os-asof" id="asof"></div>
   </div>
-
-  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading deals…</div>
+  <div id="status" class="os-empty">Loading deals…</div>
 
   <div id="content" class="hidden">
-    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
+    <div class="os-bar">
+      <input id="q" type="search" placeholder="Search stock or buyer…  ( / )" autocomplete="off" aria-label="Search stock or buyer" />
+      <select id="fDays" aria-label="Period"><option value="1">Latest day</option><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="0">Full window</option></select>
+      <button id="fbtn" type="button" class="os-btn" aria-expanded="false" title="Show or hide the other filters">Filters</button>
+      <select class="fx" id="fKind" aria-label="Deal type"><option value="all">Bulk + block</option><option value="B">Bulk only</option><option value="K">Block only</option></select>
+      <select class="fx" id="fSide" aria-label="Side"><option value="all">Buys + sells</option><option value="B">Buys only</option><option value="S">Sells only</option></select>
+      <select class="fx" id="fVal" aria-label="Minimum deal value"><option value="0">Any value</option><option value="1">≥ ₹1 cr</option><option value="5">≥ ₹5 cr</option><option value="10">≥ ₹10 cr</option><option value="25">≥ ₹25 cr</option></select>
+      <select id="fSort" aria-label="Sort deals" title="Order of the All-deals list"><option value="date">Newest first</option><option value="val">Biggest value</option><option value="qty">Biggest quantity</option></select>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>←→</b> deals / by stock · <b>Enter</b> open the stock</span>
+    </div>
+    <div id="season"></div>
 
-    <div class="mb-3 flex flex-wrap items-center gap-2">
-      <div class="flex gap-1.5">
-        <span id="vDeals" class="vbtn on">All deals</span>
-        <span id="vStocks" class="vbtn">By stock</span>
-      </div>
-      <input id="q" type="text" placeholder="Search stock or buyer…" autocomplete="off" class="w-52" />
-      <select id="fKind"><option value="all">Bulk + block</option><option value="B">Bulk only</option><option value="K">Block only</option></select>
-      <select id="fSide"><option value="all">Buys + sells</option><option value="B">Buys only</option><option value="S">Sells only</option></select>
-      <select id="fVal"><option value="0">Any value</option><option value="1">≥ ₹1 cr</option><option value="5">≥ ₹5 cr</option><option value="10">≥ ₹10 cr</option><option value="25">≥ ₹25 cr</option></select>
-      <select id="fDays"><option value="1">Latest day</option><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="0">Full window</option></select>
-      <select id="fSort"><option value="date">Newest first</option><option value="val">Biggest value</option><option value="qty">Biggest quantity</option></select>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pL" aria-label="Deals">
+        <div class="os-ph"><span class="ttl" id="lTitle"></span><span class="r" id="count"></span></div>
+        <div class="os-ch" id="lHead"></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="Deals" tabindex="0"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Detail">
+        <div class="os-ph"><span class="sym" id="dSym"></span><span class="r" id="dTag"></span></div>
+        <div class="os-list" id="dBody"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span class="ttl" id="cTitle"></span><span class="r"><a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a></span></div>
+        <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-stats" id="cStats"></div>
+      </section>
     </div>
 
-    <div class="card sw-cards overflow-x-auto">
-      <table class="w-full text-sm min-w-[840px]">
-        <thead id="tHead" class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-50/60"></thead>
-        <tbody id="tBody"></tbody>
-      </table>
-      <div class="p-3 flex items-center justify-between text-xs text-slate-500">
-        <span id="count"></span>
-        <button id="more" class="hidden px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition">Show more</button>
-      </div>
-    </div>
-
-    <p class="text-[11px] text-slate-500 mt-5">Source: NSE bulk &amp; block deal disclosures, published every trading evening (~6:30 pm IST) and accumulated here into a rolling ~92-day window that grows daily. A trade shows on both sides only when both parties crossed the disclosure threshold, so total buys ≠ total sells. Deal value = quantity × trade/weighted-average price. Click a buyer's name to see all their deals. In "By stock", <b>net bought = buys − sells</b> over the deals matching your filters. Educational only — not investment advice.</p>
+    <details id="how"><summary>How these numbers are made</summary>
+      <p>Every disclosed <b>bulk deal</b> (a client trading &gt;0.5% of a company's shares in a day) and <b>block deal</b> (large negotiated trades in the special block windows) on NSE. Source: NSE bulk &amp; block deal disclosures, published every trading evening (~6:30 pm IST) and accumulated here into a rolling ~92-day window that grows daily. A trade shows on both sides only when both parties crossed the disclosure threshold, so total buys ≠ total sells. Deal value = quantity × trade/weighted-average price.</p>
+      <p>Click a client's name in the middle pane to see all their deals. For a stock, <b>net bought = buys − sells</b> over the deals matching your filters; <b>buyers</b> counts the different clients on the buy side. The chart is the stock's daily price history from this site's own store. Educational only — not investment advice.</p>
+    </details>
   </div>
 </main>
 
 <script>
 'use strict';
+const K=window.OSKit;
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const fmtD = iso => { const p = iso.split('-'); return (+p[2]) + ' ' + MON[+p[1]-1] + " '" + p[0].slice(2); };
+const fmtDs = iso => { const p = iso.split('-'); return (+p[2]) + ' ' + MON[+p[1]-1]; };
 const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN');
 const cr = v => v >= 100 ? Math.round(v).toLocaleString('en-IN') : v >= 10 ? v.toFixed(1) : v.toFixed(2);
-const slink = (sym, name) => '<span class="sw-star" data-sym="' + esc(sym) + '"></span> ' +
-  '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name || '') + '">' + esc(sym) + '</a>' +
-  (name ? '<div class="text-[11px] text-slate-400 font-normal max-w-[200px] truncate">' + esc(name) + '</div>' : '');
+const stockUrl = s => './stock.html?sym=' + encodeURIComponent(s);
+const star = s => '<span class="sw-star" data-sym="' + esc(s) + '"></span> ';
 
-let DATA = null, view = 'deals', shown = 250;
+const U0=new URLSearchParams(location.search);
+let DATA = null, view = U0.get('view')==='stocks' ? 'stocks' : 'deals', shown = 0;
+let LIST=[], AGG={}, SELSYM=(U0.get('sym')||'').toUpperCase()||null, SELDEAL=null, sK='net', sDir=-1, CH=null, TOK=0, showTimer=null, LIVE='';
+const PAGE=250;
 const val = r => r[6] * r[7] / 1e7;   // qty*price -> crore
 
 async function load(){
   try { DATA = await (await fetch('./deals.json?t=' + Date.now())).json(); }
   catch(e){ $('status').textContent = 'Could not load deals.json — run scripts/fetch_deals.py first.'; return; }
   if (!DATA || !DATA.rows || !DATA.rows.length){ $('status').textContent = 'No deals yet.'; return; }
-  $('updated').textContent = '· window ' + fmtD(DATA.from) + ' → ' + fmtD(DATA.to) + ' · updated ' + DATA.updated + ' IST (grows daily)';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
-  renderCards(); render();
-  ['q','fKind','fSide','fVal','fDays','fSort'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', () => { shown = 250; render(); }));
-  $('vDeals').onclick = () => setView('deals');
-  $('vStocks').onclick = () => setView('stocks');
-  $('more').onclick = () => { shown += 250; render(); };
-  $('tBody').addEventListener('click', e => {
-    const c = e.target.closest('[data-q]'); if (!c) return;
-    $('q').value = c.dataset.q; shown = 250; render();
-  });
+  if(U0.get('q')) $('q').value=U0.get('q');
+  CH=new K.Chart({chart:$('cChart'),legend:$('cLegend'),msg:$('cMsg'),iv:'D',range:'6M',log:false});
+  wire(); asof(); renderCards(); render();
   liveDeals();
+}
+function asof(){
+  $('asof').innerHTML = LIVE ? '<span class="os-dot" style="background:var(--pos)"></span><b style="color:var(--pos)">LIVE</b> today’s deals (' + fmtD(LIVE) + ') included — NSE evening snapshot'
+    : '<span class="os-dot"></span>window ' + fmtD(DATA.from) + ' → ' + fmtD(DATA.to) + ' · updated ' + esc(DATA.updated) + ' IST';
 }
 
 /* ---- live top-up via our Cloudflare Worker (?nse=large-deals): NSE's same-day
@@ -131,28 +173,26 @@ async function liveDeals(){
       +String(r.qty).replace(/,/g, '') || 0, +String(r.watp).replace(/,/g, '') || 0 ]);
     const rows = map(j.BULK_DEALS_DATA, 'B').concat(map(j.BLOCK_DEALS_DATA, 'K'));
     if (!rows.length) return;
-    DATA.rows = rows.concat(DATA.rows); DATA.to = day;
-    $('updated').innerHTML = ' · <span style="color:var(--pos);font-weight:800">● LIVE</span> today\'s deals (' + fmtD(day) + ') included — NSE evening snapshot';
-    renderCards(); render();
+    DATA.rows = rows.concat(DATA.rows); DATA.to = day; LIVE = day;
+    asof(); renderCards(); render();
   } catch (e) { /* keep baked feed */ }
 }
 setInterval(() => { if (!document.hidden) liveDeals(); }, 600000);
 
-function setView(v){ view = v; shown = 250;
-  $('vDeals').classList.toggle('on', v==='deals'); $('vStocks').classList.toggle('on', v==='stocks'); render(); }
+function setView(v){ view = v; SELDEAL=null; render(); }
 
+// the latest-day line (was four cards): same sums, same rules
 function renderCards(){
   const day = DATA.rows[0][0];                      // newest deal-day in the feed
   const rows = DATA.rows.filter(r => r[0] === day);
   let buy = 0, sell = 0, big = null;
   for (const r of rows){ const v = val(r); r[5]==='B' ? buy += v : sell += v; if (!big || v > val(big)) big = r; }
   const nb = rows.filter(r => r[1]==='B').length, nk = rows.length - nb;
-  const card = (t, v, sub, cls) => '<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">' + t + '</div><div class="text-lg font-bold ' + (cls||'') + '">' + v + '</div><div class="text-[11px] text-slate-400">' + sub + '</div></div>';
-  $('cards').innerHTML =
-     card('Deals · ' + fmtD(day), rows.length, nb + ' bulk · ' + nk + ' block')
-    + card('Disclosed buys', '₹' + cr(buy) + ' cr', 'on ' + fmtD(day), 'pos')
-    + card('Disclosed sells', '₹' + cr(sell) + ' cr', 'on ' + fmtD(day), 'neg')
-    + card('Biggest deal', esc(big[2]), (big[5]==='B'?'bought':'sold') + ' ₹' + cr(val(big)) + ' cr by ' + esc(big[4].split(' ').slice(0,3).join(' ')), big[5]==='B'?'pos':'neg');
+  const d='<span class="d">·</span>';
+  $('season').innerHTML = '<b>' + fmtD(day) + '</b>: <b>' + rows.length + '</b> deals (' + nb + ' bulk · ' + nk + ' block)' + d +
+    'Disclosed buys <b class="os-pos">₹' + cr(buy) + ' cr</b>' + d + 'Disclosed sells <b class="os-neg">₹' + cr(sell) + ' cr</b>' + d +
+    'Biggest deal: <a data-sym="' + esc(big[2]) + '" title="Show ' + esc(big[2]) + '">' + esc(big[2]) + '</a> <span class="' + (big[5]==='B'?'os-pos':'os-neg') + '">' +
+    (big[5]==='B'?'bought':'sold') + ' ₹' + cr(val(big)) + ' cr</span> by ' + esc(big[4].split(' ').slice(0,3).join(' '));
 }
 
 function filtered(){
@@ -166,64 +206,168 @@ function filtered(){
     (!minV || val(r) >= minV) && (!lo || r[0] >= lo));
 }
 
-const HEAD_DEALS = '<tr><th class="text-left py-2.5 px-3">Date</th><th class="text-left px-3">Stock</th><th class="text-left px-3 w-[26%]">Client</th><th class="text-center px-3">Side</th><th class="text-right px-3">Qty</th><th class="text-right px-3">Price</th><th class="text-right px-3">Value (₹ cr)</th><th class="text-center px-3">Type</th></tr>';
-const HEAD_STOCKS = '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Net bought (₹ cr)</th><th class="text-right px-3">Buys (₹ cr)</th><th class="text-right px-3">Sells (₹ cr)</th><th class="text-right px-3">Buyers</th><th class="text-right px-3">Deals</th><th class="text-right px-3">Latest</th></tr>';
-
-function render(){ view === 'deals' ? renderDeals() : renderStocks(); }
-
-function renderDeals(){
-  const sort = $('fSort').value;
-  const rows = filtered().slice();
-  if (sort === 'val') rows.sort((a,b) => val(b) - val(a));
-  else if (sort === 'qty') rows.sort((a,b) => b[6] - a[6]);
-  $('tHead').innerHTML = HEAD_DEALS;
-  const upto = Math.min(shown, rows.length);
-  let h = '';
-  for (let i = 0; i < upto; i++){ const r = rows[i], v = val(r);
-    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50">'
-      + '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + fmtD(r[0]) + '</td>'
-      + '<td class="py-2.5 px-3">' + slink(r[2], r[3]) + '</td>'
-      + '<td class="py-2.5 px-3 text-[12.5px] text-slate-600"><span class="cli" data-q="' + esc(r[4]) + '" title="Show all deals by this client">' + esc(r[4]) + '</span></td>'
-      + '<td class="py-2.5 px-3 text-center"><span class="chip ' + (r[5]==='B'?'buy">BUY':'sell">SELL') + '</span></td>'
-      + '<td class="py-2.5 px-3 text-right">' + inr(r[6]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right">' + inr(r[7]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right font-semibold">' + cr(v) + '</td>'
-      + '<td class="py-2.5 px-3 text-center"><span class="chip ' + (r[1]==='B'?'bulk">Bulk':'block">Block') + '</span></td></tr>';
-  }
-  finish(h, upto, rows.length, 'deals');
-}
-
-function renderStocks(){
+/* ---- list ---- */
+const COLS={
+  deals:[['','Date','54px','l'],['','Stock','minmax(104px,.8fr)','l'],['','Client','minmax(0,1.2fr)','l'],['','Side','38px','c'],['','Value ₹cr','66px','r'],['','Type','44px','c']],
+  stocks:[['','Stock','minmax(104px,1fr)','l'],['net','Net bought','70px','r'],['buy','Buys','52px','r'],['sell','Sells','52px','r'],['buyers','Buyers','44px','r'],['n','Deals','38px','r'],['last','Latest','50px','r']] };
+const PHONE={deals:[0,1,2,4], stocks:[0,1,2,3]};
+let CUR=[];
+function render(){
+  const F=filtered();
+  // per-stock totals over the deals matching the filters (the By-stock table's own arithmetic)
   const agg = {};
-  for (const r of filtered()){
-    const a = agg[r[2]] || (agg[r[2]] = { name:r[3], buy:0, sell:0, buyers:new Set(), n:0, last:'' });
+  for (const r of F){
+    const a = agg[r[2]] || (agg[r[2]] = { s:r[2], name:r[3], buy:0, sell:0, buyers:new Set(), n:0, last:'', rows:[] });
     const v = val(r);
     r[5]==='B' ? (a.buy += v, a.buyers.add(r[4].toUpperCase())) : a.sell += v;
-    a.n++; if (r[0] > a.last) a.last = r[0];
+    a.n++; if (r[0] > a.last) a.last = r[0]; a.rows.push(r);
   }
-  const rows = Object.entries(agg).map(([s,a]) => [s, a.name, a.buy - a.sell, a.buy, a.sell, a.buyers.size, a.n, a.last])
-                     .sort((a,b) => b[2] - a[2]);
-  $('tHead').innerHTML = HEAD_STOCKS;
-  const upto = Math.min(shown, rows.length);
-  let h = '';
-  for (let i = 0; i < upto; i++){ const r = rows[i];
-    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50">'
-      + '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right"><span class="' + (r[2] >= 0 ? 'pos':'neg') + '">' + (r[2] >= 0 ? '+' : '−') + cr(Math.abs(r[2])) + '</span></td>'
-      + '<td class="py-2.5 px-3 text-right text-slate-600">' + cr(r[3]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right text-slate-600">' + cr(r[4]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right">' + r[5] + '</td>'
-      + '<td class="py-2.5 px-3 text-right text-slate-600">' + r[6] + '</td>'
-      + '<td class="py-2.5 px-3 text-right whitespace-nowrap text-slate-600">' + fmtD(r[7]) + '</td></tr>';
+  AGG=agg;
+  if(view==='deals'){
+    const sort = $('fSort').value; const rows = F.slice();
+    if (sort === 'val') rows.sort((a,b) => val(b) - val(a));
+    else if (sort === 'qty') rows.sort((a,b) => b[6] - a[6]);
+    LIST=rows;
+    if(SELDEAL && !rows.includes(SELDEAL)) SELDEAL=null;
+    if(!SELDEAL) SELDEAL=(SELSYM && rows.find(r=>r[2]===SELSYM)) || rows[0] || null;
+    SELSYM=SELDEAL?SELDEAL[2]:null;
+  } else {
+    const get={net:a=>a.buy-a.sell,buy:a=>a.buy,sell:a=>a.sell,buyers:a=>a.buyers.size,n:a=>a.n,last:a=>a.last}[sK];
+    LIST=Object.values(agg).sort((a,b)=>{ const x=get(a), y=get(b); return (x<y?1:x>y?-1:0)*(sDir<0?1:-1) || ((b.buy-b.sell)-(a.buy-a.sell)); });
+    if(!SELSYM || !agg[SELSYM]) SELSYM=LIST[0]?LIST[0].s:null;
   }
-  finish(h, upto, rows.length, 'stocks');
+  $('views').innerHTML=[['deals','All deals'],['stocks','By stock']].map(([k,l])=>'<button type="button" role="tab" data-v="'+k+'" class="'+(view===k?'on':'')+'">'+l+'</button>').join('');
+  $('views').querySelectorAll('button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
+  $('fSort').classList.toggle('hidden',view!=='deals');
+  { const nf=($('fKind').value!=='all')+($('fSide').value!=='all')+(+$('fVal').value>0); $('fbtn').textContent='Filters'+(nf?' · '+nf:''); if(nf&&!$('fbtn').dataset.t) $('fbtn').parentNode.classList.add('open'); }
+  const days=+$('fDays').value;
+  $('lTitle').textContent=(view==='deals'?'Deals':'Stocks with deals')+' · '+(days===1?'latest day':days?'last '+days+' days':'full window');
+  $('count').textContent=LIST.length.toLocaleString('en-IN')+' '+(view==='deals'?'deals':'stocks');
+  renderList(); renderSel(); saveUrl();
+}
+function pickCols(){
+  const all=COLS[view], ph=window.innerWidth<900;
+  CUR = ph ? PHONE[view].map(i=>all[i]) : all;
+  $('pL').style.setProperty('--cols', CUR.map(c=>c[2]).join(' '));
+}
+const al=c=>c[3]==='l'?'text-align:left':c[3]==='c'?'text-align:center':'text-align:right';
+function rowHtml(r,i){
+  let on, cells;
+  if(view==='deals'){ on=r===SELDEAL; const v=val(r);
+    const m={Date:'<span class="v fl" style="text-align:left">'+fmtDs(r[0])+'</span>', Stock:'<span class="n">'+star(r[2])+esc(r[2])+'</span>', Client:'<span class="cl">'+esc(r[4])+'</span>',
+      Side:'<span class="v" style="text-align:center"><span class="tg '+(r[5]==='B'?'b">BUY':'s">SELL')+'</span></span>', 'Value ₹cr':'<span class="v '+(r[5]==='B'?'os-pos':'os-neg')+'">'+cr(v)+'</span>',
+      Type:'<span class="v" style="text-align:center"><span class="tg k">'+(r[1]==='B'?'Bulk':'Block')+'</span></span>'};
+    cells=CUR.map(c=>m[c[1]]).join('');
+    return '<div class="os-row'+(on?' on':'')+'" role="option" aria-selected="'+on+'" data-i="'+i+'" title="'+esc(r[3]||r[2])+' — '+esc(r[4])+'">'+cells+'</div>';
+  }
+  on=r.s===SELSYM; const net=r.buy-r.sell;
+  const m={Stock:'<span class="n">'+star(r.s)+esc(r.s)+'</span>', 'Net bought':'<span class="v '+(net>=0?'os-pos':'os-neg')+'">'+(net>=0?'+':'−')+cr(Math.abs(net))+'</span>',
+    Buys:'<span class="v">'+cr(r.buy)+'</span>', Sells:'<span class="v">'+cr(r.sell)+'</span>', Buyers:'<span class="v">'+r.buyers.size+'</span>', Deals:'<span class="v m">'+r.n+'</span>', Latest:'<span class="v fl">'+fmtDs(r.last)+'</span>'};
+  return '<div class="os-row'+(on?' on':'')+'" role="option" aria-selected="'+on+'" data-i="'+i+'" title="'+esc(r.name||r.s)+'">'+CUR.map(c=>m[c[1]]).join('')+'</div>';
+}
+function renderList(){
+  pickCols();
+  $('lHead').innerHTML=CUR.map(c=>'<span'+(c[0]?' data-k="'+c[0]+'"':'')+' class="'+(view==='stocks'&&c[0]===sK?'srt':'')+'" style="'+al(c)+'"'+(c[1]==='Net bought'?' title="Buys − sells, ₹ crore, over the deals matching the filters"':'')+'>'+c[1]+(view==='stocks'&&c[0]===sK?(sDir<0?' ▾':' ▴'):'')+'</span>').join('');
+  shown=0; $('lList').innerHTML=''; $('lList').scrollTop=0;
+  if(!LIST.length){ $('lList').innerHTML='<div class="os-empty">Nothing matches these filters.</div>'; return; }
+  renderMore(Math.max(PAGE, selIndex()+40));
+}
+const selIndex=()=>view==='deals'?LIST.indexOf(SELDEAL):LIST.findIndex(a=>a.s===SELSYM);
+function reveal(el){ if(!el) return; const L=$('lList');
+  const top=el.getBoundingClientRect().top-L.getBoundingClientRect().top+L.scrollTop;
+  if(top<L.scrollTop) L.scrollTop=top; else if(top+el.offsetHeight>L.scrollTop+L.clientHeight) L.scrollTop=top+el.offsetHeight-L.clientHeight; }
+function renderMore(upto){
+  const to=Math.min(LIST.length, Math.max(shown+PAGE, upto||0)); if(to<=shown) return;
+  let h=''; for(let i=shown;i<to;i++) h+=rowHtml(LIST[i],i);
+  $('lList').insertAdjacentHTML('beforeend', h); shown=to;
+}
+function select(i,noScroll){
+  if(i<0||i>=LIST.length) return; if(i>=shown) renderMore(i+40);
+  if(view==='deals'){ SELDEAL=LIST[i]; SELSYM=SELDEAL[2]; } else SELSYM=LIST[i].s;
+  $('lList').querySelectorAll('.os-row.on').forEach(e=>{ e.classList.remove('on'); e.setAttribute('aria-selected','false'); });
+  const el=$('lList').querySelector('.os-row[data-i="'+i+'"]'); if(el){ el.classList.add('on'); el.setAttribute('aria-selected','true'); if(!noScroll) reveal(el); }
+  renderSel(true); saveUrl();
+}
+let LASTSYM=null;
+function renderSel(lazy){ renderDetail(); renderStats(); chartBar(); K.fitGrid($('grid')); reveal($('lList').querySelector('.os-row.on'));
+  if(SELSYM!==LASTSYM||!lazy){ LASTSYM=SELSYM; renderChart(lazy); } }
+
+/* ---- detail: the stock's totals + every deal in it that matches the filters ---- */
+function renderDetail(){
+  const a=SELSYM&&AGG[SELSYM];
+  if(!a){ $('dSym').textContent='—'; $('dTag').textContent=''; $('dBody').innerHTML='<div class="os-empty">Nothing matches these filters.</div>'; return; }
+  $('dSym').innerHTML=star(a.s)+'<a href="'+stockUrl(a.s)+'" title="Open '+esc(a.s)+'’s own page">'+esc(a.s)+'</a>';
+  $('dTag').textContent=a.n+' deal'+(a.n===1?'':'s');
+  const net=a.buy-a.sell, kv=(l,v,c)=>'<div class="kv"><span>'+l+'</span><b class="'+(c||'')+'">'+v+'</b></div>';
+  let h=a.name?'<div class="nm">'+esc(a.name)+'</div>':'';
+  h+=kv('Net bought (₹ cr)',(net>=0?'+':'−')+cr(Math.abs(net)),net>=0?'os-pos':'os-neg');
+  h+=kv('Buys (₹ cr)',cr(a.buy))+kv('Sells (₹ cr)',cr(a.sell))+kv('Different buyers',a.buyers.size)+kv('Latest deal',fmtD(a.last));
+  h+='<div class="sh">Deals matching the filters · newest first</div>';
+  const rows=a.rows.slice().sort((x,y)=>x[0]<y[0]?1:x[0]>y[0]?-1:val(y)-val(x));
+  rows.forEach(r=>{ h+='<div class="dl'+(r===SELDEAL&&view==='deals'?' cur':'')+'"><div class="t"><span class="dt">'+fmtD(r[0])+'</span><span class="tg '+(r[5]==='B'?'b">BUY':'s">SELL')+'</span><span class="tg k">'+(r[1]==='B'?'Bulk':'Block')+'</span><b>₹'+cr(val(r))+' cr</b></div>'+
+    '<div class="c"><span class="cli" data-q="'+esc(r[4])+'" title="Show all deals by this client">'+esc(r[4])+'</span><span class="qp">'+inr(r[6])+' @ '+inr(r[7])+'</span></div></div>'; });
+  h+='<a class="os-row" style="grid-template-columns:1fr" href="'+stockUrl(a.s)+'"><span class="n" style="color:var(--accent-text)">Open '+esc(a.s)+'’s page →</span></a>';
+  $('dBody').innerHTML=h;
+  const cur=$('dBody').querySelector('.dl.cur'); { const B=$('dBody'); B.scrollTop=0; if(cur){ const t=cur.getBoundingClientRect().bottom-B.getBoundingClientRect().top; if(t>B.clientHeight) B.scrollTop=t-B.clientHeight+60; } }
+}
+function renderStats(){
+  const a=SELSYM&&AGG[SELSYM]; if(!a){ $('cStats').innerHTML=''; return; }
+  const net=a.buy-a.sell, c=(l,v,s,k)=>'<div><span>'+l+'</span><b class="'+(k||'')+'">'+v+'</b><i>'+s+'</i></div>';
+  $('cStats').innerHTML=c('Net bought',(net>=0?'+':'−')+'₹'+cr(Math.abs(net))+' cr','deals matching the filters',net>=0?'os-pos':'os-neg')+c('Buys','₹'+cr(a.buy)+' cr',a.buyers.size+' buyer'+(a.buyers.size===1?'':'s'))+c('Sells','₹'+cr(a.sell)+' cr','disclosed')+c('Deals',a.n,'latest '+fmtD(a.last));
 }
 
-function finish(h, upto, total, unit){
-  $('tBody').innerHTML = h || '<tr><td colspan="8" class="py-10 text-center text-sm text-slate-400">Nothing matches these filters.</td></tr>';
-  if (window.swWatch) swWatch.paintAll($('tBody'));
-  $('count').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + total.toLocaleString('en-IN') + ' ' + unit;
-  $('more').classList.toggle('hidden', upto >= total);
+/* ---- chart: the selected stock's price ---- */
+function sg(id,items,cur,cb){ const el=$(id);
+  el.innerHTML=items.map(([k,l,t])=>'<button type="button" data-v="'+k+'" class="'+(k===cur?'on':'')+'"'+(t?' title="'+esc(t)+'"':'')+'>'+l+'</button>').join('');
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>cb(b.dataset.v)); }
+function chartBar(){
+  sg('cIv',[['D','D','Daily bars'],['W','W','Weekly bars'],['M','M','Monthly bars']],CH.iv,v=>{ CH.setIv(v); chartBar(); });
+  sg('cRg',['3M','6M','1Y','3Y','Max'].map(k=>[k,k]),CH.range,v=>{ CH.setRange(v); chartBar(); });
+  $('cOpen').classList.toggle('hidden',!SELSYM); if(SELSYM) $('cOpen').href=stockUrl(SELSYM);
+  $('cTitle').innerHTML=SELSYM?esc(SELSYM)+' <span style="font-weight:400;color:var(--text-faint);margin-left:6px">daily price</span>':'Chart';
+}
+function renderChart(lazy){
+  const s=SELSYM, tok=++TOK; clearTimeout(showTimer);
+  if(!s){ CH.clear('Pick a deal or a stock from the list.'); return; }
+  showTimer=setTimeout(async()=>{            // holding an arrow key walks the list; only the row you stop on is fetched
+    $('cMsg').textContent='Loading chart…';
+    try{ const d=await K.loadStockBars(s); if(tok!==TOK) return; if(!d||!d.bars.length) throw 0;
+      CH.show(d,{name:(AGG[s]&&AGG[s].name)||s,tag:'NSE',note:''}); }
+    catch(e){ if(tok!==TOK) return; CH.clear('No daily price history on file for '+s+'.'); }
+  },lazy?140:0);
+}
+
+/* ---- url + controls ---- */
+function saveUrl(){
+  const u=new URLSearchParams();
+  if(view!=='deals') u.set('view',view);
+  if($('q').value.trim()) u.set('q',$('q').value.trim());
+  if(SELSYM) u.set('sym',SELSYM);
+  const s=u.toString(); try{ history.replaceState(null,'',location.pathname+(s?'?'+s:'')); }catch(e){}
+}
+function wire(){
+  ['q','fKind','fSide','fVal','fDays','fSort'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', () => { SELDEAL=null; render(); }));
+  $('fbtn').onclick=()=>{ const b=$('fbtn').parentNode; $('fbtn').dataset.t='1'; $('fbtn').setAttribute('aria-expanded',b.classList.toggle('open')); };
+  $('lHead').addEventListener('click',e=>{ const h=e.target.closest('[data-k]'); if(!h||view!=='stocks') return; if(sK===h.dataset.k) sDir=-sDir; else { sK=h.dataset.k; sDir=-1; } render(); });
+  $('lList').addEventListener('click',e=>{ if(e.target.closest('.sw-star')) return; const el=e.target.closest('.os-row[data-i]'); if(el) select(+el.dataset.i,true); });
+  $('lList').addEventListener('dblclick',e=>{ const el=e.target.closest('.os-row[data-i]'); if(el&&SELSYM) location.href=stockUrl(SELSYM); });
+  $('lList').addEventListener('scroll',()=>{ const L=$('lList'); if(shown<LIST.length && L.scrollTop+L.clientHeight>L.scrollHeight-400) renderMore(); });
+  $('dBody').addEventListener('click', e => { const c = e.target.closest('[data-q]'); if (!c) return; $('q').value = c.dataset.q; SELDEAL=null; render(); });
+  $('season').addEventListener('click',e=>{ const a=e.target.closest('[data-sym]'); if(!a) return;
+    SELSYM=a.dataset.sym; SELDEAL=null; if(!AGG[SELSYM]){ $('q').value=''; $('fKind').value='all'; $('fSide').value='all'; $('fVal').value='0'; if(+$('fDays').value===0||+$('fDays').value>=1) $('fDays').value='30'; } render(); });
+  let rt=null, w0=window.innerWidth;
+  window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ K.fitGrid($('grid')); if((w0<900)!==(window.innerWidth<900)) renderList(); w0=window.innerWidth; },90); });
+  document.addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey) return; const t=e.target, tg=t&&t.tagName;
+    if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA'){ if(e.key==='Escape') t.blur(); return; }
+    const i=selIndex(), step={ArrowDown:1,ArrowUp:-1,PageDown:10,PageUp:-10}[e.key];
+    if(step&&LIST.length){ e.preventDefault(); select(Math.max(0,Math.min(LIST.length-1,i+step))); }
+    else if(e.key==='Home'&&LIST.length){ e.preventDefault(); select(0); }
+    else if(e.key==='End'&&LIST.length){ e.preventDefault(); select(LIST.length-1); }
+    else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ e.preventDefault(); setView(view==='deals'?'stocks':'deals'); }
+    else if(e.key==='Enter'&&SELSYM){ e.preventDefault(); location.href=stockUrl(SELSYM); }
+    else if(e.key==='/'){ e.preventDefault(); $('q').focus(); $('q').select(); }
+  });
 }
 
 load();
