@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="x-layout" content="one-screen" />
 <title>STOCKSWORLD · Backtest History</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
@@ -12,37 +13,82 @@
 <script src="./strategy-hover-card.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
+<script src="./os-kit.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  /* keep long strategy names on the KPI tiles to one tidy line */
-  .sw-stat .sw-d{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  /* expand chevron rotates instead of swapping glyphs */
-  .exparrow{display:inline-block;width:12px;color:var(--text-faint,#8b94a6);transition:transform .18s ease;font-size:10px}
-  tr.isopen .exparrow{transform:rotate(90deg)}
-  /* action buttons, themed via tokens so they work on light / soft / dark */
-  .btn-load{
-    font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:var(--radius-sm);white-space:nowrap;
-    color:var(--accent,var(--accent-text));background:var(--accent-soft,rgba(79,70,229,.10));
-    border:1px solid color-mix(in srgb, var(--accent,var(--accent)) 32%, transparent);
+  .hidden{display:none!important}
+  .pos{color:var(--pos)}.neg{color:var(--neg)}
+  .dim{color:var(--text-faint)}
+  #grid{grid-template-columns:minmax(460px,1.5fr) minmax(300px,1fr) minmax(280px,.9fr)}
+  /* one-line figures strip (same four numbers as the old tiles) */
+  #stats{display:flex;flex-wrap:wrap;border:1px solid var(--border);border-radius:8px;background:var(--surface);margin:0 0 10px;overflow:hidden}
+  #stats:empty{display:none}
+  #stats .sw-stat{flex:1 1 200px;min-width:0;display:flex;align-items:baseline;gap:8px;padding:7px 12px;border:0;border-right:1px solid var(--border);border-radius:0;background:none;box-shadow:none}
+  #stats .sw-stat:last-child{border-right:0}
+  #stats .sw-lb{font-size:11px;color:var(--text-faint);white-space:nowrap;margin:0}
+  #stats .sw-v{font-size:14px!important;font-weight:600;line-height:1.2;white-space:nowrap;margin:0}
+  #stats .sw-d{font-size:11.5px;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;margin:0}
+  html[data-theme] #q{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12.5px;color:var(--text);min-height:0;height:29px;box-shadow:none;width:210px}
+  html[data-theme] #clearAll{color:var(--neg)}
+  /* list */
+  #list{overflow:auto}
+  #list table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12.5px;min-width:560px}
+  #list th{position:sticky;top:0;z-index:1;background:var(--surface);border-bottom:1px solid var(--border);padding:6px 8px;font-size:11px;font-weight:500;letter-spacing:.03em;color:var(--text-faint);text-align:right;white-space:nowrap}
+  #list th:nth-child(1),#list th:nth-child(2){text-align:left}
+  #list th:nth-child(1){width:104px} #list th:nth-child(3){width:78px} #list th:nth-child(4){width:84px} #list th:nth-child(5){width:72px} #list th:nth-child(6){width:96px}
+  #list td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top;text-align:right;white-space:nowrap}
+  #list td:nth-child(1),#list td:nth-child(2){text-align:left}
+  #list tr.srow{cursor:pointer;box-shadow:inset 2px 0 0 transparent}
+  #list tr.srow:hover{background:var(--surface-2)}
+  #list tr.srow.on{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent)}
+  #list .snm{display:block;font-weight:500;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #list tr.srow.on .snm{color:var(--accent-text)}
+  #list .sub{display:block;font-size:11.5px;font-weight:400;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #list td b{font-weight:600}
+  /* detail */
+  .mb{flex:1;min-height:0;overflow:auto;font-size:12.5px;color:var(--text)}
+  .sec{padding:10px 12px;border-bottom:1px solid var(--border)}
+  .sec:last-child{border-bottom:0}
+  .sec h4{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin:0 0 7px}
+  .sec h4 i{font-style:normal;text-transform:none;letter-spacing:0;font-weight:400;margin-left:6px}
+  .dnm{font-size:14px;font-weight:600;line-height:1.35;color:var(--text)}
+  .dcode{font-size:11.5px;color:var(--text-faint);margin-top:3px;word-break:break-word}
+  table.kv{width:100%;border-collapse:collapse}
+  .kv td{padding:3px 0;vertical-align:top;font-size:12.5px}
+  .kv td:first-child{color:var(--text-faint);width:104px;white-space:nowrap}
+  table.bk{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .bk td,.bk th{padding:5px 8px;font-size:12px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+  .bk tr:last-child td{border-bottom:0}
+  .bk th{font-weight:500;color:var(--text-faint);font-size:11.5px}
+  .bk td:first-child,.bk th:first-child{text-align:left;color:var(--text-muted);padding-left:0}
+  .bk td:last-child,.bk th:last-child{padding-right:0}
+  .bk b{font-weight:600}
+  .bk tr.pick{cursor:pointer}
+  .bk tr.pick:hover td{background:var(--surface-2)}
+  .bk tr.cur td{background:var(--accent-soft)}
+  .scr{overflow-x:auto}
+  #yChart{flex:none;height:250px;border-bottom:1px solid var(--border);position:relative}
+  #yChart svg{display:block;width:100%;height:100%}
+  #yChart text{font-size:10.5px;fill:var(--text-faint);font-variant-numeric:tabular-nums}
+  #yChart .ax{stroke:var(--border-strong);stroke-width:1}
+  #yChart .bp{fill:var(--pos)} #yChart .bn{fill:var(--neg)} #yChart .bb{fill:var(--text-faint);opacity:.45}
+  .yleg{display:flex;gap:12px;align-items:center;font-size:11.5px;color:var(--text-muted);padding:7px 12px;border-bottom:1px solid var(--border)}
+  .yleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+  .yleg .sp{flex:1}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(380px,1.4fr) minmax(260px,1fr) minmax(240px,.85fr)} }
+  @media (max-width:899px){
+    #grid{grid-template-columns:minmax(0,1fr)}
+    #list{max-height:58vh}
+    #pM{scroll-margin-top:64px}
+    .mb{flex:none;overflow-x:auto;overflow-y:visible}
+    .os-vbar{gap:10px}
+    html[data-theme] #q{width:150px}
   }
-  .btn-load:hover{background:color-mix(in srgb, var(--accent,var(--accent)) 20%, transparent)}
-  .btn-del{
-    font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:var(--radius-sm);white-space:nowrap;
-    color:var(--neg,var(--neg));background:transparent;
-    border:1px solid color-mix(in srgb, var(--neg,#b91c1c) 30%, transparent);opacity:.85;
-  }
-  .btn-del:hover{background:color-mix(in srgb, var(--neg,var(--neg)) 12%, transparent);opacity:1}
-  /* year-by-year panel inside the expand row */
-  .yby-panel{border:1px solid var(--border,#e7eaf2);border-radius:var(--radius-sm,10px);background:var(--surface,var(--surface));padding:12px 14px}
-  .yby-panel table td,.yby-panel table th{padding:3px 10px;white-space:nowrap}
-  .yby-panel .rowlab{font-weight:700;font-size:11.5px}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -51,19 +97,41 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-  <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
-    <h1 class="text-xl md:text-2xl font-bold text-slate-900">Backtest History</h1>
-    <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Backtest History</h1>
+    <span class="os-asof">Shared history, newest first — every backtest anyone runs lands here</span>
   </div>
-  <p class="text-xs text-slate-500 mb-4">Shared backtest history, newest first — anyone can <b>run a backtest to add one</b>. Click a row for its year-by-year returns, or <b>Load</b> to re-open &amp; re-run the setup. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
-  <div id="stats" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4"></div>
-  <div id="list"></div>
+  <div class="os-bar">
+    <input id="q" placeholder="filter by strategy name…" aria-label="Filter by strategy name">
+    <a href="./stock-backtest.html" class="os-btn">← Run a backtest</a>
+    <span class="sp"></span>
+    <button id="clearAll" class="os-btn">Clear all</button>
+    <span class="os-hint keys"><b>↑ ↓</b> move · <b>Home End</b> first / last</span>
+  </div>
+  <div id="stats"></div>
+  <div class="os-grid" id="grid">
+    <section class="os-pane" id="pL">
+      <div class="os-ph"><span class="ttl">Backtests <i id="lCount"></i></span></div>
+      <div id="list" class="os-list"></div>
+    </section>
+    <section class="os-pane os-main" id="pM">
+      <div class="os-ph"><span class="ttl">This backtest</span><span class="r"><button id="dLoad" class="os-btn hidden" title="Re-open this setup on the Backtest page and re-run it">Load in Backtest ↗</button><button id="dDel" class="os-btn hidden" style="color:var(--neg)">Delete</button></span></div>
+      <div class="mb" id="dBody"><div class="os-empty">Select a backtest on the left.</div></div>
+    </section>
+    <section class="os-pane" id="pR">
+      <div class="os-ph"><span class="ttl">Year by year</span><span class="r"><div class="os-sg" id="ySg"><button data-y="run" class="on" title="Calendar-year returns stored with this one backtest">This run</button><button data-y="all" title="Calendar years across every saved run of this strategy (same rule, same stock count)">All runs of this strategy</button></div></span></div>
+      <div class="yleg"><span><i style="background:var(--pos)"></i>Strategy</span><span><i style="background:var(--text-faint);opacity:.45"></i>Nifty 500</span><span class="sp"></span><span id="yNote"></span></div>
+      <div id="yChart"></div>
+      <div class="mb" id="yBody"></div>
+    </section>
+  </div>
 </main>
 
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
+const K=window.OSKit;
 function load(){try{const a=JSON.parse(localStorage.getItem('bt_history')||'[]');return Array.isArray(a)?a.filter(x=>x&&typeof x==='object'&&x.id):[];}catch(e){return[];}}
 function save(v){localStorage.setItem('bt_history',JSON.stringify(v)); if(window.btSync)btSync.push();}
 // The shared history is world-writable — treat EVERY field of a pulled entry as untrusted:
@@ -77,15 +145,16 @@ const fdateT=ts=>{const t=num(ts);return t==null?'':new Date(t).toLocaleTimeStri
 const rel=ts=>{const t=num(ts);if(t==null)return'';const s=(Date.now()-t)/1e3;
   if(s<0)return'';if(s<3600)return Math.max(1,Math.round(s/60))+'m ago';
   if(s<86400)return Math.round(s/3600)+'h ago';if(s<604800)return Math.round(s/86400)+'d ago';return'';};
+const sPct=v=>num(v)==null?'<span class="dim">—</span>':`<b class="${v>=0?'pos':'neg'}">${pct(v)}</b>`;
+const isPhone=()=>window.innerWidth<900;
+const FREQL={1:'Monthly',3:'Quarterly',6:'Half-yearly',12:'Yearly'};
 
-/* ---------- the strategy hover card (strategy-hover-card.js) ----------
- * Hovering a run's strategy name opens the same card Saved Strategies and All Picks show: calendar
- * years across EVERY run of that strategy, then the four market-cycle windows from the baked
- * snapshot. Different question from the ▶ expander next to it, which shows THIS ONE RUN's own
- * year-by-year row — the card answers "how has this strategy done", the expander "what did this run
- * do". The module takes live getters, so the card always reads the history this page just re-pulled.
- * The snapshot is the only extra fetch, it happens after the first paint, and it fails silent — the
- * card then says the waves aren't baked rather than showing a wrong number. */
+/* ---------- strategy-hover-card.js is used for its DATA only now ----------
+ * The hover card's two answers moved into the panes: "what did THIS run do" is the right pane's
+ * "This run" view, "how has this strategy done" (calendar years across EVERY run of the strategy +
+ * the four market-cycle windows from the baked snapshot) is "All runs of this strategy" + the
+ * market-cycles table in the middle. The module takes live getters, so it always reads the history
+ * this page just re-pulled. The snapshot is the only extra fetch and it fails silent. */
 let BTH_SNAP = null;
 scWire({ hist: () => load(), snap: () => BTH_SNAP });
 
@@ -104,64 +173,183 @@ function renderStats(items){
     <div class="sw-stat"><div class="sw-lb">Latest run</div><div class="sw-v">${latest?(rel(latest.ts)||fdateD(latest.ts)):'—'}</div><div class="sw-d" title="${latest?'Code-name: '+esc(nameWithBasis(latest.label,latest.cfg)):''}">${latest?esc(strategyEnglish(latest.cfg)||latest.label||''):''}</div></div>`;
 }
 
+let ITEMS=[], ROWS=[], SEL=null, YMODE='run';
+const nameOf=it=>strategyEnglish(it.cfg||{})||it.label||'—';
 function render(){
   // Always show newest-first by saved time — the shared array's stored order can drift
   // (concurrent appends, whole-array owner rewrites). ts is untrusted: num() guards it,
   // entries with a missing/invalid ts sink to the bottom.
   const items=load().sort((a,b)=>(num(b.ts)||0)-(num(a.ts)||0));
+  ITEMS=items;
   renderStats(items);
+  YRG.clear();   // rebuilt by scRegister below
+  // strategy of each run. `sid` (when the run carries one) lets "All runs" pick up sibling runs
+  // launched from the strategy page even if their config was edited since.
+  items.forEach(it=>scRegister(it.id, { id: it.id, name: it.label, cfg: it.cfg||{}, ts: it.ts }, new Set(it.sid ? [it.sid] : [])));
+  const q=($('q').value||'').trim().toLowerCase();
+  ROWS=q?items.filter(it=>(String(nameOf(it))+' '+String(it.label||'')).toLowerCase().includes(q)):items;
+  $('lCount').textContent=items.length?(ROWS.length+(ROWS.length!==items.length?' of '+items.length:'')):'';
   if(!items.length){
-    $('list').innerHTML=`<div class="card p-10 text-center">
-      <div class="text-4xl mb-3">📜</div>
-      <div class="font-bold text-slate-900 mb-1">No backtests yet</div>
-      <p class="text-xs text-slate-500 mb-5 max-w-sm mx-auto">Every backtest anyone runs lands here automatically — strategy, period, CAGR and how it did against the Nifty 500.</p>
-      <a href="./stock-backtest.html" class="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> Run the first backtest</a>
-    </div>`; return; }
-  YRG.clear();   // rebuilt by scRegister below, as the rows are laid out
-  $('list').innerHTML=`<div class="card"><div class="overflow-x-auto tscroll" style="--tscroll-h:38rem"><table class="w-full text-sm">
-    <thead class="text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200"><tr>
-      <th class="text-left py-2.5 px-4 font-semibold">Saved</th><th class="text-left px-3 font-semibold">Strategy</th>
-      <th class="text-right px-3 font-semibold">CAGR</th><th class="text-right px-3 font-semibold">vs Nifty 500</th>
-      <th class="text-right px-3 font-semibold">Max DD</th><th class="text-right px-3 font-semibold">Final ₹1L</th><th class="px-4"></th></tr></thead>
-    <tbody>${items.map(it=>{const m=it.m||{},c=it.cfg||{},beat=num(m.benchCagr)!=null&&num(m.cagr)!=null&&m.cagr>=m.benchCagr;
-      // hover target → this run's strategy. `sid` (when the run carries one) lets the card pick up
-      // sibling runs launched from the strategy page even if their config was edited since.
-      scRegister(it.id, { id: it.id, name: it.label, cfg: c, ts: it.ts }, new Set(it.sid ? [it.sid] : []));
-      const hasY=Array.isArray(it.yby)&&it.yby.length, r=rel(it.ts), mult=num(m.finalV)!=null?(m.finalV/1e5):null;
-      return `<tr class="border-b border-slate-50 ${hasY?'cursor-pointer':''}" ${hasY?`data-exp="${esc(it.id)}"`:''}>
-        <td class="px-4 py-2.5 whitespace-nowrap"><div class="flex items-center gap-2">
-          <span class="exparrow">${hasY?'▶':''}</span>
-          <div><div class="sw-cellmain text-[13px]">${fdateD(it.ts)}</div><div class="sw-cellsub">${esc(fdateT(it.ts))}${r?' · '+r:''}</div></div>
-        </div></td>
-        <td class="px-3"><div class="sw-cellmain text-[13px]" data-yrs="${esc(it.id)}" title="Code-name: ${esc(nameWithBasis(it.label,c))}">${esc(strategyEnglish(c)||it.label||'—')}</div><div class="sw-cellsub">${esc(c.start||'?')} → ${esc(c.end||'?')}</div></td>
-        <td class="text-right px-3 ${(num(m.cagr)||0)>=0?'pos':'neg'}">${pct(m.cagr)}</td>
-        <td class="text-right px-3 whitespace-nowrap"><span class="sw-chip ${beat?'pos':'neg'}" title="Nifty 500 CAGR over the same period — ${beat?'strategy beat it':'strategy lagged it'}"><span class="sw-dot"></span>${pct(m.benchCagr)}</span></td>
-        <td class="text-right px-3 neg">${num(m.maxDD)!=null?'-'+m.maxDD.toFixed(2)+'%':'—'}</td>
-        <td class="text-right px-3"><div class="font-semibold">${fmtINR(m.finalV)}</div>${mult!=null?`<div class="sw-cellsub text-right">${mult.toFixed(1)}×</div>`:''}</td>
-        <td class="px-4 py-2 whitespace-nowrap text-right">
-          <button class="btn-load" data-load="${esc(it.id)}">Load ↗</button>
-          ${OWNER?`<button class="btn-del ml-1.5" data-del="${esc(it.id)}">Delete</button>`:''}</td></tr>${hasY?`
-      <tr id="exp_${esc(it.id)}" style="display:none"><td colspan="7" class="px-4 pb-4 pt-1 bg-slate-50">
-        <div class="yby-panel">
-          <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-            <div class="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">Calendar-year returns — strategy vs Nifty 500</div>
-            ${(w=>w.n?`<span class="sw-chip ${w.won>=w.n/2?'pos':'neg'}"><span class="sw-dot"></span>beat Nifty in ${w.won} of ${w.n} yrs</span>`:'')(
-              it.yby.reduce((a,y)=>{const s=num(y&&y[1]),b=num(y&&y[2]);if(s!=null&&b!=null){a.n++;if(s>=b)a.won++;}return a;},{n:0,won:0}))}
-          </div>
-          <div class="overflow-x-auto"><table class="text-xs"><thead><tr><th class="text-left"></th>${it.yby.map(y=>`<th class="text-right text-slate-500 font-semibold">${esc(y&&y[0])}</th>`).join('')}</tr></thead><tbody>
-            <tr><td class="rowlab text-blue-700 whitespace-nowrap">Strategy</td>${it.yby.map(y=>`<td class="text-right ${(num(y&&y[1])||0)>=0?'pos':'neg'}">${pct(y&&y[1])}</td>`).join('')}</tr>
-            <tr><td class="rowlab text-amber-600 whitespace-nowrap">Nifty 500</td>${it.yby.map(y=>`<td class="text-right ${(num(y&&y[2])||0)>=0?'pos':'neg'}">${pct(y&&y[2])}</td>`).join('')}</tr>
-          </tbody></table></div>
-        </div></td></tr>`:''}`;}).join('')}
-    </tbody></table></div></div>`;
-  scAttach($('list'));   // hover a strategy name → its years + market cycles
-  $('list').querySelectorAll('[data-exp]').forEach(row=>row.addEventListener('click',e=>{ if(e.target.closest('button'))return; const d=$('exp_'+row.dataset.exp); if(!d)return; const open=d.style.display==='none'; d.style.display=open?'table-row':'none'; row.classList.toggle('isopen',open); }));
-  $('list').querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{const it=load().find(x=>x.id===b.dataset.load); if(it){localStorage.setItem('bt_load',JSON.stringify({cfg:it.cfg, saved:{m:it.m, yby:it.yby, label:it.label}})); location.href='./stock-backtest.html';}});
-  $('list').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{save(load().filter(x=>x.id!==b.dataset.del)); render();});
+    $('list').innerHTML=`<div class="os-empty"><b>No backtests yet</b><br>Every backtest anyone runs lands here automatically — strategy, period, CAGR and how it did against the Nifty 500.<br><a href="./stock-backtest.html" style="color:var(--accent-text);font-weight:600">Run your first backtest →</a></div>`;
+  } else if(!ROWS.length){
+    $('list').innerHTML=`<div class="os-empty">No backtest matches that filter.</div>`;
+  } else {
+    $('list').innerHTML=`<table>
+    <thead><tr><th>Saved</th><th>Strategy</th><th>CAGR</th><th>vs Nifty 500</th><th>Max DD</th><th>Final ₹1L</th></tr></thead>
+    <tbody>${ROWS.map(it=>{const m=it.m||{},c=it.cfg||{},beat=num(m.benchCagr)!=null&&num(m.cagr)!=null&&m.cagr>=m.benchCagr;
+      const r=rel(it.ts), mult=num(m.finalV)!=null?(m.finalV/1e5):null;
+      return `<tr class="srow" data-id="${esc(it.id)}">
+        <td><span class="snm" style="font-weight:400">${fdateD(it.ts)}</span><span class="sub">${esc(fdateT(it.ts))}${r?' · '+r:''}</span></td>
+        <td><span class="snm" title="Code-name: ${esc(nameWithBasis(it.label,c))}">${esc(strategyEnglish(c)||it.label||'—')}</span><span class="sub">${esc(c.start||'?')} → ${esc(c.end||'?')}</span></td>
+        <td class="${(num(m.cagr)||0)>=0?'pos':'neg'}"><b>${pct(m.cagr)}</b></td>
+        <td class="${beat?'pos':'neg'}" title="Nifty 500 CAGR over the same period — ${beat?'strategy beat it':'strategy lagged it'}">${pct(m.benchCagr)}</td>
+        <td class="neg">${num(m.maxDD)!=null?'-'+m.maxDD.toFixed(2)+'%':'—'}</td>
+        <td><b>${fmtINR(m.finalV)}</b>${mult!=null?`<span class="sub">${mult.toFixed(1)}×</span>`:''}</td></tr>`;}).join('')}
+    </tbody></table>`;
+  }
+  paintDetail();
+  K.fitGrid($('grid'));
 }
+const cur=()=>ROWS.find(x=>x.id===SEL)||null;
+function selectRow(id, byTap){
+  SEL=id; paintDetail();
+  if(byTap&&isPhone()) $('pM').scrollIntoView({behavior:'smooth',block:'start'});
+}
+// what Load hands to the Backtest page — unchanged payload
+function loadPayload(it){ return JSON.stringify({cfg:it.cfg, saved:{m:it.m, yby:it.yby, label:it.label}}); }
+function paintDetail(){
+  if(!cur()) SEL=(ROWS.length&&!isPhone())?ROWS[0].id:null;
+  $('list').querySelectorAll('tr.srow').forEach(tr=>tr.classList.toggle('on',tr.dataset.id===SEL));
+  const it=cur();
+  $('dLoad').classList.toggle('hidden',!it);
+  $('dDel').classList.toggle('hidden',!(it&&OWNER));
+  $('dDel').textContent='Delete'; $('dDel').dataset.arm='';
+  if(!it){
+    $('dBody').innerHTML=`<div class="os-empty">${ROWS.length?'Tap a backtest in the list to see its details.':'No backtest to show.'}</div>`;
+    $('yNote').textContent=''; $('yChart').innerHTML=''; $('yBody').innerHTML='<div class="os-empty">Year-by-year returns of the selected backtest appear here.</div>';
+    return;
+  }
+  const m=it.m||{}, c=it.cfg||{}, r=rel(it.ts);
+  const beat=num(m.benchCagr)!=null&&num(m.cagr)!=null&&m.cagr>=m.benchCagr;
+  const filt=(Array.isArray(c.filters)?c.filters:[]).map(f=>(f&&typeof f==='object')?(String(f.field)+' '+String(f.op)+' '+String(f.val)):String(f)).join(' · ');
+  let h=`<div class="sec"><div class="dnm">${esc(strategyEnglish(c)||it.label||'—')}</div>
+    <div class="dcode">Code-name: ${esc(nameWithBasis(it.label,c))}</div>
+    <div class="dcode">Saved ${fdateD(it.ts)} ${esc(fdateT(it.ts))}${r?' · '+r:''}</div></div>
+   <div class="sec"><h4>Result <i>${esc(c.start||'?')} → ${esc(c.end||'?')}</i></h4><table class="kv">
+    <tr><td>CAGR</td><td>${sPct(m.cagr)}</td></tr>
+    <tr><td>Nifty 500 CAGR</td><td>${pct(m.benchCagr)} <span class="${beat?'pos':'neg'}">${num(m.benchCagr)!=null&&num(m.cagr)!=null?(beat?'· strategy beat it':'· strategy lagged it'):''}</span></td></tr>
+    <tr><td>Max drawdown</td><td>${num(m.maxDD)!=null?'<span class="neg">-'+m.maxDD.toFixed(2)+'%</span>':'—'}</td></tr>
+    <tr><td>Final value</td><td><b style="font-weight:600">${fmtINR(m.finalV)}</b>${num(m.finalV)!=null?' <span class="dim">· '+(m.finalV/1e5).toFixed(1)+'× of ₹1L</span>':''}</td></tr>
+    ${num(m.vol)!=null?`<tr><td>Volatility</td><td>${m.vol.toFixed(1)}%</td></tr>`:''}
+    ${num(m.winRate)!=null?`<tr><td>Win rate</td><td>${m.winRate.toFixed(0)}% <span class="dim">of rebalance periods</span></td></tr>`:''}
+    ${num(m.rebs)!=null?`<tr><td>Rebalances</td><td>${m.rebs}</td></tr>`:''}
+    ${num(m.years)!=null?`<tr><td>Length</td><td>${m.years.toFixed(1)} years</td></tr>`:''}
+   </table></div>
+   <div class="sec"><h4>Set-up</h4><table class="kv">
+    <tr><td>Universe</td><td>${esc(c.indexName||'Whole market')}${num(c.mcapFloor)!=null&&c.mcapFloor>0?' · market cap ≥ '+esc(c.mcapFloor):''}</td></tr>
+    <tr><td>Rebalance</td><td>${esc(FREQL[c.freq]||(c.freq!=null?c.freq+'mo':'—'))}</td></tr>
+    <tr><td>Stocks</td><td>${esc(c.topN!=null?c.topN:'—')}</td></tr>
+    <tr><td>Ranked by</td><td>${esc(c.sortBy||'—')} ${c.dir==='high'?'↓ highest first':c.dir==='low'?'↑ lowest first':''}</td></tr>
+    <tr><td>Filters</td><td>${filt?esc(filt):'<span class="dim">none</span>'}</td></tr>
+    ${c.method?`<tr><td>Method</td><td>${esc(c.method)}</td></tr>`:''}
+    ${num(c.capital)!=null?`<tr><td>Capital</td><td>${fmtINR(c.capital)}</td></tr>`:''}
+   </table></div>`;
+  // the four baked market-cycle windows for this strategy (was in the hover card)
+  const wRows=WAVE_ORDER.map(key=>{ const w=snapResult(key,c);
+    return `<tr><td>${esc(WAVE_NAME[key])}<span class="dim" style="display:block;font-size:11px">${esc(waveColWindow(key))}</span></td>
+      <td>${w&&w.ret!=null?sPct(w.ret):`<span class="dim" title="${esc(waveMissingWhy())}">—</span>`}</td>
+      <td>${w&&w.cagr!=null?pct(w.cagr):'<span class="dim">—</span>'}</td>
+      <td>${w&&num(+w.maxDD)!=null&&w.maxDD!=null?'<span class="neg">-'+(+w.maxDD).toFixed(1)+'%</span>':'<span class="dim">—</span>'}</td></tr>`; }).join('');
+  h+=`<div class="sec"><h4>Market cycles <i>this strategy, from the baked snapshot</i></h4>
+    <div class="scr"><table class="bk"><thead><tr><th>Market cycle</th><th>Return</th><th>CAGR</th><th>Max DD</th></tr></thead><tbody>${wRows}</tbody></table></div>
+    <div class="dim" style="font-size:11px;margin-top:6px">${BTH_SNAP&&BTH_SNAP.date?'From the '+esc(BTH_SNAP.date)+' snapshot — every strategy over the same four windows.':'Market-cycle snapshot not loaded.'}</div></div>`;
+  // other runs of the same strategy in the history
+  let k=null; try{ k=identityKey(c); }catch(e){}
+  const sib=ITEMS.filter(x=>{ if(x.id===it.id) return true; if(it.sid&&x.sid===it.sid) return true; try{ return k!=null&&identityKey(x.cfg||{})===k; }catch(e){ return false; } });
+  h+=`<div class="sec"><h4>Runs of this strategy <i>${sib.length}</i></h4>
+    <div class="scr"><table class="bk"><thead><tr><th>Saved</th><th>Window</th><th>CAGR</th><th>Max DD</th></tr></thead><tbody>${sib.map(x=>{const xm=x.m||{},xc=x.cfg||{};
+      return `<tr class="pick${x.id===it.id?' cur':''}" data-pick="${esc(x.id)}"><td>${fdateD(x.ts)}</td><td>${esc(xc.start||'?')} → ${esc(xc.end||'?')}</td><td>${sPct(xm.cagr)}</td><td>${num(xm.maxDD)!=null?'<span class="neg">-'+xm.maxDD.toFixed(1)+'%</span>':'—'}</td></tr>`;}).join('')}</tbody></table></div></div>`;
+  $('dBody').innerHTML=h;
+  $('dBody').querySelectorAll('[data-pick]').forEach(tr=>tr.onclick=()=>{ if(tr.dataset.pick===SEL) return; if(!ROWS.some(x=>x.id===tr.dataset.pick)){ $('q').value=''; render(); } selectRow(tr.dataset.pick,false); const on=$('list').querySelector('tr.srow.on'); if(on) on.scrollIntoView({block:'nearest'}); });
+  paintYears(it);
+}
+function yearData(it){
+  if(YMODE==='all'){ const g=YRG.get(it.id); return g?yearRows(g):[]; }
+  return (Array.isArray(it.yby)?it.yby:[]).filter(y=>Array.isArray(y)).map(y=>({year:y[0], ret:num(y[1]), bench:num(y[2]), full:true}));
+}
+// "This run" prints the stored figures exactly as saved (as the old ▶ expander did, including a
+// stored -100% index year); "All runs" follows the old hover card, which blanks an index year <= -99%.
+const benchOk=v=>!(v==null||!isFinite(v)||v<=-99);
+const benchShow=v=>YMODE==='all'?benchOk(v):v!=null;
+function paintYears(it){
+  $('ySg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.y===YMODE));
+  const rows=yearData(it), c=it.cfg||{};
+  if(!rows.length){
+    $('yNote').textContent=''; $('yChart').innerHTML='';
+    $('yBody').innerHTML=`<div class="os-empty">${YMODE==='all'?'No year-wise data — no saved run of this strategy'+(c.topN!=null?' at '+esc(c.topN)+' stocks':'')+' covers '+YR_FROM+' onward.':'This backtest was saved without year-by-year returns.'}</div>`;
+    return;
+  }
+  const w=rows.reduce((a,y)=>{ if(y.ret!=null&&y.bench!=null&&benchShow(y.bench)){a.n++; if(y.ret>=y.bench)a.won++;} return a; },{n:0,won:0});
+  $('yNote').innerHTML=w.n?`<span class="${w.won>=w.n/2?'pos':'neg'}">beat Nifty in ${w.won} of ${w.n} yrs</span>`:'';
+  const part=YMODE==='all'&&rows.some(r=>r.ret!=null&&!r.full);
+  $('yBody').innerHTML=`<div class="sec"><table class="bk"><thead><tr><th>Year</th><th>Strategy</th><th>Nifty 500</th></tr></thead><tbody>${rows.map(r=>
+    `<tr><td>${esc(r.year)}${part&&r.ret!=null&&!r.full?'<span style="color:var(--warn,#d97706)">*</span>':''}</td><td>${sPct(r.ret)}</td><td>${benchShow(r.bench)?`<span class="${r.bench>=0?'pos':'neg'}">${pct(r.bench)}</span>`:'<span class="dim">—</span>'}</td></tr>`).join('')}</tbody></table>
+    ${part?'<div class="dim" style="font-size:11px;margin-top:6px">* part-year — the backtest window starts or ends mid-year</div>':''}
+    <div class="dim" style="font-size:11px;margin-top:4px">${YMODE==='all'?'Calendar years across every saved run of this strategy (same rule, same stock count); for each year the run covering most of it wins.':'Calendar-year returns stored with this one backtest; nothing is recomputed here.'}</div></div>`;
+  drawYears(rows);
+}
+let YROWS=null;
+function drawYears(rows){
+  YROWS=rows;
+  const el=$('yChart'), W=Math.max(220,el.clientWidth), H=el.clientHeight||250;
+  const vals=[];
+  rows.forEach(r=>{ if(r.ret!=null&&isFinite(r.ret)) vals.push(r.ret); if(benchOk(r.bench)) vals.push(r.bench); });
+  if(!vals.length){ el.innerHTML=''; return; }
+  const hi=Math.max(0,...vals), lo=Math.min(0,...vals), span=(hi-lo)||1;
+  const L=8, R=8, T=20, B=22, ph=H-T-B, pw=W-L-R;
+  const y=v=>T+(hi-v)/span*ph, slot=pw/rows.length, bw=Math.max(3,Math.min(22,slot*0.34));
+  const lab=v=>(v>=0?'+':'')+(Math.abs(v)>=100?v.toFixed(0):v.toFixed(1));
+  let s=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Year by year returns, strategy against Nifty 500"><line class="ax" x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}"/>`;
+  rows.forEach((r,i)=>{
+    const cx=L+slot*(i+0.5), yl=esc(r.year);
+    const bar=(v,x,cls,name)=>{ const y0=y(Math.max(0,v)), hh=Math.max(1,Math.abs(y(v)-y(0))); return `<rect class="${cls}" x="${x.toFixed(1)}" y="${y0.toFixed(1)}" width="${bw.toFixed(1)}" height="${hh.toFixed(1)}"><title>${yl} ${name}: ${pct(v)}</title></rect>`; };
+    if(r.ret!=null&&isFinite(r.ret)){
+      s+=bar(r.ret,cx-bw-1,r.ret>=0?'bp':'bn','strategy');
+      if(slot>=38) s+=`<text x="${(cx-bw/2-1).toFixed(1)}" y="${(r.ret>=0?y(r.ret)-4:y(r.ret)+12).toFixed(1)}" text-anchor="middle">${lab(r.ret)}</text>`;
+    }
+    if(benchOk(r.bench)) s+=bar(r.bench,cx+1,'bb','Nifty 500');
+    s+=`<text x="${cx.toFixed(1)}" y="${H-7}" text-anchor="middle">${slot>=34?yl:"'"+esc(String(r.year).slice(2))}</text>`;
+  });
+  el.innerHTML=s+'</svg>';
+}
+
 const OWNER = !!(window.btSync && btSync.isOwner());
 if($('clearAll') && !OWNER) $('clearAll').style.display='none';   // visitors can add, but not erase via the UI
 $('clearAll').onclick=()=>{ if(confirm('Clear the ENTIRE shared history for everyone?')){ save([]); render(); } };
+$('q').oninput=()=>render();
+$('list').addEventListener('click',e=>{ const tr=e.target.closest('tr.srow'); if(tr) selectRow(tr.dataset.id,true); });
+$('ySg').addEventListener('click',e=>{ const b=e.target.closest('button[data-y]'); if(!b) return; YMODE=b.dataset.y; const it=cur(); if(it) paintYears(it); else $('ySg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.y===YMODE)); });
+$('dLoad').onclick=()=>{ const it=load().find(x=>x.id===SEL); if(it){ localStorage.setItem('bt_load',loadPayload(it)); location.href='./stock-backtest.html'; } };
+// owner only; first click arms, second deletes (it rewrites the shared history for everyone)
+$('dDel').onclick=()=>{ const b=$('dDel'); if(!OWNER||!SEL) return;
+  if(b.dataset.arm!=='1'){ b.dataset.arm='1'; b.textContent='Really delete?'; return; }
+  save(load().filter(x=>x.id!==SEL)); render(); };
+document.addEventListener('keydown',e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const t=e.target, tag=t&&t.tagName;
+  if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA'){ if(e.key==='Escape') t.blur(); return; }
+  if(!ROWS.length) return;
+  const i=ROWS.findIndex(x=>x.id===SEL); let j=null;
+  if(e.key==='ArrowDown') j=Math.min(ROWS.length-1,i+1);
+  else if(e.key==='ArrowUp') j=Math.max(0,i-1);
+  else if(e.key==='Home') j=0;
+  else if(e.key==='End') j=ROWS.length-1;
+  if(j==null) return;
+  e.preventDefault();
+  selectRow(ROWS[j].id,false);
+  const tr=$('list').querySelector('tr.srow.on'); if(tr) tr.scrollIntoView({block:'nearest'});
+});
+{ let rz; window.addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(()=>{ K.fitGrid($('grid')); if(YROWS&&cur()) drawYears(YROWS); },120); }); }
 
 // Paint the cached history immediately (pull() persists it to localStorage), THEN refresh from the
 // shared pull — so a cold/slow free-tier DB waking up never leaves the page blank while it responds.
@@ -169,7 +357,8 @@ render();
 (async()=>{ if(!window.btSync) return;
   try{ await btSync.pull(); }catch(e){}
   render();
-  try{ BTH_SNAP = await btSync.snapGet('waves'); }catch(e){ BTH_SNAP = null; }   // hover card's market cycles
+  try{ BTH_SNAP = await btSync.snapGet('waves'); }catch(e){ BTH_SNAP = null; }   // market-cycle windows
+  paintDetail();
 })();
 </script>
 </body>
