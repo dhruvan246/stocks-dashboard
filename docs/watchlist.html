@@ -7,15 +7,40 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(300px,360px) minmax(280px,340px) minmax(0,1fr)}
+  #kHead,.kr{grid-template-columns:22px minmax(0,1fr) 78px 62px 62px}
+  .os-row > span.n,.os-ch > span.n{text-align:left}
+  .os-ch span{white-space:nowrap;cursor:pointer;user-select:none} .os-ch span.on{color:var(--accent-text)}
+  .kr .nt{color:var(--text-faint);font-size:11px;margin-left:6px;font-weight:400}
+  .kr .ad{color:var(--text-faint);font-size:11.5px}
+  html[data-theme] #wlAdd{background:var(--app-bg);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:13px;color:var(--text);min-height:0;height:auto;width:230px;max-width:100%;text-transform:uppercase}
+  html[data-theme] #wlAdd::placeholder{text-transform:none}
+  #dBody{padding:12px;display:flex;flex-direction:column;gap:10px;flex:1 1 auto;min-height:0}
+  #dBody label{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint)}
+  html[data-theme] #dNote{flex:1 1 auto;min-height:140px;width:100%;background:var(--app-bg);border:1px solid var(--border);border-radius:6px;padding:9px 11px;font-size:13px;line-height:1.5;color:var(--text);resize:none}
+  html[data-theme] #dNote:focus{outline:0;border-color:var(--accent)}
+  #dMeta{font-size:12px;color:var(--text-faint);line-height:1.6}
+  #dMeta b{font-weight:500;color:var(--text-muted)}
+  #dAct{display:flex;flex-wrap:wrap;gap:6px}
+  html[data-theme] #dDel:hover{color:var(--neg);border-color:var(--neg)}
+  #wlBadge.ok{color:var(--pos)} #wlBadge.loc{color:var(--warn)}
+  #cNote{border-top:1px solid var(--border)}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  #how summary{cursor:pointer;color:var(--text-muted)}
+  @container (max-width:600px){ #pC .os-hint.keys{display:none} }
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(270px,300px) minmax(220px,260px) minmax(0,1fr)} #kHead,.kr{grid-template-columns:22px minmax(0,1fr) 74px 60px} #kHead .c5,.kr .c5{display:none} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #pC .os-ph{flex-wrap:wrap} #kHead,.kr{grid-template-columns:22px minmax(0,1fr) 78px 62px 58px} #kHead .c5,.kr .c5{display:inline}
+    html[data-theme] #dNote{min-height:110px} #kList{max-height:46vh} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -24,72 +49,67 @@
   </div>
 </header>
 
-<main class="max-w-screen-lg mx-auto px-4 py-6">
-  <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
-    <div>
-      <h1 class="text-xl font-bold text-slate-900">Watchlist</h1>
-      <p class="text-sm text-slate-500 mt-0.5">Star stocks anywhere on the site — they collect here, with your notes.</p>
-    </div>
-    <div id="wlSyncBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200 text-slate-600">…</div>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Watchlist</h1>
+    <div class="os-asof"><span id="wlCount"></span><span id="wlBadge">…</span></div>
   </div>
-
-  <div class="bg-white border border-slate-200 rounded-xl p-4 mb-4 flex flex-wrap items-center gap-2">
-    <input id="wlAdd" type="text" placeholder="Add a symbol, e.g. RELIANCE" autocomplete="off"
-           class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm uppercase focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-56 max-w-full" />
-    <button id="wlAddBtn" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition">+ Add</button>
-    <span class="text-xs text-slate-400">or tap the ☆ next to any stock on Discovery, Results or Announcements</span>
+  <div class="os-bar">
+    <input id="wlAdd" type="text" placeholder="Add a symbol, e.g. RELIANCE" autocomplete="off" aria-label="Add a symbol" />
+    <button type="button" id="wlAddBtn" class="os-btn" title="Add this symbol to the watchlist (Enter)">+ Add</button>
+    <span class="os-hint" style="white-space:normal">or tap the ☆ next to any stock anywhere on the site</span>
   </div>
-
-  <div id="wlList" class="space-y-2"></div>
-  <div id="wlEmpty" class="hidden text-center text-slate-400 text-sm py-12 bg-white border border-dashed border-slate-300 rounded-xl">
-    Nothing starred yet. Tap the ☆ next to any stock, or add one above.
+  <div class="os-grid" id="grid">
+    <section class="os-pane" id="pK" aria-label="Starred stocks">
+      <div class="os-ph"><span class="ttl">Starred</span><span class="r" id="kCount"></span></div>
+      <div class="os-ch" id="kHead"></div>
+      <div class="os-list" id="kList" role="listbox" aria-label="Starred stocks"></div>
+    </section>
+    <section class="os-pane" id="pD" aria-label="Note">
+      <div class="os-ph"><span class="ttl" id="dTitle">Note</span><span class="r" id="dSaved"></span></div>
+      <div id="dBody">
+        <label for="dNote">Your note</label>
+        <textarea id="dNote" placeholder="Add a note… (why it’s interesting, what to watch)" disabled></textarea>
+        <div id="dMeta"></div>
+        <div id="dAct">
+          <a class="os-btn hidden" id="dOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a>
+          <a class="os-btn hidden" id="dScr" href="#" target="_blank" rel="noopener" title="This company on Screener.in">Screener ↗</a>
+          <button type="button" class="os-btn hidden" id="dDel" title="Remove this stock from the watchlist (its note goes with it)">Remove</button>
+        </div>
+      </div>
+    </section>
+    <section class="os-pane os-main" id="pC" aria-label="Chart">
+      <div class="os-ph"><span id="cStar"></span><span class="sym" id="cSym">—</span><span class="px" id="cPx"></span><span id="cChg"></span>
+        <span class="r"><button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+      <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
+        <button type="button" class="os-btn" id="cLog" title="Logarithmic price scale">Log</button>
+        <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>Enter</b> open · <b>/</b> add · <b>F</b> focus</span>
+        <a class="os-btn hidden" id="cFull" href="#" title="Open in the full chart page — drawing tools, indicators, compare">Full chart ↗</a></div>
+      <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+      <div class="os-stats" id="cStats"></div>
+      <div class="os-note" id="cNote"></div>
+    </section>
   </div>
+  <details id="how"><summary>How this page works</summary>
+    <p>Star a stock anywhere on the site and it collects here with your note. Notes save by themselves a moment after you stop typing. <b>Price</b> and <b>Chg</b> in the list are live quotes (Yahoo NSE, about 15 minutes delayed, refreshed every minute while the market is open); a symbol Yahoo does not carry stays blank. The chart and the figures under it come from our own daily price files (split and bonus adjusted, dividends not adjusted), so they show the last close on file, not the live price.</p>
+  </details>
 </main>
 
 <script>
 (function(){
   'use strict';
+  const K = window.OSKit, esc = K.esc, fmtPct = K.fmtPct, cls = K.cls;
   const $ = id => document.getElementById(id);
-  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmtD = ts => ts ? new Date(ts).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) : '';
+  const fmtDs = ts => ts ? new Date(ts).toLocaleDateString('en-IN', {day:'numeric', month:'short'}) + (new Date(ts).getFullYear() !== new Date().getFullYear() ? ' ' + String(new Date(ts).getFullYear()).slice(2) : '') : '';
+  const rs = p => '₹' + (p >= 1000 ? Math.round(p).toLocaleString('en-IN') : p.toFixed(2));
+  const stat = (l, v, c, tip) => `<div${tip ? ` title="${esc(tip)}"` : ''}><span>${l}</span><b class="${c || ''}">${v}</b></div>`;
+  const S = { sel: null, sort: 'list', dir: 1, focus: false };
+  let VIEW = [], CH = null, CTOK = 0, showTimer = null, noteTimer = null;
 
-  function badge(){
-    const b = $('wlSyncBadge');
-    if (window.swWatch && swWatch.isOwner()) { b.textContent = 'synced across your devices'; b.className = 'text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700'; }
-    else { b.textContent = 'saved in this browser only'; b.className = 'text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700'; b.title = 'Open any page once with ?ownerkey=YOUR-KEY to sync this list across devices.'; }
-  }
-
-  function row(e){
-    return '<div class="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-wrap gap-x-4 gap-y-2 items-start" data-row="'+esc(e.s)+'">' +
-      '<div class="flex items-center gap-2 min-w-[10rem]">' +
-        '<span class="sw-star" data-sym="'+esc(e.s)+'"></span>' +
-        '<a class="font-bold text-slate-900 hover:text-indigo-700" href="./stock.html?sym='+encodeURIComponent(e.s)+'">'+esc(e.s)+'</a>' +
-        '<span class="text-xs font-semibold whitespace-nowrap" data-px="'+esc(e.s)+'"></span>' +
-      '</div>' +
-      '<div class="flex-1 min-w-[14rem]">' +
-        '<textarea data-note="'+esc(e.s)+'" rows="1" placeholder="Add a note… (why it’s interesting, what to watch)" ' +
-          'class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y">'+esc(e.note)+'</textarea>' +
-      '</div>' +
-      '<div class="flex items-center gap-3 text-xs text-slate-400 shrink-0 pt-1.5">' +
-        '<span title="Added on">'+fmtD(e.ts)+'</span>' +
-        '<button data-del="'+esc(e.s)+'" title="Remove" class="text-slate-400 hover:text-rose-600 text-base leading-none"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>' +
-      '</div>' +
-    '</div>';
-  }
-
-  let noteTimers = {};
-  function render(){
-    const l = window.swWatch ? swWatch.list() : [];
-    $('wlList').innerHTML = l.map(row).join('');
-    $('wlEmpty').classList.toggle('hidden', l.length > 0);
-    if (window.swWatch) swWatch.paintAll($('wlList'));
-    badge();
-    paintLive();
-  }
-
-  /* ---- live prices (our Cloudflare Worker → Yahoo NSE, ~15-min delay).
-     One batched call for the whole list (chunks of 30); silently keeps rows
-     bare if the Worker is unreachable or a symbol isn't on Yahoo. ---- */
+  /* ---- live prices (our Cloudflare Worker → Yahoo NSE, ~15-min delay) — unchanged from the old page.
+     One batched call for the whole list (chunks of 30); rows stay bare if the Worker is
+     unreachable or a symbol isn't on Yahoo. ---- */
   const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
   let LIVE = {};   // sym -> {ltp, prevClose}
   function marketOpenIST(){
@@ -97,17 +117,7 @@
     const d = n.getUTCDay(), h = n.getUTCHours() + n.getUTCMinutes()/60;
     return d >= 1 && d <= 5 && h >= 9 && h <= 15.75;
   }
-  function paintLive(){
-    document.querySelectorAll('[data-px]').forEach(el => {
-      const v = LIVE[el.getAttribute('data-px')];
-      if (!v || v.ltp == null) return;
-      const ch = v.prevClose > 0 ? (v.ltp / v.prevClose - 1) * 100 : null;
-      el.innerHTML = '₹' + (v.ltp >= 1000 ? Math.round(v.ltp).toLocaleString('en-IN') : v.ltp.toFixed(2)) +
-        (ch == null ? '' : ' <span class="' + (ch >= 0 ? 'text-emerald-600' : 'text-rose-600') + '">' +
-          (ch > 0 ? '+' : '') + ch.toFixed(2) + '%</span>');
-      el.title = 'Live price (Yahoo NSE, ~15-min delay)';
-    });
-  }
+  const liveOf = s => { const v = LIVE[s]; if (!v || v.ltp == null) return null; return { ltp: v.ltp, ch: v.prevClose > 0 ? (v.ltp / v.prevClose - 1) * 100 : null, prev: v.prevClose }; };
   async function fetchLive(){
     const syms = (window.swWatch ? swWatch.list() : []).map(e => e.s);
     if (!syms.length) return;
@@ -116,8 +126,130 @@
         const d = await (await fetch(WORKER + '/?symbols=' + encodeURIComponent(syms.slice(i, i + 30).join(',')), {cache:'no-store'})).json();
         Object.assign(LIVE, (d && d.data) || {});
       }
-      paintLive();
+      renderList(); paintHead();
     } catch (e) { /* keep rows bare */ }
+  }
+
+  function badge(){
+    const b = $('wlBadge');
+    if (window.swWatch && swWatch.isOwner()) { b.textContent = 'synced across your devices'; b.className = 'ok'; b.title = ''; }
+    else { b.textContent = 'saved in this browser only'; b.className = 'loc'; b.title = 'Open any page once with ?ownerkey=YOUR-KEY to sync this list across devices.'; }
+  }
+
+  /* ---- list ---- */
+  const COLS = [['', ''], ['sym', 'Symbol'], ['', 'Price'], ['chg', 'Chg'], ['ts', 'Added']];
+  function renderHead(){
+    $('kHead').innerHTML = COLS.map((c, i) => `<span class="${i === 1 ? 'n ' : ''}${i === 4 ? 'c5 ' : ''}${c[0] && S.sort === c[0] ? 'on' : ''}"${c[0] ? ` data-s="${c[0]}"` : ''}>${c[1]}${c[0] && S.sort === c[0] ? (S.dir > 0 ? ' ↓' : ' ↑') : ''}</span>`).join('');
+  }
+  function renderList(){
+    const l = (window.swWatch ? swWatch.list() : []).filter(e => e && e.s);
+    VIEW = l.slice();
+    if (S.sort === 'sym') VIEW.sort((a, b) => S.dir * a.s.localeCompare(b.s));
+    else if (S.sort === 'ts') VIEW.sort((a, b) => S.dir * ((b.ts || 0) - (a.ts || 0)));
+    else if (S.sort === 'chg') VIEW.sort((a, b) => { const x = liveOf(a.s), y = liveOf(b.s), xv = x && x.ch != null ? x.ch : null, yv = y && y.ch != null ? y.ch : null;
+      if (xv == null && yv == null) return 0; if (xv == null) return 1; if (yv == null) return -1; return S.dir * (yv - xv); });
+    $('kCount').textContent = l.length ? l.length + (l.length === 1 ? ' stock' : ' stocks') : '';
+    $('wlCount').textContent = l.length ? l.length + (l.length === 1 ? ' stock · ' : ' stocks · ') : '';
+    if (!l.length) { $('kList').innerHTML = '<div class="os-empty">Nothing starred yet. Tap the ☆ next to any stock, or add one above.</div>'; return; }
+    $('kList').innerHTML = VIEW.map(e => { const v = liveOf(e.s), on = e.s === S.sel;
+      return `<div class="os-row kr${on ? ' on' : ''}" role="option" aria-selected="${on}" data-sym="${esc(e.s)}"${e.note ? ` title="${esc(e.note)}"` : ''}>` +
+        `<span class="sw-star" data-sym="${esc(e.s)}"></span>` +
+        `<span class="n"><b>${esc(e.s)}</b>${e.note ? '<span class="nt" title="Has a note">✎</span>' : ''}</span>` +
+        `<span${v ? ' title="Live price (Yahoo NSE, ~15-min delay)"' : ''}>${v ? rs(v.ltp) : ''}</span>` +
+        `<span class="${v && v.ch != null ? cls(v.ch) : ''}">${v && v.ch != null ? (v.ch > 0 ? '+' : '') + v.ch.toFixed(2) + '%' : ''}</span>` +
+        `<span class="ad c5" title="Added on ${esc(fmtD(e.ts))}">${esc(fmtDs(e.ts))}</span></div>`; }).join('');
+    if (window.swWatch) swWatch.paintAll($('kList'));
+  }
+
+  /* ---- detail + chart ---- */
+  let LASTBARS = null;   // {sym, d}
+  function paintHead(){
+    const s = S.sel, v = s ? liveOf(s) : null;
+    if (!s) { $('cPx').textContent = ''; $('cChg').textContent = ''; $('cChg').className = ''; return; }
+    if (v) { $('cPx').textContent = rs(v.ltp); $('cPx').title = 'Live price (Yahoo NSE, ~15-min delay)';
+      $('cChg').textContent = v.ch == null ? '' : fmtPct(v.ch); $('cChg').className = v.ch == null ? '' : 'os-chg ' + (cls(v.ch) || 'os-pos'); }
+    else if (LASTBARS && LASTBARS.sym === s) { const B = LASTBARS.d.bars, b = B[B.length - 1], p = B.length > 1 ? B[B.length - 2] : null, ch = p ? (b.c / p.c - 1) * 100 : null;
+      $('cPx').textContent = rs(b.c); $('cPx').title = 'Last close on file, ' + K.niceDate(K.tsISO(b.ts));
+      $('cChg').textContent = ch == null ? '' : fmtPct(ch); $('cChg').className = ch == null ? '' : 'os-chg ' + (cls(ch) || 'os-pos'); }
+    else { $('cPx').textContent = ''; $('cPx').title = ''; $('cChg').textContent = ''; $('cChg').className = ''; }
+    paintStats();
+  }
+  function paintStats(){
+    const s = S.sel; if (!s) { $('cStats').innerHTML = ''; return; }
+    const v = liveOf(s), d = LASTBARS && LASTBARS.sym === s ? LASTBARS.d : null;
+    let last = null, hi = null, lo = null, y1 = null;
+    if (d) { const B = d.bars; last = B[B.length - 1]; const cut = last.ts - 365 * 86400;
+      for (let i = B.length - 1; i >= 0 && B[i].ts > cut; i--) { const h = B[i].h != null ? B[i].h : B[i].c, l = B[i].l != null ? B[i].l : B[i].c; if (hi == null || h > hi) hi = h; if (lo == null || l < lo) lo = l; }
+      for (let i = B.length - 1; i >= 0; i--) if (B[i].ts <= cut) { y1 = (last.c / B[i].c - 1) * 100; break; } }
+    const off = last && hi ? (last.c / hi - 1) * 100 : null;
+    $('cStats').innerHTML =
+      stat('Live price', v ? rs(v.ltp) : '—', '', 'Yahoo NSE, about 15 minutes delayed') +
+      stat('Today', v && v.ch != null ? fmtPct(v.ch) : '—', v && v.ch != null ? cls(v.ch) : '', v && v.prev > 0 ? 'Against the previous close ' + rs(v.prev) : '') +
+      stat('Last close' + (last ? ' · ' + K.niceDate(K.tsISO(last.ts)) : ''), last ? rs(last.c) : '—', '', 'The newest close in our daily price file') +
+      stat('1 year', y1 != null ? fmtPct(y1) : '—', y1 != null ? cls(y1) : '', 'Last close against the close one year earlier, from our daily price file') +
+      stat('52W high', hi != null ? rs(hi) : '—', '', 'Highest price of the last 52 weeks in our daily price file') +
+      stat('From 52W high', off != null ? off.toFixed(2) + '%' : '—', off != null && off < 0 ? 'os-neg' : '', 'How far the last close is below the 52-week high');
+  }
+  function showSel(lazy){
+    const tok = ++CTOK; clearTimeout(showTimer);
+    const s = S.sel, e = s && window.swWatch ? swWatch.entry(s) : null;
+    ['dOpen', 'dScr', 'dDel', 'cFull'].forEach(id => $(id).classList.toggle('hidden', !e));
+    const ta = $('dNote');
+    if (!e) { S.sel = null; $('dTitle').textContent = 'Note'; ta.value = ''; ta.disabled = true; ta.removeAttribute('data-note'); $('dMeta').innerHTML = (window.swWatch && swWatch.list().length) ? 'Pick a stock on the left.' : ''; $('dSaved').textContent = '';
+      $('cStar').innerHTML = ''; $('cSym').textContent = '—'; $('cNote').textContent = ''; LASTBARS = null; paintHead(); $('cStats').innerHTML = ''; if (CH) CH.clear(''); return; }
+    $('dTitle').textContent = s + ' · note';
+    if (ta.getAttribute('data-note') !== s) $('dSaved').textContent = '';
+    if (ta.getAttribute('data-note') !== s || document.activeElement !== ta) { ta.value = e.note || ''; }
+    ta.disabled = false; ta.setAttribute('data-note', s);
+    $('dMeta').innerHTML = '<b>Added</b> ' + esc(fmtD(e.ts) || '—') + (e.nts ? ' · <b>note edited</b> ' + esc(fmtD(e.nts)) : '');
+    $('dOpen').href = './stock.html?sym=' + encodeURIComponent(s);
+    $('dScr').href = 'https://www.screener.in/company/' + encodeURIComponent(s) + '/';
+    $('cFull').href = './chart.html?s=' + encodeURIComponent(s);
+    $('cStar').innerHTML = `<span class="sw-star" data-sym="${esc(s)}"></span>`;
+    $('cSym').textContent = s;
+    if (!LASTBARS || LASTBARS.sym !== s) { LASTBARS = null; $('cNote').textContent = ''; }
+    paintHead();
+    if (LASTBARS && LASTBARS.sym === s) return;
+    showTimer = setTimeout(async () => {      // holding an arrow key walks the list; only the row you stop on is fetched
+      $('cMsg').textContent = 'Loading chart…';
+      let d = null;
+      try { d = await K.loadStockBars(s); } catch (err) { d = null; }
+      if (tok !== CTOK) return;
+      if (!d || !d.bars.length) { CH.clear('No daily price history on file for ' + s + '.'); $('cNote').textContent = 'No chart: our daily price files have no stock under the symbol ' + s + '.'; return; }
+      LASTBARS = { sym: s, d: d };
+      CH.show(d, { name: s, tag: '' });
+      $('cNote').textContent = d.ohlc ? '' : 'Chart: closing prices only.';
+      paintHead();
+    }, lazy ? 140 : 0);
+  }
+  function pick(s, lazy){
+    flushNote();
+    S.sel = s;
+    $('kList').querySelectorAll('.kr').forEach(el => { const on = el.dataset.sym === s; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); if (on) el.scrollIntoView({ block: 'nearest' }); });
+    showSel(lazy);
+  }
+  function chartBar(){
+    $('cIv').innerHTML = ['D', 'W', 'M'].map(k => `<button type="button" class="${k === CH.iv ? 'on' : ''}" data-v="${k}" title="${{ D: 'Daily', W: 'Weekly', M: 'Monthly' }[k]} bars">${k}</button>`).join('');
+    $('cRg').innerHTML = ['3M', '6M', '1Y', '3Y', 'Max'].map(k => `<button type="button" class="${k === CH.range ? 'on' : ''}" data-v="${k}">${k}</button>`).join('');
+    $('cLog').classList.toggle('on', CH.log); $('cLog').setAttribute('aria-pressed', CH.log);
+  }
+  function setFocus(on){ S.focus = on == null ? !S.focus : on; $('grid').classList.toggle('focus', S.focus); $('cFocus').textContent = S.focus ? 'Show lists' : 'Focus'; $('cFocus').setAttribute('aria-pressed', S.focus); }
+
+  /* ---- notes: save 800ms after typing stops (and on blur) — same rule as the old page ---- */
+  function flushNote(){
+    clearTimeout(noteTimer); noteTimer = null;
+    const ta = $('dNote'), s = ta.getAttribute('data-note'); if (!s || ta.disabled) return;
+    const e = swWatch.entry(s);
+    if (e && (e.note || '') !== ta.value) { swWatch.setNote(s, ta.value); $('dSaved').textContent = 'saved'; }
+  }
+
+  function render(){
+    const l = window.swWatch ? swWatch.list() : [];
+    if (S.sel && !swWatch.has(S.sel)) S.sel = null;
+    renderHead(); renderList();
+    if (!S.sel && VIEW.length) S.sel = VIEW[0].s;
+    $('kList').querySelectorAll('.kr').forEach(el => { const on = el.dataset.sym === S.sel; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); });
+    badge(); showSel(false);
   }
 
   // Owner-only page: everyone else gets a lock card (client-side curtain; the
@@ -131,6 +263,8 @@
   function boot(){
     if (!SW_OWNER) { swLock(); return; }
     if (!window.swWatch) { setTimeout(boot, 150); return; }
+    CH = new K.Chart({ chart: $('cChart'), legend: $('cLegend'), msg: $('cMsg'), iv: 'D', range: '1Y', log: false });
+    chartBar(); K.fitGrid($('grid'));
     swWatch.load().then(() => { render(); fetchLive(); });
     document.addEventListener('sw-watch-change', () => { render(); fetchLive(); });
     setInterval(() => { if (!document.hidden && marketOpenIST()) fetchLive(); }, 60000);
@@ -141,27 +275,39 @@
       const s = ($('wlAdd').value || '').trim().toUpperCase().replace(/[^A-Z0-9&\-]/g, '');
       if (!s) return;
       $('wlAdd').value = '';
-      if (!swWatch.has(s)) swWatch.toggle(s);
+      S.sel = s;
+      if (!swWatch.has(s)) swWatch.toggle(s); else pick(s);
     }
 
-    // notes: save 800ms after typing stops (and on blur)
-    $('wlList').addEventListener('input', ev => {
-      const t = ev.target.closest('textarea[data-note]'); if (!t) return;
-      const s = t.getAttribute('data-note');
-      clearTimeout(noteTimers[s]);
-      noteTimers[s] = setTimeout(() => swWatch.setNote(s, t.value), 800);
+    $('dNote').addEventListener('input', () => {
+      const ta = $('dNote'), s = ta.getAttribute('data-note'); if (!s) return;
+      $('dSaved').textContent = '';
+      clearTimeout(noteTimer);
+      noteTimer = setTimeout(() => { noteTimer = null; swWatch.setNote(s, ta.value); $('dSaved').textContent = 'saved'; }, 800);
     });
-    $('wlList').addEventListener('focusout', ev => {
-      const t = ev.target.closest('textarea[data-note]'); if (!t) return;
-      const s = t.getAttribute('data-note');
-      clearTimeout(noteTimers[s]);
-      const e = swWatch.entry(s);
-      if (!e || (e.note || '') !== t.value) swWatch.setNote(s, t.value);
-    });
-    // deletes
-    $('wlList').addEventListener('click', ev => {
-      const b = ev.target.closest('button[data-del]'); if (!b) return;
-      swWatch.remove(b.getAttribute('data-del'));
+    $('dNote').addEventListener('blur', flushNote);
+    $('dDel').addEventListener('click', () => { if (!S.sel) return; clearTimeout(noteTimer); noteTimer = null;
+      const i = VIEW.findIndex(e => e.s === S.sel), nx = VIEW[i + 1] || VIEW[i - 1], s = S.sel;
+      $('dNote').removeAttribute('data-note'); S.sel = nx ? nx.s : null; swWatch.remove(s); });
+    $('kList').addEventListener('click', ev => { const r = ev.target.closest('.kr'); if (r) pick(r.dataset.sym); });
+    $('kHead').addEventListener('click', ev => { const h = ev.target.closest('[data-s]'); if (!h) return; const k = h.dataset.s;
+      if (S.sort === k) { if (S.dir === 1) S.dir = -1; else { S.sort = 'list'; S.dir = 1; } } else { S.sort = k; S.dir = 1; }
+      renderHead(); renderList(); });
+    $('cIv').onclick = e => { const b = e.target.closest('button'); if (b) { CH.setIv(b.dataset.v); chartBar(); } };
+    $('cRg').onclick = e => { const b = e.target.closest('button'); if (b) { CH.setRange(b.dataset.v); chartBar(); } };
+    $('cLog').onclick = () => { CH.setLog(!CH.log); chartBar(); };
+    $('cFocus').onclick = () => setFocus();
+    window.addEventListener('resize', () => K.fitGrid($('grid')));
+    document.addEventListener('keydown', e => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const tg = e.target, typing = tg && /^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
+      if (typing) { if (e.key === 'Escape') tg.blur(); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { const j = VIEW.findIndex(x => x.s === S.sel) + (e.key === 'ArrowDown' ? 1 : -1); if (VIEW[j]) pick(VIEW[j].s, true); e.preventDefault(); }
+      else if (e.key === 'Escape') { if (S.focus) setFocus(false); }
+      else if (e.key === 'Enter') { if (S.sel) location.href = './stock.html?sym=' + encodeURIComponent(S.sel); }
+      else if (e.key === 'f' || e.key === 'F') setFocus();
+      else if (e.key === 'n' || e.key === 'N') { if (S.sel) { $('dNote').focus(); e.preventDefault(); } }
+      else if (e.key === '/') { $('wlAdd').focus(); e.preventDefault(); }
     });
   }
   document.readyState === 'loading' ? addEventListener('DOMContentLoaded', boot) : boot();
