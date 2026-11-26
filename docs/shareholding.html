@@ -376,7 +376,7 @@ function pickCols(){
 }
 function cell(r,k){
   switch(k){
-    case '': return '<span class="n">'+esc(r.s)+(r.ageDays<=3?'<span class="bdg">NEW</span>':'')+(r.streak>=2&&!COLS.some(c=>c[0]==='streak')?'<span class="bdg st" title="FII stake raised '+r.streak+' quarters in a row">🔥'+r.streak+'</span>':'')+'</span>';
+    case '': return '<span class="n"><span class="sw-star" data-sym="'+esc(r.s)+'"></span> '+esc(r.s)+(r.ageDays<=3?'<span class="bdg">NEW</span>':'')+(r.streak>=2&&!COLS.some(c=>c[0]==='streak')?'<span class="bdg st" title="FII stake raised '+r.streak+' quarters in a row">🔥'+r.streak+'</span>':'')+'</span>';
     case 'm': return '<span class="v m">'+fmtMc(r.m)+'</span>';
     case 'sub': return '<span class="v" style="text-align:left">'+qLabel(r.q)+'<span class="q2">'+dLabel(r.sub)+'</span></span>';
     case 'fii': return '<span class="v">'+fmtPct(r.fii)+'</span>';
@@ -422,7 +422,7 @@ const stockUrl=s=>'./stock.html?sym='+encodeURIComponent(s);
 function renderDetail(){
   const r=SEL;
   if(!r){ $('dSym').textContent='—'; $('dTag').textContent=''; $('dBody').innerHTML='<div class="os-empty">No stock selected.</div>'; return; }
-  $('dSym').innerHTML='<a href="'+stockUrl(r.s)+'" title="Open '+esc(r.s)+'’s own page">'+esc(r.s)+'</a>';
+  $('dSym').innerHTML='<span class="sw-star" data-sym="'+esc(r.s)+'"></span> <a href=""'+stockUrl(r.s)+'" title="Open '+esc(r.s)+'’s own page">'+esc(r.s)+'</a>';
   $('dTag').textContent=qLabel(r.q)+' quarter';
   const kv=(l,v,c)=>'<div class="kv"><span>'+l+'</span><b class="'+(c||'')+'">'+v+'</b></div>';
   const full=iso=>iso?dLabel(iso)+' '+iso.slice(0,4):'—';
@@ -531,7 +531,7 @@ function wire(){
   $('fbtn').onclick=()=>{ const b=$('fbtn').parentNode; $('fbtn').dataset.t='1'; $('fbtn').setAttribute('aria-expanded',b.classList.toggle('open')); };
   $('fdclr').onclick=()=>{ $('fdate').value=''; apply(); };
   $('lHead').addEventListener('click',e=>{ const h=e.target.closest('[data-k]'); if(h) setSort(h.dataset.k,true); });
-  $('lList').addEventListener('click',e=>{ const el=e.target.closest('.os-row[data-i]'); if(el) select(+el.dataset.i,true); });
+  $('lList').addEventListener('click',e=>{ if(e.target.closest('.sw-star')) return; const el=e.target.closest('.os-row[data-i]'); if(el) select(+el.dataset.i,true); });
   $('lList').addEventListener('dblclick',e=>{ const el=e.target.closest('.os-row[data-i]'); if(el) location.href=stockUrl(VIEW[+el.dataset.i].s); });
   $('lList').addEventListener('scroll',()=>{ const L=$('lList'); if(shown<VIEW.length && L.scrollTop+L.clientHeight>L.scrollHeight-400) renderMore(); });
   $('season').addEventListener('click',e=>{ const a=e.target.closest('[data-sym]'); if(!a) return;
