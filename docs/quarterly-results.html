@@ -4,86 +4,90 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Quarterly Results</title>
-<meta name="description" content="India's quarterly results dashboard — season scoreboard, live just-declared feed, upcoming results calendar (confirmed + predicted dates), sector heatmap, turnaround screens and result-day price reaction for every NSE and BSE-listed company." />
+<meta name="description" content="India's quarterly results dashboard — season scoreboard, live just-declared feed, upcoming results calendar (confirmed + predicted dates), sector medians, turnaround screens and result-day price reaction for every NSE and BSE-listed company." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  th[data-s]{cursor:pointer;user-select:none;white-space:nowrap}
-  th[data-s]:hover{color:var(--accent-text)}
-  .pos{color:var(--pos,var(--pos))} .neg{color:var(--neg,var(--neg))}
-  .chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:5px 12px;border-radius:var(--radius-sm);
-        border:1px solid var(--border-strong,var(--border-strong));background:var(--surface,var(--surface));color:var(--text-muted,var(--text-muted));
-        cursor:pointer;white-space:nowrap;transition:all .12s}
-  .chip:hover{border-color:var(--accent,var(--accent));color:var(--accent,var(--accent-text))}
-  .chip.on{background:var(--accent,var(--accent));border-color:var(--accent,var(--accent));color:#fff}
-  .tabbtn{padding:8px 16px;border-radius:var(--radius);font-size:13.5px;font-weight:800;color:var(--text-muted,var(--text-muted));cursor:pointer;
-          border:1px solid transparent;white-space:nowrap;transition:all .12s}
-  .tabbtn:hover{background:var(--surface-2,var(--surface-2))}
-  .tabbtn.on{background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text));border-color:var(--border-strong,color-mix(in srgb,var(--accent) 38%,transparent))}
-  .seg{display:inline-flex;border:1px solid var(--border-strong,var(--border-strong));border-radius:var(--radius);overflow:hidden}
-  .seg button{padding:6px 12px;font-size:12px;font-weight:700;color:var(--text-muted,var(--text-muted));background:var(--surface,var(--surface));cursor:pointer}
-  .seg button.on{background:var(--accent,var(--accent));color:#fff}
-  .tile{padding:14px 16px;border-radius:var(--radius-lg);border:1px solid var(--border,var(--border));background:var(--surface,var(--surface))}
-  .tile-link{cursor:pointer;transition:box-shadow .12s,transform .12s,border-color .12s}
-  .tile-link:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(2,6,23,.10);border-color:var(--border-strong,var(--border-strong))}
-  .tile-link:focus-visible{outline:2px solid var(--accent,var(--accent));outline-offset:2px}
-  .docbtn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--radius);
-          background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text));border:1px solid var(--border-strong,color-mix(in srgb,var(--accent) 38%,transparent));white-space:nowrap}
-  .docbtn:hover{border-color:var(--accent,#93c5fd)}
-  .vdot{display:inline-block;width:9px;height:9px;border-radius:9999px;vertical-align:middle}
-  .star{cursor:pointer;font-size:15px;color:var(--text-faint,#cbd5e1);transition:color .12s;user-select:none}
-  .star.on{color:#f59e0b}
-  .badge{display:inline-flex;align-items:center;font-size:10px;font-weight:800;padding:1.5px 7px;border-radius:var(--radius-sm);
-         background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text-muted));white-space:nowrap}
-  .estpill{background:var(--surface-2,var(--surface-2));color:var(--text-faint,var(--text-faint));border:1px dashed var(--border-strong,var(--border-strong))}
-  .heatcell{border-radius:var(--radius);padding:10px 12px;cursor:pointer;border:1px solid var(--border,var(--border));transition:transform .12s}
-  .heatcell:hover{transform:translateY(-2px)}
-  .mrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5.5px 10px;border-radius:var(--radius);cursor:pointer;font-size:12.5px}
-  .mrow:hover{background:var(--surface-2,var(--surface-2))}
-  #modalBg{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:60;display:none;align-items:flex-start;justify-content:center;padding:4vh 12px;overflow-y:auto}
-  #modal{max-width:880px;width:100%;border-radius:var(--radius-lg);background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));box-shadow:0 24px 60px rgba(2,6,23,.35)}
-  .qtbl th,.qtbl td{padding:5px 8px;white-space:nowrap;font-size:12px;text-align:right}
-  .qtbl th:first-child,.qtbl td:first-child{text-align:left;position:sticky;left:0;background:var(--surface,var(--surface));font-weight:700}
-  .growthsub{font-size:10px;font-weight:700}
-  .lnk{color:var(--accent,var(--accent-text));font-weight:700;cursor:pointer}
-  .lnk:hover{text-decoration:underline}
-  .bar-tip{pointer-events:none}
-  .scrollbar::-webkit-scrollbar{height:8px}
-  .scrollbar::-webkit-scrollbar-thumb{background:#475569;border-radius:4px}
-  /* Just Declared — per-company result cards (Screener-inspired). Mini table has NO thead on
-     purpose: theme.js auto-cardify keys off thead and would stack these tiny tables on phones. */
-  .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px}
-  .fcard{cursor:pointer;transition:box-shadow .12s,transform .12s,border-color .12s;overflow-x:auto}
-  .fcard:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(2,6,23,.10);border-color:var(--border-strong,var(--border-strong))}
-  .ftbl{width:100%;border-collapse:collapse;margin-top:8px}
-  .ftbl td{padding:3.5px 6px;font-size:12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
-  .ftbl td:first-child{text-align:left;font-weight:700;color:var(--text-muted,var(--text-muted));padding-left:0}
-  .ftbl td:last-child{padding-right:0}
-  .ftbl tr.fh td{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:800;color:var(--text-faint,var(--text-faint));border-bottom:1px solid var(--border,var(--border));padding-bottom:5px}
-  .ftbl tr:not(.fh)+tr td{border-top:1px solid var(--border,var(--border))}
-  .dstrip{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:thin}
-  .dchip{font-size:11px;padding:3.5px 10px}
-  .dayhead{display:flex;align-items:center;gap:10px;margin:18px 0 8px}
-  .daybox{display:inline-flex;align-items:baseline;gap:6px;background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text));
-          border:1px solid var(--border-strong,color-mix(in srgb,var(--accent) 38%,transparent));border-radius:var(--radius);padding:5px 12px;
-          font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:800}
-  .daybox .daycnt{font-weight:700;opacity:.72;text-transform:none;letter-spacing:0}
-  .dayhead .dline{flex:1;height:1px;background:var(--border,var(--surface-3))}
-  @media (max-width:640px){
-    .tabbtn{padding:7px 11px;font-size:12.5px} .fgrid{grid-template-columns:1fr}
-    /* Phone (2026-10-13): the control card used to fill the whole first screen — eight quarter chips over
-       three rows, two toggles, three stacked dropdowns, a search box. Now: search + a Filters button on one
-       line, the quarter chips on one scrolling line under it, the count on a third; the toggles and
-       dropdowns open under Filters (theme.css .sw-filters / .sw-strip). */
-    #controlsCard{display:flex;flex-direction:column;gap:8px;padding:10px}
-    #filterRow{order:-1;margin-top:0}
-    #qchips .chip{padding:5px 11px}
-    /* Season Trends period group: five buttons on one line (the text used to wrap inside each button) */
-    #tab-season [role="group"]{max-width:100%;overflow-x:auto;scrollbar-width:none}
-    #tab-season [role="group"] button{white-space:nowrap;padding-left:9px;padding-right:9px}
+  body{font-feature-settings:"tnum" 1}
+  html[data-theme] .pos{color:var(--pos)} html[data-theme] .neg{color:var(--neg)}
+  :root{--rs1:#0284c7;--rs2:#059669;--rs3:#d97706}
+  html[data-theme="dark"]{--rs1:#38bdf8;--rs2:#34d399;--rs3:#fbbf24}
+  #grid{grid-template-columns:minmax(300px,30%) minmax(270px,25%) minmax(0,1fr)}
+  #grid.focus{grid-template-columns:minmax(0,1fr)}   /* the page's own #grid columns would otherwise outrank the kit's .os-grid.focus */
+  #grid[data-view="results"] #lHead,.lr-results{grid-template-columns:minmax(0,1fr) 60px 60px 56px 68px}
+  #grid[data-view="feed"] #lHead,.lr-feed{grid-template-columns:minmax(0,1fr) 62px 62px 58px}
+  #grid[data-view="calendar"] #lHead,.lr-calendar{grid-template-columns:minmax(0,1fr) 84px 44px}
+  #grid[data-view="overview"] #lHead,.lr-overview{grid-template-columns:minmax(0,1fr) 62px 62px 56px 44px}
+  #grid[data-view="season"] #lHead,.lr-season{grid-template-columns:minmax(0,1fr) 46px 54px 54px 54px}
+  .lr-pend{grid-template-columns:minmax(0,1fr) auto}
+  .os-row > span:not(:first-child){text-align:right;white-space:nowrap}
+  .vdot{display:inline-block;width:8px;height:8px;border-radius:9999px;vertical-align:middle;margin-right:6px}
+  .nov{display:inline-block;width:8px;margin-right:6px;color:var(--text-faint);text-align:center}
+  sup.rb{color:var(--text-faint);font-size:9px;margin-left:1px}
+  .star{cursor:pointer;font-size:16px;color:var(--text-faint);user-select:none} .star.on{color:#f59e0b}
+  .sec{padding:6px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);font-size:11.5px;font-weight:600;color:var(--text-muted);display:flex;justify-content:space-between;position:sticky;top:0;z-index:1}
+  .sec.today{color:var(--accent-text)} .sec i{font-style:normal;font-weight:400;color:var(--text-faint)}
+  .sec.sub{position:static;background:none;font-weight:500;color:var(--text-faint)}
+  .kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:7px 12px;border-bottom:1px solid var(--border);font-size:13px}
+  .kv > span{color:var(--text-muted);white-space:nowrap} .kv > b{font-weight:600;color:var(--text);text-align:right;overflow-wrap:anywhere}
+  .kv > b small{display:block;font-weight:400;font-size:11.5px;color:var(--text-faint)}
+  .kv[data-go]{cursor:pointer} .kv[data-go]:hover{background:var(--surface-2)}
+  .det{padding:9px 12px;border-bottom:1px solid var(--border);font-size:12.5px;line-height:1.5;color:var(--text-muted);overflow-wrap:anywhere}
+  .dh{padding:9px 12px 6px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border)}
+  .act{display:flex;flex-wrap:wrap;gap:6px;padding:9px 12px;border-bottom:1px solid var(--border)}
+  .bb{padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-muted)}
+  .bb div:first-child{display:flex;justify-content:space-between;margin-bottom:5px}
+  .bb .t{display:flex;height:8px;background:var(--surface-2)} .bb .t i{display:block;height:100%}
+  .mv{grid-template-columns:minmax(0,1fr) 64px}
+  .ft,.qt{width:100%;border-collapse:collapse;font-size:12px}
+  .ft td,.qt td{padding:5px 8px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--border);color:var(--text)}
+  .ft td:first-child,.qt td:first-child{text-align:left;color:var(--text-muted);font-weight:600;padding-left:12px;position:sticky;left:0;background:var(--surface)}
+  .ft tr.fh td,.qt tr.h td{font-size:11px;color:var(--text-faint);font-weight:500;background:var(--surface-2)}
+  .qt td.cur{background:var(--accent-soft)} .qt tr.h td.cur{color:var(--accent-text);font-weight:600}
+  .qt small{font-size:10.5px;margin-left:5px}
+  #cTbl{border-top:1px solid var(--border);overflow:auto;flex:0 1 auto;max-height:46%;scrollbar-width:thin}
+  #cWrap{min-height:170px}
+  #lHead span{white-space:nowrap}
+  #qc,#rsChart,#ovC{position:absolute;inset:0}
+  #rsChart{overflow-x:auto;overflow-y:hidden;scrollbar-width:thin} #ovC{overflow-y:auto;scrollbar-width:thin}
+  #qc svg,#rsChart svg{display:block}
+  #qc text,#rsChart text{font-family:inherit;fill:var(--text-muted);font-size:11px}
+  #qc text.v{fill:var(--text);font-size:10.5px} #qc text.on,#rsChart text.on{fill:var(--accent-text);font-weight:600}
+  #qc text.lb{font-size:11.5px;fill:var(--text-faint)}
+  #qc line,#rsChart line{stroke:var(--border)} #rsChart line.z,#qc line.z{stroke:var(--border-strong)}
+  #rsLegend{display:inline-flex;gap:12px;font-size:12px;color:var(--text-muted);align-items:center}
+  #rsLegend.hidden{display:none}
+  #rsLegend i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px}
+  .strip{display:flex;align-items:flex-end;gap:10px;height:118px;padding:10px 14px;border-bottom:1px solid var(--border)}
+  .strip > div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;font-size:11px;color:var(--text-muted)}
+  .strip i{display:block;width:100%;max-width:54px}
+  .hb{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) 62px;gap:10px;align-items:center;height:27px;padding:0 12px;cursor:pointer;border-bottom:1px solid var(--border);font-size:12.5px;box-shadow:inset 2px 0 0 transparent}
+  .hb:hover{background:var(--surface-2)} .hb.on{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent)}
+  .hb > span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)} .hb > span:last-child{text-align:right;font-weight:500}
+  .hb .t{position:relative;height:11px;background:linear-gradient(var(--border-strong),var(--border-strong)) 50% 0/1px 100% no-repeat}
+  .hb .t i{position:absolute;top:0;bottom:0}
+  #lFoot{display:flex;gap:8px;padding:8px 10px;border-top:1px solid var(--border)} #lFoot.hidden{display:none}
+  html[data-theme] .os-sg.hidden{display:none}
+  html[data-theme] .os-bar select,html[data-theme] .os-bar input[type="search"]{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:12.5px;color:var(--text);min-height:0;height:auto;max-width:190px}
+  #fCount{font-size:12px;color:var(--text-faint)} #feedLive{color:var(--pos);font-weight:600;margin-left:8px}
+  #hQuarter{font-weight:500;color:var(--text-muted)}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  @media (max-width:1700px){
+    #grid[data-view="overview"] #lHead,.lr-overview{grid-template-columns:minmax(0,1fr) 62px 62px 56px}
+    #grid[data-view="results"] #lHead,.lr-results{grid-template-columns:minmax(0,1fr) 60px 56px 68px} .c3,.c4{display:none} }
+  @media (max-width:899px){
+    #grid{grid-template-columns:minmax(0,1fr)} #grid > #pL .os-list{max-height:330px} #pD .os-list{max-height:none !important} #pC .os-chartwrap{height:320px}
+    #grid[data-view="results"] #lHead,.lr-results{grid-template-columns:minmax(0,1fr) 60px 56px 68px}
+    #grid[data-view="overview"] #lHead,.lr-overview{grid-template-columns:minmax(0,1fr) 62px 62px 56px}
+    .c3,.c4{display:none}
+    html[data-theme] .os-bar input[type="search"]{max-width:none;flex:1 1 100%;min-width:140px}
+    html[data-theme] #controlsCard select{flex:1 1 0;min-width:0;max-width:none;padding-left:6px;padding-right:4px}
+    #vbar .os-hint,#seasonBar .os-hint{white-space:normal;min-width:0;flex:1 1 100%} #keys{display:none}
+    #controlsCard .sp,#vbar .sp,#seasonBar .sp{display:none} #fCount{flex:1 1 100%}
+    html[data-theme] #seasonBar select{max-width:none;flex:1 1 0;min-width:0}
   }
 </style>
 </head>
@@ -99,242 +103,92 @@
   </div>
 </header>
 
-<main class="max-w-screen-2xl mx-auto px-4 py-6">
-  <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
-    <div>
-      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Quarterly Results <span id="hQuarter" class="text-indigo-600"></span></h1>
-      <p class="hidden sm:block text-sm text-slate-500 mt-1">Season scoreboard · live declared feed · upcoming calendar · every company's numbers with the market's verdict. <span class="hidden sm:inline">PAT is owners-attributable, consolidated preferred.</span></p>
-    </div>
-    <div id="updatedBox" class="text-[11px] text-slate-500 sm:text-right"></div>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Quarterly Results <span id="hQuarter"></span></h1>
+    <div class="os-vtabs" id="tabs" role="tablist" aria-label="View"></div>
+    <div class="os-asof"><span id="updatedBox"></span><span id="feedLive" class="hidden"></span></div>
   </div>
+  <div id="status" class="os-empty">Loading results data…</div>
 
-  <div id="status" class="text-sm text-slate-500 py-14 text-center">Loading results data…</div>
-
-  <div id="app" style="display:none">
-
-    <!-- Tab bar -->
-    <div class="flex items-center gap-1.5 mb-3 overflow-x-auto pb-1 sw-strip" id="tabs">
-      <button class="tabbtn" data-tab="overview"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Season Overview</button>
-      <button class="tabbtn" data-tab="results"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> All Results</button>
-      <button class="tabbtn" data-tab="feed"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Just Declared</button>
-      <button class="tabbtn" data-tab="calendar"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Calendar</button>
-      <button class="tabbtn" data-tab="season"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Season Trends</button>
+  <div id="app" class="hidden">
+    <div class="os-bar" id="controlsCard">
+      <div class="os-sg" id="qchips" role="group" aria-label="Quarter"></div>
+      <div class="os-sg" id="segMode" role="group" aria-label="Growth against"></div>
+      <div class="os-sg" id="segBasis" role="group" aria-label="Reporting basis" title="Auto = consolidated where filed, else standalone (same basis for both periods of a growth %)"></div>
+      <select id="selUni" aria-label="Universe">
+        <option value="all">All companies</option>
+        <option value="n50">Nifty 50</option>
+        <option value="n100">Nifty 100</option>
+        <option value="n500">Nifty 500</option>
+        <option value="m150">Nifty Midcap 150</option>
+        <option value="s250">Nifty Smallcap 250</option>
+        <option value="mc250">Nifty Microcap 250</option>
+        <option value="fno">F&amp;O stocks</option>
+        <option value="nse">NSE-listed only</option>
+        <option value="bse">BSE-listed only</option>
+        <option value="smeipo">BSE SME IPO index</option>
+        <option value="smeemerge">Nifty SME Emerge index</option>
+        <option value="watch">My watchlist</option>
+      </select>
+      <select id="selMcap" aria-label="Market cap">
+        <option value="all">All mkt caps</option>
+        <option value="l">Large ≥ ₹20,000 cr</option>
+        <option value="m">Mid ₹5,000–20,000 cr</option>
+        <option value="s">Small &lt; ₹5,000 cr</option>
+      </select>
+      <select id="selSector" aria-label="Sector"><option value="all">All sectors</option></select>
+      <input id="inSearch" type="search" placeholder="Search symbol / company" autocomplete="off" spellcheck="false" aria-label="Search symbol or company" />
+      <span class="sp"></span>
+      <span id="fCount"></span>
+    </div>
+    <div class="os-bar hidden" id="seasonBar">
+      <select id="rsUniverseSelect" aria-label="Universe"></select>
+      <div class="os-sg" id="rsMode" role="group" aria-label="Median or total"></div>
+      <div class="os-sg" id="rsPer" role="group" aria-label="Period"></div>
+      <span id="rsCustomRange" class="hidden" style="display:inline-flex;gap:6px;align-items:center">
+        <select id="rsCFrom" aria-label="From quarter"></select><span class="os-hint">to</span><select id="rsCTo" aria-label="To quarter"></select>
+      </span>
+      <span class="sp"></span>
+      <span class="os-hint" id="rsUniverse"></span>
+    </div>
+    <div class="os-bar" id="vbar">
+      <span id="vctl" style="display:contents"></span>
+      <span class="sp"></span>
+      <span class="os-hint keys" id="keys"></span>
     </div>
 
-    <!-- Controls -->
-    <div class="card p-3 mb-4" id="controlsCard">
-      <div class="flex flex-wrap items-center gap-x-2 gap-y-2 sw-strip" id="qchips"></div>
-      <div class="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2.5 sw-filters" id="filterRow">
-        <span class="seg" id="segMode">
-          <button data-v="yoy" class="on">YoY</button><button data-v="qoq">QoQ</button>
-        </span>
-        <span class="seg" id="segBasis" title="Auto = consolidated where filed, else standalone (same basis for both periods of a growth %)">
-          <button data-v="auto" class="on">Auto</button><button data-v="con">Consol.</button><button data-v="std">Standalone</button>
-        </span>
-        <select id="selUni" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="all">All companies</option>
-          <option value="n50">Nifty 50</option>
-          <option value="n100">Nifty 100</option>
-          <option value="n500">Nifty 500</option>
-          <option value="m150">Nifty Midcap 150</option>
-          <option value="s250">Nifty Smallcap 250</option>
-          <option value="mc250">Nifty Microcap 250</option>
-          <option value="fno">F&amp;O stocks</option>
-          <option value="nse">NSE-listed only</option>
-          <option value="bse">BSE-listed only</option>
-          <option value="smeipo">BSE SME IPO index</option>
-          <option value="smeemerge">Nifty SME Emerge index</option>
-          <option value="watch">⭐ My watchlist</option>
-        </select>
-        <select id="selMcap" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="all">All mkt caps</option>
-          <option value="l">Large ≥ ₹20,000 cr</option>
-          <option value="m">Mid ₹5,000–20,000 cr</option>
-          <option value="s">Small &lt; ₹5,000 cr</option>
-        </select>
-        <select id="selSector" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-[180px]">
-          <option value="all">All sectors</option>
-        </select>
-        <input id="inSearch" type="text" placeholder="Search symbol / company…" autocomplete="off" spellcheck="false" data-keep="search"
-               class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold w-48 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <span id="fCount" class="text-[11px] font-semibold text-slate-500 ml-auto" data-keep="line"></span>
-      </div>
+    <div class="os-grid" id="grid" data-view="overview">
+      <section class="os-pane" id="pL" aria-label="List">
+        <div class="os-ph"><span class="ttl" id="lTitle"></span><span class="r" id="count"></span></div>
+        <div class="os-ch" id="lHead"></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="List"></div>
+        <div id="lFoot" class="hidden"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Details">
+        <div class="os-ph"><span class="ttl" id="dTitle">Details</span><span class="r" id="dTag"></span></div>
+        <div class="os-list" id="dList"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span id="cStar"></span><span class="sym" id="cSym"></span><span class="nm" id="cName"></span>
+          <span class="r"><a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a>
+            <button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-ps"><div class="os-sg" id="cTabs" role="group" aria-label="Chart"></div><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
+          <div class="os-sg" id="segHeat" role="group" aria-label="Sector measure"></div><span id="rsLegend"></span>
+          <span class="os-hint" id="cMark" style="margin-left:auto"></span></div>
+        <div class="os-chartwrap" id="cWrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div>
+          <div id="qc"></div><div id="rsChart"></div><div id="ovC"></div></div>
+        <div id="cTbl"></div>
+      </section>
     </div>
 
-    <!-- ============ OVERVIEW ============ -->
-    <section id="tab-overview" style="display:none">
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-4" id="tiles" data-jump="Overview"></div>
-      <div class="grid lg:grid-cols-2 gap-4 mb-4" data-jump="Breadth">
-        <div class="card p-4">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="font-extrabold text-slate-900 text-sm">Market breadth <span class="text-slate-400 font-semibold" id="breadthMode"></span></h3>
-            <span class="text-[11px] text-slate-500" title="Growers = growth > 0 (incl. loss→profit). Decliners = growth < 0 (incl. profit→loss).">ⓘ</span>
-          </div>
-          <div id="breadth"></div>
-          <h3 class="font-extrabold text-slate-900 text-sm mt-4 mb-1.5">Season trend <span class="text-slate-400 font-semibold text-xs">· median PAT growth of reporters, last 5 quarters</span></h3>
-          <div id="seasonStrip"></div>
-          <div class="text-[11px] text-slate-500 mt-1.5">Full multi-year history → <span class="lnk" onclick="setTab('season')">Season Trends</span></div>
-        </div>
-        <div class="card p-4">
-          <div class="flex items-center justify-between mb-2 gap-2 flex-wrap">
-            <h3 class="font-extrabold text-slate-900 text-sm">Sector heatmap</h3>
-            <span class="seg" id="segHeat">
-              <button data-v="pat" class="on">PAT growth</button><button data-v="rev">Revenue</button><button data-v="rx">Reaction</button>
-            </span>
-          </div>
-          <div id="heatmap" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
-          <div class="text-[11px] text-slate-500 mt-2">Median across reporters · click a sector to open its results</div>
-        </div>
-      </div>
-
-      <div class="card p-4 mb-4 overflow-x-auto" data-jump="Scorecard">
-        <h3 class="font-extrabold text-slate-900 text-sm mb-2">Sector scorecard</h3>
-        <table class="w-full text-sm min-w-[760px]">
-          <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr>
-            <th class="text-left py-2 pr-3">Sector</th>
-            <th class="text-right px-3" title="Companies reported / expected (expected = reported the year-ago quarter)">Reported</th>
-            <th class="text-right px-3">Median revenue gr.</th>
-            <th class="text-right px-3">Median PAT gr.</th>
-            <th class="text-right px-3">PAT growers</th>
-            <th class="text-right px-3" title="Median % move on result day">Median reaction</th>
-          </tr></thead>
-          <tbody id="sectorRows" class="divide-y divide-slate-100"></tbody>
-        </table>
-      </div>
-
-      <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4" id="movers" data-jump="Movers"></div>
-    </section>
-
-    <!-- ============ RESULTS TABLE ============ -->
-    <section id="tab-results" style="display:none">
-      <div class="flex flex-wrap items-center gap-1.5 mb-3 sw-strip" id="screenChips"></div>
-      <div class="card p-0 overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm min-w-[1150px]">
-            <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100 sticky top-0"><tr>
-              <th class="py-2.5 pl-3 pr-1 w-7"></th>
-              <th data-s="sym"  class="text-left px-2">Stock ⇅</th>
-              <th data-s="m"    class="text-right px-2" title="Market cap, ₹ crore">MCap ⇅</th>
-              <th data-s="rev"  class="text-right px-2" title="Revenue for the quarter, ₹ crore (banks/NBFCs: total income)">Revenue ⇅</th>
-              <th data-s="ry"   class="text-right px-2">Rev YoY ⇅</th>
-              <th data-s="rq"   class="text-right px-2">Rev QoQ ⇅</th>
-              <th data-s="opm"  class="text-right px-2" title="Operating margin; Δ = change vs year-ago, basis points. Blank for banks/NBFCs.">OPM Δ ⇅</th>
-              <th data-s="pat"  class="text-right px-2" title="Net profit (owners-attributable), ₹ crore">PAT ⇅</th>
-              <th data-s="py"   class="text-right px-2">PAT YoY ⇅</th>
-              <th data-s="pq"   class="text-right px-2">PAT QoQ ⇅</th>
-              <th data-s="v"    class="text-center px-1" title="Rule-based verdict from PAT growth, revenue growth and margin change">✓ ⇅</th>
-              <th data-s="ann"  class="text-right px-2" title="Result announcement date (post-close filings dated next trading day)">Announced ⇅</th>
-              <th data-s="rx"   class="text-right px-2" title="% price move on result day">Reaction ⇅</th>
-              <th data-s="sr"   class="text-right px-2" title="% price drift from result-day close to latest close">Since ⇅</th>
-            </tr></thead>
-            <tbody id="resRows" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
-        <div class="flex items-center justify-between px-4 py-3">
-          <button id="bMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button>
-          <button id="bCsv" class="ml-auto px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV</button>
-        </div>
-      </div>
-      <p class="text-[11px] text-slate-500 mt-2">₹ crore · YoY/QoQ computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value (so a turnaround reads positive, e.g. BHEL −455 → +377 = +182.7%) · growth is the same figure the backtest uses (a still-loss-making quarter counts as profit-<i>down</i> in the tallies) · banks/NBFCs show total income &amp; PAT only.</p>
-    </section>
-
-    <!-- ============ FEED ============ -->
-    <section id="tab-feed" style="display:none">
-      <div class="flex flex-wrap items-center gap-1.5 mb-2 sw-strip" id="feedChips"></div>
-      <div class="dstrip sw-strip" id="feedDates"></div>
-      <div id="feedList"></div>
-      <div class="text-center mt-4"><button id="fMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button></div>
-      <p class="text-[11px] text-slate-500 mt-3">₹ crore · YoY vs the same quarter last year, computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value · the same growth figure the backtest uses · banks/NBFCs show total income &amp; PAT only · cards appear once a filing's numbers are parsed (NSE names sync nightly ~21:30 IST) · every NSE + BSE result filing, refreshes ~4×/day plus a live top-up (~every minute) when our relay is up · <span id="feedUpd"></span></p>
-    </section>
-
-    <!-- ============ CALENDAR ============ -->
-    <section id="tab-calendar" style="display:none">
-      <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="seg" id="segCal">
-          <button data-v="conf" class="on">Confirmed only</button><button data-v="both">Confirmed + predicted</button>
-        </span>
-        <span class="text-[11px] text-slate-500">✓ = board-meeting date filed with NSE · <span class="badge estpill">est.</span> = our prediction from the company's past reporting dates</span>
-      </div>
-      <div id="calList" class="space-y-4"></div>
-      <p class="text-[11px] text-slate-500 mt-3">Confirmed dates from the NSE + BSE event calendars (refreshes hourly) · predictions use each company's median filing lag over the past year · <span id="calUpd"></span></p>
-    </section>
-
-    <!-- ============ SEASON TRENDS (multi-year, merged from results-season.html) ============ -->
-    <section id="tab-season" style="display:none">
-      <div class="card p-3 mb-4">
-        <div class="flex flex-wrap items-center gap-2">
-          <label for="rsUniverseSelect" class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Universe</label>
-          <select id="rsUniverseSelect" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 max-w-full"></select>
-          <span class="inline-flex rounded-lg border border-slate-300 overflow-hidden text-xs font-semibold ml-1" role="group" aria-label="Metric type">
-            <button id="rsModeMedian" type="button" class="px-3 py-1.5" title="Median company's YoY growth (consolidated)">Median</button>
-            <button id="rsModeTotal" type="button" class="px-3 py-1.5 border-l border-slate-300" title="Total / aggregate YoY growth — matches Trendlyne">Total</button>
-          </span>
-          <span id="rsUniverse" class="text-xs text-slate-400"></span>
-        </div>
-        <div class="mt-2 flex flex-wrap items-center gap-2">
-          <label class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Period</label>
-          <span class="inline-flex rounded-lg border border-slate-300 overflow-hidden" role="group" aria-label="Time range">
-            <button id="rsP_1y"  type="button" class="px-3 py-1.5 text-xs font-semibold">1 Year</button>
-            <button id="rsP_3y"  type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">3 Years</button>
-            <button id="rsP_5y"  type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">5 Years</button>
-            <button id="rsP_all" type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">All time</button>
-            <button id="rsP_custom" type="button" class="px-3 py-1.5 text-xs font-semibold border-l border-slate-300">Custom</button>
-          </span>
-          <span id="rsCustomRange" class="hidden inline-flex items-center gap-1.5 ml-1">
-            <select id="rsCFrom" class="border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:ring-2 focus:ring-blue-500"></select>
-            <span class="text-xs text-slate-400">to</span>
-            <select id="rsCTo" class="border border-slate-300 rounded-lg px-2 py-1.5 text-xs bg-white focus:ring-2 focus:ring-blue-500"></select>
-          </span>
-        </div>
-      </div>
-
-      <div id="rsStatus" class="text-sm text-slate-500 py-10 text-center">Loading season-trend data&hellip;</div>
-
-      <div id="rsWrap" class="hidden">
-        <div class="rounded-xl shadow-sm border border-slate-700 bg-slate-900 text-slate-100 overflow-hidden">
-          <div class="px-6 py-4 border-b border-slate-700 flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <h2 class="text-sm font-bold uppercase tracking-wide text-white flex items-center gap-2"><span id="rsChartTitle">Median YoY growth by quarter</span></h2>
-              <p class="text-[11px] text-slate-400 mt-1" id="rsAsOf"></p>
-              <p class="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1.5" id="rsRefreshed"></p>
-            </div>
-            <div id="rsLegend" class="flex items-center gap-3 sm:gap-4 text-[11px] font-medium shrink-0"></div>
-          </div>
-          <div class="px-2 sm:px-5 py-5">
-            <div id="rsChart" class="w-full overflow-x-auto scrollbar"></div>
-            <p class="text-[10px] text-slate-500 mt-3 px-3 leading-relaxed" id="rsFootnote"></p>
-          </div>
-        </div>
-
-        <div class="card mt-4 overflow-hidden">
-          <div class="px-4 py-3 border-b border-slate-200 text-sm font-semibold text-slate-700">Quarter detail <span class="text-[11px] font-normal text-slate-400">(YoY %, follows the Median/Total toggle; hover the chart for sample sizes · click a quarter to open every company’s numbers)</span></div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead class="bg-slate-50 text-slate-500 text-xs uppercase">
-                <tr>
-                  <th class="px-4 py-2 text-left font-semibold">Quarter</th>
-                  <th class="px-4 py-2 text-right font-semibold">Results</th>
-                  <th class="px-4 py-2 text-right font-semibold">Revenue</th>
-                  <th class="px-4 py-2 text-right font-semibold" title="Operating profit = PBET + depreciation + finance − other income (banks: pre-provision profit). Matches Trendlyne’s ‘Oper Profit’ card to the paisa.">Operating Profit</th>
-                  <th class="px-4 py-2 text-right font-semibold">PAT</th>
-                </tr>
-              </thead>
-              <tbody id="rsTableBody" class="divide-y divide-slate-100"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
+    <p id="how"></p>
   </div>
-
-  <!-- Drilldown modal -->
-  <div id="modalBg"><div id="modal"></div></div>
 </main>
 
 <script>
 'use strict';
-var SWI={trend:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',rocket:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',repeat:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>',alert:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',bars:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>',trophy:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>',flame:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',thumbsup:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>',thumbsdown:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>',refresh:'<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>'};
+const K=window.OSKit;
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
@@ -587,32 +441,24 @@ function coPass(sym){
   return passFilters({sym, c});
 }
 
-/* ---------- render: controls ---------- */
+
+/* ---------- controls ---------- */
+const PAGE=100, FEED_PAGE=100;
+const NCHIP=()=>Math.min(8, QTRS.length-4);
 function renderQChips(){
-  const n=Math.min(8, QTRS.length-4);
   let h='';
-  for(let i=0;i<n;i++){
-    h+='<button class="chip'+(i===ST.qi?' on':'')+'" data-qi="'+i+'">'+qlabel(QTRS[i],false)+
-       (i===0?' <span class="opacity-70 text-[10px]">live</span>':'')+'</button>';
-  }
-  $('qchips').innerHTML='<span class="hidden sm:inline text-[10px] uppercase tracking-wide text-slate-500 font-bold mr-1">Quarter</span>'+h;
-  $('qchips').querySelectorAll('[data-qi]').forEach(b=>b.onclick=()=>{ ST.qi=+b.getAttribute('data-qi'); ST.shown=100; render(); });
+  for(let i=0;i<NCHIP();i++) h+='<button type="button" class="'+(i===ST.qi?'on':'')+'" data-qi="'+i+'">'+qlabel(QTRS[i],false)+(i===0?'<i>live</i>':'')+'</button>';
+  $('qchips').innerHTML=h;
+  $('qchips').querySelectorAll('[data-qi]').forEach(b=>b.onclick=()=>setQ(+b.getAttribute('data-qi')));
   $('hQuarter').textContent='· '+qlabel(QTRS[ST.qi],true);
 }
+function setQ(i){ if(i<0||i>=NCHIP()||i===ST.qi) return; ST.qi=i; ST.shown=PAGE; render(); }
 function renderSectorSel(){
   const set=new Set(); for(const s in CO) set.add(CO[s].s);
   const opts=['<option value="all">All sectors</option>'].concat([...set].sort().map(s=>'<option value="'+esc(s)+'">'+esc(s)+'</option>'));
   $('selSector').innerHTML=opts.join(''); $('selSector').value=ST.sector;
 }
 
-/* ---------- Season-Trends parity ----------
-   The Overview "Median revenue/PAT growth" tiles must show the SAME number as the Season Trends
-   tab for the same universe+quarter. Both derive from sf_revop/sf_fundamentals, but Season Trends'
-   figure is baked by build_results_season.py (vision_fills fallback + point-in-time membership +
-   include_fin) — a live recompute drifts 0.1-0.7%. So for a plain broad-universe view (no sector/
-   mcap sub-filter, YoY mode) we READ the exact median out of the SAME results_season.json Season
-   Trends shows → guaranteed identical. Sector/mcap sub-filters (which Season Trends doesn't offer)
-   keep the live per-reporter median. */
 const OV2RS={ n50:'Nifty 50', n100:'Nifty 100', n500:'Nifty 500', m150:'Nifty Midcap 150', s250:'Nifty Smallcap 250', mc250:'Nifty Microcap 250' };
 function ensureRS(cb,force){                      // loads results_season.json ONCE, data only (no UI)
   if(RS_STATE===2&&!force){ cb&&cb(); return; }
@@ -653,154 +499,11 @@ function rsMedianFor(qe){
   return { rev:q.rev&&q.rev.median, pat:q.pat&&q.pat.median };
 }
 
-/* ---------- render: overview ---------- */
-function tile(label,val,sub,cls,id){              // id = a clickable tile (a drill-through, wired after render)
-  return '<div class="tile'+(id?' tile-link':'')+'"'+(id?' id="'+id+'" role="button" tabindex="0"':'')+'><div class="text-[10px] uppercase tracking-wide text-slate-500 font-bold">'+label+'</div>'+
-    '<div class="text-xl font-extrabold mt-0.5 '+(cls||'text-slate-900')+'">'+val+'</div>'+
-    (sub?'<div class="text-[11px] text-slate-500 mt-0.5">'+sub+'</div>':'')+'</div>';
-}
-function renderOverview(){
-  if(RS_STATE!==2) ensureRS();               // kick off Season-Trends median load; its .then re-renders
-  const qi=ST.qi, rows=filtered(qi), lag=ST.mode==='yoy'?4:1;
-  const gKey=ST.mode==='yoy'?'py':'pq', rKey=ST.mode==='yoy'?'ry':'rq', fKey=ST.mode==='yoy'?'pfY':'pfQ';
-  // expected = year-ago reporters within current filters
-  const prev=recsFor(qi+lag).filter(passFilters);
-  const expected=new Set(prev.map(r=>r.sym)); rows.forEach(r=>expected.add(r.sym));
-  const pats=rows.map(r=>r[gKey]).filter(v=>v!=null);
-  const revs=rows.map(r=>r[rKey]).filter(v=>v!=null);
-  const rxs=rows.map(r=>r.rx).filter(v=>v!=null);
-  const pUp=rows.filter(r=>isUp(r[gKey],r[fKey])).length;
-  const pDn=rows.filter(r=>(r[gKey]!=null&&r[gKey]<0&&!r[fKey])||r[fKey]==='PL'||r[fKey]==='LL').length;
-  const rUp=revs.filter(v=>v>0).length, rDn=revs.filter(v=>v<0).length;
-  const lp=rows.filter(r=>ST.mode==='yoy'?r.turnY:r.turnQ).length;
-  // "Declared" = companies with parsed numbers + those we've SEEN FILE (in the feed) but whose numbers
-  // haven't been parsed yet (our XBRL sync runs nightly, so a same-day filing shows here before its
-  // numbers land). Bridges the gap between the live filing feed and the numbers scoreboard.
-  const qe=QTRS[qi], haveNums=new Set(rows.map(r=>r.sym)), pendSet=new Set();
-  // dual-listed cos can appear in the feed under a BSE ticker (INDBNK) while their numbers sit
-  // under the NSE symbol (INDBANK) — also match by normalized company name to avoid double-count
-  const normN=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'').replace(/(limited|ltd)$/,'');
-  const haveNames=new Set(rows.map(r=>normN(r.c.n)));
-  // qe===0 feed rows (filing didn't state its period; the vision prep resolves it within hours)
-  // count as pending on the LIVE quarter only — never attributed to a specific quarter, never hidden
-  FEEDROWS.forEach(r=>{ if((r[3]===qe||(qi===0&&r[3]===0)) && filedAfterQE(r,qe) && !haveNums.has(r[0]) && !haveNames.has(normN(r[1])) && coPass(r[0])) pendSet.add(r[0]); });
-  const pending=pendSet.size, declared=rows.length+pending;
-  let pdfOnly=0; pendSet.forEach(s=>{ if(PDF_ONLY.has(s)) pdfOnly++; }); const coming=pending-pdfOnly;
-  // Season-Trends parity: read the exact universe median where available, else the live per-reporter one
-  const rsm=rsMedianFor(QTRS[qi]);
-  const medRev=(rsm&&rsm.rev!=null)?rsm.rev:median(revs);
-  const medPat=(rsm&&rsm.pat!=null)?rsm.pat:median(pats);
-  const medSub=rsm?'matches Season Trends':(ST.mode==='yoy'?'vs year-ago quarter':'vs previous quarter');
-  $('tiles').innerHTML=
-    tile('Declared', declared.toLocaleString('en-IN'),
-         rows.length.toLocaleString('en-IN')+' with numbers'+(coming? ' · +'+coming+' coming':'')+(pdfOnly? ' · '+pdfOnly+' filing-only':''))+
-    tile('Median revenue growth', fmtPct(medRev), medSub, pctCls(medRev))+
-    tile('Median PAT growth', fmtPct(medPat), rsm?(pUp+' up · '+pDn+' down · matches Season Trends'):((pUp+pDn)?(pUp+' up · '+pDn+' down'):''), pctCls(medPat))+
-    tile('PAT growers', (pUp+pDn)? Math.round(pUp/(pUp+pDn)*100)+'%' :'—', pUp+' of '+(pUp+pDn)+' with a comparable base', pUp>=pDn?'pos':'neg')+
-    tile('Turnarounds', lp||'0', 'loss → profit '+(ST.mode==='yoy'?'YoY':'QoQ')+(lp?' · view all →':''), lp?'pos':'text-slate-900', lp?'tTurn':'')+
-    tile('Median reaction', fmtPct(median(rxs)), rxs.length+' priced result days', pctCls(median(rxs)));
-  // Turnarounds tile → the Results tab's own 'turn' screen: same rows, same isTurn test as the count above.
-  // shown=lp so the whole list opens at once, not the first 100 behind "Load more".
-  if(lp){
-    const tt=$('tTurn'), openTurn=()=>{ ST.screen='turn'; ST.shown=Math.max(100,lp); setTab('results'); window.scrollTo({top:0,behavior:'instant'}); };   // instant: theme.css scrolls smoothly
-    tt.onclick=openTurn;
-    tt.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openTurn(); } };
-  }
-  $('breadthMode').textContent='· '+(ST.mode==='yoy'?'YoY':'QoQ');
-  const bbar=(lbl,up,dn)=>{
-    const tot=up+dn||1, pu=Math.round(up/tot*100);
-    return '<div class="mb-2.5"><div class="flex justify-between text-[11px] font-bold mb-1"><span>'+lbl+'</span>'+
-      '<span><span class="pos">'+up+'</span> / <span class="neg">'+dn+'</span> · '+pu+'% positive</span></div>'+
-      '<div class="flex h-2.5 rounded-full overflow-hidden" style="background:var(--surface-2,#e2e8f0)">'+
-      '<div style="width:'+(up/tot*100)+'%;background:var(--pos,#16a34a)"></div>'+
-      '<div style="width:'+(dn/tot*100)+'%;background:var(--neg,#dc2626)"></div></div></div>';
-  };
-  $('breadth').innerHTML=bbar('Revenue',rUp,rDn)+bbar('PAT',pUp,pDn);
-
-  // 5-season strip
-  let strip='<div class="flex items-end gap-2" style="height:92px">';
-  const meds=[];
-  for(let k=4;k>=0;k--){
-    const rr=recsFor(qi+k).filter(passFilters);
-    const rsk=rsMedianFor(QTRS[qi+k]);                         // Season-Trends parity per quarter
-    const m=(rsk&&rsk.pat!=null)?rsk.pat:median(rr.map(r=>r[gKey]).filter(v=>v!=null));
-    meds.push({k, med:m, n:rr.length});
-  }
-  const mx=Math.max(10,...meds.map(m=>Math.abs(m.med||0)));
-  for(const m of meds){
-    const h=m.med==null?2:Math.max(3,Math.abs(m.med)/mx*62);
-    const up=(m.med||0)>=0;
-    strip+='<div class="flex-1 flex flex-col items-center justify-end gap-1" title="'+qlabel(QTRS[qi+m.k],true)+': median '+fmtPct(m.med)+' across '+m.n+' reporters">'+
-      '<div class="text-[10px] font-bold '+pctCls(m.med)+'">'+fmtPct(m.med,1)+'</div>'+
-      '<div class="w-full max-w-[46px] rounded-t" style="height:'+h+'px;background:'+(up?'var(--pos,#16a34a)':'var(--neg,#dc2626)')+';opacity:'+(m.k===0?1:.45)+'"></div>'+
-      '<div class="text-[10px] text-slate-500 font-semibold">'+qlabel(QTRS[qi+m.k],false)+'</div></div>';
-  }
-  $('seasonStrip').innerHTML=strip+'</div>';
-
-  // sector aggregation
-  const by={};
-  rows.forEach(r=>{ (by[r.c.s]=by[r.c.s]||[]).push(r); });
-  const prevBy={};
-  prev.forEach(r=>{ prevBy[r.c.s]=(prevBy[r.c.s]||0)+1; });
-  const secs=Object.keys(by).map(s=>{
-    const rr=by[s];
-    const pu=rr.filter(r=>isUp(r[gKey],r[fKey])).length;
-    const pn=rr.filter(r=>r[gKey]!=null||r[fKey]).length;
-    return { s, n:rr.length, exp:Math.max(prevBy[s]||0, rr.length),
-      mr:median(rr.map(r=>r[rKey]).filter(v=>v!=null)),
-      mp:median(rr.map(r=>r[gKey]).filter(v=>v!=null)),
-      rx:median(rr.map(r=>r.rx).filter(v=>v!=null)), pu, pn };
-  }).sort((a,b)=>(b.mp==null?-1e9:b.mp)-(a.mp==null?-1e9:a.mp));
-  $('sectorRows').innerHTML = secs.map(x=>
-    '<tr class="hover:bg-slate-50 cursor-pointer" data-sec="'+esc(x.s)+'">'+
-    '<td class="py-2 pr-3 font-bold text-slate-800">'+esc(x.s)+'</td>'+
-    '<td class="text-right px-3 text-slate-500 font-semibold">'+x.n+' / '+x.exp+'</td>'+
-    '<td class="text-right px-3 font-bold '+pctCls(x.mr)+'">'+fmtPct(x.mr)+'</td>'+
-    '<td class="text-right px-3 font-bold '+pctCls(x.mp)+'">'+fmtPct(x.mp)+'</td>'+
-    '<td class="text-right px-3 font-semibold text-slate-600">'+(x.pn? Math.round(x.pu/x.pn*100)+'%':'—')+'</td>'+
-    '<td class="text-right px-3 font-bold '+pctCls(x.rx)+'">'+fmtPct(x.rx)+'</td></tr>').join('')
-    || '<tr><td colspan="6" class="py-6 text-center text-slate-400 text-sm">No companies reported yet under these filters.</td></tr>';
-  $('sectorRows').querySelectorAll('[data-sec]').forEach(tr=>tr.onclick=()=>{ ST.sector=tr.getAttribute('data-sec'); $('selSector').value=ST.sector; setTab('results'); });
-
-  // heatmap
-  const hv=ST.heat, cells=secs.map(x=>({s:x.s,n:x.n,v:hv==='pat'?x.mp:hv==='rev'?x.mr:x.rx}));
-  const hmax=Math.max(8,...cells.map(c=>Math.abs(c.v||0)));
-  $('heatmap').innerHTML=cells.map(c=>{
-    const a=c.v==null?0:Math.min(.85,.15+Math.abs(c.v)/hmax*.7);
-    const bg=c.v==null?'var(--surface-2,#f1f5f9)':(c.v>=0?'rgba(22,163,74,'+a+')':'rgba(220,38,38,'+a+')');
-    return '<div class="heatcell" data-sec="'+esc(c.s)+'" style="background:'+bg+'" title="'+esc(c.s)+': median '+(hv==='rx'?'reaction':hv==='pat'?'PAT growth':'revenue growth')+' '+fmtPct(c.v)+' · '+c.n+' reported">'+
-      '<div class="text-[11px] font-extrabold truncate">'+esc(c.s)+'</div>'+
-      '<div class="text-sm font-extrabold">'+fmtPct(c.v)+'</div>'+
-      '<div class="text-[10px] opacity-75 font-semibold">'+c.n+' cos</div></div>';
-  }).join('')||'<div class="text-slate-400 text-sm col-span-3 py-6 text-center">Nothing reported yet.</div>';
-  $('heatmap').querySelectorAll('[data-sec]').forEach(el=>el.onclick=()=>{ ST.sector=el.getAttribute('data-sec'); $('selSector').value=ST.sector; setTab('results'); });
-
-  // movers
-  const mv=(title,arr,fmt)=>{
-    return '<div class="card p-3.5"><h4 class="font-extrabold text-[13px] text-slate-900 mb-1.5">'+title+'</h4>'+
-      (arr.length? arr.map(([r,v])=>'<div class="mrow" data-open="'+esc(r.sym)+'"><span class="min-w-0"><b>'+esc(r.sym)+'</b> <span class="text-slate-400 text-[10.5px] hidden sm:inline">'+esc(r.c.n.slice(0,26))+'</span></span><b class="'+pctCls(v)+'">'+fmt(v)+'</b></div>').join('')
-       : '<div class="text-slate-400 text-xs py-3 text-center">—</div>')+'</div>';
-  };
-  const base=rows.filter(r=>r[gKey]!=null && !r[fKey] && Math.abs(r.pat||0)>=1 && (r.c.m||0)>=100);
-  const grow=base.filter(r=>r[gKey]>0).sort((a,b)=>b[gKey]-a[gKey]).slice(0,10).map(r=>[r,r[gKey]]);
-  const fall=base.filter(r=>r[gKey]<0).sort((a,b)=>a[gKey]-b[gKey]).slice(0,10).map(r=>[r,r[gKey]]);
-  const rxr=rows.filter(r=>r.rx!=null);
-  const rbest=rxr.filter(r=>r.rx>0).sort((a,b)=>b.rx-a.rx).slice(0,10).map(r=>[r,r.rx]);
-  const rworst=rxr.filter(r=>r.rx<0).sort((a,b)=>a.rx-b.rx).slice(0,10).map(r=>[r,r.rx]);
-  $('movers').innerHTML=
-    mv('Top PAT growers ('+ST.mode.toUpperCase()+')',grow,v=>fmtPct(v,0))+
-    mv('Top PAT decliners',fall,v=>fmtPct(v,0))+
-    mv('Market loved it (result-day move)',rbest,v=>fmtPct(v))+
-    mv('Market hated it',rworst,v=>fmtPct(v));
-  $('movers').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openModal(el.getAttribute('data-open')));
-  $('fCount').textContent=declared.toLocaleString('en-IN')+' declared'+(pending?' ('+rows.length+' with numbers)':'')+' · '+qlabel(QTRS[qi],true);
-}
-
-/* ---------- render: results table ---------- */
+/* ---------- results: screens, sort, cells ---------- */
 const SCREENS=[
-  ['all','All'],['grow',SWI.trend+' PAT growers'],['rocket',SWI.rocket+' Rev & PAT >20%'],['turn',SWI.repeat+' Loss → Profit'],
-  ['slump',SWI.alert+' Profit → Loss'],['marginup',SWI.bars+' Margin +200bps'],['record',SWI.trophy+' Record PAT'],
-  ['streak',SWI.flame+' 4-qtr growth streak'],['loved',SWI.thumbsup+' Reacted +5%'],['hated',SWI.thumbsdown+' Reacted −5%']
+  ['all','All'],['grow','PAT growers'],['rocket','Rev &amp; PAT &gt;20%'],['turn','Loss → Profit'],
+  ['slump','Profit → Loss'],['marginup','Margin +200bps'],['record','Record PAT'],
+  ['streak','4-qtr growth streak'],['loved','Reacted +5%'],['hated','Reacted −5%']
 ];
 function screenPass(r){
   const gKey=ST.mode==='yoy'?'py':'pq', fKey=ST.mode==='yoy'?'pfY':'pfQ';
@@ -846,91 +549,8 @@ function gcell(pct,flag,dp,rb){
   return '<span class="font-bold '+pctCls(pct)+'"'+(tip?' title="'+tip+'"':'')+'>'+fmtPct(pct)+'</span>'+
     (rb&&pct!=null?'<sup class="text-slate-400" title="'+RB_TIP+'">R</sup>':'');
 }
-function renderResults(){
-  $('screenChips').innerHTML=SCREENS.map(([k,l])=>'<button class="chip'+(ST.screen===k?' on':'')+'" data-sc="'+k+'">'+l+'</button>').join('');
-  $('screenChips').querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{ ST.screen=b.getAttribute('data-sc'); ST.shown=100; render(); });
-  let rows=filtered(ST.qi).filter(screenPass);
-  rows=sortRows(rows);
-  // PENDING: companies that filed a result for this quarter but whose numbers aren't parsed yet
-  // (BSE OCR pending / NSE XBRL not yet posted). OWNER-ONLY, same curtain as the Feed tab's
-  // "Numbers pending" card (FEED_OWNER / bt_owner_key): to a visitor an empty row reads as a
-  // broken page, but to the owner it is the coverage tool saying which names still need a
-  // vision fill. The "+N numbers coming" count in the header stays visible to EVERYONE so the
-  // Declared total still reconciles — the ROWS are hidden, the ARITHMETIC is not.
-  // Only when no numbers-based screen is on.
-  const qeSel=QTRS[ST.qi], haveNums=new Set(recsFor(ST.qi).map(r=>r.sym));
-  const nrmN=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'').replace(/(limited|ltd)$/,'');
-  const haveNm=new Set(recsFor(ST.qi).map(r=>nrmN(r.c.n)));
-  let pend=[];
-  if(ST.screen==='all'){
-    const seen=new Set();
-    FEEDROWS.forEach(r=>{
-      if(!((r[3]===qeSel||(ST.qi===0&&r[3]===0))&&filedAfterQE(r,qeSel))||haveNums.has(r[0])||haveNm.has(nrmN(r[1]))||seen.has(r[0]))return;
-      if(CO[r[0]]?!coPass(r[0]):(ST.uni!=='all'&&ST.uni!=='bse'&&ST.uni!=='nse'||ST.sector!=='all'||ST.mcap!=='all'))return;
-      if(ST.uni==='bse'&&!(CO[r[0]]&&CO[r[0]].bse))return;
-      if(ST.uni==='nse'&&CO[r[0]]&&CO[r[0]].bse)return;
-      if(ST.search&&normSearch(r[0]).indexOf(normSearch(ST.search))<0&&normSearch(r[1]).indexOf(normSearch(ST.search))<0)return;
-      seen.add(r[0]); pend.push(r);
-    });
-    pend.sort((a,b)=>(b[2]>a[2]?1:-1));
-  }
-  const nPdf=pend.filter(r=>PDF_ONLY.has(r[0])).length, nComing=pend.length-nPdf;
-  $('fCount').textContent=rows.length.toLocaleString('en-IN')+' with numbers'+(nComing?' · +'+nComing+' numbers coming':'')+(nPdf?' · '+nPdf+' filing-only (PDF)':'')+' · '+qlabel(QTRS[ST.qi],true);
-  const shown=rows.slice(0,ST.shown);
-  // Owner curtain: visitors get the numbers-only table (an empty row reads as a broken page).
-  // FEED_OWNER is defined below with the Feed tab's pending card — same bt_owner_key.
-  const pendHtml=!FEED_OWNER?'':pend.map(r=>{
-    const c=CO[r[0]], pdf=r[5]?(String(r[5]).indexOf('http')===0?r[5]:PDF_PREFIX+r[5]):'';
-    const pdfOnly=PDF_ONLY.has(r[0]);
-    const msg=pdfOnly
-      ? '📄 Filing available — numbers not machine-readable (see PDF)'
-      : (r[3]===0 ? '⏳ Result filed — reporting period being determined'
-                  : '⏳ Result filed — numbers being parsed');
-    const cls=pdfOnly?'text-slate-500':'text-amber-700';
-    return '<tr class="'+(pdfOnly?'bg-slate-50/60':'bg-amber-50/40')+(c?' hover:bg-slate-100 cursor-pointer':'')+'"'+(c?' data-open="'+esc(r[0])+'"':'')+'>'+
-      '<td class="pl-3 pr-1"><span class="star'+(WATCH.has(r[0])?' on':'')+'" data-star="'+esc(r[0])+'" title="Watchlist">★</span></td>'+
-      '<td class="px-2 py-2"><div class="font-extrabold text-slate-900 leading-tight">'+esc(r[0])+(c&&c.bse?' <span class="badge" title="Listed on BSE only">BSE</span>':'')+'</div>'+
-        '<div class="text-[10.5px] text-slate-400 truncate max-w-[190px]">'+esc(r[1])+'</div></td>'+
-      '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+(c&&c.m?fmtCr(c.m):'—')+'</td>'+
-      '<td colspan="8" class="px-2 text-[11px] '+cls+' italic">'+msg+(pdf?' · <a href="'+esc(pdf)+'" target="_blank" rel="noopener" class="underline font-semibold not-italic" onclick="event.stopPropagation()">filing PDF ↗</a>':'')+'</td>'+
-      '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+fmtDate8(+((r[2].slice(0,10)).replace(/-/g,'')))+'</td>'+
-      '<td colspan="2" class="text-right px-2 text-slate-300">—</td></tr>';
-  }).join('');
-  $('resRows').innerHTML=shown.map(r=>{
-    const c=r.c, due=(c.e&&!c.q[0])?'<span class="badge ml-1" title="Next result expected '+esc(c.e)+'">📅</span>':'';
-    return '<tr class="hover:bg-slate-50 cursor-pointer" data-open="'+esc(r.sym)+'">'+
-    '<td class="pl-3 pr-1"><span class="star'+(WATCH.has(r.sym)?' on':'')+'" data-star="'+esc(r.sym)+'" title="Watchlist">★</span></td>'+
-    '<td class="px-2 py-2"><div class="font-extrabold text-slate-900 leading-tight">'+esc(r.sym)+(c.bse?' <span class="badge" title="Listed on BSE only — not on NSE">BSE</span>':'')+(r.prov?(QTRS[ST.qi]%10000===331?' <span class="badge" title="SME half-year (Oct–Mar) from the March filing — confirmed or corrected when the year is proven">H2 · unconfirmed</span>':' <span class="badge" title="SME half-year (Apr–Sep) from the September filing — confirmed or corrected when the March full-year filing arrives">H1 · unconfirmed</span>'):'')+(c.f?' <span class="badge" title="Bank/NBFC — revenue = total income; operating margin not comparable">🏦</span>':'')+due+'</div>'+
-      '<div class="text-[10.5px] text-slate-400 truncate max-w-[190px]">'+esc(c.n)+' · '+esc(c.s)+'</div></td>'+
-    '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+(c.m?fmtCr(c.m):'—')+'</td>'+
-    '<td class="text-right px-2 font-bold text-slate-800">'+fmtCr(r.rev)+'</td>'+
-    '<td class="text-right px-2 whitespace-nowrap">'+gcell(r.ry,null,0,r.ryR)+'</td>'+
-    '<td class="text-right px-2 whitespace-nowrap">'+gcell(r.rq,null,0,r.rqR)+'</td>'+
-    '<td class="text-right px-2 whitespace-nowrap">'+(r.opm!=null? '<span class="font-bold text-slate-700">'+r.opm.toFixed(1)+'%</span> <span class="growthsub '+pctCls(r.dOpm)+'">'+(r.dOpm==null?'':(r.dOpm>0?'+':'')+Math.round(r.dOpm)+'bps')+'</span>':'—')+'</td>'+
-    '<td class="text-right px-2 font-extrabold '+(r.pat!=null&&r.pat<0?'neg':'text-slate-900')+'">'+fmtCr(r.pat)+'</td>'+
-    '<td class="text-right px-2 whitespace-nowrap">'+gcell(r.py,r.pfY,0,r.pyR)+'</td>'+
-    '<td class="text-right px-2 whitespace-nowrap">'+gcell(r.pq,r.pfQ,0,r.pqR)+'</td>'+
-    '<td class="text-center px-1">'+vdot(r)+'</td>'+
-    '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+fmtDate8(r.ann)+'</td>'+
-    '<td class="text-right px-2 font-bold '+pctCls(r.rx)+'">'+fmtPct(r.rx)+'</td>'+
-    '<td class="text-right px-2 font-bold '+pctCls(r.sr)+'" title="Drift from result-day close to '+esc(QR.asof)+'">'+fmtPct(r.sr)+'</td></tr>';
-  }).join('')+pendHtml || '<tr><td colspan="14" class="py-8 text-center text-slate-400 text-sm">Nothing matches — relax the filters or pick an earlier quarter.</td></tr>';
-  $('bMore').classList.toggle('hidden', rows.length<=ST.shown);
-  $('bMore').onclick=()=>{ ST.shown+=200; renderResults(); };
-  $('resRows').querySelectorAll('[data-open]').forEach(tr=>tr.onclick=e=>{
-    const st=e.target.closest('[data-star]');
-    if(st){ const s=st.getAttribute('data-star'); WATCH.has(s)?WATCH.delete(s):WATCH.add(s); saveWatch(); st.classList.toggle('on'); e.stopPropagation(); return; }
-    openModal(tr.getAttribute('data-open'));
-  });
-  $('bCsv').onclick=()=>{
-    const head='Symbol,Name,Sector,MCapCr,RevenueCr,RevYoY%,RevQoQ%,OPM%,dOPMbps,PATCr,PATYoY%,PATQoQ%,AnnDate,Reaction%,SinceResult%';
-    const lines=rows.map(r=>[r.sym,'"'+r.c.n.replace(/"/g,'""')+'"',r.c.s,r.c.m??'',r.rev??'',r.ry==null?(r.pfY||''):r.ry.toFixed(1),r.rq??'',r.opm==null?'':r.opm.toFixed(1),r.dOpm==null?'':Math.round(r.dOpm),r.pat??'',r.py==null?(r.pfY||''):r.py.toFixed(1),r.pq==null?(r.pfQ||''):r.pq.toFixed(1),r.ann||'',r.rx??'',r.sr??''].join(','));
-    const blob=new Blob(['﻿'+head+'\n'+lines.join('\n')],{type:'text/csv'});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='quarterly-results-'+QTRS[ST.qi]+'.csv'; a.click();
-  };
-}
 
-/* ---------- render: feed ---------- */
+/* ---------- feed engine ---------- */
 let FEEDROWS=[];   // [sym,co,dt,qe,caption,file]
 /* Live top-up filter = fetch_announcements.py RESULT_CAT_RE / RESULT_CAP_RE, kept IDENTICAL (runbook §228): the result PDF often
    rides only on an "Outcome of Board Meeting" row, worded "results of the Company, for the second quarter" / "considered and
@@ -997,299 +617,8 @@ function ttmPat(c,qi){
   return null;
 }
 function fmtPx(v){ return (+v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function fStats(c,qi){
-  const t=c.m?ttmPat(c,qi):null, parts=[];
-  if(c.p!=null) parts.push('<span><span class="text-slate-400">Price</span> <b class="text-slate-700">₹'+fmtPx(c.p)+'</b></span>');
-  if(c.m) parts.push('<span><span class="text-slate-400">MCap</span> <b class="text-slate-700">₹'+fmtMcap(c.m)+'</b></span>');
-  if(t!=null) parts.push('<span title="Market cap ÷ owners\' profit of the four quarters ending '+qlabel(QTRS[qi],false)+(t>0?'':' (trailing loss)')+'"><span class="text-slate-400">PE</span> <b class="text-slate-700">'+(t>0?(c.m/t).toFixed(1):'—')+'</b></span>');
-  return parts.length?'<div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] mt-1 whitespace-nowrap">'+parts.join('')+'</div>':'';
-}
-function feedCard(it){
-  const [sym,co,dt,qe,cap,file]=it.r, c=it.c, qi=it.qi;
-  const i1=qi+1<QTRS.length?qi+1:-1, i4=qi+4<QTRS.length?qi+4:-1;
-  const head='<tr class="fh"><td></td><td>YoY</td><td>'+qlabel(QTRS[qi],false)+'</td><td>'+
-    (i1>=0?qlabel(QTRS[i1],false):'')+'</td><td>'+(i4>=0?qlabel(QTRS[i4],false):'')+'</td></tr>';
-  const mrow=(label,metric,g,isPat)=>{
-    const v1=i1>=0?pick(c.q[i1],metric)[0]:null, v4=i4>=0?pick(c.q[i4],metric)[0]:null;
-    return '<tr><td>'+label+'</td>'+fYoyTd(g,isPat)+fValTd(pick(c.q[qi],metric)[0])+fValTd(v1)+fValTd(v4)+'</tr>';
-  };
-  let body='';
-  if(c.f) body=mrow('Total income','rev',it.ry)+mrow('Net profit','pat',it.gy,true);
-  else{
-    body=mrow('Sales','rev',it.ry)+mrow('Op. profit','op',it.oy)+mrow('Net profit','pat',it.gy,true);
-    const o0=opm(c.q[qi]);
-    if(o0!=null){
-      const o1=i1>=0?opm(c.q[i1]):null, o4=i4>=0?opm(c.q[i4]):null;
-      const pr=i4>=0?opmPair(c.q[qi],c.q[i4]):[o0,null];          // bps change on ONE basis
-      const d=pr[1]!=null?Math.round((pr[0]-pr[1])*100):null;
-      body+='<tr><td>OPM</td><td class="'+(d==null?'text-slate-400':(d>=0?'pos':'neg'))+' font-bold" title="Margin change vs year-ago quarter, basis points">'+
-        (d==null?'—':(d>=0?'⇡ ':'⇣ ')+Math.abs(d)+'bps')+'</td>'+
-        '<td class="text-slate-800">'+o0.toFixed(1)+'%</td><td class="text-slate-800">'+(o1==null?'—':o1.toFixed(1)+'%')+'</td><td class="text-slate-800">'+(o4==null?'—':o4.toFixed(1)+'%')+'</td></tr>';
-    }
-  }
-  const fl=patFlag(it.gy);
-  return '<div class="card fcard p-3" data-open="'+esc(sym)+'">'+
-    '<div class="flex items-start justify-between gap-2">'+
-      '<div class="min-w-0">'+
-        '<div class="flex items-center gap-1.5 flex-wrap">'+
-          '<b class="text-slate-900 text-[13px]">'+esc(sym)+'</b>'+
-          '<span class="badge">'+qlabel(QTRS[qi],false)+'</span>'+
-          (isTurn(it.gy)?'<span class="badge pos" style="background:transparent;border:1px solid currentColor">Turnaround</span>':'')+
-          (fl==='PL'?'<span class="badge neg" style="background:transparent;border:1px solid currentColor">Into loss</span>':'')+
-          (c.bse?'<span class="badge" title="Listed on BSE only">BSE</span>':'')+(c.f?'<span class="badge">🏦</span>':'')+
-        '</div>'+
-        '<div class="text-[11px] text-slate-500 truncate mt-0.5">'+esc(c.n||co)+'</div>'+
-        fStats(c,qi)+
-      '</div>'+
-      (file?'<a class="docbtn shrink-0" target="_blank" rel="noopener" href="'+esc(feedPdf(file))+'" onclick="event.stopPropagation()">PDF ↗</a>':'')+
-    '</div>'+
-    '<table class="ftbl">'+head+body+'</table>'+
-    '<div class="flex items-center justify-between mt-1.5 text-[10.5px] text-slate-400">'+
-      '<span>declared '+isoNice(dt.slice(0,10))+' · '+dt.slice(11,16)+'</span>'+
-      (it.rx!=null?'<span class="font-bold '+pctCls(it.rx)+'" title="Price move on result day">'+fmtPct(it.rx)+' on result day</span>':'')+
-    '</div></div>';
-}
-function feedPendRow(r){
-  const [sym,co,dt,qe,cap,file]=r, c=CO[sym];
-  return '<div class="flex items-start gap-3 px-3.5 py-2 hover:bg-slate-50 rounded-lg'+(c?' cursor-pointer':'')+'"'+(c?' data-open="'+esc(sym)+'"':'')+'>'+
-    '<div class="text-[11px] text-slate-400 font-bold w-11 shrink-0 pt-0.5">'+dt.slice(11,16)+'</div>'+
-    '<div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-x-2 gap-y-0.5"><b class="text-slate-900 text-[12.5px]">'+esc(sym)+'</b>'+
-      '<span class="text-[11px] text-slate-500 truncate">'+esc(co)+'</span>'+
-      (qe?'<span class="badge">'+qlabel(qe2qe(qe),false)+'</span>':'')+'</div>'+
-    '<div class="text-[11px] text-slate-500 mt-0.5 line-clamp-2">'+esc(cap||'Financial results filed')+'</div></div>'+
-    (file?'<a class="docbtn shrink-0" target="_blank" rel="noopener" href="'+esc(feedPdf(file))+'" onclick="event.stopPropagation()">PDF ↗</a>':'')+'</div>';
-}
-function renderFeed(){
-  $('feedChips').innerHTML=
-    [['1','Today'],['2','Since yesterday'],['7','Last 7 days'],['31','Last month']]
-      .map(([k,l])=>'<button class="chip'+(feedDays===k?' on':'')+'" data-fd="'+k+'">'+l+'</button>').join('')+
-    '<span class="mx-1" style="color:var(--border-strong,#cbd5e1)">|</span>'+
-    [['latest','Latest'],['sales','Sales growth'],['profit','Profit growth'],['rx','Reaction']]
-      .map(([k,l])=>'<button class="chip'+(feedSort===k?' on':'')+'" data-fs="'+k+'">'+l+'</button>').join('')+
-    '<button class="chip'+(feedTurn?' on':'')+'" data-ft="1" title="Only loss→profit turnarounds (PAT)">'+SWI.refresh+' Turnarounds</button>'+
-    '<span class="text-[11px] text-slate-500 ml-2" id="feedCount"></span>'+
-    '<span id="feedLive" class="hidden text-[11px] font-bold ml-auto" style="color:var(--pos,#15803d)"></span>';
-  $('feedChips').querySelectorAll('[data-fd]').forEach(b=>b.onclick=()=>{ feedDays=b.getAttribute('data-fd'); feedDay='all'; feedShown=24; renderFeed(); });
-  $('feedChips').querySelectorAll('[data-fs]').forEach(b=>b.onclick=()=>{ feedSort=b.getAttribute('data-fs'); feedShown=24; renderFeed(); });
-  $('feedChips').querySelectorAll('[data-ft]').forEach(b=>b.onclick=()=>{ feedTurn=!feedTurn; feedShown=24; renderFeed(); });
-  const cut=istDay(-(+feedDays));
-  let all=FEEDROWS.filter(r=>r[2].slice(0,10)>=cut && (coPass(r[0])||!CO[r[0]]&&ST.uni==='all'&&ST.sector==='all'&&ST.mcap==='all'))
-                  .filter(r=>!ST.search||normSearch(r[0]).indexOf(normSearch(ST.search))>=0||normSearch(r[1]).indexOf(normSearch(ST.search))>=0);
-  const items=new Map(); all.forEach(r=>items.set(r,feedItem(r)));
-  // One card per company, filing day and quarter: the same filing arrives as a BSE row AND an NSE row, or as an "Outcome" row
-  // plus a "Financial Results" row (Swaraj Engines, Adroit 12-Oct-2026). `all` is newest-first, so the newest row keeps the
-  // card; the older twin is a duplicate ROW — the owner still counts it as a filing, a visitor never sees it (visitor counts
-  // key off cards). Gammon's nine quarters in one day are nine quarters → nine cards (runbook §228).
-  const seenCard=new Set(), dupRow=new Set();
-  all.forEach(r=>{ const it=items.get(r); if(!it) return; const k=r[0]+'|'+r[2].slice(0,10)+'|'+it.qi; if(seenCard.has(k)) dupRow.add(r); else seenCard.add(k); });
-  /* The QUARTER chip applies to this tab too (user 12-Oct-2026: "I selected Sep'26 above, still June results are seen
-     below"): a card shows only when its numbers are the selected quarter's — a late Jun'26 filing on a Sep'26 results day sits
-     under the Jun'26 chip. The owner's "numbers pending" rows follow their caption quarter; a row whose caption names no
-     quarter (qe 0) cannot be placed and stays. Cards hidden this way are counted per quarter for the "other quarters" line
-     below the chips, so no filing is silently invisible (runbook §228a). */
-  const qeSel=QTRS[ST.qi], otherQ={};
-  all=all.filter(r=>{ const it=items.get(r);
-    if(it){ if(it.qi===ST.qi) return true; if(!dupRow.has(r)) otherQ[it.qi]=(otherQ[it.qi]||0)+1; return false; }
-    return !r[3]||r[3]===qeSel; });
-  if(!FEED_OWNER) all=all.filter(r=>items.get(r)&&!dupRow.has(r));
-  /* Screener-style date strip: jump to a single declaration day */
-  const dayC={}; all.forEach(r=>{ const d=r[2].slice(0,10); dayC[d]=(dayC[d]||0)+1; });
-  const days=Object.keys(dayC).sort().reverse();
-  if(feedDay!=='all'&&!dayC[feedDay]) feedDay='all';          // the day picked under another quarter has no rows here
-  $('feedDates').innerHTML= days.length>1
-    ? '<button class="chip dchip'+(feedDay==='all'?' on':'')+'" data-dd="all">All days</button>'+
-      days.map(d=>'<button class="chip dchip'+(feedDay===d?' on':'')+'" data-dd="'+d+'">'+isoNice(d)+' · '+dayC[d]+'</button>').join('')
-    : '';
-  $('feedDates').querySelectorAll('[data-dd]').forEach(b=>b.onclick=()=>{ feedDay=b.getAttribute('data-dd'); feedShown=24; renderFeed(); });
-  const rows= feedDay==='all'? all : all.filter(r=>r[2].slice(0,10)===feedDay);
-  const cards=[], pend=[];
-  rows.forEach(r=>{ const it=items.get(r); if(!it) pend.push(r); else if(!dupRow.has(r)) cards.push(it); });
-  let list=feedTurn? cards.filter(it=>isTurn(it.gy)) : cards;
-  $('feedCount').textContent= (FEED_OWNER
-    ? rows.length+' filings · '+list.length+(feedTurn?' turnarounds':' with numbers')
-    : list.length+(feedTurn?' turnarounds':' results'))+' · '+qlabel(QTRS[ST.qi],false);
-  /* Results filed in this window for OTHER quarters: a chip per quarter the picker offers (click = switch the quarter),
-     a plain count for quarters older than the picker (Gammon's 2024 back-filings, 12-Oct-2026 — open the company for those). */
-  const oqs=Object.keys(otherQ).map(Number).sort((a,b)=>a-b), nChip=Math.min(8,QTRS.length-4);
-  const otherHtml=!oqs.length?'':'<div class="flex flex-wrap items-center gap-1.5 mb-2.5 text-[11px] text-slate-500 sw-strip">'+
-    '<span><span class="sm:hidden">Other quarters:</span><span class="hidden sm:inline">Other quarters declared in this window:</span></span>'+
-    oqs.map(i=>i<nChip
-      ? '<button class="chip dchip" data-oq="'+i+'" title="Show '+qlabel(QTRS[i],true)+'">'+qlabel(QTRS[i],false)+' · '+otherQ[i]+'</button>'
-      : '<span class="chip dchip" style="cursor:default;opacity:.65" title="Older than the quarter picker — open the company to see these">'+qlabel(QTRS[i],false)+' · '+otherQ[i]+'</span>').join('')+
-    '</div>';
-  const pv=g=>g&&g.pct!=null?g.pct:-1e9;
-  if(feedSort==='sales')       list=list.slice().sort((a,b)=>pv(b.ry)-pv(a.ry));
-  else if(feedSort==='profit') list=list.slice().sort((a,b)=>pv(b.gy)-pv(a.gy));
-  else if(feedSort==='rx')     list=list.slice().sort((a,b)=>(b.rx==null?-1e9:b.rx)-(a.rx==null?-1e9:a.rx));
-  const today=istDay(0), yest=istDay(-1);   // India dates (toISOString is UTC: 00:00-05:30 IST read as yesterday)
-  let html='', used=0;
-  if(feedSort==='latest'){
-    const groups={}, pgroups={};
-    list.forEach(it=>{ const d=it.r[2].slice(0,10); (groups[d]=groups[d]||[]).push(it); });
-    pend.forEach(r=>{ const d=r[2].slice(0,10); (pgroups[d]=pgroups[d]||[]).push(r); });
-    for(const d of [...new Set([...Object.keys(groups),...Object.keys(pgroups)])].sort().reverse()){
-      if(used>=feedShown) break;
-      const g=groups[d]||[], p=pgroups[d]||[];
-      const take=g.slice(0,feedShown-used); used+=take.length;
-      html+='<div class="dayhead"><span class="daybox">'+(d===today?'Today':d===yest?'Yesterday':isoNice(d))+
-        '<span class="daycnt">· '+(g.length+p.length)+(FEED_OWNER?' filings':' results')+'</span></span><span class="dline"></span></div>';
-      if(take.length) html+='<div class="fgrid">'+take.map(feedCard).join('')+'</div>';
-      if(take.length<g.length) break;                      /* rest of this day + older days sit behind Load more */
-      if(p.length&&!feedTurn&&FEED_OWNER) html+='<div class="card p-2 mt-2.5"><div class="px-3 pt-1.5 pb-1 text-[10.5px] uppercase tracking-wide font-extrabold text-slate-400">Numbers pending · '+p.length+'</div>'+p.map(feedPendRow).join('')+'</div>';
-    }
-  }else{
-    const take=list.slice(0,feedShown); used=take.length;
-    html='<div class="fgrid">'+take.map(feedCard).join('')+'</div>'+
-      (pend.length&&!feedTurn&&FEED_OWNER?'<div class="text-[11px] text-slate-400 mt-3">'+pend.length+' filings without parsed numbers are hidden under this sort — switch to <b>Latest</b> to see them.</div>':'');
-  }
-  $('feedList').innerHTML=otherHtml+(html||'<div class="card p-8 text-center text-slate-400 text-sm">No '+qlabel(QTRS[ST.qi],false)+' results '+(feedTurn?'with a loss→profit turnaround ':'')+'declared in this window'+(ST.uni!=='all'||ST.sector!=='all'||ST.mcap!=='all'?' under these filters':'')+'.</div>');
-  $('fMore').classList.toggle('hidden', used>=list.length);
-  $('fMore').onclick=()=>{ feedShown+=48; renderFeed(); };
-  $('feedList').querySelectorAll('[data-oq]').forEach(b=>b.onclick=()=>{ ST.qi=+b.getAttribute('data-oq'); ST.shown=100; feedShown=24; render(); });
-  $('feedList').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openModal(el.getAttribute('data-open')));
-}
+feedShown=FEED_PAGE;
 function qe2qe(v){ return +v; }
-
-/* ---------- render: calendar ---------- */
-function renderCalendar(){
-  const confBy={};                                  // sym -> [date,purpose]
-  (CAL&&CAL.rows||[]).forEach(r=>{ if(!confBy[r[0]]||r[2]<confBy[r[0]][0]) confBy[r[0]]=[r[2],r[3],r[1]]; });
-  const today=istDay(0);
-  const horizon=istDay(56);
-  const items=[];                                   // {d, sym, co, conf, purpose}
-  for(const sym in confBy){
-    const [d,purpose,co]=confBy[sym];
-    if(d<today||d>horizon) continue;
-    if(CO[sym]? !coPass(sym) : (ST.uni!=='all'||ST.sector!=='all'||ST.mcap!=='all')) continue;
-    if(ST.search&&normSearch(sym).indexOf(normSearch(ST.search))<0&&normSearch(co).indexOf(normSearch(ST.search))<0) continue;
-    items.push({d,sym,co:co||(CO[sym]&&CO[sym].n)||sym,conf:true,purpose});
-  }
-  if(ST.cal==='both'){
-    for(const sym in CO){
-      const c=CO[sym];
-      if(!c.e||confBy[sym]) continue;
-      if(c.e<today||c.e>horizon) continue;
-      if(!coPass(sym)) continue;
-      if(ST.search&&normSearch(sym).indexOf(normSearch(ST.search))<0&&normSearch(c.n).indexOf(normSearch(ST.search))<0) continue;
-      items.push({d:c.e,sym,co:c.n,conf:false,purpose:'Predicted from past reporting dates'});
-    }
-  }
-  const groups={};
-  items.forEach(it=>{ (groups[it.d]=groups[it.d]||[]).push(it); });
-  const days=Object.keys(groups).sort();
-  $('calList').innerHTML=days.map(d=>{
-    const arr=groups[d].sort((a,b)=>((CO[b.sym]&&CO[b.sym].m)||0)-((CO[a.sym]&&CO[a.sym].m)||0));
-    const chips=arr.map(it=>{
-      const c=CO[it.sym], big=c&&(c.x&1), fno=c&&(c.x&32);
-      return '<div class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50'+(c?' cursor-pointer':'')+'"'+(c?' data-open="'+esc(it.sym)+'"':'')+' title="'+esc(it.purpose)+'">'+
-        '<span class="star'+(WATCH.has(it.sym)?' on':'')+'" data-star="'+esc(it.sym)+'">★</span>'+
-        '<b class="text-slate-900">'+esc(it.sym)+'</b>'+
-        '<span class="text-[11px] text-slate-500 truncate hidden sm:inline max-w-[220px]">'+esc(it.co)+'</span>'+
-        (big?'<span class="badge">N50</span>':'')+(fno?'<span class="badge">F&O</span>':'')+
-        (c&&c.m?'<span class="text-[10.5px] text-slate-400 font-semibold ml-auto">'+fmtMcap(c.m)+'</span>':'')+
-        '<span class="badge '+(it.conf?'':'estpill')+'">'+(it.conf?'✓ confirmed':'est.')+'</span></div>';
-    }).join('');
-    const isToday=d===today, lbl=isoNice(d)+(isToday?' · TODAY':'');
-    return '<div class="card p-2'+(isToday?' ring-2 ring-blue-400':'')+'"><div class="px-3 pt-2 pb-1 flex items-center justify-between">'+
-      '<span class="text-[11px] uppercase tracking-wide font-extrabold '+(isToday?'text-blue-600':'text-slate-500')+'">'+lbl+'</span>'+
-      '<span class="text-[11px] font-bold text-slate-400">'+arr.length+' compan'+(arr.length===1?'y':'ies')+'</span></div>'+
-      '<div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-x-2">'+chips+'</div></div>';
-  }).join('')||'<div class="card p-8 text-center text-slate-400 text-sm">No upcoming result dates in the next 8 weeks under these filters.</div>';
-  $('calList').querySelectorAll('[data-open]').forEach(el=>el.onclick=e=>{
-    const st=e.target.closest('[data-star]');
-    if(st){ const s=st.getAttribute('data-star'); WATCH.has(s)?WATCH.delete(s):WATCH.add(s); saveWatch(); st.classList.toggle('on'); e.stopPropagation(); return; }
-    openModal(el.getAttribute('data-open'));
-  });
-  const nToday=(groups[today]||[]).length;
-  $('fCount').textContent=items.length+' scheduled'+(nToday?' · '+nToday+' today':'');
-}
-
-/* ---------- drilldown modal ---------- */
-function svgBars(vals, w, h, fmt){
-  const nn=vals.filter(v=>v!=null);
-  if(!nn.length) return '';
-  const mx=Math.max(...nn.map(Math.abs))||1, bw=w/vals.length;
-  const zero=nn.some(v=>v<0)? h*0.62 : h;
-  let s='<svg viewBox="0 0 '+w+' '+(h+16)+'" class="w-full" style="max-height:'+(h+16)+'px">';
-  vals.forEach((v,i)=>{
-    if(v==null) return;
-    const bh=Math.max(1.5,Math.abs(v)/mx*(v>=0?zero-4:h-zero-4));
-    const y=v>=0? zero-bh : zero;
-    s+='<rect x="'+(i*bw+1.5)+'" y="'+y+'" width="'+(bw-3)+'" height="'+bh+'" rx="1.5" fill="'+(v>=0?'var(--pos,#16a34a)':'var(--neg,#dc2626)')+'" opacity="'+(i===vals.length-1?1:.55)+'"><title>'+qlabel(QTRS[vals.length-1-i],true)+': '+fmt(v)+'</title></rect>';
-  });
-  return s+'</svg>';
-}
-function openModal(sym){
-  const c=CO[sym]; if(!c) return;
-  const n=QTRS.length;
-  const seq=[];                                    // oldest→newest for charts
-  for(let i=n-1;i>=0;i--){ seq.push(c.q[i]); }
-  const patSeq=seq.map(r=>r?pick(r,'pat')[0]:null);
-  const revSeq=seq.map(r=>r?pick(r,'rev')[0]:null);
-  const rxSeq=seq.map(r=>r?r[7]:null);
-  const rxs=rxSeq.filter(v=>v!=null);
-  const avgAbs=rxs.length? rxs.reduce((a,b)=>a+Math.abs(b),0)/rxs.length : null;
-  const upRate=rxs.length? Math.round(rxs.filter(v=>v>0).length/rxs.length*100) : null;
-  // table: show newest 9 quarters
-  const cols=Math.min(9,n);
-  let head='<tr><th></th>'; for(let i=cols-1;i>=0;i--) head+='<th>'+qlabel(QTRS[i],false)+'</th>'; head+='</tr>';
-  const rowHtml=(label,metric,isPct)=>{
-    let tds='';
-    for(let i=cols-1;i>=0;i--){
-      if(metric==='opm'){ const v=c.f?null:opm(c.q[i]); tds+='<td>'+(v==null?'—':v.toFixed(1)+'%')+'</td>'; continue; }
-      const [v]=pick(c.q[i],metric);
-      const g=growth(c.q,i,metric,4);
-      tds+='<td><div class="font-bold '+(v!=null&&v<0?'neg':'text-slate-800')+'">'+fmtCr(v)+'</div>'+
-           '<div class="growthsub '+pctCls(g&&g.pct)+'">'+(g?fmtPct(g.pct,0):'')+'</div></td>';   // the % even off a loss base (backtest formula), never LP/LL
-    }
-    return '<tr><th>'+label+'</th>'+tds+'</tr>';
-  };
-  let rowsHtml='';
-  if(!c.f) rowsHtml+=rowHtml('Revenue','rev')+rowHtml('Op. profit','op')+rowHtml('OPM','opm');
-  else rowsHtml+=rowHtml('Total income','rev');
-  rowsHtml+=rowHtml('PAT','pat');
-  let rxRow='<tr><th>Reaction</th>';
-  for(let i=cols-1;i>=0;i--){ const v=c.q[i]?c.q[i][7]:null; rxRow+='<td class="font-bold '+pctCls(v)+'">'+fmtPct(v)+'</td>'; }
-  rxRow+='</tr>';
-  let annRow='<tr><th>Announced</th>';
-  for(let i=cols-1;i>=0;i--){ const v=c.q[i]?c.q[i][6]:null; annRow+='<td class="text-slate-500">'+fmtDate8(v)+'</td>'; }
-  annRow+='</tr>';
-  const feedRow=FEEDROWS.find(r=>r[0]===sym&&r[5]);
-  const latest=c.q[ST.qi]||c.q.find(r=>r);
-  $('modal').innerHTML=
-    '<div class="p-5">'+
-    '<div class="flex items-start justify-between gap-3 flex-wrap">'+
-      '<div><div class="flex items-center gap-2 flex-wrap"><h3 class="text-lg font-extrabold text-slate-900">'+esc(sym)+'</h3>'+
-        '<span class="star text-lg'+(WATCH.has(sym)?' on':'')+'" id="mStar">★</span>'+
-        (c.bse?'<span class="badge" title="Listed on BSE only — not on NSE">BSE only</span>':'')+
-        (c.f?'<span class="badge">🏦 Bank/NBFC</span>':'')+
-        ((c.x&1)?'<span class="badge">Nifty 50</span>':(c.x&4)?'<span class="badge">Nifty 500</span>':'')+((c.x&32)?'<span class="badge">F&O</span>':'')+'</div>'+
-        '<div class="text-xs text-slate-500 mt-0.5">'+esc(c.n)+' · '+esc(c.s)+(c.i&&c.i!==c.s?' · '+esc(c.i):'')+(c.m?' · MCap ₹'+fmtMcap(c.m):'')+(c.cd?' · BSE '+c.cd:'')+'</div></div>'+
-      '<button id="mClose" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold">✕</button></div>'+
-    '<div class="grid sm:grid-cols-3 gap-2.5 mt-4">'+
-      '<div class="tile"><div class="text-[10px] uppercase font-bold text-slate-500">'+(c.f?'Total income':'Revenue')+' trend</div>'+svgBars(revSeq,260,54,v=>'₹'+fmtCr(v)+' cr')+'</div>'+
-      '<div class="tile"><div class="text-[10px] uppercase font-bold text-slate-500">PAT trend</div>'+svgBars(patSeq,260,54,v=>'₹'+fmtCr(v)+' cr')+'</div>'+
-      '<div class="tile"><div class="text-[10px] uppercase font-bold text-slate-500">On result days</div>'+
-        '<div class="text-lg font-extrabold mt-1">'+(avgAbs!=null?('±'+avgAbs.toFixed(1)+'%'):'—')+'</div>'+
-        '<div class="text-[11px] text-slate-500">typical move · up '+(upRate==null?'—':upRate+'%')+' of '+rxs.length+' results'+(c.e?' · next ~'+esc(c.e):'')+'</div></div></div>'+
-    '<div class="overflow-x-auto mt-4 rounded-lg border border-slate-100"><table class="qtbl w-full">'+
-      '<thead class="text-[10px] uppercase text-slate-500 bg-slate-50">'+head+'</thead><tbody class="divide-y divide-slate-100">'+rowsHtml+rxRow+annRow+'</tbody></table></div>'+
-    '<div class="text-[10.5px] text-slate-400 mt-1.5">₹ crore · consolidated preferred (owners-attributable PAT) · sub-figures = YoY growth · Reaction = result-day price move · Announced = result filing date</div>'+
-    '<div class="flex flex-wrap gap-2 mt-4">'+
-      (feedRow?'<a class="docbtn" target="_blank" rel="noopener" href="'+esc(feedRow[5].indexOf('http')===0?feedRow[5]:PDF_PREFIX+feedRow[5])+'">Latest filing PDF ↗</a>':'')+
-      (c.bse
-        ? '<a class="docbtn" target="_blank" rel="noopener" href="https://www.bseindia.com/stock-share-price/x/x/'+encodeURIComponent(c.cd||'')+'/">BSE page ↗</a>'
-        : '<a class="docbtn" href="./stock.html?sym='+encodeURIComponent(sym)+'">Price chart & profile →</a>'+
-          '<a class="docbtn" target="_blank" rel="noopener" href="https://www.nseindia.com/get-quotes/equity?symbol='+encodeURIComponent(sym)+'">NSE page ↗</a>')+
-      '<a class="docbtn" href="./announcements.html">All announcements →</a></div>'+
-    '</div>';
-  $('modalBg').style.display='flex';
-  $('mClose').onclick=closeModal;
-  $('mStar').onclick=()=>{ WATCH.has(sym)?WATCH.delete(sym):WATCH.add(sym); saveWatch(); $('mStar').classList.toggle('on'); };
-}
-function closeModal(){ $('modalBg').style.display='none'; }
-$('modalBg').addEventListener('click',e=>{ if(e.target.id==='modalBg') closeModal(); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
 /* ---------- live feed top-up ---------- */
 let liveKeys=new Set();
@@ -1315,10 +644,7 @@ async function liveTopUp(){
   }catch(e){}
 }
 
-/* ---------- render: season trends (multi-year YoY chart, merged from results-season.html) ----------
-   Lazy: results_season.json (~210 KB) is fetched only when the tab is first opened, so the page's
-   first-load bytes are unchanged. State/controls are independent of the quarter/filter card above
-   (which is hidden on this tab — the chart has its own universe/mode/period controls). */
+/* ---------- season trends engine ---------- */
 let RS_DATA=null, RS_CUR={quarters:[]}, RS_MODE='median', RS_PERIOD='1y', RS_CFROM=null, RS_CTO=null;
 let RS_STATE=0, rsRz=null, RS_UI=false;   // 0 = not loaded, 1 = loading, 2 = ready; RS_UI = season UI wired
 
@@ -1371,120 +697,6 @@ function rsOpenResults(qe){
   setTab('results');
   window.scrollTo(0,0);
 }
-
-function rsRenderChart(){
-  const root=$('rsChart');
-  const Q=rsQuarters().filter(q=>rsVal(q.rev)!==null||rsVal(q.op)!==null||rsVal(q.pat)!==null);
-  if(!root) return;
-  if(!Q.length){ root.innerHTML='<p style="color:#64748b;font-size:13px;padding:1rem">No comparable data for this universe.</p>'; return; }
-
-  // Bars: Revenue, Operating Profit, PAT. 'op' (PBET + depreciation + finance − other income;
-  // pre-provision profit for banks) IS Trendlyne's "Oper Profit" card, matched to the paisa.
-  const METRICS=[
-    { key:'rev', name:'Revenue',          color:'#38bdf8' },
-    { key:'op',  name:'Operating Profit', color:'#34d399' },
-    { key:'pat', name:'PAT',              color:'#fbbf24' },
-  ];
-  const uni=$('rsUniverse'); if(uni) uni.textContent=RS_CUR.note||'';
-  // The chart plots rev/op/PAT YoY — nothing here is priced, so there is no "prices as of" to show.
-  // universeAsOf dates ONE thing: the turnover snapshot that picks the liquid universe's members.
-  // Index universes get their members from indices_history.json and never touch it, so stamping it
-  // on them was pure noise — "Nifty 500 · prices as of 2026-06-13" over data rebuilt 20 min earlier.
-  // Freshness of the numbers themselves is the "data refreshed …" line (rsAgeText), which is separate.
-  const asof=$('rsAsOf');
-  if(asof){
-    const snap=(RS_CUR.key==='liquid'&&RS_DATA.universeAsOf)?' · universe as of '+RS_DATA.universeAsOf:'';
-    asof.textContent=(RS_CUR.label||'')+snap;
-  }
-  rsTickAge();
-  const foot=$('rsFootnote');
-  if(foot) foot.textContent=(RS_MODE==='median'
-      ? 'MEDIAN — the typical company’s YoY growth (consolidated where filed, else standalone); half of members grew faster, half slower. '
-      : 'TOTAL — aggregate YoY growth = sum of all members this year ÷ sum last year, consolidated-preferred (matches Trendlyne’s result-analysis; dominated by the largest companies). ')
-    + 'Operating Profit = PBET + depreciation + finance − other income (banks: pre-provision profit) — this is Trendlyne’s “Oper Profit” card, matched to the paisa. '
-    + 'Financials are included (banks’ Revenue = interest earned). Point-in-time index membership. YoY vs the year-ago quarter.';
-  const leg=$('rsLegend');
-  if(leg) leg.innerHTML=METRICS.map(mm=>
-    '<span class="inline-flex items-center gap-1.5"><span style="width:10px;height:10px;border-radius:2px;background:'+
-    mm.color+'"></span><span class="text-slate-300">'+mm.name+'</span></span>').join('');
-
-  let dMax=0, dMin=0;
-  Q.forEach(q=>METRICS.forEach(mm=>{ const v=rsVal(q[mm.key]);
-    if(v!==null){ if(v>dMax) dMax=v; if(v<dMin) dMin=v; } }));
-  dMax=Math.ceil((dMax+1)/5)*5;
-  dMin=dMin<0?Math.floor((dMin-1)/5)*5:0;
-  const range=(dMax-dMin)||1;
-
-  const n=Q.length, M={l:40,r:14,t:26,b:48};
-  // Uniform chart size for every period: the SVG always renders 312px tall. Few quarters →
-  // widen each group so the bars fill the card; many quarters → natural width + horizontal scroll.
-  const avail=Math.max(720, root.clientWidth||0);
-  const innerAvail=avail-M.l-M.r, minGroupW=66;
-  const groupW=n*minGroupW<=innerAvail?innerAvail/n:minGroupW;
-  const bw=Math.max(15,Math.min(30,Math.round(groupW*0.2))), gap=Math.max(3,Math.round(bw*0.2));
-  const W=M.l+n*groupW+M.r, H=312;
-  const plotTop=M.t, plotBot=H-M.b;
-  const y=v=>plotTop+(dMax-v)/range*(plotBot-plotTop);
-  const zeroY=y(0);
-  const fmt=v=>(v>=0?'+':'')+v.toFixed(1)+'%';
-  const cf=x=>x.toLocaleString('en-IN');
-
-  let g='';
-  for(let t=dMin;t<=dMax+0.001;t+=5){
-    const yy=y(t), zero=t===0;
-    g+='<line x1="'+M.l+'" x2="'+(W-M.r)+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+
-       '" stroke="'+(zero?'#64748b':'#1e293b')+'" stroke-width="'+(zero?1.2:1)+'" pointer-events="none"/>'+
-       '<text x="'+(M.l-6)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end" font-size="10" fill="#64748b" pointer-events="none">'+t+'%</text>';
-  }
-  Q.forEach((q,i)=>{
-    const gx=M.l+i*groupW, cx=(gx+groupW/2).toFixed(1);
-    const clk=rsClickable(q.qe), clkAttr=clk?' data-qe="'+q.qe+'" style="cursor:pointer"':'';
-    let gt=esc(q.label)+' — '+cf(q.reported)+' companies reported'+(q.partial?' (in progress — preliminary, few reporters so far)':'');
-    METRICS.forEach(mm=>{ if(rsVal(q[mm.key])!==null) gt+=' · '+mm.name+' '+fmt(rsVal(q[mm.key])); });
-    if(clk) gt+=' · click to open every company’s numbers';
-    g+='<rect x="'+gx+'" y="'+plotTop+'" width="'+groupW+'" height="'+(H-plotTop)+
-       '" fill="transparent"'+clkAttr+'><title>'+gt+'</title></rect>';
-    const totW=METRICS.length*bw+(METRICS.length-1)*gap, x0=gx+(groupW-totW)/2;
-    METRICS.forEach((mm,j)=>{
-      const v=rsVal(q[mm.key]); if(v===null) return;
-      const bx=x0+j*(bw+gap), yv=y(v);
-      const top=Math.min(yv,zeroY), hh=Math.max(0.5,Math.abs(zeroY-yv));
-      g+='<rect x="'+bx.toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw+'" height="'+hh.toFixed(1)+
-         '" rx="2" fill="'+mm.color+'"'+(q.partial?' fill-opacity="0.4"':'')+clkAttr+'><title>'+esc(q.label)+' · '+mm.name+': '+fmt(v)+
-         ' ('+(RS_MODE==='median'?'median of ':'total of ')+cf(rsCnt(q[mm.key]))+' companies)</title></rect>';
-      const pos=v>=0, lx=(bx+bw/2).toFixed(1), ly=(pos?yv-3:yv+3).toFixed(1);
-      g+='<text x="'+lx+'" y="'+ly+'" transform="rotate(-90 '+lx+' '+ly+')" text-anchor="'+
-         (pos?'start':'end')+'" font-size="9.5" font-weight="600" fill="'+mm.color+'" pointer-events="none">'+fmt(v)+'</text>';
-    });
-    g+='<text x="'+cx+'" y="'+(plotBot+17)+'" text-anchor="middle" font-size="11" font-weight="600" fill="'+(q.partial?'#f59e0b':'#cbd5e1')+'" pointer-events="none">'+esc(q.label)+'</text>'+
-       '<text x="'+cx+'" y="'+(plotBot+31)+'" text-anchor="middle" font-size="9.5" fill="'+(q.partial?'#f59e0b':'#64748b')+'" pointer-events="none">'+(q.partial?cf(q.reported)+' • in progress':cf(q.reported)+' Results')+'</text>';
-  });
-  // Fixed pixel size (no viewBox scaling) so every period renders at the same height; the
-  // wrapper (#rsChart, overflow-x-auto) scrolls horizontally when W exceeds the card.
-  root.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" '+
-    'style="max-width:none;display:block" font-family="Inter,sans-serif">'+g+'</svg>';
-  root.querySelectorAll('[data-qe]').forEach(el=>{ el.onclick=()=>rsOpenResults(+el.getAttribute('data-qe')); });
-}
-
-function rsRenderTable(){
-  const tb=$('rsTableBody');
-  if(!tb) return;
-  const cell=m=>rsVal(m)===null?'<span class="text-slate-300">—</span>'
-    :'<span class="'+pctCls(rsVal(m))+' font-medium tabular-nums">'+fmtPct(rsVal(m))+'</span>';
-  tb.innerHTML=rsQuarters().slice().reverse().map(q=>{
-    const clk=rsClickable(q.qe);
-    return '<tr'+(clk?' class="hover:bg-slate-50 cursor-pointer" data-qe="'+q.qe+'" title="Open every company’s '+esc(q.label)+' numbers in the All Results tab"'
-                     :' class="hover:bg-slate-50"')+'>'+
-      '<td class="px-4 py-2 font-semibold text-slate-700">'+q.label+(q.partial?' <span class="text-amber-600 font-medium">· in progress</span>':'')+
-        (clk?' <span class="lnk text-[11px]">open →</span>':'')+'</td>'+
-      '<td class="px-4 py-2 text-right text-slate-600 tabular-nums">'+q.reported.toLocaleString('en-IN')+'</td>'+
-      '<td class="px-4 py-2 text-right">'+cell(q.rev)+'</td>'+
-      '<td class="px-4 py-2 text-right">'+cell(q.op)+'</td>'+
-      '<td class="px-4 py-2 text-right">'+cell(q.pat)+'</td>'+
-    '</tr>';}).join('');
-  tb.querySelectorAll('[data-qe]').forEach(tr=>tr.onclick=()=>rsOpenResults(+tr.getAttribute('data-qe')));
-}
-
 function rsSelectUniverse(key){
   const uvs=RS_DATA&&RS_DATA.universes||[];
   RS_CUR=uvs.find(u=>u.key===key)||uvs[0]||{quarters:[]};
@@ -1500,95 +712,789 @@ function rsPopulateCustom(){
   cf.innerHTML=opts; ct.innerHTML=opts;
   if(qs.length){ RS_CFROM=qs[0].qe; RS_CTO=qs[qs.length-1].qe; cf.value=RS_CFROM; ct.value=RS_CTO; }
 }
-function rsSetPeriod(p){
-  RS_PERIOD=p;
-  ['1y','3y','5y','all','custom'].forEach((k,i)=>{
-    const b=$('rsP_'+k);
-    if(b) b.className='px-3 py-1.5 text-xs font-semibold'+(i?' border-l border-slate-300':'')+
-      (k===p?' bg-blue-600 text-white':' bg-white text-slate-600 hover:bg-slate-50');
+setIdxUniverse=(function(f){ return function(key,label,members){ f(key,label,members); ST.uniKey=key; }; })(setIdxUniverse);
+
+/* ================= one-screen shell ================= */
+const CUR={sym:null,k:null,e:null,pin:false};        // the selected company (results / feed / calendar views)
+let LIST=[], ALLROWS=[], OV=null, RSQ=null, CH=null, TOK=0, MARK=null, CHART='q', FOCUS=false, showTimer=null;
+const isCo=()=>ST.tab==='results'||ST.tab==='feed'||ST.tab==='calendar';
+const show=(id,on)=>$(id).classList.toggle('hidden',!on);
+function seg(id, opts, val, fn){
+  $(id).innerHTML = opts.map(o => '<button type="button" class="' + (String(o[0]) === String(val) ? 'on' : '') + '" data-v="' + o[0] + '"' + (o[2] ? ' title="' + o[2] + '"' : '') + '>' + o[1] + '</button>').join('');
+  $(id).querySelectorAll('button').forEach(b => b.onclick = () => fn(b.getAttribute('data-v')));
+}
+const kv=(a,b,c,t,go)=>'<div class="kv"'+(t?' title="'+esc(t)+'"':'')+(go?' data-go="'+go+'"':'')+'><span>'+a+'</span><b'+(c?' class="'+c+'"':'')+'>'+b+'</b></div>';
+const pc=(v,dp)=>'<span class="'+pctCls(v)+'">'+fmtPct(v,dp)+'</span>';
+const pcl=v=>pc(v,v!=null&&Math.abs(v)>=1000?0:undefined);   // four-digit growth drops its decimal so the list column holds it
+function gl(pct,flag,rb){                           // gcell's figure and tooltip, at the list's lighter weight
+  const tip = flag==='LP'?'Loss → profit: growth vs |base|':flag==='PL'?'Profit → loss':flag==='LL'?'Loss both periods: growth vs |base|':'';
+  return '<span class="'+pctCls(pct)+'"'+(tip?' title="'+tip+'"':'')+'>'+fmtPct(pct)+'</span>'+(rb&&pct!=null?'<sup class="rb" title="'+RB_TIP+'">R</sup>':'');
+}
+const dot=r=>r.verdict?vdot(r):'<span class="nov">·</span>';
+function syncSel(){
+  let e=(CUR.k!=null&&LIST.find(x=>x.k===CUR.k))||(CUR.sym?LIST.find(x=>x.sym===CUR.sym):null)||null;
+  if(!e&&!(CUR.pin&&CUR.sym)){ e=LIST[0]||null; if(!e){ CUR.sym=null; CUR.k=null; } }
+  if(e){ CUR.k=e.k; CUR.sym=e.sym; } else CUR.k=null;
+  CUR.e=e;
+}
+const curKey=()=>ST.tab==='overview'?ST.sector:ST.tab==='season'?RSQ:CUR.k;
+function head(cols){ $('lHead').innerHTML=cols.map(c=>{ const on=c[1]&&ST.tab==='results'&&ST.sort.k===c[1], cl=[on?'on':'',c[2]?'c'+(c[2]+2):''].filter(Boolean).join(' ');
+  return '<span'+(c[1]?' data-k="'+c[1]+'"':'')+(cl?' class="'+cl+'"':'')+'>'+c[0]+(on?(ST.sort.dir>0?' ↑':' ↓'):'')+'</span>'; }).join(''); }
+function foot(more,csv){
+  $('lFoot').innerHTML=(more?'<button type="button" class="os-btn" id="bMore">Load more ↓</button>':'')+(csv?'<span style="flex:1"></span><button type="button" class="os-btn" id="bCsv">Export CSV</button>':'');
+  show('lFoot',more||csv);
+}
+
+/* ---------- view: overview (sectors → that sector's season numbers → trend and sector medians) ---------- */
+function renderOverview(){ if(ST.tab==='overview') render(); }      // ensureRS calls this when the season medians arrive
+function buildOverview(){
+  if(RS_STATE!==2) ensureRS();               // kick off Season-Trends median load; its .then re-renders
+  const qi=ST.qi, lag=ST.mode==='yoy'?4:1;
+  const gKey=ST.mode==='yoy'?'py':'pq', rKey=ST.mode==='yoy'?'ry':'rq', fKey=ST.mode==='yoy'?'pfY':'pfQ';
+  // the sector list is computed with the sector filter lifted, so every sector stays visible while one is selected
+  const keepSec=ST.sector; ST.sector='all';
+  const allRows=filtered(qi), allPrev=recsFor(qi+lag).filter(passFilters), rsmAll=rsMedianFor(QTRS[qi]);
+  ST.sector=keepSec;
+  const rows=keepSec==='all'?allRows:allRows.filter(r=>r.c.s===keepSec);
+  // expected = year-ago reporters within current filters
+  const prev=keepSec==='all'?allPrev:allPrev.filter(r=>r.c.s===keepSec);
+  const expected=new Set(prev.map(r=>r.sym)); rows.forEach(r=>expected.add(r.sym));
+  const pats=rows.map(r=>r[gKey]).filter(v=>v!=null);
+  const revs=rows.map(r=>r[rKey]).filter(v=>v!=null);
+  const rxs=rows.map(r=>r.rx).filter(v=>v!=null);
+  const pUp=rows.filter(r=>isUp(r[gKey],r[fKey])).length;
+  const pDn=rows.filter(r=>(r[gKey]!=null&&r[gKey]<0&&!r[fKey])||r[fKey]==='PL'||r[fKey]==='LL').length;
+  const rUp=revs.filter(v=>v>0).length, rDn=revs.filter(v=>v<0).length;
+  const lp=rows.filter(r=>ST.mode==='yoy'?r.turnY:r.turnQ).length;
+  // "Declared" = companies with parsed numbers + those we've SEEN FILE (in the feed) but whose numbers
+  // haven't been parsed yet (our XBRL sync runs nightly, so a same-day filing shows here before its
+  // numbers land). Bridges the gap between the live filing feed and the numbers scoreboard.
+  const qe=QTRS[qi], haveNums=new Set(rows.map(r=>r.sym)), pendSet=new Set();
+  // dual-listed cos can appear in the feed under a BSE ticker (INDBNK) while their numbers sit
+  // under the NSE symbol (INDBANK) — also match by normalized company name to avoid double-count
+  const normN=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'').replace(/(limited|ltd)$/,'');
+  const haveNames=new Set(rows.map(r=>normN(r.c.n)));
+  // qe===0 feed rows (filing didn't state its period; the vision prep resolves it within hours)
+  // count as pending on the LIVE quarter only — never attributed to a specific quarter, never hidden
+  FEEDROWS.forEach(r=>{ if((r[3]===qe||(qi===0&&r[3]===0)) && filedAfterQE(r,qe) && !haveNums.has(r[0]) && !haveNames.has(normN(r[1])) && coPass(r[0])) pendSet.add(r[0]); });
+  const pending=pendSet.size, declared=rows.length+pending;
+  let pdfOnly=0; pendSet.forEach(s=>{ if(PDF_ONLY.has(s)) pdfOnly++; }); const coming=pending-pdfOnly;
+  // Season-Trends parity: read the exact universe median where available, else the live per-reporter one
+  const rsm=rsMedianFor(QTRS[qi]);
+  const medRev=(rsm&&rsm.rev!=null)?rsm.rev:median(revs);
+  const medPat=(rsm&&rsm.pat!=null)?rsm.pat:median(pats);
+  const medSub=rsm?'matches Season Trends':(ST.mode==='yoy'?'vs year-ago quarter':'vs previous quarter');
+  // 5-season strip
+  const meds=[];
+  for(let k=4;k>=0;k--){
+    const rr=recsFor(qi+k).filter(passFilters);
+    const rsk=rsMedianFor(QTRS[qi+k]);                         // Season-Trends parity per quarter
+    const m=(rsk&&rsk.pat!=null)?rsk.pat:median(rr.map(r=>r[gKey]).filter(v=>v!=null));
+    meds.push({k, med:m, n:rr.length});
+  }
+  // sector aggregation
+  const by={};
+  allRows.forEach(r=>{ (by[r.c.s]=by[r.c.s]||[]).push(r); });
+  const prevBy={};
+  allPrev.forEach(r=>{ prevBy[r.c.s]=(prevBy[r.c.s]||0)+1; });
+  const agg=(s,rr,exp)=>{
+    const pu=rr.filter(r=>isUp(r[gKey],r[fKey])).length;
+    const pn=rr.filter(r=>r[gKey]!=null||r[fKey]).length;
+    return { s, n:rr.length, exp,
+      mr:median(rr.map(r=>r[rKey]).filter(v=>v!=null)),
+      mp:median(rr.map(r=>r[gKey]).filter(v=>v!=null)),
+      rx:median(rr.map(r=>r.rx).filter(v=>v!=null)), pu, pn };
+  };
+  const secs=Object.keys(by).map(s=>agg(s,by[s],Math.max(prevBy[s]||0, by[s].length)))
+    .sort((a,b)=>(b.mp==null?-1e9:b.mp)-(a.mp==null?-1e9:a.mp));
+  const expAll=new Set(allPrev.map(r=>r.sym)); allRows.forEach(r=>expAll.add(r.sym));
+  const all=agg('all',allRows,expAll.size);
+  if(rsmAll&&rsmAll.rev!=null) all.mr=rsmAll.rev; if(rsmAll&&rsmAll.pat!=null) all.mp=rsmAll.pat;   // same figure the detail shows
+  // movers
+  const base=rows.filter(r=>r[gKey]!=null && !r[fKey] && Math.abs(r.pat||0)>=1 && (r.c.m||0)>=100);
+  const grow=base.filter(r=>r[gKey]>0).sort((a,b)=>b[gKey]-a[gKey]).slice(0,10).map(r=>[r,r[gKey]]);
+  const fall=base.filter(r=>r[gKey]<0).sort((a,b)=>a[gKey]-b[gKey]).slice(0,10).map(r=>[r,r[gKey]]);
+  const rxr=rows.filter(r=>r.rx!=null);
+  const rbest=rxr.filter(r=>r.rx>0).sort((a,b)=>b.rx-a.rx).slice(0,10).map(r=>[r,r.rx]);
+  const rworst=rxr.filter(r=>r.rx<0).sort((a,b)=>a.rx-b.rx).slice(0,10).map(r=>[r,r.rx]);
+  OV={rows,declared,pending,coming,pdfOnly,rsm,medRev,medPat,medSub,pUp,pDn,rUp,rDn,lp,rxs,meds,secs,all,grow,fall,rbest,rworst,
+      cur:keepSec==='all'?all:secs.find(x=>x.s===keepSec)||null};
+  $('fCount').textContent=declared.toLocaleString('en-IN')+' declared'+(pending?' ('+rows.length+' with numbers)':'')+' · '+qlabel(QTRS[qi],true);
+
+  $('vctl').innerHTML='<span class="os-hint">Pick a sector to see its season numbers — the filters above apply to every view.</span>';
+  $('keys').innerHTML='<b>↑↓</b> sector · <b>←→</b> quarter · <b>/</b> search · <b>Enter</b> open its results · <b>F</b> focus';
+  LIST=[{k:'all',sec:all}].concat(secs.map(x=>({k:x.s,sec:x})));
+  $('lTitle').textContent='Sectors'; $('count').textContent=secs.length+' with results · by median PAT growth';
+  head([['Sector'],['PAT '+(ST.mode==='yoy'?'YoY':'QoQ')],['Rev'],['React.'],['Cos','',2]]);
+  $('lList').innerHTML=LIST.map((e,i)=>{ const x=e.sec, on=e.k===ST.sector;
+    return '<div class="os-row lr-overview'+(on?' on':'')+'" role="option" aria-selected="'+on+'" data-i="'+i+'" title="'+(e.k==='all'?'All sectors':esc(x.s))+': '+x.n+' reported of '+x.exp+' expected">'+
+      '<span class="n">'+(e.k==='all'?'All sectors':esc(x.s||'(no sector)'))+'</span><span class="v">'+pcl(x.mp)+'</span><span class="v">'+pcl(x.mr)+'</span><span class="v">'+pc(x.rx)+'</span><span class="m c4">'+x.n+'</span></div>'; }).join('')
+    + (secs.length?'':'<div class="os-empty">No companies reported yet under these filters.</div>');
+  foot(false,false);
+}
+function detailOverview(){
+  const o=OV, x=o.cur, name=ST.sector==='all'?'All sectors':(ST.sector||'(no sector)'), yq=ST.mode==='yoy'?'YoY':'QoQ';
+  $('dTitle').textContent=name; $('dTag').textContent=qlabel(QTRS[ST.qi],false)+' · '+yq;
+  const sub=(v,s)=>v+(s?'<small>'+s+'</small>':'');
+  const bbar=(lbl,up,dn)=>{
+    const tot=up+dn||1, pu=Math.round(up/tot*100);
+    return '<div class="bb"><div><span>'+lbl+'</span><span><span class="pos">'+up+'</span> / <span class="neg">'+dn+'</span> · '+pu+'% positive</span></div>'+
+      '<div class="t"><i style="width:'+(up/tot*100)+'%;background:var(--pos)"></i><i style="width:'+(dn/tot*100)+'%;background:var(--neg)"></i></div></div>';
+  };
+  let h=kv('Declared', sub(o.declared.toLocaleString('en-IN'), o.rows.length.toLocaleString('en-IN')+' with numbers'+(o.coming?' · +'+o.coming+' coming':'')+(o.pdfOnly?' · '+o.pdfOnly+' filing-only':'')))+
+    (x&&ST.sector!=='all'?kv('Reported / expected', x.n+' / '+x.exp,'','Expected = reported the comparison quarter'):'')+
+    kv('Median revenue growth', sub(fmtPct(o.medRev),o.medSub), pctCls(o.medRev))+
+    kv('Median PAT growth', sub(fmtPct(o.medPat), o.rsm?(o.pUp+' up · '+o.pDn+' down · matches Season Trends'):((o.pUp+o.pDn)?(o.pUp+' up · '+o.pDn+' down'):'')), pctCls(o.medPat))+
+    kv('PAT growers', sub((o.pUp+o.pDn)? Math.round(o.pUp/(o.pUp+o.pDn)*100)+'%' :'—', o.pUp+' of '+(o.pUp+o.pDn)+' with a comparable base'), o.pUp>=o.pDn?'pos':'neg')+
+    kv('Turnarounds', sub(o.lp||'0','loss → profit '+yq+(o.lp?' · view all →':'')), o.lp?'pos':'', o.lp?'Open the Loss → Profit screen in All Results':'', o.lp?'turn':'')+
+    kv('Median reaction', sub(fmtPct(median(o.rxs)), o.rxs.length+' priced result days'), pctCls(median(o.rxs)))+
+    '<div class="dh" title="Growers = growth &gt; 0 (incl. loss→profit). Decliners = growth &lt; 0 (incl. profit→loss).">Market breadth · '+yq+'</div>'+bbar('Revenue',o.rUp,o.rDn)+bbar('PAT',o.pUp,o.pDn)+
+    '<div class="act"><button type="button" class="os-btn" id="ovOpen">Open these '+o.rows.length.toLocaleString('en-IN')+' results →</button></div>';
+  const mv=(title,arr,fmt)=>'<div class="dh">'+title+'</div>'+(arr.length? arr.map(([r,v])=>'<div class="os-row mv" data-open="'+esc(r.sym)+'" title="'+esc(r.c.n)+'"><span class="n">'+esc(r.sym)+'<i>'+esc(r.c.n)+'</i></span><span class="v '+pctCls(v)+'">'+fmt(v)+'</span></div>').join('') : '<div class="os-note">—</div>');
+  h+=mv('Top PAT growers ('+ST.mode.toUpperCase()+')',o.grow,v=>fmtPct(v,0))+mv('Top PAT decliners',o.fall,v=>fmtPct(v,0))+
+     mv('Market loved it (result-day move)',o.rbest,v=>fmtPct(v))+mv('Market hated it',o.rworst,v=>fmtPct(v));
+  $('dList').innerHTML=h;
+  // Turnarounds → the Results view's own 'turn' screen: same rows, same isTurn test as the count above.
+  const tt=$('dList').querySelector('[data-go="turn"]'); if(tt) tt.onclick=()=>{ ST.screen='turn'; ST.shown=Math.max(PAGE,o.lp); setTab('results'); };
+  $('ovOpen').onclick=()=>setTab('results');
+  $('dList').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openCo(el.getAttribute('data-open')));
+}
+function drawOv(){
+  const o=OV; if(!o) return;
+  $('cSym').textContent=ST.sector==='all'?'All sectors':(ST.sector||'(no sector)'); $('cName').textContent='season trend · sector medians';
+  seg('segHeat',[['pat','PAT growth'],['rev','Revenue'],['rx','Reaction']],ST.heat,v=>{ ST.heat=v; drawOv(); saveUrl(); });
+  const mx=Math.max(10,...o.meds.map(m=>Math.abs(m.med||0)));
+  let h='<div class="dh">Season trend · median PAT growth of reporters, last 5 quarters</div><div class="strip">';
+  for(const m of o.meds){
+    const bh=m.med==null?2:Math.max(3,Math.abs(m.med)/mx*62), up=(m.med||0)>=0;
+    h+='<div title="'+qlabel(QTRS[ST.qi+m.k],true)+': median '+fmtPct(m.med)+' across '+m.n+' reporters"><span class="'+pctCls(m.med)+'" style="font-weight:600">'+fmtPct(m.med,1)+'</span>'+
+      '<i style="height:'+bh+'px;background:'+(up?'var(--pos)':'var(--neg)')+';opacity:'+(m.k===0?1:.45)+'"></i><span>'+qlabel(QTRS[ST.qi+m.k],false)+'</span></div>';
+  }
+  h+='</div>';
+  const hv=ST.heat, cells=o.secs.map(x=>({s:x.s,n:x.n,v:hv==='pat'?x.mp:hv==='rev'?x.mr:x.rx}));
+  const hmax=Math.max(8,...cells.map(c=>Math.abs(c.v||0))), what=hv==='rx'?'reaction':hv==='pat'?'PAT growth':'revenue growth';
+  h+='<div class="dh">Sectors · median '+what+' across reporters</div>'+
+    (cells.map(c=>{ const w=c.v==null?0:Math.min(50,Math.abs(c.v)/hmax*50);
+      return '<div class="hb'+(c.s===ST.sector?' on':'')+'" data-sec="'+esc(c.s)+'" title="'+esc(c.s)+': median '+what+' '+fmtPct(c.v)+' · '+c.n+' reported"><span>'+esc(c.s||'(no sector)')+'</span>'+
+        '<span class="t"><i style="'+(c.v>=0?'left:50%':'right:50%')+';width:'+w+'%;background:'+(c.v>=0?'var(--pos)':'var(--neg)')+'"></i></span><span class="'+pctCls(c.v)+'">'+fmtPct(c.v)+'</span></div>'; }).join('')
+     ||'<div class="os-empty">Nothing reported yet.</div>');
+  $('ovC').innerHTML=h;
+  $('ovC').querySelectorAll('[data-sec]').forEach(el=>el.onclick=()=>{ const e=LIST.find(x=>x.k===el.getAttribute('data-sec')); if(e) choose(e,true); });
+}
+function openCo(sym){ CUR.sym=sym; CUR.k=sym; CUR.pin=true; ST.screen='all'; setTab('results'); const on=$('lList').querySelector('.os-row.on'); if(on) on.scrollIntoView({block:'center'}); }
+
+/* ---------- view: all results (companies → that company's quarter → its quarters / price) ---------- */
+const SORTS={sym:'Stock',m:'Market cap',rev:'Revenue',ry:'Rev YoY',rq:'Rev QoQ',opm:'OPM change',pat:'PAT',py:'PAT YoY',pq:'PAT QoQ',v:'Verdict',ann:'Announced',rx:'Reaction',sr:'Since result'};
+function sortBy(k){ if(ST.sort.k===k) ST.sort.dir=-ST.sort.dir; else ST.sort={k,dir:(k==='sym'?1:-1)}; render(); }
+function buildResults(){
+  $('vctl').innerHTML='<div class="os-sg" id="screenChips" role="group" aria-label="Screen"></div>'+
+    '<select id="selSort" aria-label="Sort by">'+Object.keys(SORTS).map(k=>'<option value="'+k+'"'+(ST.sort.k===k?' selected':'')+'>Sort: '+SORTS[k]+'</option>').join('')+'</select>'+
+    '<button type="button" class="os-btn" id="bDir" title="Reverse the order">'+(ST.sort.dir>0?'↑ Low first':'↓ High first')+'</button>';
+  seg('screenChips',SCREENS,ST.screen,v=>{ ST.screen=v; ST.shown=PAGE; render(); });
+  $('selSort').onchange=e=>{ ST.sort={k:e.target.value,dir:(e.target.value==='sym'?1:-1)}; render(); };
+  $('bDir').onclick=()=>{ ST.sort.dir=-ST.sort.dir; render(); };
+  $('keys').innerHTML='<b>↑↓</b> move · <b>←→</b> quarter · <b>/</b> search · <b>Enter</b> open stock · <b>F</b> focus';
+  let rows=filtered(ST.qi).filter(screenPass);
+  rows=sortRows(rows);
+  // PENDING: companies that filed a result for this quarter but whose numbers aren't parsed yet
+  // (BSE OCR pending / NSE XBRL not yet posted). OWNER-ONLY, same curtain as the Feed view's
+  // "Numbers pending" rows (FEED_OWNER / bt_owner_key): to a visitor an empty row reads as a
+  // broken page, but to the owner it is the coverage tool saying which names still need a
+  // vision fill. The "+N numbers coming" count in the header stays visible to EVERYONE so the
+  // Declared total still reconciles — the ROWS are hidden, the ARITHMETIC is not.
+  // Only when no numbers-based screen is on.
+  const qeSel=QTRS[ST.qi], haveNums=new Set(recsFor(ST.qi).map(r=>r.sym));
+  const nrmN=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'').replace(/(limited|ltd)$/,'');
+  const haveNm=new Set(recsFor(ST.qi).map(r=>nrmN(r.c.n)));
+  let pend=[];
+  if(ST.screen==='all'){
+    const seen=new Set();
+    FEEDROWS.forEach(r=>{
+      if(!((r[3]===qeSel||(ST.qi===0&&r[3]===0))&&filedAfterQE(r,qeSel))||haveNums.has(r[0])||haveNm.has(nrmN(r[1]))||seen.has(r[0]))return;
+      if(CO[r[0]]?!coPass(r[0]):(ST.uni!=='all'&&ST.uni!=='bse'&&ST.uni!=='nse'||ST.sector!=='all'||ST.mcap!=='all'))return;
+      if(ST.uni==='bse'&&!(CO[r[0]]&&CO[r[0]].bse))return;
+      if(ST.uni==='nse'&&CO[r[0]]&&CO[r[0]].bse)return;
+      if(ST.search&&normSearch(r[0]).indexOf(normSearch(ST.search))<0&&normSearch(r[1]).indexOf(normSearch(ST.search))<0)return;
+      seen.add(r[0]); pend.push(r);
+    });
+    pend.sort((a,b)=>(b[2]>a[2]?1:-1));
+  }
+  const nPdf=pend.filter(r=>PDF_ONLY.has(r[0])).length, nComing=pend.length-nPdf;
+  $('fCount').textContent=rows.length.toLocaleString('en-IN')+' with numbers'+(nComing?' · +'+nComing+' numbers coming':'')+(nPdf?' · '+nPdf+' filing-only (PDF)':'')+' · '+qlabel(QTRS[ST.qi],true);
+  ALLROWS=rows;
+  const shown=rows.slice(0,ST.shown);
+  const pi=CUR.pin&&CUR.sym?rows.findIndex(r=>r.sym===CUR.sym):-1; if(pi>=ST.shown) shown.unshift(rows[pi]);   // a company opened by link or from Overview heads the list when it sits beyond the loaded rows
+  const yoy=ST.mode==='yoy', gKey=yoy?'py':'pq', rKey=yoy?'ry':'rq', fKey=yoy?'pfY':'pfQ', sk=ST.sort.k;
+  const X=(['m','rev','opm','pat','sr','ann'].includes(sk)||(['ry','rq','py','pq'].includes(sk)&&sk!==gKey))?sk:'ann';
+  const XL={m:'MCap',rev:'Revenue',opm:'OPM Δ',pat:'PAT',sr:'Since',ann:'Announced',ry:'Rev YoY',rq:'Rev QoQ',py:'PAT YoY',pq:'PAT QoQ'}[X];
+  const valX=r=>{ switch(X){
+    case 'm': return r.c.m?fmtCr(r.c.m):'—'; case 'rev': return fmtCr(r.rev);
+    case 'pat': return '<span class="'+(r.pat!=null&&r.pat<0?'neg':'')+'">'+fmtCr(r.pat)+'</span>';
+    case 'opm': return r.dOpm==null?'—':'<span class="'+pctCls(r.dOpm)+'">'+(r.dOpm>0?'+':'')+Math.round(r.dOpm)+'bps</span>';
+    case 'sr': return pc(r.sr); case 'ann': return fmtDate8(r.ann);
+    case 'ry': return gl(r.ry,null,r.ryR); case 'rq': return gl(r.rq,null,r.rqR); case 'py': return gl(r.py,r.pfY,r.pyR); default: return gl(r.pq,r.pfQ,r.pqR); } };
+  // Owner curtain: visitors get the numbers-only list (an empty row reads as a broken page).
+  LIST=shown.map(r=>({k:r.sym,sym:r.sym,rec:r})).concat(!FEED_OWNER?[]:pend.map(r=>({k:'p|'+r[0],sym:CO[r[0]]?r[0]:null,pend:r})));
+  syncSel();
+  $('lTitle').textContent=ST.screen==='all'?'Companies':SCREENS.find(s=>s[0]===ST.screen)[1].replace(/&amp;/g,'&').replace(/&gt;/g,'>');
+  $('count').textContent=Math.min(ST.shown,rows.length).toLocaleString('en-IN')+' of '+rows.length.toLocaleString('en-IN');
+  head([['Stock','sym'],['PAT '+(yoy?'YoY':'QoQ'),gKey],['Rev '+(yoy?'YoY':'QoQ'),rKey,1],['React.','rx'],[XL,X]]);
+  $('lHead').querySelectorAll('[data-k]').forEach(el=>el.onclick=()=>sortBy(el.getAttribute('data-k')));
+  $('lList').innerHTML=LIST.map((e,i)=>{ const on=e.k===CUR.k;
+    if(e.pend){ const r=e.pend, pdfOnly=PDF_ONLY.has(r[0]);
+      return '<div class="os-row lr-pend'+(on?' on':'')+'" role="option" aria-selected="'+on+'" data-i="'+i+'" title="'+esc(r[1])+'"><span class="n"><span class="nov">·</span>'+esc(r[0])+'<i>'+esc(r[1])+'</i></span>'+
+        '<span class="m">'+(pdfOnly?'filing only (PDF)':r[3]===0?'period being determined':'numbers being parsed')+' · '+fmtDate8(+((r[2].slice(0,10)).replace(/-/g,'')))+'</span></div>'; }
+    const r=e.rec, c=r.c;
+    return '<div class="os-row lr-results'+(on?' on':'')+'" role="option" aria-selected="'+on+'" data-i="'+i+'" title="'+esc(c.n)+' · '+esc(c.s)+'">'+
+      '<span class="n">'+dot(r)+esc(r.sym)+(c.bse?'<span class="os-tag" title="Listed on BSE only — not on NSE">BSE</span>':'')+
+        (r.prov?'<span class="os-tag" title="SME half-year figure — confirmed or corrected when the full-year filing arrives">'+(QTRS[ST.qi]%10000===331?'H2':'H1')+' UNCONF.</span>':'')+'<i>'+esc(c.n)+'</i></span>'+
+      '<span class="v">'+gl(r[gKey],r[fKey],r[gKey+'R'])+'</span><span class="v c3">'+gl(r[rKey],null,r[rKey+'R'])+'</span><span class="v">'+pc(r.rx)+'</span><span class="m">'+valX(r)+'</span></div>';
+  }).join('') || '<div class="os-empty">Nothing matches — relax the filters or pick an earlier quarter.</div>';
+  foot(rows.length>ST.shown,true);
+  if($('bMore')) $('bMore').onclick=()=>{ ST.shown+=200; const st=$('lList').scrollTop; render(); $('lList').scrollTop=st; };
+  $('bCsv').onclick=()=>{
+    const head='Symbol,Name,Sector,MCapCr,RevenueCr,RevYoY%,RevQoQ%,OPM%,dOPMbps,PATCr,PATYoY%,PATQoQ%,AnnDate,Reaction%,SinceResult%';
+    const lines=rows.map(r=>[r.sym,'"'+r.c.n.replace(/"/g,'""')+'"',r.c.s,r.c.m??'',r.rev??'',r.ry==null?(r.pfY||''):r.ry.toFixed(1),r.rq??'',r.opm==null?'':r.opm.toFixed(1),r.dOpm==null?'':Math.round(r.dOpm),r.pat??'',r.py==null?(r.pfY||''):r.py.toFixed(1),r.pq==null?(r.pfQ||''):r.pq.toFixed(1),r.ann||'',r.rx??'',r.sr??''].join(','));
+    const blob=new Blob(['﻿'+head+'\n'+lines.join('\n')],{type:'text/csv'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='quarterly-results-'+QTRS[ST.qi]+'.csv'; a.click();
+  };
+}
+
+/* ---------- view: just declared (filings by day → that result → the company's quarters / price) ---------- */
+function renderFeed(){ if(ST.tab==='feed') render(); }              // the live top-up calls this when new filings arrive
+function fy(g,isPat){                               // fYoyTd's figure and tooltip for a list cell
+  if(!g||g.pct==null) return '<span class="m">—</span>';
+  const fl=isPat?patFlag(g):(g.flag||null);
+  const tip=g.rb?RB_TIP:fl==='LP'?'Turnaround: loss a year ago, profit now (growth vs |base|)':fl==='PL'?'Profit a year ago, loss now':fl==='LL'?'Loss both years (growth vs |base|)':'';
+  return '<span class="'+pctCls(g.pct)+'"'+(tip?' title="'+tip+'"':'')+'>'+fmtPct(g.pct,0)+'</span>'+(g.rb?'<sup class="rb">R</sup>':'');
+}
+function feedTable(it){                             // the old card's mini table: YoY · this quarter · previous · year-ago
+  const c=it.c, qi=it.qi;
+  const i1=qi+1<QTRS.length?qi+1:-1, i4=qi+4<QTRS.length?qi+4:-1;
+  const head='<tr class="fh"><td></td><td>YoY</td><td>'+qlabel(QTRS[qi],false)+'</td><td>'+
+    (i1>=0?qlabel(QTRS[i1],false):'')+'</td><td>'+(i4>=0?qlabel(QTRS[i4],false):'')+'</td></tr>';
+  const mrow=(label,metric,g,isPat)=>{
+    const v1=i1>=0?pick(c.q[i1],metric)[0]:null, v4=i4>=0?pick(c.q[i4],metric)[0]:null;
+    return '<tr><td>'+label+'</td>'+fYoyTd(g,isPat)+fValTd(pick(c.q[qi],metric)[0])+fValTd(v1)+fValTd(v4)+'</tr>';
+  };
+  let body='';
+  if(c.f) body=mrow('Total income','rev',it.ry)+mrow('Net profit','pat',it.gy,true);
+  else{
+    body=mrow('Sales','rev',it.ry)+mrow('Op. profit','op',it.oy)+mrow('Net profit','pat',it.gy,true);
+    const o0=opm(c.q[qi]);
+    if(o0!=null){
+      const o1=i1>=0?opm(c.q[i1]):null, o4=i4>=0?opm(c.q[i4]):null;
+      const pr=i4>=0?opmPair(c.q[qi],c.q[i4]):[o0,null];          // bps change on ONE basis
+      const d=pr[1]!=null?Math.round((pr[0]-pr[1])*100):null;
+      body+='<tr><td>OPM</td><td class="'+(d==null?'text-slate-400':(d>=0?'pos':'neg'))+' font-bold" title="Margin change vs year-ago quarter, basis points">'+
+        (d==null?'—':(d>=0?'⇡ ':'⇣ ')+Math.abs(d)+'bps')+'</td>'+
+        '<td>'+o0.toFixed(1)+'%</td><td>'+(o1==null?'—':o1.toFixed(1)+'%')+'</td><td>'+(o4==null?'—':o4.toFixed(1)+'%')+'</td></tr>';
+    }
+  }
+  return '<div style="overflow-x:auto"><table class="ft">'+head+body+'</table></div>';
+}
+function buildFeed(){
+  const cut=istDay(-(+feedDays));
+  let all=FEEDROWS.filter(r=>r[2].slice(0,10)>=cut && (coPass(r[0])||!CO[r[0]]&&ST.uni==='all'&&ST.sector==='all'&&ST.mcap==='all'))
+                  .filter(r=>!ST.search||normSearch(r[0]).indexOf(normSearch(ST.search))>=0||normSearch(r[1]).indexOf(normSearch(ST.search))>=0);
+  const items=new Map(); all.forEach(r=>items.set(r,feedItem(r)));
+  // One row per company, filing day and quarter: the same filing arrives as a BSE row AND an NSE row, or as an "Outcome" row
+  // plus a "Financial Results" row (Swaraj Engines, Adroit 12-Oct-2026). `all` is newest-first, so the newest row keeps the
+  // place; the older twin is a duplicate ROW — the owner still counts it as a filing, a visitor never sees it (visitor counts
+  // key off results). Gammon's nine quarters in one day are nine quarters → nine rows (runbook §228).
+  const seenCard=new Set(), dupRow=new Set();
+  all.forEach(r=>{ const it=items.get(r); if(!it) return; const k=r[0]+'|'+r[2].slice(0,10)+'|'+it.qi; if(seenCard.has(k)) dupRow.add(r); else seenCard.add(k); });
+  /* The QUARTER applies to this view too (user 12-Oct-2026: "I selected Sep'26 above, still June results are seen
+     below"): a result shows only when its numbers are the selected quarter's — a late Jun'26 filing on a Sep'26 results day sits
+     under the Jun'26 quarter. The owner's "numbers pending" rows follow their caption quarter; a row whose caption names no
+     quarter (qe 0) cannot be placed and stays. Results hidden this way are counted per quarter for the "other quarters" buttons,
+     so no filing is silently invisible (runbook §228a). */
+  const qeSel=QTRS[ST.qi], otherQ={};
+  all=all.filter(r=>{ const it=items.get(r);
+    if(it){ if(it.qi===ST.qi) return true; if(!dupRow.has(r)) otherQ[it.qi]=(otherQ[it.qi]||0)+1; return false; }
+    return !r[3]||r[3]===qeSel; });
+  if(!FEED_OWNER) all=all.filter(r=>items.get(r)&&!dupRow.has(r));
+  const dayC={}; all.forEach(r=>{ const d=r[2].slice(0,10); dayC[d]=(dayC[d]||0)+1; });
+  const days=Object.keys(dayC).sort().reverse();
+  if(feedDay!=='all'&&!dayC[feedDay]) feedDay='all';          // the day picked under another quarter has no rows here
+  const rows= feedDay==='all'? all : all.filter(r=>r[2].slice(0,10)===feedDay);
+  const cards=[], pend=[];
+  rows.forEach(r=>{ const it=items.get(r); if(!it) pend.push(r); else if(!dupRow.has(r)) cards.push(it); });
+  let list=feedTurn? cards.filter(it=>isTurn(it.gy)) : cards;
+  const countTxt=(FEED_OWNER
+    ? rows.length+' filings · '+list.length+(feedTurn?' turnarounds':' with numbers')
+    : list.length+(feedTurn?' turnarounds':' results'))+' · '+qlabel(QTRS[ST.qi],false);
+  /* Results filed in this window for OTHER quarters: a button per quarter the picker offers (click = switch the quarter),
+     a plain count for quarters older than the picker (Gammon's 2024 back-filings, 12-Oct-2026 — open the company for those). */
+  const oqs=Object.keys(otherQ).map(Number).sort((a,b)=>a-b), nChip=NCHIP();
+  $('vctl').innerHTML='<div class="os-sg" id="fdDays" role="group" aria-label="Window"></div><div class="os-sg" id="fdSort" role="group" aria-label="Order"></div>'+
+    '<button type="button" class="os-btn'+(feedTurn?' on':'')+'" id="fdTurn" title="Only loss→profit turnarounds (PAT)">Turnarounds</button>'+
+    (days.length>1?'<select id="fdDay" aria-label="Declaration day"><option value="all">All days</option>'+days.map(d=>'<option value="'+d+'"'+(feedDay===d?' selected':'')+'>'+isoNice(d)+' · '+dayC[d]+'</option>').join('')+'</select>':'')+
+    (!oqs.length?'':'<span class="os-hint">Other quarters declared in this window:</span>'+oqs.map(i=>i<nChip
+      ? '<button type="button" class="os-btn" data-oq="'+i+'" title="Show '+qlabel(QTRS[i],true)+'">'+qlabel(QTRS[i],false)+' · '+otherQ[i]+'</button>'
+      : '<span class="os-hint" title="Older than the quarter picker — open the company to see these">'+qlabel(QTRS[i],false)+' · '+otherQ[i]+'</span>').join(''));
+  seg('fdDays',[['1','Today'],['2','Since yesterday'],['7','Last 7 days'],['31','Last month']],feedDays,v=>{ feedDays=v; feedDay='all'; feedShown=FEED_PAGE; render(); });
+  seg('fdSort',[['latest','Latest'],['sales','Sales growth'],['profit','Profit growth'],['rx','Reaction']],feedSort,v=>{ feedSort=v; feedShown=FEED_PAGE; render(); });
+  $('fdTurn').onclick=()=>{ feedTurn=!feedTurn; feedShown=FEED_PAGE; render(); };
+  if($('fdDay')) $('fdDay').onchange=e=>{ feedDay=e.target.value; feedShown=FEED_PAGE; render(); };
+  $('vctl').querySelectorAll('[data-oq]').forEach(b=>b.onclick=()=>{ ST.qi=+b.getAttribute('data-oq'); ST.shown=PAGE; feedShown=FEED_PAGE; render(); });
+  $('keys').innerHTML='<b>↑↓</b> move · <b>←→</b> quarter · <b>/</b> search · <b>Enter</b> open stock · <b>F</b> focus';
+  const pv=g=>g&&g.pct!=null?g.pct:-1e9;
+  if(feedSort==='sales')       list=list.slice().sort((a,b)=>pv(b.ry)-pv(a.ry));
+  else if(feedSort==='profit') list=list.slice().sort((a,b)=>pv(b.gy)-pv(a.gy));
+  else if(feedSort==='rx')     list=list.slice().sort((a,b)=>(b.rx==null?-1e9:b.rx)-(a.rx==null?-1e9:a.rx));
+  const today=istDay(0), yest=istDay(-1);   // India dates (toISOString is UTC: 00:00-05:30 IST read as yesterday)
+  LIST=[]; const out=[]; let used=0;
+  const cardRow=it=>{ const i=LIST.length, fl=patFlag(it.gy); LIST.push({k:'f|'+it.r[0]+'|'+it.r[2]+'|'+it.qi,sym:it.r[0],it});
+    out.push([i,'<div class="os-row lr-feed" role="option" data-i="'+i+'" title="'+esc(it.c.n||it.r[1])+' · declared '+it.r[2].slice(11,16)+'">'+
+      '<span class="n">'+esc(it.r[0])+(isTurn(it.gy)?'<span class="os-tag" title="Loss a year ago, profit now">TURNAROUND</span>':'')+(fl==='PL'?'<span class="os-tag" title="Profit a year ago, loss now">INTO LOSS</span>':'')+
+        (it.c.bse?'<span class="os-tag" title="Listed on BSE only">BSE</span>':'')+'<i>'+esc(it.c.n||it.r[1])+'</i></span>'+
+      '<span class="v">'+fy(it.ry)+'</span><span class="v">'+fy(it.gy,true)+'</span><span class="v">'+pc(it.rx)+'</span></div>']); };
+  const pendRow=r=>{ const i=LIST.length; LIST.push({k:'p|'+feedKey(r),sym:CO[r[0]]?r[0]:null,pend:r});
+    out.push([i,'<div class="os-row lr-pend" role="option" data-i="'+i+'" title="'+esc(r[4]||'Financial results filed')+'"><span class="n">'+esc(r[0])+'<i>'+esc(r[1])+'</i></span><span class="m">'+(r[3]?qlabel(qe2qe(r[3]),false)+' · ':'')+r[2].slice(11,16)+'</span></div>']); };
+  if(feedSort==='latest'){
+    const groups={}, pgroups={};
+    list.forEach(it=>{ const d=it.r[2].slice(0,10); (groups[d]=groups[d]||[]).push(it); });
+    pend.forEach(r=>{ const d=r[2].slice(0,10); (pgroups[d]=pgroups[d]||[]).push(r); });
+    for(const d of [...new Set([...Object.keys(groups),...Object.keys(pgroups)])].sort().reverse()){
+      if(used>=feedShown) break;
+      const g=groups[d]||[], p=pgroups[d]||[];
+      const take=g.slice(0,feedShown-used); used+=take.length;
+      out.push([-1,'<div class="sec'+(d===today?' today':'')+'"><span>'+(d===today?'Today':d===yest?'Yesterday':isoNice(d))+'</span><i>'+(g.length+p.length)+(FEED_OWNER?' filings':' results')+'</i></div>']);
+      take.forEach(cardRow);
+      if(take.length<g.length) break;                      /* rest of this day + older days sit behind Load more */
+      if(p.length&&!feedTurn&&FEED_OWNER){ out.push([-1,'<div class="sec sub"><span>Numbers pending · '+p.length+'</span></div>']); p.forEach(pendRow); }
+    }
+  }else{
+    const take=list.slice(0,feedShown); used=take.length; take.forEach(cardRow);
+    if(pend.length&&!feedTurn&&FEED_OWNER) out.push([-1,'<div class="os-note">'+pend.length+' filings without parsed numbers are hidden under this order — switch to <b>Latest</b> to see them.</div>']);
+  }
+  syncSel();
+  $('lTitle').textContent='Just declared'; $('count').textContent=countTxt;
+  $('fCount').textContent=countTxt;
+  head([['Stock'],['Sales YoY'],['PAT YoY'],['React.']]);
+  $('lList').innerHTML=out.map(o=>o[0]>=0&&LIST[o[0]].k===CUR.k?o[1].replace('class="os-row','aria-selected="true" class="os-row on'):o[1]).join('')
+    || '<div class="os-empty">No '+qlabel(QTRS[ST.qi],false)+' results '+(feedTurn?'with a loss→profit turnaround ':'')+'declared in this window'+(ST.uni!=='all'||ST.sector!=='all'||ST.mcap!=='all'?' under these filters':'')+'.</div>';
+  foot(used<list.length,false);
+  if($('bMore')) $('bMore').onclick=()=>{ feedShown+=200; const st=$('lList').scrollTop; render(); $('lList').scrollTop=st; };
+}
+
+/* ---------- view: calendar (result dates → that date → the company's quarters / price) ---------- */
+function buildCalendar(){
+  $('vctl').innerHTML='<div class="os-sg" id="segCal" role="group" aria-label="Which dates"></div><span class="os-hint">✓ = board-meeting date filed with NSE / BSE · est. = our prediction from the company\'s past reporting dates</span>';
+  seg('segCal',[['conf','Confirmed only'],['both','Confirmed + predicted']],ST.cal,v=>{ ST.cal=v; render(); });
+  $('keys').innerHTML='<b>↑↓</b> move · <b>/</b> search · <b>Enter</b> open stock · <b>F</b> focus';
+  const confBy={};                                  // sym -> [date,purpose]
+  (CAL&&CAL.rows||[]).forEach(r=>{ if(!confBy[r[0]]||r[2]<confBy[r[0]][0]) confBy[r[0]]=[r[2],r[3],r[1]]; });
+  const today=istDay(0);
+  const horizon=istDay(56);
+  const items=[];                                   // {d, sym, co, conf, purpose}
+  for(const sym in confBy){
+    const [d,purpose,co]=confBy[sym];
+    if(d<today||d>horizon) continue;
+    if(CO[sym]? !coPass(sym) : (ST.uni!=='all'||ST.sector!=='all'||ST.mcap!=='all')) continue;
+    if(ST.search&&normSearch(sym).indexOf(normSearch(ST.search))<0&&normSearch(co).indexOf(normSearch(ST.search))<0) continue;
+    items.push({d,sym,co:co||(CO[sym]&&CO[sym].n)||sym,conf:true,purpose});
+  }
+  if(ST.cal==='both'){
+    for(const sym in CO){
+      const c=CO[sym];
+      if(!c.e||confBy[sym]) continue;
+      if(c.e<today||c.e>horizon) continue;
+      if(!coPass(sym)) continue;
+      if(ST.search&&normSearch(sym).indexOf(normSearch(ST.search))<0&&normSearch(c.n).indexOf(normSearch(ST.search))<0) continue;
+      items.push({d:c.e,sym,co:c.n,conf:false,purpose:'Predicted from past reporting dates'});
+    }
+  }
+  const groups={};
+  items.forEach(it=>{ (groups[it.d]=groups[it.d]||[]).push(it); });
+  const days=Object.keys(groups).sort();
+  LIST=[]; let h='';
+  days.forEach(d=>{
+    const arr=groups[d].sort((a,b)=>((CO[b.sym]&&CO[b.sym].m)||0)-((CO[a.sym]&&CO[a.sym].m)||0));
+    const isToday=d===today;
+    h+='<div class="sec'+(isToday?' today':'')+'"><span>'+isoNice(d)+(isToday?' · today':'')+'</span><i>'+arr.length+' compan'+(arr.length===1?'y':'ies')+'</i></div>';
+    arr.forEach(it=>{ const c=CO[it.sym], i=LIST.length; LIST.push({k:it.sym,sym:c?it.sym:null,cal:it});
+      h+='<div class="os-row lr-calendar" role="option" data-i="'+i+'" title="'+esc(it.purpose)+'"><span class="n">'+esc(it.sym)+
+        (c&&(c.x&1)?'<span class="os-tag">N50</span>':'')+(c&&(c.x&32)?'<span class="os-tag">F&amp;O</span>':'')+'<i>'+esc(it.co)+'</i></span>'+
+        '<span class="m">'+(c&&c.m?fmtMcap(c.m):'—')+'</span><span class="m" title="'+(it.conf?'Confirmed':'Predicted')+'">'+(it.conf?'✓':'est.')+'</span></div>'; });
   });
-  const cr=$('rsCustomRange');
-  if(cr) cr.classList.toggle('hidden',p!=='custom');
-  rsRenderChart(); rsRenderTable();
+  if(CUR.k!=null&&!LIST.find(x=>x.k===CUR.k)&&CUR.sym==null) CUR.k=null;
+  syncSel();
+  $('lTitle').textContent='Upcoming result dates'; $('count').textContent='next 8 weeks';
+  head([['Stock'],['MCap'],['']]);
+  $('lList').innerHTML=h||'<div class="os-empty">No upcoming result dates in the next 8 weeks under these filters.</div>';
+  markRows();
+  const nToday=(groups[today]||[]).length;
+  $('fCount').textContent=items.length+' scheduled'+(nToday?' · '+nToday+' today':'');
+  foot(false,false);
 }
-function rsSetMode(m){
-  RS_MODE=m;
-  const mb=$('rsModeMedian'), tb=$('rsModeTotal');
-  const paint=(btn,on,extra)=>{ btn.className='px-3 py-1.5'+extra+(on?' bg-blue-600 text-white':' bg-white text-slate-600 hover:bg-slate-50'); };
-  if(mb&&tb){ paint(mb,m==='median',''); paint(tb,m==='total',' border-l border-slate-300'); }
-  const ct=$('rsChartTitle');
-  if(ct) ct.textContent=(m==='median'?'Median':'Total')+' YoY growth by quarter';
-  rsRenderChart(); rsRenderTable();
+
+/* ---------- middle pane for the three company views ---------- */
+function coBody(sym,c){
+  const qi=ST.qi, r=recsFor(qi).find(x=>x.sym===sym), ql=qlabel(QTRS[qi],false);
+  const tags=[c.bse?'BSE only':'', c.f?'Bank / NBFC':'', (c.x&1)?'Nifty 50':(c.x&4)?'Nifty 500':'', (c.x&32)?'F&amp;O':'', c.orphan?'not in the price universe':''].filter(Boolean);
+  let h='<div class="det">'+esc(c.n)+(c.s?' · '+esc(c.s):'')+(c.i&&c.i!==c.s?' · '+esc(c.i):'')+(c.cd?' · BSE '+esc(c.cd):'')+(tags.length?'<br>'+tags.join(' · '):'')+'</div>';
+  const t=c.m?ttmPat(c,qi):null;
+  if(c.m) h+=kv('Market cap','₹'+fmtMcap(c.m));
+  if(c.p!=null) h+=kv('Price','₹'+fmtPx(c.p),'','Last close from the price store');
+  if(t!=null) h+=kv('PE', t>0?(c.m/t).toFixed(1):'—','','Market cap ÷ owners\' profit of the four quarters ending '+ql+(t>0?'':' (trailing loss)'));
+  h+='<div class="dh">'+qlabel(QTRS[qi],true)+'</div>';
+  if(!r) h+='<div class="os-note">No '+ql+' numbers on file for '+esc(sym)+'.'+(c.e&&!c.q[0]?' Next result expected '+esc(c.e)+'.':'')+'</div>';
+  else{
+    const rb=rowBasis(c.q,qi);
+    h+=kv('Basis', rb==='c'?'Consolidated':'Standalone','','Every figure on this row comes from one reporting basis')+
+      (r.prov?kv('Status',(QTRS[qi]%10000===331?'H2':'H1')+' · unconfirmed','',QTRS[qi]%10000===331?'SME half-year (Oct–Mar) from the March filing — confirmed or corrected when the year is proven':'SME half-year (Apr–Sep) from the September filing — confirmed or corrected when the March full-year filing arrives'):'')+
+      kv(c.f?'Total income':'Revenue', fmtCr(r.rev)+(r.rev==null?'':' cr'),'','₹ crore (banks/NBFCs: total income)')+
+      kv((c.f?'Income':'Rev')+' YoY', gcell(r.ry,null,0,r.ryR))+kv((c.f?'Income':'Rev')+' QoQ', gcell(r.rq,null,0,r.rqR))+
+      (c.f?'':kv('Op. profit', fmtCr(r.op)+(r.op==null?'':' cr'))+
+        kv('OPM', r.opm!=null? r.opm.toFixed(1)+'% <span class="'+pctCls(r.dOpm)+'" style="font-weight:500">'+(r.dOpm==null?'':(r.dOpm>0?'+':'')+Math.round(r.dOpm)+'bps')+'</span>':'—','','Operating margin; the change is vs year-ago, basis points'))+
+      kv('PAT', fmtCr(r.pat)+(r.pat==null?'':' cr'), r.pat!=null&&r.pat<0?'neg':'','Net profit (owners-attributable), ₹ crore')+
+      kv('PAT YoY', gcell(r.py,r.pfY,0,r.pyR))+kv('PAT QoQ', gcell(r.pq,r.pfQ,0,r.pqR))+
+      kv('Verdict', r.verdict?vdot(r)+(r.verdict==='S'?'Strong':r.verdict==='W'?'Weak':'Mixed'):'—','','Rule-based verdict from PAT growth, revenue growth and margin change');
+    const fl=[r.rec?'Record PAT':'', r.streak?'4-quarter growth streak':'', r.turnY?'Loss → profit YoY':'', r.pfY==='PL'?'Profit → loss YoY':''].filter(Boolean);
+    if(fl.length) h+=kv('Flags', fl.join(' · '));
+    h+=kv('Announced', fmtDate8(r.ann),'','Result announcement date (post-close filings dated next trading day)')+
+      kv('Reaction', pc(r.rx),'','% price move on result day')+
+      kv('Since result', pc(r.sr),'','Drift from result-day close to '+QR.asof);
+  }
+  const rxs=c.q.map(q=>q?q[7]:null).filter(v=>v!=null);
+  const avgAbs=rxs.length? rxs.reduce((a,b)=>a+Math.abs(b),0)/rxs.length : null;
+  const upRate=rxs.length? Math.round(rxs.filter(v=>v>0).length/rxs.length*100) : null;
+  h+='<div class="dh">On result days</div>'+kv('Typical move', avgAbs!=null?('±'+avgAbs.toFixed(1)+'%'):'—')+
+    kv('Closed up', upRate==null?'—':upRate+'% of '+rxs.length+' results')+(c.e?kv('Next result', '~'+esc(c.e),'','Expected from the company\'s past reporting dates'):'');
+  const feedRow=FEEDROWS.find(x=>x[0]===sym&&x[5]);
+  h+='<div class="act">'+
+    (feedRow?'<a class="os-btn" target="_blank" rel="noopener" href="'+esc(feedRow[5].indexOf('http')===0?feedRow[5]:PDF_PREFIX+feedRow[5])+'">Latest filing PDF ↗</a>':'')+
+    (c.bse
+      ? '<a class="os-btn" target="_blank" rel="noopener" href="https://www.bseindia.com/stock-share-price/x/x/'+encodeURIComponent(c.cd||'')+'/">BSE page ↗</a>'
+      : '<a class="os-btn" href="./stock.html?sym='+encodeURIComponent(sym)+'">Price chart &amp; profile →</a>'+
+        '<a class="os-btn" target="_blank" rel="noopener" href="https://www.nseindia.com/get-quotes/equity?symbol='+encodeURIComponent(sym)+'">NSE page ↗</a>')+
+    '<a class="os-btn" href="./announcements.html'+(c.bse?'':'?s='+encodeURIComponent(sym))+'">All announcements →</a></div>';
+  return h;
 }
-function rsInit(data){
-  RS_DATA=data;
-  const uvs=data.universes||[];
+function detailCo(){
+  const e=CUR.e, sym=CUR.sym, c=sym&&CO[sym];
+  const label=sym||(e&&(e.pend?e.pend[0]:e.cal?e.cal.sym:''))||'';
+  if(!label){ $('dTitle').textContent='Details'; $('dTag').textContent=''; $('dList').innerHTML='<div class="os-empty">Nothing selected.</div>'; return; }
+  $('dTitle').textContent=label; $('dTag').textContent=qlabel(QTRS[ST.qi],false);
+  let h='';
+  if(e&&e.cal){ const it=e.cal;
+    h+=kv('Result date', isoNice(it.d)+(it.d===istDay(0)?' · today':''))+kv('Status', it.conf?'✓ Confirmed':'est. — predicted','',it.conf?'Board-meeting date filed with the exchange':'Predicted from the company\'s past reporting dates')+
+      '<div class="det">'+esc(it.purpose||'')+'</div>'; }
+  if(e&&e.pend){ const r=e.pend, pdfOnly=PDF_ONLY.has(r[0]);
+    h+=kv('Filed', isoNice(r[2].slice(0,10))+' · '+r[2].slice(11,16))+(r[3]?kv('Quarter named', qlabel(qe2qe(r[3]),true)):'')+
+      kv('Status', pdfOnly?'Filing available — numbers not machine-readable (see PDF)':(r[3]===0?'Result filed — reporting period being determined':'Result filed — numbers being parsed'))+
+      '<div class="det">'+esc(r[4]||'Financial results filed')+'</div>'+
+      (r[5]?'<div class="act"><a class="os-btn" target="_blank" rel="noopener" href="'+esc(feedPdf(String(r[5])))+'">Filing PDF ↗</a></div>':''); }
+  if(e&&e.it){ const it=e.it, r=it.r;
+    h+=kv('Declared', isoNice(r[2].slice(0,10))+' · '+r[2].slice(11,16))+
+      (it.rx!=null?kv('On result day', pc(it.rx),'','Price move on result day'):'')+feedTable(it)+
+      (r[5]?'<div class="act"><a class="os-btn" target="_blank" rel="noopener" href="'+esc(feedPdf(r[5]))+'">This filing (PDF) ↗</a></div>':''); }
+  if(c) h+=coBody(sym,c);
+  else if(!e||!e.pend) h+='<div class="os-note">'+esc(label)+' has no parsed results on file here.</div>';
+  $('dList').innerHTML=h; $('dList').scrollTop=0;
+}
+
+/* ---------- right pane for the three company views: the company's quarters, or its price with result days marked ---------- */
+function qTable(c){
+  const cols=Math.min(9,QTRS.length), cc=i=>i===ST.qi?' class="cur"':'';
+  let head='<tr class="h"><td></td>'; for(let i=cols-1;i>=0;i--) head+='<td'+cc(i)+'>'+qlabel(QTRS[i],false)+'</td>'; head+='</tr>';
+  const rowHtml=(label,metric)=>{
+    let tds='';
+    for(let i=cols-1;i>=0;i--){
+      if(metric==='opm'){ const v=c.f?null:opm(c.q[i]); tds+='<td'+cc(i)+'>'+(v==null?'—':v.toFixed(1)+'%')+'</td>'; continue; }
+      const [v]=pick(c.q[i],metric);
+      const g=growth(c.q,i,metric,4);
+      tds+='<td'+cc(i)+'><span class="'+(v!=null&&v<0?'neg':'')+'">'+fmtCr(v)+'</span>'+(g?'<small class="'+pctCls(g.pct)+'">'+fmtPct(g.pct,0)+'</small>':'')+'</td>';   // the % even off a loss base (backtest formula), never LP/LL
+    }
+    return '<tr><td>'+label+'</td>'+tds+'</tr>';
+  };
+  let rowsHtml='';
+  if(!c.f) rowsHtml+=rowHtml('Revenue','rev')+rowHtml('Op. profit','op')+rowHtml('OPM','opm');
+  else rowsHtml+=rowHtml('Total income','rev');
+  rowsHtml+=rowHtml('PAT','pat');
+  let rxRow='<tr><td>Reaction</td>';
+  for(let i=cols-1;i>=0;i--){ const v=c.q[i]?c.q[i][7]:null; rxRow+='<td'+cc(i)+'>'+pc(v)+'</td>'; }
+  rxRow+='</tr>';
+  let annRow='<tr><td>Announced</td>';
+  for(let i=cols-1;i>=0;i--){ const v=c.q[i]?c.q[i][6]:null; annRow+='<td'+cc(i)+'>'+fmtDate8(v)+'</td>'; }
+  annRow+='</tr>';
+  return '<table class="qt">'+head+rowsHtml+rxRow+annRow+'</table>';
+}
+function drawQ(){
+  const el=$('qc'), sym=CUR.sym, c=sym&&CO[sym];
+  if(!c||CHART!=='q'||!isCo()){ el.innerHTML=''; return; }
+  const W=el.clientWidth, H=el.clientHeight; if(W<80||H<90) return;
+  const n=QTRS.length, nChip=NCHIP(), rev=[], pat=[];
+  for(let i=n-1;i>=0;i--){ const r=c.q[i]; rev.push(r?pick(r,'rev')[0]:null); pat.push(r?pick(r,'pat')[0]:null); }   // oldest → newest
+  const L=10, R=10, T=4, B=22, gap=12, ph=(H-T-B-gap)/2, bw=(W-L-R)/n;
+  let s='';
+  const panel=(vals,y0,label)=>{
+    const nn=vals.filter(v=>v!=null);
+    s+='<text class="lb" x="'+L+'" y="'+(y0+12)+'">'+label+'</text>';
+    if(!nn.length){ s+='<text x="'+(W/2)+'" y="'+(y0+ph/2)+'" text-anchor="middle">no figures on file</text>'; return; }
+    const mx=Math.max(...nn.map(Math.abs))||1, top=y0+30, bot=y0+ph-(nn.some(v=>v<0)?12:0), zero=nn.some(v=>v<0)? top+(bot-top)*0.62 : bot;
+    s+='<line class="z" x1="'+L+'" x2="'+(W-R)+'" y1="'+zero.toFixed(1)+'" y2="'+zero.toFixed(1)+'"/>';
+    vals.forEach((v,j)=>{
+      if(v==null) return;
+      const qi=n-1-j, bh=Math.max(1.5,Math.abs(v)/mx*(v>=0?zero-top:bot-zero)), y=v>=0? zero-bh : zero, x=L+j*bw+bw*0.16, w=bw*0.68, cx=L+j*bw+bw/2;
+      s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+bh.toFixed(1)+'" fill="'+(v>=0?'var(--pos)':'var(--neg)')+'" opacity="'+(qi===ST.qi?1:.5)+'"/>';
+      if(bw>=46||qi===ST.qi) s+='<text class="v'+(qi===ST.qi?' on':'')+'" x="'+cx.toFixed(1)+'" y="'+(v>=0?y-4:y+bh+11).toFixed(1)+'" text-anchor="middle">'+fmtCr(v)+'</text>';
+    });
+  };
+  panel(rev,T,(c.f?'Total income':'Revenue')+' · ₹ cr'); panel(pat,T+ph+gap,'PAT (owners) · ₹ cr');
+  for(let j=0;j<n;j++){ const qi=n-1-j, cx=L+j*bw+bw/2;
+    if(bw>=44||qi===ST.qi||(qi%2===0&&Math.abs(qi-ST.qi)>1)) s+='<text'+(qi===ST.qi?' class="on"':'')+' x="'+cx.toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle">'+qlabel(QTRS[qi],false)+'</text>';
+    s+='<rect x="'+(L+j*bw).toFixed(1)+'" y="0" width="'+bw.toFixed(1)+'" height="'+H+'" fill="transparent"'+(qi<nChip?' data-qi="'+qi+'" style="cursor:pointer"':'')+'><title>'+qlabel(QTRS[qi],true)+
+      ' — '+(c.f?'total income':'revenue')+' '+(rev[j]==null?'—':'₹'+fmtCr(rev[j])+' cr')+' · PAT '+(pat[j]==null?'—':'₹'+fmtCr(pat[j])+' cr')+(qi<nChip&&qi!==ST.qi?' · click to switch to this quarter':'')+'</title></rect>'; }
+  el.innerHTML='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'+s+'</svg>';
+  el.querySelectorAll('[data-qi]').forEach(x=>x.onclick=()=>setQ(+x.getAttribute('data-qi')));
+}
+function chartBar(){
+  seg('cTabs',[['q','Quarters','Revenue and PAT, every quarter on file'],['px','Price','Daily prices with result days marked']],CHART,v=>{ CHART=v; renderRight(false); saveUrl(); });
+  const iv=CH?CH.iv:'D', rg=CH?CH.range:'3Y';
+  seg('cIv',[['D','D','Daily bars'],['W','W','Weekly bars'],['M','M','Monthly bars']],iv,v=>{ if(!CH) return; CH.setIv(v); chartBar(); mark(); });
+  seg('cRg',['6M','1Y','3Y','Max'].map(k=>[k,k]),rg,v=>{ if(!CH) return; CH.setRange(v); chartBar(); });
+}
+function mark(){
+  const sym=CUR.sym, c=sym&&CO[sym], LC=window.LightweightCharts; $('cMark').textContent='';
+  if(!c||CHART!=='px'||!isCo()||!CH||!CH.ch||!CH.data||!LC||!LC.createSeriesMarkers) return;
+  if(MARK&&MARK.ch===CH.ch){ try{ MARK.h.setMarkers([]); }catch(e){} }
+  const ser=CH.data.ohlc?CH.ch.candle:CH.ch.line, seen={}, ms=[];
+  for(let i=c.q.length-1;i>=0;i--){ const r=c.q[i]; if(!r||!r[6]) continue;
+    const s=String(r[6]), iso=s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8), b=CH.bars.find(x=>K.tsISO(x.ts)>=iso); if(!b) continue;
+    const t=K.tsISO(b.ts); if(seen[t]) continue; seen[t]=1;
+    ms.push({time:t,position:'aboveBar',shape:i===ST.qi?'arrowDown':'circle',color:CH.ch.accent,text:i===ST.qi?qlabel(QTRS[i],false):''}); }
+  ms.sort((a,b)=>a.time<b.time?-1:a.time>b.time?1:0);
+  try{ MARK={ch:CH.ch,h:LC.createSeriesMarkers(ser,ms)}; }catch(e){}
+  $('cMark').textContent=ms.length?'● result days on file · ▼ '+qlabel(QTRS[ST.qi],false):'no result day falls inside the price history';
+}
+function renderCoChart(lazy){
+  const e=CUR.e, sym=CUR.sym, c=sym&&CO[sym], tok=++TOK; clearTimeout(showTimer);
+  const label=sym||(e&&(e.pend?e.pend[0]:e.cal?e.cal.sym:''))||'';
+  $('cSym').textContent=label; $('cName').textContent=c?c.n:(e&&(e.pend?e.pend[1]:e.cal?e.cal.co:''))||'';
+  $('cStar').innerHTML=label?'<span class="star'+(WATCH.has(label)?' on':'')+'" data-star="'+esc(label)+'" title="Watchlist">★</span>':'';
+  const a=$('cOpen'); if(c&&!c.bse){ a.href='./stock.html?sym='+encodeURIComponent(sym); a.classList.remove('hidden'); } else a.classList.add('hidden');
+  chartBar();
+  if(!c){ $('cTbl').innerHTML=''; $('qc').innerHTML=''; if(CH) CH.clear(''); $('cMark').textContent=''; $('cMsg').textContent=label?'No parsed numbers on file for '+label+' yet.':'Nothing selected.'; return; }
+  $('cTbl').innerHTML=qTable(c);
+  { const tb=$('cTbl'), cu=tb.querySelector('td.cur'); if(cu) tb.scrollLeft=Math.max(0,cu.offsetLeft+cu.offsetWidth+8-tb.clientWidth); }   // keep the selected quarter's column in view
+  if(CHART==='q'){ $('cMsg').textContent=''; $('cMark').textContent=''; drawQ(); return; }
+  $('qc').innerHTML='';
+  showTimer=setTimeout(()=>{
+    $('cMsg').textContent='Loading chart…';
+    K.loadStockBars(sym).then(d=>{ if(tok!==TOK) return;
+      if(!CH) CH=new K.Chart({chart:$('cChart'), legend:$('cLegend'), msg:$('cMsg'), iv:'D', range:'3Y'});
+      CH.show(d,{name:sym,tag:c.bse?'BSE':'NSE'}); chartBar(); mark(); },
+      ()=>{ if(tok!==TOK) return; if(CH) CH.clear(''); $('cMark').textContent=''; $('cMsg').textContent='No daily price history on file for '+sym+'.'; });
+  }, lazy?140:0);
+}
+
+/* ---------- view: season trends (quarters → that quarter → the multi-year chart) ---------- */
+function seasonRender(){ if(ST.tab==='season') render(); }         // ensureRS calls this when the data arrives
+function rsRenderChart(){ if(ST.tab==='season'&&RS_UI) render(); }  // rsSelectUniverse calls these two
+function rsRenderTable(){}
+const RSM=[{key:'rev',name:'Revenue',color:'var(--rs1)'},{key:'op',name:'Operating Profit',color:'var(--rs2)'},{key:'pat',name:'PAT',color:'var(--rs3)'}];
+let RS_WANT=null;
+function rsInit(){
+  const uvs=RS_DATA.universes||[];
   if(!uvs.length) throw new Error('no data');
   const sel=$('rsUniverseSelect');
   sel.innerHTML=uvs.map(u=>'<option value="'+esc(u.key)+'">'+esc(u.label)+'</option>').join('');
   // Default universe = Nifty 500 (set here, not in the JSON — the JSON is regenerated daily).
-  sel.value=uvs.some(u=>u.key==='Nifty 500')?'Nifty 500':(data.defaultUniverse||uvs[0].key);
-  sel.onchange=()=>rsSelectUniverse(sel.value);
-  $('rsModeMedian').onclick=()=>rsSetMode('median');
-  $('rsModeTotal').onclick=()=>rsSetMode('total');
-  [['rsP_1y','1y'],['rsP_3y','3y'],['rsP_5y','5y'],['rsP_all','all'],['rsP_custom','custom']]
-    .forEach(p=>{ $(p[0]).onclick=()=>rsSetPeriod(p[1]); });
-  $('rsCFrom').onchange=function(){ RS_CFROM=+this.value; rsRenderChart(); rsRenderTable(); };
-  $('rsCTo').onchange=function(){ RS_CTO=+this.value; rsRenderChart(); rsRenderTable(); };
-  // Unhide BEFORE the first render so the chart can measure its container width.
-  $('rsStatus').classList.add('hidden');
-  $('rsWrap').classList.remove('hidden');
-  rsSelectUniverse(sel.value);
-  rsSetMode('median');    // initial button styling + render (Median = default, user 2026-10-31; Total is one click away)
-  rsSetPeriod('1y');     // initial period-button styling (default = last 1 year / 4 quarters)
-  window.addEventListener('resize',()=>{ clearTimeout(rsRz);
-    rsRz=setTimeout(()=>{ if(ST.tab==='season'&&RS_STATE===2) rsRenderChart(); },150); });
+  sel.value=(RS_WANT&&uvs.some(u=>u.key===RS_WANT))?RS_WANT:uvs.some(u=>u.key==='Nifty 500')?'Nifty 500':(RS_DATA.defaultUniverse||uvs[0].key);
+  sel.onchange=()=>{ RSQ=null; rsSelectUniverse(sel.value); };
+  $('rsCFrom').onchange=function(){ RS_CFROM=+this.value; render(); };
+  $('rsCTo').onchange=function(){ RS_CTO=+this.value; render(); };
+  RS_CUR=uvs.find(u=>u.key===sel.value)||uvs[0]; rsPopulateCustom();
+  RS_UI=true;
 }
-function seasonRender(){                          // RS_DATA is ready; set up UI once, then render
-  if(!RS_UI){ try{ rsInit(RS_DATA); RS_UI=true; }catch(e){ if($('rsStatus')) $('rsStatus').textContent='Could not set up ('+e.message+')'; return; } }
-  else { rsRenderChart(); rsRenderTable(); }
+function buildSeason(){
+  $('vctl').innerHTML='<span class="os-hint">Year-on-year growth of each results season — pick a quarter for its sample sizes.</span>';
+  $('keys').innerHTML='<b>↑↓</b> quarter · <b>Enter</b> open every company\'s numbers · <b>F</b> focus';
+  seg('rsMode',[['median','Median','Median company\'s YoY growth (consolidated)'],['total','Total','Total / aggregate YoY growth — matches Trendlyne']],RS_MODE,v=>{ RS_MODE=v; render(); });
+  seg('rsPer',[['1y','1 Year'],['3y','3 Years'],['5y','5 Years'],['all','All time'],['custom','Custom']],RS_PERIOD,v=>{ RS_PERIOD=v; render(); });
+  $('rsCustomRange').style.display=RS_PERIOD==='custom'?'inline-flex':'none';
+  head([['Quarter'],['Results'],['Rev'],['Op.'],['PAT']]);
+  $('lTitle').textContent='Quarters'; foot(false,false); LIST=[];
+  if(RS_STATE!==2){ $('count').textContent=''; $('lList').innerHTML='<div class="os-empty">Loading season-trend data…</div>'; ensureRS(); return; }
+  if(!RS_UI){ try{ rsInit(); }catch(e){ $('lList').innerHTML='<div class="os-empty">Could not set up ('+esc(e.message)+')</div>'; return; } }
+  $('rsUniverse').textContent=RS_CUR.note||'';
+  const cell=m=>rsVal(m)===null?'<span class="m">—</span>':pc(rsVal(m));
+  LIST=rsQuarters().slice().reverse().map(q=>({k:q.qe,q}));
+  if(!LIST.find(e=>e.k===RSQ)) RSQ=LIST.length?LIST[0].k:null;
+  $('count').textContent=LIST.length+' quarters · '+(RS_MODE==='median'?'median':'total')+' YoY %';
+  $('lList').innerHTML=LIST.map((e,i)=>{ const q=e.q, on=e.k===RSQ;
+    return '<div class="os-row lr-season'+(on?' on':'')+'" role="option" aria-selected="'+on+'" data-i="'+i+'"><span class="n">'+esc(q.label)+(q.partial?'<span class="os-tag" title="In progress — preliminary, few reporters so far">IN PROGRESS</span>':'')+'</span>'+
+      '<span class="m">'+q.reported.toLocaleString('en-IN')+'</span><span class="v">'+cell(q.rev)+'</span><span class="v">'+cell(q.op)+'</span><span class="v">'+cell(q.pat)+'</span></div>'; }).join('')
+    ||'<div class="os-empty">No comparable data for this universe.</div>';
 }
-function renderSeason(){
-  if(RS_STATE===2){ seasonRender(); return; }
-  if($('rsStatus')) $('rsStatus').textContent='Loading season-trend data…';
-  ensureRS(()=>{ if(ST.tab==='season') seasonRender(); });
+function detailSeason(){
+  const e=LIST.find(x=>x.k===RSQ);
+  if(!e){ $('dTitle').textContent='Details'; $('dTag').textContent=''; $('dList').innerHTML='<div class="os-empty">'+(RS_STATE===2?'Nothing selected.':'Loading…')+'</div>'; return; }
+  const q=e.q, cf=x=>x==null?'—':x.toLocaleString('en-IN');
+  $('dTitle').textContent=q.label; $('dTag').textContent=RS_CUR.label||'';
+  const row=(nm,m,k,ck)=>kv(nm, (m&&m[k]!=null?fmtPct(m[k]):'—')+'<small>'+(m&&m[ck]!=null?cf(m[ck])+' companies':'no comparable companies')+'</small>', pctCls(m&&m[k]));
+  const clk=rsClickable(q.qe), snap=(RS_CUR.key==='liquid'&&RS_DATA.universeAsOf)?'universe as of '+RS_DATA.universeAsOf+' · ':'';
+  $('dList').innerHTML=kv('Results reported', cf(q.reported)+(q.partial?'<small>in progress — preliminary, few reporters so far</small>':''))+
+    '<div class="dh" title="The typical company\'s YoY growth; half of members grew faster, half slower">Median company · YoY</div>'+row('Revenue',q.rev,'median','n')+row('Operating profit',q.op,'median','n')+row('PAT',q.pat,'median','n')+
+    '<div class="dh" title="Sum of all members this year ÷ sum last year">Total (aggregate) · YoY</div>'+row('Revenue',q.rev,'total','tn')+row('Operating profit',q.op,'total','tn')+row('PAT',q.pat,'total','tn')+
+    (clk?'<div class="act"><button type="button" class="os-btn" id="rsOpen" title="Open every company\'s '+esc(q.label)+' numbers in All Results">Open every company\'s numbers →</button></div>'
+        :'<div class="os-note">'+(QTRS.indexOf(q.qe)>=0&&QTRS.indexOf(q.qe)<NCHIP()?'This universe has no member list to open.':'Company-by-company numbers are kept for the latest '+NCHIP()+' quarters only.')+'</div>')+
+    '<div class="os-note">'+snap+'<span id="rsRefreshed">'+esc(rsAgeText())+'</span></div>';
+  if(clk) $('rsOpen').onclick=()=>rsOpenResults(q.qe);
+}
+function drawRs(){
+  const root=$('rsChart');
+  $('cSym').textContent=RS_CUR.label||'Season trends'; $('cName').textContent=(RS_MODE==='median'?'Median':'Total')+' YoY growth by quarter';
+  $('rsLegend').innerHTML=RSM.map(mm=>'<span><i style="background:'+mm.color+'"></i>'+mm.name+'</span>').join('');
+  if(RS_STATE!==2){ root.innerHTML=''; $('cMsg').textContent='Loading season-trend data…'; return; }
+  const Q=rsQuarters().filter(q=>rsVal(q.rev)!==null||rsVal(q.op)!==null||rsVal(q.pat)!==null);
+  if(!Q.length){ root.innerHTML=''; $('cMsg').textContent='No comparable data for this universe.'; return; }
+  $('cMsg').textContent='';
+  let dMax=0, dMin=0;
+  Q.forEach(q=>RSM.forEach(mm=>{ const v=rsVal(q[mm.key]);
+    if(v!==null){ if(v>dMax) dMax=v; if(v<dMin) dMin=v; } }));
+  dMax=Math.ceil((dMax+1)/5)*5;
+  dMin=dMin<0?Math.floor((dMin-1)/5)*5:0;
+  const range=(dMax-dMin)||1;
+  const n=Q.length, M={l:40,r:14,t:30,b:44};
+  // The chart fills the pane: few quarters → each group widens; many quarters → natural width + horizontal scroll.
+  const avail=root.clientWidth||0, Hc=root.clientHeight||0; if(avail<120||Hc<120) return;
+  const innerAvail=avail-M.l-M.r, minGroupW=66;
+  const groupW=n*minGroupW<=innerAvail?innerAvail/n:minGroupW;
+  const bw=Math.max(15,Math.min(30,Math.round(groupW*0.2))), gap=Math.max(3,Math.round(bw*0.2));
+  const W=M.l+n*groupW+M.r, H=Hc-(W>avail?12:2);
+  const plotTop=M.t, plotBot=H-M.b;
+  const y=v=>plotTop+(dMax-v)/range*(plotBot-plotTop);
+  const zeroY=y(0);
+  const fmt=v=>(v>=0?'+':'')+v.toFixed(1)+'%';
+  const cf=x=>x.toLocaleString('en-IN');
+  const step=range>80?20:range>40?10:5;
+  let g='';
+  Q.forEach((q,i)=>{ if(q.qe===RSQ) g+='<rect x="'+(M.l+i*groupW)+'" y="'+(plotTop-8)+'" width="'+groupW+'" height="'+(H-plotTop+8)+'" fill="var(--accent-soft)"/>'; });
+  for(let t=dMin;t<=dMax+0.001;t+=step){
+    const yy=y(t), zero=t===0;
+    g+='<line'+(zero?' class="z"':'')+' x1="'+M.l+'" x2="'+(W-M.r)+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'" pointer-events="none"/>'+
+       '<text x="'+(M.l-6)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end" font-size="10" pointer-events="none">'+t+'%</text>';
+  }
+  Q.forEach((q,i)=>{
+    const gx=M.l+i*groupW, cx=(gx+groupW/2).toFixed(1), on=q.qe===RSQ;
+    let gt=esc(q.label)+' — '+cf(q.reported)+' companies reported'+(q.partial?' (in progress — preliminary, few reporters so far)':'');
+    RSM.forEach(mm=>{ if(rsVal(q[mm.key])!==null) gt+=' · '+mm.name+' '+fmt(rsVal(q[mm.key])); });
+    const totW=RSM.length*bw+(RSM.length-1)*gap, x0=gx+(groupW-totW)/2;
+    RSM.forEach((mm,j)=>{
+      const v=rsVal(q[mm.key]); if(v===null) return;
+      const bx=x0+j*(bw+gap), yv=y(v);
+      const top=Math.min(yv,zeroY), hh=Math.max(0.5,Math.abs(zeroY-yv));
+      g+='<rect x="'+bx.toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw+'" height="'+hh.toFixed(1)+'" fill="'+mm.color+'"'+(q.partial?' fill-opacity="0.4"':'')+'/>';
+      const pos=v>=0, lx=(bx+bw/2).toFixed(1), ly=(pos?yv-3:yv+3).toFixed(1);
+      g+='<text x="'+lx+'" y="'+ly+'" transform="rotate(-90 '+lx+' '+ly+')" text-anchor="'+(pos?'start':'end')+'" font-size="9.5" font-weight="600" style="fill:'+mm.color+'" pointer-events="none">'+fmt(v)+'</text>';
+    });
+    g+='<text'+(on?' class="on"':'')+' x="'+cx+'" y="'+(plotBot+17)+'" text-anchor="middle" font-size="11" font-weight="600" pointer-events="none">'+esc(q.label)+'</text>'+
+       '<text x="'+cx+'" y="'+(plotBot+31)+'" text-anchor="middle" font-size="9.5" pointer-events="none">'+(q.partial?cf(q.reported)+' • in progress':cf(q.reported)+' Results')+'</text>'+
+       '<rect x="'+gx+'" y="'+(plotTop-8)+'" width="'+groupW+'" height="'+(H-plotTop+8)+'" fill="transparent" data-qe="'+q.qe+'" style="cursor:pointer"><title>'+gt+'</title></rect>';
+  });
+  root.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" style="max-width:none">'+g+'</svg>';
+  root.querySelectorAll('[data-qe]').forEach(el=>{ el.onclick=()=>{ const e=LIST.find(x=>x.k===+el.getAttribute('data-qe')); if(e) choose(e,true); }; });
+  if(W>avail){ const i=Q.findIndex(q=>q.qe===RSQ); root.scrollLeft=i<0?W:Math.max(0,M.l+(i+.5)*groupW-avail/2); }
 }
 
 /* ---------- shell ---------- */
-function setTab(t){ ST.tab=t; render(); }
-function render(){
-  document.querySelectorAll('#tabs .tabbtn').forEach(b=>b.classList.toggle('on',b.getAttribute('data-tab')===ST.tab));
-  ['overview','results','feed','calendar','season'].forEach(t=>{ $('tab-'+t).style.display = ST.tab===t?'':'none'; });
-  // The quarter chips / filter card drive the four company-level tabs; the Season Trends tab
-  // has its own universe/mode/period controls, so the shared card is hidden there.
-  $('controlsCard').style.display = ST.tab==='season' ? 'none' : '';
-  renderQChips();
-  if(ST.tab==='overview') renderOverview();
-  else if(ST.tab==='results') renderResults();
-  else if(ST.tab==='feed') renderFeed();
-  else if(ST.tab==='season') renderSeason();
-  else renderCalendar();
+const TABS=[['overview','Overview'],['results','All Results'],['feed','Just Declared'],['calendar','Calendar'],['season','Season Trends']];
+const HOW={
+  overview:'Sector rows and the figures beside them are medians across the companies that have reported the selected quarter, under the filters above. Growers = growth &gt; 0 (incl. loss→profit); decliners = growth &lt; 0 (incl. profit→loss). Expected = companies that reported the comparison quarter. For a plain broad-index view (YoY, no sector or market-cap filter) the median revenue and PAT growth are read from the same file Season Trends shows, so the two always match. PAT is owners-attributable, consolidated preferred.',
+  results:'₹ crore · YoY/QoQ computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value (so a turnaround reads positive, e.g. BHEL −455 → +377 = +182.7%) · growth is the same figure the backtest uses (a still-loss-making quarter counts as profit-<i>down</i> in the tallies) · banks/NBFCs show total income &amp; PAT only · the dot is a rule-based verdict (green strong, amber mixed, red weak) from PAT growth, revenue growth and margin change · in the quarter table the small figure is YoY growth, Reaction = result-day price move, Announced = result filing date (post-close filings dated next trading day).',
+  feed:'₹ crore · YoY vs the same quarter last year, computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value · the same growth figure the backtest uses · banks/NBFCs show total income &amp; PAT only · a result appears once the filing\'s numbers are parsed (NSE names sync nightly ~21:30 IST) · every NSE + BSE result filing, refreshes ~4×/day plus a live top-up (~every minute) when our relay is up',
+  calendar:'Confirmed dates from the NSE + BSE event calendars (refreshes hourly) · predictions use each company\'s median filing lag over the past year · the list covers today to 8 weeks ahead, largest market cap first within a day',
+  season:''
+};
+function setTab(t){ ST.tab=t; $('lList').scrollTop=0; render(); }
+function markRows(){ const k=curKey(); $('lList').querySelectorAll('.os-row[data-i]').forEach(el=>{ const on=LIST[+el.getAttribute('data-i')].k===k; el.classList.toggle('on',on); el.setAttribute('aria-selected',on); }); }
+function renderDetail(){ if(ST.tab==='overview') detailOverview(); else if(ST.tab==='season') detailSeason(); else detailCo(); }
+function renderRight(lazy){
+  const t=ST.tab, co=isCo(), px=co&&CHART==='px';
+  show('cTabs',co); show('cIv',px); show('cRg',px); show('segHeat',t==='overview'); show('rsLegend',t==='season'); show('cTbl',co);
+  show('qc',co&&CHART==='q'); show('cChart',px); show('cLegend',px); show('rsChart',t==='season'); show('ovC',t==='overview');
+  if(!co){ ++TOK; clearTimeout(showTimer); $('cMsg').textContent=''; $('cMark').textContent=''; $('cStar').innerHTML=''; $('cOpen').classList.add('hidden'); }
+  if(t==='overview') drawOv(); else if(t==='season') drawRs(); else renderCoChart(lazy);
 }
+function render(){
+  seg('tabs',TABS,ST.tab,setTab);
+  const se=ST.tab==='season';
+  // The quarter / filter bar drives the four company-level views; Season Trends has its own universe / mode / period controls.
+  show('controlsCard',!se); show('seasonBar',se);
+  $('grid').setAttribute('data-view',ST.tab);
+  renderQChips();
+  seg('segMode',[['yoy','YoY','Growth vs the same quarter last year'],['qoq','QoQ','Growth vs the previous quarter']],ST.mode,v=>{ ST.mode=v; render(); });
+  seg('segBasis',[['auto','Auto'],['con','Consol.'],['std','Standalone']],ST.basis,v=>{ ST.basis=v; for(const k in CACHE) delete CACHE[k]; render(); });
+  ({overview:buildOverview,results:buildResults,feed:buildFeed,calendar:buildCalendar,season:buildSeason})[ST.tab]();
+  let how=HOW[ST.tab];
+  if(ST.tab==='feed'&&FEED) how+=' · feed updated '+esc(FEED.updated);
+  if(ST.tab==='calendar'&&CAL) how+=' · calendar updated '+esc(CAL.updated);
+  if(se) how=(RS_MODE==='median'
+      ? 'MEDIAN — the typical company’s YoY growth (consolidated where filed, else standalone); half of members grew faster, half slower. '
+      : 'TOTAL — aggregate YoY growth = sum of all members this year ÷ sum last year, consolidated-preferred (matches Trendlyne’s result-analysis; dominated by the largest companies). ')
+    + 'Operating Profit = PBET + depreciation + finance − other income (banks: pre-provision profit) — this is Trendlyne’s “Oper Profit” card, matched to the paisa. '
+    + 'Financials are included (banks’ Revenue = interest earned). Point-in-time index membership. YoY vs the year-ago quarter.';
+  $('how').innerHTML=how;
+  K.fitGrid($('grid'));
+  renderDetail(); renderRight(false); saveUrl();
+}
+function choose(e,scroll){
+  if(ST.tab==='overview'){ ST.sector=e.k; $('selSector').value=ST.sector; ST.shown=PAGE; const st=$('lList').scrollTop; render(); $('lList').scrollTop=st; }
+  else if(ST.tab==='season'){ RSQ=e.k; markRows(); detailSeason(); drawRs(); saveUrl(); }
+  else{ CUR.k=e.k; CUR.sym=e.sym; CUR.e=e; CUR.pin=false; markRows(); detailCo(); renderRight(true); saveUrl(); }
+  if(scroll){ const on=$('lList').querySelector('.os-row.on'); if(on) on.scrollIntoView({block:'nearest'}); }
+}
+function saveUrl(){
+  const p=new URLSearchParams();
+  if(ST.tab!=='overview') p.set('tab',ST.tab);
+  if(ST.qi>0) p.set('qe',QTRS[ST.qi]);
+  if(ST.uni==='idx'){ if(ST.uniKey) p.set('uniIdx',ST.uniKey); } else if(ST.uni!=='all') p.set('uni',ST.uni);
+  if(ST.sector!=='all') p.set('sector',ST.sector);
+  if(ST.mcap!=='all') p.set('mcap',ST.mcap);
+  if(ST.mode!=='yoy') p.set('mode',ST.mode);
+  if(ST.basis!=='auto') p.set('basis',ST.basis);
+  if(ST.tab==='results'){ if(ST.screen!=='all') p.set('screen',ST.screen); if(ST.sort.k!=='ann') p.set('sort',ST.sort.k); if(ST.sort.dir!==(ST.sort.k==='sym'?1:-1)) p.set('rev','1'); }
+  if(ST.tab==='calendar'&&ST.cal!=='conf') p.set('cal',ST.cal);
+  if(ST.tab==='overview'&&ST.heat!=='pat') p.set('heat',ST.heat);
+  if(ST.tab==='season'){ if(RS_CUR.key&&RS_CUR.key!=='Nifty 500') p.set('su',RS_CUR.key); if(RS_MODE!=='median') p.set('sm',RS_MODE); if(RS_PERIOD!=='1y'&&RS_PERIOD!=='custom') p.set('sp',RS_PERIOD); }
+  if(isCo()){ if(CUR.sym) p.set('sym',CUR.sym); if(CHART==='px') p.set('chart','price'); }
+  const s=p.toString(); try{ history.replaceState(null,'',location.pathname+(s?'?'+s:'')); }catch(e){}
+}
+function setFocus(on){ FOCUS=on==null?!FOCUS:on; $('grid').classList.toggle('focus',FOCUS); $('cFocus').textContent=FOCUS?'Show lists':'Focus'; $('cFocus').setAttribute('aria-pressed',FOCUS); }
+function redraw(){ if(ST.tab==='season') drawRs(); else if(isCo()) drawQ(); }
 function wire(){
-  document.querySelectorAll('#tabs .tabbtn').forEach(b=>b.onclick=()=>setTab(b.getAttribute('data-tab')));
-  const seg=(id,key,after)=>{ $(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
-    $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-    ST[key]=b.getAttribute('data-v'); if(key==='basis') for(const k in CACHE) delete CACHE[k];
-    (after||render)(); }); };
-  seg('segMode','mode'); seg('segBasis','basis'); seg('segHeat','heat',renderOverview); seg('segCal','cal',renderCalendar);
-  $('selUni').onchange=e=>{ ST.uni=e.target.value; ST.shown=100;
+  $('lList').addEventListener('click',e=>{ const el=e.target.closest('.os-row[data-i]'); if(!el) return; choose(LIST[+el.getAttribute('data-i')]); if(window.innerWidth<900) $('pD').scrollIntoView({behavior:'smooth',block:'start'}); });
+  $('cStar').addEventListener('click',e=>{ const st=e.target.closest('[data-star]'); if(!st) return; const s=st.getAttribute('data-star'); WATCH.has(s)?WATCH.delete(s):WATCH.add(s); saveWatch(); st.classList.toggle('on'); });
+  $('selUni').onchange=e=>{ ST.uni=e.target.value; ST.shown=PAGE;
     if(ST.uni==='smeipo'&&!SMEIPO_SET){ loadSmeIpo().then(render).catch(()=>{ ST.uni='all'; $('selUni').value='all'; render(); }); return; }
     if(ST.uni==='smeemerge'&&!SMEEM_SET){ loadSmeEmerge().then(render).catch(()=>{ ST.uni='all'; $('selUni').value='all'; render(); }); return; }
     render(); };
-  $('selMcap').onchange=e=>{ ST.mcap=e.target.value; ST.shown=100; render(); };
-  $('selSector').onchange=e=>{ ST.sector=e.target.value; ST.shown=100; render(); };
+  $('selMcap').onchange=e=>{ ST.mcap=e.target.value; ST.shown=PAGE; render(); };
+  $('selSector').onchange=e=>{ ST.sector=e.target.value; ST.shown=PAGE; render(); };
   let deb=null;
-  $('inSearch').oninput=e=>{ clearTimeout(deb); deb=setTimeout(()=>{ ST.search=e.target.value.trim(); ST.shown=100; render(); },180); };
-  document.querySelectorAll('th[data-s]').forEach(th=>th.addEventListener('click',()=>{
-    const k=th.getAttribute('data-s');
-    if(ST.sort.k===k) ST.sort.dir=-ST.sort.dir; else ST.sort={k,dir:(k==='sym'?1:-1)};
-    renderResults();
-  }));
+  $('inSearch').oninput=e=>{ clearTimeout(deb); deb=setTimeout(()=>{ ST.search=e.target.value.trim(); ST.shown=PAGE; render(); },180); };
+  $('cFocus').onclick=()=>setFocus();
+  let rz=null; const later=()=>{ clearTimeout(rz); rz=setTimeout(redraw,60); };
+  window.addEventListener('resize',()=>{ K.fitGrid($('grid')); later(); });
+  if(window.ResizeObserver) new ResizeObserver(later).observe($('cWrap'));
+  new MutationObserver(()=>setTimeout(mark,0)).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  document.addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    const tg=e.target, typing=tg&&/^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
+    if(typing){ if(e.key==='Escape'||e.key==='Enter') tg.blur(); if(tg.tagName==='SELECT'||(e.key!=='ArrowDown'&&e.key!=='ArrowUp')) return; }
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){ const k=curKey(), j=LIST.findIndex(x=>x.k===k)+(e.key==='ArrowDown'?1:-1); if(LIST[j]) choose(LIST[j],true); e.preventDefault(); }
+    else if(e.key==='ArrowLeft'||e.key==='ArrowRight'){ if(ST.tab!=='season'){ setQ(ST.qi+(e.key==='ArrowLeft'?1:-1)); e.preventDefault(); } }   // ← older · → newer
+    else if(e.key==='Enter'){
+      if(ST.tab==='overview') setTab('results');
+      else if(ST.tab==='season'){ if(RSQ!=null&&rsClickable(RSQ)) rsOpenResults(RSQ); }
+      else{ const a=$('cOpen'); if(CUR.sym&&!a.classList.contains('hidden')) location.href=a.href; } }
+    else if(e.key==='f'||e.key==='F'){ setFocus(); }
+    else if(e.key==='/'){ if(ST.tab!=='season'){ $('inSearch').focus(); e.preventDefault(); } }
+  });
 }
 
 async function load(){
@@ -1681,9 +1587,7 @@ async function load(){
     if(rbase){ let n=0; for(const sym in rbase){ const c=CO[sym]; if(sym[0]!=='_'&&c&&Array.isArray(c.q)){ c.q.rbase=rbase[sym]; n++; } }
       if(n) console.log('restated comparative bases on '+n+' companies'); }
     liveKeys=new Set(FEEDROWS.map(feedKey));
-    $('updatedBox').innerHTML='Numbers '+esc(qr.updated)+'<span class="sm:hidden"> · </span><br class="hidden sm:block">Prices as of '+esc(qr.asof);
-    if(feed) $('feedUpd').textContent='feed updated '+feed.updated;
-    if(cal) $('calUpd').textContent='calendar updated '+cal.updated;
+    $('updatedBox').textContent='Numbers '+qr.updated+' · prices as of '+qr.asof;
     const p=new URLSearchParams(location.search);
     if(p.get('tab')&&['overview','results','feed','calendar','season'].includes(p.get('tab'))) ST.tab=p.get('tab');
     // Deep link: ?tab=results&qe=20260630&uni=n500 pre-selects that quarter + universe
@@ -1702,10 +1606,30 @@ async function load(){
       const u=(d.universes||[]).find(x=>x.key===idxKey);
       if(u&&u.members&&u.members.length) setIdxUniverse(u.key,u.label,u.members);
     }catch(e){} }
-    renderSectorSel(); $('selUni').value=ST.uni; wire(); render();
-    $('status').classList.add('hidden'); $('app').style.display='';
+    // The view's own settings, so a copied link reopens the same screen
+    renderSectorSel();
+    const has=(sel,v)=>[...$(sel).options].some(o=>o.value===v);
+    if(p.get('sector')!=null&&has('selSector',p.get('sector'))){ ST.sector=p.get('sector'); $('selSector').value=ST.sector; }
+    if(['l','m','s'].includes(p.get('mcap'))){ ST.mcap=p.get('mcap'); $('selMcap').value=ST.mcap; }
+    if(p.get('mode')==='qoq') ST.mode='qoq';
+    if(['con','std'].includes(p.get('basis'))) ST.basis=p.get('basis');
+    if(SCREENS.some(s=>s[0]===p.get('screen'))) ST.screen=p.get('screen');
+    if(SORTS[p.get('sort')]) ST.sort={k:p.get('sort'),dir:(p.get('sort')==='sym'?1:-1)};
+    if(p.get('rev')==='1') ST.sort.dir=-ST.sort.dir;
+    if(p.get('cal')==='both') ST.cal='both';
+    if(['rev','rx'].includes(p.get('heat'))) ST.heat=p.get('heat');
+    if(p.get('su')) RS_WANT=p.get('su');
+    if(p.get('sm')==='total') RS_MODE='total';
+    if(['3y','5y','all'].includes(p.get('sp'))) RS_PERIOD=p.get('sp');
+    if(p.get('chart')==='price') CHART='px';
+    // ?sym=TCS selects that company (the old page opened a pop-up); with no tab named it opens in All Results
+    const sy=(p.get('sym')||'').toUpperCase();
+    if(sy&&CO[sy]){ CUR.sym=sy; CUR.k=sy; CUR.pin=true; if(!p.get('tab')) ST.tab='results'; }
+    $('selUni').value=ST.uni; wire();
+    $('status').classList.add('hidden'); $('app').classList.remove('hidden');
+    render();
+    const on=$('lList').querySelector('.os-row.on'); if(on) on.scrollIntoView({block:'center'});
     liveTopUp(); setInterval(()=>{ if(!document.hidden) liveTopUp(); },60000);
-    const sy=p.get('sym'); if(sy&&CO[sy.toUpperCase()]) openModal(sy.toUpperCase());
   }catch(e){
     $('status').innerHTML='Could not load results data ('+esc(e.message)+'). Please try again in a minute.';
   }
