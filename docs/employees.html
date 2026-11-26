@@ -13,6 +13,7 @@
 <style>
   body{font-feature-settings:"tnum" 1}
   #grid{grid-template-columns:minmax(300px,380px) minmax(300px,380px) minmax(0,1fr)}
+  #grid.focus{grid-template-columns:minmax(0,1fr)}   /* the page's own #grid columns would otherwise outrank the kit's .os-grid.focus */
   #lHead,.lr{grid-template-columns:28px minmax(0,1fr) 72px 58px}
   #lHead span:nth-child(2),.lr > span:nth-child(2){text-align:left}
   .lr .rk{color:var(--text-faint);font-size:11.5px;text-align:left}

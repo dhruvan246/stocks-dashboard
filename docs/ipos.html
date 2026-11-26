@@ -13,6 +13,7 @@
 <style>
   body{font-feature-settings:"tnum" 1}
   #grid{grid-template-columns:minmax(320px,400px) minmax(290px,360px) minmax(0,1fr)}
+  #grid.focus{grid-template-columns:minmax(0,1fr)}   /* the page's own #grid columns would otherwise outrank the kit's .os-grid.focus */
   #lHead,.lr{grid-template-columns:minmax(0,1fr) 70px 62px}
   .sec{padding:7px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);display:flex;justify-content:space-between;position:sticky;top:0;z-index:1}
   .sec i{font-style:normal;font-weight:400;color:var(--text-faint);text-transform:none;letter-spacing:0}
