@@ -11,45 +11,115 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
 <script src="./bt-identity.js"></script>
+<script src="./os-kit.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .hidden{display:none!important}
   .pos{color:var(--pos)}.neg{color:var(--neg)}
-  /* .sw-sn (Save serial pill) now lives in theme.css — shared by every page that lists strategies. */
-  /* long strategy names on the KPI tiles stay one tidy line */
-  .sw-stat .sw-d{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-  /* Sort arrow via ::after, NOT a text node: theme.js builds each phone card's label from the
-     header's textContent, so an arrow in the DOM would ride along into every card row. */
-  th[data-sort]{cursor:pointer;user-select:none}
-  th[data-sort]:hover{color:var(--text)}
-  th[data-sort][data-dir]::after{font-size:9px;margin-left:3px;vertical-align:1px}
-  th[data-sort][data-dir="asc"]::after{content:"▲"}
-  th[data-sort][data-dir="desc"]::after{content:"▼"}
-  .sortrow{display:none}
-  @media(max-width:640px){ .sortrow{display:flex} }
-  /* Phone card mode (theme.js turns this table into cards ≤640px): every other
-     cell is a "label — value" line, but the first one IS the card's title — a
-     name, a meta line and the filter list stacked together. Squeezed into the
-     59% left over after the "Strategy" label it wraps to a column ~180px wide,
-     so let it span the whole card instead. The empty data-label suppresses the
-     label; cardifyTable only stamps one when the attribute is absent. */
-  @media(max-width:640px){
-    #list table.sw-cardify tbody td:first-child{
-      display:block!important;text-align:left!important;padding:9px 0 10px!important}
-  }
-  /* ☆ + 🗑 now share ONE cell → the phone card shows a single compact, right-aligned
-     action row instead of two lonely full-width icon rows (the old mobile "wtf"). */
-  @media(max-width:640px){
-    #list table.sw-cardify tbody td.sw-actcell{
-      justify-content:flex-end!important;gap:28px!important;padding:6px 2px 8px!important}
-    #list table.sw-cardify tbody td.sw-actcell button{font-size:20px;line-height:1;padding:2px}
+  #grid{grid-template-columns:minmax(400px,1.3fr) minmax(300px,1fr) minmax(280px,.9fr)}
+  /* one-line figures strip (same four numbers as the old tiles) */
+  #ssStats.grid{display:flex;flex-wrap:wrap;border:1px solid var(--border);border-radius:8px;background:var(--surface);margin:0 0 10px;overflow:hidden}
+  #ssStats .sw-stat{flex:1 1 200px;min-width:0;display:flex;align-items:baseline;gap:8px;padding:7px 12px;border:0;border-right:1px solid var(--border);border-radius:0;background:none;box-shadow:none}
+  #ssStats .sw-stat:last-child{border-right:0}
+  #ssStats .sw-lb{font-size:11px;color:var(--text-faint);white-space:nowrap;margin:0}
+  #ssStats .sw-v{font-size:14px!important;font-weight:600;line-height:1.2;white-space:nowrap;margin:0}
+  #ssStats .sw-d{font-size:11.5px;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;margin:0}
+  /* controls */
+  #waveRow,#customBar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0}
+  .os-sg button i{font-style:normal;font-weight:400;color:var(--text-faint);margin-left:3px}
+  html[data-theme] .os-sg select{border:0;border-radius:0;background:transparent;height:auto;min-height:0;padding:5px 8px;font-size:12.5px;font-weight:500;color:var(--text);width:auto;max-width:230px;box-shadow:none}
+  html[data-theme] #customBar input{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 6px;font-size:12.5px;color:var(--text);min-height:0;height:29px;box-shadow:none;width:auto}
+  html[data-theme] #customBar input[type=number]{width:4.8rem}
+  html[data-theme] .go{background:var(--accent);color:var(--on-accent,#fff);border:1px solid var(--accent);border-radius:6px;padding:5px 14px;font-size:12.5px;font-weight:600;cursor:pointer;min-height:0;white-space:nowrap}
+  html[data-theme] .go:disabled{opacity:.5;cursor:default}
+  #cTrack{flex:1 1 100%;height:2px;background:var(--border);border-radius:2px;overflow:hidden}
+  #cBar{height:100%;background:var(--accent);transition:width .2s}
+  #status{white-space:normal;text-align:right;max-width:52ch}
+  html[data-theme] #clearAll{color:var(--neg)}
+  /* list */
+  .sortrow{display:none!important}
+  #list{overflow:auto}
+  #list table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12.5px}
+  #list table:has(th[data-sort="w1"]){min-width:700px}
+  #list th{position:sticky;top:0;z-index:1;background:var(--surface);border-bottom:1px solid var(--border);padding:6px 8px!important;font-size:11px;font-weight:500;letter-spacing:.03em;color:var(--text-faint);text-transform:none;white-space:normal;line-height:1.25;vertical-align:bottom}
+  #list th span{display:block;color:var(--text-faint)}
+  #list th[data-sort]{cursor:pointer;user-select:none}
+  #list th[data-sort]:hover{color:var(--text)}
+  #list th[data-sort][data-dir]{color:var(--text)}
+  #list th[data-sort][data-dir="asc"]::after{content:" ▲";font-size:9px}
+  #list th[data-sort][data-dir="desc"]::after{content:" ▼";font-size:9px}
+  #list th[data-sort="main"]{width:112px}
+  #list th[data-sort="live_day"]{width:84px} #list th[data-sort="live_ret"]{width:124px}
+  #list th[data-sort="w1"],#list th[data-sort="w2"],#list th[data-sort="w3"],#list th[data-sort="cycle"]{width:104px}
+  #list th:last-child{width:38px}
+  #list.own th:last-child{width:64px}
+  #list td{padding:6px 8px!important;border-bottom:1px solid var(--border);vertical-align:top}
+  #list td:not(:first-child){white-space:normal}
+  #list tr.srow{cursor:pointer;box-shadow:inset 2px 0 0 transparent}
+  #list tr.srow:hover{background:var(--surface-2)}
+  #list tr.srow.on{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent)}
+  #list .snm{display:block;font-weight:500;color:var(--text);line-height:1.3}
+  #list tr.srow.on .snm{color:var(--accent-text)}
+  #list .smeta{display:block;font-size:11.5px;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #list td span.blk{display:block;font-size:11px;font-weight:400;color:var(--text-faint)}
+  #list td .font-bold,#list td .font-semibold{font-weight:600}
+  html[data-theme] #list td button{background:none;border:0;padding:0 2px;min-height:0;box-shadow:none;cursor:pointer}
+  #list .card{border:0;background:none;padding:28px 12px;text-align:center;color:var(--text-faint);font-size:12.5px}
+  #liveFoot{padding:8px 2px 0}
+  /* detail */
+  .mb{flex:1;min-height:0;overflow:auto;font-size:12.5px;color:var(--text)}
+  .sec{padding:10px 12px;border-bottom:1px solid var(--border)}
+  .sec:last-child{border-bottom:0}
+  .sec h4{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin:0 0 7px}
+  .sec h4 i{font-style:normal;text-transform:none;letter-spacing:0;font-weight:400;margin-left:6px}
+  .dnm{font-size:14px;font-weight:600;line-height:1.35;color:var(--text)}
+  .dcode{font-size:11.5px;color:var(--text-faint);margin-top:3px;word-break:break-word}
+  table.kv{width:100%;border-collapse:collapse}
+  .kv td{padding:3px 0;vertical-align:top;font-size:12.5px}
+  .kv td:first-child{color:var(--text-faint);width:92px;white-space:nowrap}
+  table.bk{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .bk td,.bk th{padding:5px 8px;font-size:12px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+  .bk tr:last-child td{border-bottom:0}
+  .bk th{font-weight:500;color:var(--text-faint);font-size:11.5px}
+  .bk td:first-child,.bk th:first-child{text-align:left;color:var(--text-muted);padding-left:0}
+  .bk td:last-child,.bk th:last-child{padding-right:0}
+  .bk b{font-weight:600}
+  .scr{overflow-x:auto}
+  .dim{color:var(--text-faint)}
+  #yChart{flex:none;height:250px;border-bottom:1px solid var(--border);position:relative}
+  #yChart svg{display:block;width:100%;height:100%}
+  #yChart text{font-size:10.5px;fill:var(--text-faint);font-variant-numeric:tabular-nums}
+  #yChart .ax{stroke:var(--border-strong);stroke-width:1}
+  #yChart .bp{fill:var(--pos)} #yChart .bn{fill:var(--neg)} #yChart .bb{fill:var(--text-faint);opacity:.45}
+  .yleg{display:flex;gap:12px;align-items:center;font-size:11.5px;color:var(--text-muted)}
+  .yleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+  /* progress box for the long jobs (was a centred overlay) */
+  #cOverlay{position:fixed;right:16px;bottom:16px;z-index:45;pointer-events:none}
+  #cOverlay > div{background:var(--surface);border:1px solid var(--border-strong);border-radius:8px;padding:10px 14px;width:260px;text-align:left}
+  #cOvText{font-size:12.5px;font-weight:600;color:var(--text)}
+  #cOvNote{font-size:11px;color:var(--text-faint);margin-top:5px}
+  #cOvTrack{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:7px}
+  #cOvBar{height:100%;background:var(--accent);transition:width .2s}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(340px,1.25fr) minmax(260px,1fr) minmax(240px,.85fr)} }
+  @media (max-width:899px){
+    #grid{grid-template-columns:minmax(0,1fr)}
+    #pL{max-height:none}
+    #pM{scroll-margin-top:64px}
+    #list{max-height:58vh}
+    .mb{flex:none;overflow-x:auto;overflow-y:visible}
+    .os-vbar{gap:10px}
+    .os-vtabs{gap:14px;overflow-x:auto;max-width:100%}
+    .os-vtabs button{white-space:nowrap}
+    #status{text-align:left;margin-left:0;padding-bottom:6px}
+    #list th[data-sort="main"]{width:98px}
+    html[data-theme] .os-sg select{max-width:170px}
   }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -58,64 +128,63 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-  <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
-    <h1 class="text-xl md:text-2xl font-bold text-slate-900">Saved Strategies</h1>
-    <button id="clearAll" class="text-xs text-red-600 hover:underline font-semibold">Clear all</button>
-  </div>
-  <p class="text-xs text-slate-500 mb-4">Strategies you saved, ranked by survivorship-free CAGR. Click a strategy to open its page — live picks, backtests &amp; rewind live there. <a href="./stock-backtest.html" class="text-indigo-600 hover:underline">← back to Backtest</a></p>
-  <div id="ssStats" class="hidden grid-cols-2 lg:grid-cols-4 gap-3 mb-4"></div>
-  <div class="flex items-center gap-1.5 mb-3 flex-wrap">
-    <div class="flex items-center gap-1.5 sw-strip min-w-0">  <!-- phone: the four tabs on one scrolling line (2026-10-13) -->
-    <button id="tabBest" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> Best return</button>
-    <button id="tabNew" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/></svg> New</button>
-    <button id="tabCustom" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg> Custom period</button>
-    <button id="tabFav" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favourites</button>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Saved Strategies</h1>
+    <div class="os-vtabs">
+      <button id="tabBest">Best return</button>
+      <button id="tabNew">New</button>
+      <button id="tabCustom">Custom period</button>
+      <button id="tabFav">Favourites</button>
     </div>
-    <!-- Membership (universe) picker — applies to EVERY tab: pick Nifty 500 and the list shows only
-         Nifty-500 strategies, pick F&O and only F&O ones. Options are built from the universes the
-         saved strategies actually use, with per-tab counts. -->
-    <div id="uniRow" class="flex items-center gap-1.5 w-full sm:w-auto sm:ml-auto">
-      <label for="uniSel" class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Membership</label>
-      <select id="uniSel" title="Show only strategies built on this universe" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold"></select>
+    <span class="os-asof" id="status"></span>
+  </div>
+  <div class="os-bar">
+    <div id="uniRow" class="os-sg hidden"><label for="uniSel" class="lbl">Membership</label><select id="uniSel" title="Show only strategies built on this universe"></select></div>
+    <div id="waveRow" class="hidden">
+      <div class="os-sg"><span class="lbl">Best return over</span>
+        <button data-preset="w1" class="preset">Wave 1 <i>Mar’20–Sep’21</i></button>
+        <button data-preset="w2" class="preset">Wave 2 <i>Mar’23–Sep’24</i></button>
+        <button data-preset="w3" class="preset">Wave 3 <i>Mar’26–date</i></button>
+        <button data-preset="cycle" class="preset">Entire cycle <i>Mar’20–date</i></button>
+        <button data-preset="live" class="preset" title="Ranks every strategy by what the basket it holds is doing right now — computed on click">Today’s topper <i>live</i></button>
+      </div>
+      <span id="waveSnapInfo" class="os-hint"></span>
+      <button id="liveRefresh" class="os-btn hidden">↻ Refresh quotes</button>
+      <button id="waveUpdate" class="os-btn hidden">↻ Update snapshot</button>
     </div>
+    <div id="customBar" class="hidden">
+      <span class="os-hint"><b>Custom window</b></span>
+      <input id="cFrom" type="date" aria-label="From"/>
+      <span class="dim">→</span>
+      <input id="cTo" type="date" aria-label="To"/>
+      <label class="os-hint">Stocks <input id="cTopN" type="number" min="1" max="50" placeholder="saved" title="Qualifying count (Top-N) to force on every strategy. Leave blank to use each strategy's own saved count."/></label>
+      <button id="cCompute" class="go">Compute</button>
+      <span id="cProgress" class="os-hint" style="white-space:normal">pick a range (and optionally a stock count) and hit Compute — each strategy runs a real backtest over exactly this window</span>
+      <div id="cTrack"><div id="cBar" style="width:0%"></div></div>
+    </div>
+    <span class="sp"></span>
+    <button id="clearAll" class="os-btn">Clear all</button>
+    <span class="os-hint keys"><b>↑ ↓</b> move · <b>Enter</b> open strategy page</span>
   </div>
-  <!-- Best-return market-cycle presets (shown only on the Best-return tab). Results are precomputed and
-       stored as a Supabase snapshot, so clicking a wave loads instantly. -->
-  <div id="waveRow" class="hidden items-center gap-2 flex-wrap mb-3 sw-strip">
-    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Best return over</span>
-    <button data-preset="w1" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Wave 1 <span class="opacity-60">Mar’20–Sep’21</span></button>
-    <button data-preset="w2" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Wave 2 <span class="opacity-60">Mar’23–Sep’24</span></button>
-    <button data-preset="w3" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Wave 3 <span class="opacity-60">Mar’26–date</span></button>
-    <button data-preset="cycle" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg> Entire cycle <span class="opacity-60">Mar’20–date</span></button>
-    <!-- 📈 Today's topper — the one preset that is NOT a baked window: it ranks every strategy by what
-         it is doing right now, on the basket it actually holds, so it computes on click. -->
-    <button data-preset="live" class="preset px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Today’s topper <span class="opacity-60">live</span></button>
-    <span id="waveSnapInfo" class="text-[11px] text-slate-400 ml-auto"></span>
-    <button id="liveRefresh" class="hidden text-[11px] font-semibold text-indigo-600 hover:underline">↻ Refresh quotes</button>
-    <button id="waveUpdate" class="hidden text-[11px] font-semibold text-indigo-600 hover:underline">↻ Update snapshot</button>
+  <div id="ssStats" class="hidden"></div>
+  <div class="os-grid" id="grid">
+    <section class="os-pane" id="pL">
+      <div class="os-ph"><span class="ttl">Strategies <i id="lCount"></i></span><span class="r"><a href="./stock-backtest.html" style="color:var(--accent-text)">+ New in Backtest</a></span></div>
+      <div id="sortRow" class="sortrow"></div>
+      <div id="list" class="os-list"></div>
+    </section>
+    <section class="os-pane os-main" id="pM">
+      <div class="os-ph"><span class="ttl" id="dTitle">Strategy</span><span class="r"><button id="dFav" class="os-btn hidden"></button><a id="dOpen" class="os-btn hidden" href="#">Open strategy page →</a></span></div>
+      <div class="mb" id="dBody"><div class="os-empty">Select a strategy on the left.</div></div>
+    </section>
+    <section class="os-pane" id="pR">
+      <div class="os-ph"><span class="ttl">Year by year <i id="yNote"></i></span><span class="r yleg"><span><i style="background:var(--pos)"></i>Strategy</span><span><i style="background:var(--text-faint);opacity:.45"></i>Nifty 500</span></span></div>
+      <div id="yChart"></div>
+      <div class="mb" id="yBody"></div>
+    </section>
   </div>
-  <!-- Custom-period compare bar: pick any window, hit Compute → every strategy runs a real backtest over
-       exactly that window and the list re-sorts best-first by that window's CAGR. -->
-  <div id="customBar" class="hidden items-center gap-2.5 flex-wrap bg-white border border-slate-200 rounded-lg px-3 py-2.5 mb-3">
-    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Custom window</span>
-    <input id="cFrom" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/>
-    <span class="text-slate-400">→</span>
-    <input id="cTo" type="date" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm"/>
-    <label class="text-[11px] font-semibold text-slate-500 ml-1">Stocks
-      <input id="cTopN" type="number" min="1" max="50" placeholder="saved" title="Qualifying count (Top-N) to force on every strategy. Leave blank to use each strategy's own saved count." class="ml-1 border border-slate-300 rounded-lg px-2 py-1.5 text-sm w-20"/>
-    </label>
-    <button id="cCompute" class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-700">Compute</button>
-    <span id="cProgress" class="text-[11px] text-slate-400">pick a range (and optionally a stock count) and hit Compute — each strategy runs a real backtest over exactly this window</span>
-    <div class="w-full h-1 bg-slate-100 rounded overflow-hidden"><div id="cBar" class="h-full bg-indigo-500 transition-all" style="width:0%"></div></div>
-  </div>
-  <div id="status" class="text-xs text-slate-500 mb-3"></div>
-  <!-- Phone-only sort control: ≤640px theme.js reflows the table into cards and hides the
-       <thead>, so the clickable column headers vanish with it. Same columns, same state. -->
-  <div id="sortRow" class="sortrow items-center gap-2 mb-2"></div>
-  <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-  <!-- shown only under 📈 Today's topper — says exactly what the two live numbers are measured on -->
-  <p id="liveFoot" class="hidden text-[11px] text-slate-400 mt-3 leading-relaxed">Both numbers are measured on the basket each strategy <b>actually holds</b> — the top-N its rule screened at its last month-end rebalance — not on today's screen. <b>Today</b> is the equal-weight move of those stocks from yesterday's close to the live price (Yahoo NSE, ~15-min delay), and reads “—” until quotes arrive; <b>Since reb.</b> runs from their entry prices on the rebalance date. Same maths, same code as the <a href="./all-picks.html" class="text-indigo-600 hover:underline">🎯 All Picks</a> board, where each basket's stocks are listed one by one.</p>
+  <p id="liveFoot" class="hidden os-note">Both numbers are measured on the basket each strategy <b>actually holds</b> — the top-N its rule screened at its last month-end rebalance — not on today's screen. <b>Today</b> is the equal-weight move of those stocks from yesterday's close to the live price (Yahoo NSE, ~15-min delay), and reads “—” until quotes arrive; <b>Since reb.</b> runs from their entry prices on the rebalance date. Same maths, same code as the <a href="./all-picks.html" style="color:var(--accent-text)">All Picks</a> board.</p>
 </main>
 
 <!-- Lightweight "computing" overlay for the custom-period compare (determinate, not a spinner: the
@@ -131,15 +200,13 @@
     <div class="text-right"><button id="bakeCancel" class="mt-3 text-xs font-semibold text-slate-500 hover:underline">Cancel</button></div>
   </div>
 </div>
-<div id="cOverlay" class="hidden fixed inset-0 z-40 bg-slate-900/25 backdrop-blur-[1px] flex items-start justify-center pt-32 pointer-events-none">
-  <div class="bg-white shadow-xl rounded-xl border border-slate-200 px-5 py-4 text-center w-72">
-    <div class="text-2xl mb-1 text-slate-400"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg></div>
-    <div id="cOvText" class="text-sm font-semibold text-slate-800">Computing…</div>
-    <div class="w-full h-1.5 bg-slate-100 rounded overflow-hidden mt-2.5"><div id="cOvBar" class="h-full bg-indigo-500 transition-all" style="width:0%"></div></div>
-    <div id="cOvNote" class="text-[11px] text-slate-400 mt-1.5">running a real backtest for each strategy</div>
+<div id="cOverlay" class="hidden">
+  <div>
+    <div id="cOvText">Computing…</div>
+    <div id="cOvTrack"><div id="cOvBar" style="width:0%"></div></div>
+    <div id="cOvNote">running a real backtest for each strategy</div>
   </div>
 </div>
-
 
 <!-- Today's Picks modal -->
 <div id="modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm overflow-y-auto p-3 sm:p-6">
@@ -538,7 +605,7 @@ function liveCells(c) {
   const ret = r.ret == null
     ? dash('—', `No price yet for the ${stocks} held since ${r.rebDate}`)
     : td(`<span class="font-bold ${r.ret >= 0 ? 'pos' : 'neg'}">${pct(r.ret)}</span>
-          <span class="block text-[10px] text-slate-400 mt-0.5">since ${esc(r.rebDate)} · ${esc(stocks)}</span>`,
+          <span class="blk">since ${esc(r.rebDate)} · ${esc(stocks)}</span>`,
          `The same ${stocks} from their entry prices on ${r.rebDate}`);
   return day + ret;
 }
@@ -565,7 +632,7 @@ function waveCell(key, c) {
   // absolutes alone can't be compared across columns. ⚠️ On a window SHORTER than a year the CAGR
   // is an extrapolation — Wave 3 is ~5 months — so it reads bigger than the money actually made;
   // that is what the (CAGR …) label is for, and simulate() computes it, we never invent one.
-  const ann = (r.cagr != null) ? ` <span class="text-[11px] font-normal text-slate-500">(CAGR ${pct(r.cagr)})</span>` : '';
+  const ann = (r.cagr != null) ? ` <span class="blk">CAGR ${pct(r.cagr)}</span>` : '';
   return `<td class="px-2 py-3 text-right text-sm whitespace-nowrap" title="${esc(tip)}"><span class="font-semibold ${r.ret >= 0 ? 'pos' : 'neg'}">${pct(r.ret)}</span>${ann}</td>`;
 }
 // Load a wave's precomputed results (from the snapshot) into CUSTOM so render() shows them. Returns false if absent.
@@ -583,16 +650,16 @@ function loadWaveIntoCustom(key) {
 function highlightWave(key) {
   document.querySelectorAll('.preset').forEach(b => {
     const on = b.dataset.preset === key;
-    b.classList.toggle('!bg-indigo-600', on); b.classList.toggle('!text-white', on);
+    b.classList.toggle('on', on);
   });
 }
 function setView(v){
   VIEW = v;
-  const on = 'bg-indigo-600 text-white shadow', off = 'bg-slate-100 text-slate-600 hover:bg-slate-200';
-  $('tabBest').className   = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'best'   ? on : off);
-  $('tabNew').className    = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'new'    ? on : off);
-  $('tabCustom').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'custom' ? on : off);
-  $('tabFav').className    = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (v === 'fav'    ? on : off);
+  const on = 'on', off = '';
+  $('tabBest').className   = '' + (v === 'best'   ? on : off);
+  $('tabNew').className    = '' + (v === 'new'    ? on : off);
+  $('tabCustom').className = '' + (v === 'custom' ? on : off);
+  $('tabFav').className    = '' + (v === 'fav'    ? on : off);
   $('customBar').classList.toggle('hidden', v !== 'custom');
   $('customBar').classList.toggle('flex',  v === 'custom');
   $('waveRow').classList.toggle('hidden', v !== 'best');
@@ -730,7 +797,7 @@ function render() {
   $('uniRow').classList.toggle('flex', !!items.length);
   if (!items.length) {
     $('ssStats').classList.add('hidden'); $('ssStats').classList.remove('grid');
-    $('list').className = '';
+    $('list').className = 'os-list';
     $('list').innerHTML = `<div class="card p-10 text-center">
       <div class="text-4xl mb-3">⭐</div>
       <div class="font-bold text-slate-900 mb-1">No saved strategies yet</div>
@@ -774,7 +841,7 @@ function render() {
     rows = rows.filter(g => isFav(favs, g.rep.cfg));
     if (!rows.length) {
       buildUniSelect(rows);
-      $('list').className = '';
+      $('list').className = 'os-list';
       $('list').innerHTML = '<div class="card p-8 text-center text-slate-400 text-sm">No favourites yet. Click the star on any strategy to add it here.</div>';
       return;
     }
@@ -786,14 +853,14 @@ function render() {
     const all = rows.length;
     rows = rows.filter(g => inUni(g.rep.cfg));
     if (!rows.length) {
-      $('list').className = '';
+      $('list').className = 'os-list';
       $('list').innerHTML = `<div class="card p-8 text-center text-slate-400 text-sm">No <b>${esc(uniText(UNI))}</b> strategies in this tab.
         <button id="uniClear" class="text-indigo-600 hover:underline font-semibold">Show all ${all}</button></div>`;
       $('uniClear').onclick = () => setUni('*');
       return;
     }
   }
-  $('list').className = 'card overflow-x-auto';
+  $('list').className = 'os-list'; ROWS = rows;
   // The 🆕 New tab REPLACES the CAGR column with each strategy's return in all four market-cycle
   // windows, straight from the baked snapshot (see waveCell). CAGR is dropped because Full cycle's
   // bracketed CAGR is the same number for most rows — the headline takes the longest saved run, which
@@ -813,10 +880,10 @@ function render() {
   paintSortRow(COLS);
   const header = `<thead><tr class="text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-200 bg-slate-50">
     <th data-sort="name"${dirAttr('name')} class="text-left font-semibold px-4 py-2.5">Strategy</th>
-    ${lmode ? `<th data-sort="live_day"${dirAttr('live_day')} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Equal-weight move of the basket the strategy holds, from yesterday's close to the live price">📈 Today<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">since prev close</span></th>
-    <th data-sort="live_ret"${dirAttr('live_ret')} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="The same held basket from its entry prices on the last rebalance date">Since reb.<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">held basket</span></th>` : ''}
+    ${lmode ? `<th data-sort="live_day"${dirAttr('live_day')} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Equal-weight move of the basket the strategy holds, from yesterday's close to the live price">📈 Today<span>since prev close</span></th>
+    <th data-sort="live_ret"${dirAttr('live_ret')} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="The same held basket from its entry prices on the last rebalance date">Since reb.<span>held basket</span></th>` : ''}
     ${lmode || wcols ? '' : `<th data-sort="main"${dirAttr('main')} class="text-right font-semibold px-3 py-2.5 whitespace-nowrap">${wmode ? (CUSTOM_WIN ? `Return · ${CUSTOM_WIN.start} → ${CUSTOM_WIN.end}${CUSTOM_WIN.topN != null ? ` · top-${CUSTOM_WIN.topN}` : ''}` : 'Return · window') : 'CAGR'}</th>`}
-    ${!lmode && wcols ? WAVE_ORDER.map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc((snapFor(k) && snapFor(k).date) || (WAVE_SNAP && WAVE_SNAP.date) || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<br><span class="text-[9px] font-medium normal-case tracking-normal text-slate-400">${esc(waveColWindow(k))}</span></th>`).join('') : ''}
+    ${!lmode && wcols ? WAVE_ORDER.map(k => `<th data-sort="${k}"${dirAttr(k)} class="text-right font-semibold px-2 py-2.5 whitespace-nowrap" title="Return over ${esc(WAVE_NAME[k])} (${esc(waveColWindow(k))}), from the ${esc((snapFor(k) && snapFor(k).date) || (WAVE_SNAP && WAVE_SNAP.date) || 'latest')} snapshot">${WAVE_ICON[k]} ${esc(WAVE_NAME[k])}<span>${esc(waveColWindow(k))}</span></th>`).join('') : ''}
     <th class="px-2 py-2.5"></th>
   </tr></thead>`;
   YRG.clear();
@@ -832,19 +899,18 @@ function render() {
       const cr = waveResult(c);
       cagrCell = cr && cr.cagr != null
         ? `<span class="font-bold ${cr.ret >= 0 ? 'pos' : 'neg'}">${pct(cr.ret)}</span>
-           <span class="text-[11px] font-normal text-slate-500"> (CAGR ${pct(cr.cagr)})</span>
-           <span class="block text-[10px] text-slate-400 mt-0.5">DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
+           <span class="blk">CAGR ${pct(cr.cagr)}</span>
+           <span class="blk">DD -${cr.maxDD.toFixed(1)}%${cr.topN != null ? ` · top-${cr.topN}` : ''}</span>`
         : (CUSTOM_WIN ? `<span class="text-slate-300 text-xs" title="${esc(CUSTOM_WIN.wave ? waveMissingWhy() : 'This strategy hasn’t been run over the chosen window yet — hit Compute.')}">no data</span>`
                       : '<span class="text-slate-400 text-xs">not computed</span>');
     }
-    return `<tr class="border-b border-slate-100 hover:bg-slate-50 cursor-pointer" data-openrow="${esc(it.id)}" title="Open strategy page">
+    return `<tr class="srow" data-openrow="${esc(it.id)}" data-k="${esc(identityKey(c))}" title="Click to select · double-click opens the strategy page">
       <td class="px-4 py-3" data-label="">
-        <div class="flex items-center gap-3">
-          <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0"><svg class="sw-i" style="font-size:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
-          <span class="min-w-0">
-            <span class="block font-semibold text-indigo-700 leading-snug"><span data-yrs="${esc(it.id)}" title="Code-name: ${esc(nameWithBasis(it.name, c))}">${esc(strategyEnglish(c))}</span></span>
-            <span class="block text-[11px] text-slate-500 truncate"><span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIAL.get(identityKey(c)) || '—')}</span>${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
-            ${(c.filters || []).length ? `<span class="block text-[11px] text-slate-400 truncate" title="${esc(expr)}">Filters: ${esc(expr)}</span>` : ''}
+        <div>
+                    <span class="min-w-0">
+            <span class="snm"><span title="Code-name: ${esc(nameWithBasis(it.name, c))}">${esc(strategyEnglish(c))}</span></span>
+            <span class="smeta"><span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIAL.get(identityKey(c)) || '—')}</span>${esc(universeLabel(c))} · ${FREQ[c.freq] || c.freq + 'mo'} · ${countLabel} · ${SORTL[c.sortBy] || c.sortBy} ${c.dir === 'high' ? '↓' : '↑'} · ${n} backtest${n > 1 ? 's' : ''}</span>
+            ${(c.filters || []).length ? `<span class="smeta" title="${esc(expr)}">Filters: ${esc(expr)}</span>` : ''}
           </span>
         </div>
       </td>
@@ -852,15 +918,18 @@ function render() {
       <td class="sw-actcell px-2 py-3 text-center whitespace-nowrap"><button class="text-base leading-none transition align-middle" data-favtoggle="${esc(identityKey(c))}" title="${isFav(favs, c) ? 'Remove from favourites' : 'Add to favourites'}">${isFav(favs, c) ? '<svg class="sw-i" style="color:#f59e0b" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' : '<svg class="sw-i" style="color:#94a3b8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'}</button>${OWNER ? `<button class="text-slate-300 hover:text-red-500 text-sm align-middle ml-3" data-delgroup="${esc(identityKey(c))}" title="Delete strategy"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>` : ''}</td>
     </tr>`;
   }).join('');
-  $('list').innerHTML = `<table class="w-full text-sm border-collapse sw-cards">${header}<tbody>${body}</tbody></table>`;
+  $('list').innerHTML = `<table>${header}<tbody>${body}</tbody></table>`;
   // wiring
   $('list').querySelectorAll('[data-favtoggle]').forEach(b => b.onclick = (e) => {
     e.stopPropagation(); toggleFav(b.dataset.favtoggle);
   });
-  scAttach($('list'));   // hover a strategy name → its years + market cycles (strategy-hover-card.js)
   // Row click opens the strategy page (parameters + run history). Inner buttons (👁, 🎯, ☆, 🗑)
   // handle their own clicks — don't also navigate when one of them is pressed.
   $('list').querySelectorAll('[data-openrow]').forEach(tr => tr.onclick = (e) => {
+    if (e.target.closest('button')) return;
+    selectRow(tr.dataset.k, true);
+  });
+  $('list').querySelectorAll('[data-openrow]').forEach(tr => tr.ondblclick = (e) => {
     if (e.target.closest('button')) return;
     location.href = './strategy-backtest.html?id=' + encodeURIComponent(tr.dataset.openrow);
   });
@@ -1361,6 +1430,149 @@ function runHold() {
   $('hOut').innerHTML = `Buy ${h.rows.length} on ${from}, hold to ${to}: <b class="${cls}">${pct(h.retPct)}</b> · ${fmtINR(h.startVal)} → <b>${fmtINR(h.endVal)}</b>`;
 }
 
+/* ---------- one-screen glue: selected strategy → detail pane → year-by-year chart ---------- */
+let SEL = null, ROWS = [];
+const K = window.OSKit;
+const isPhone = () => window.innerWidth < 900;
+function gSel() { return ROWS.find(g => identityKey(g.rep.cfg) === SEL) || null; }
+function openStrategy(g) { if (g) location.href = './strategy-backtest.html?id=' + encodeURIComponent(g.rep.id); }
+function selectRow(k, byTap) {
+  SEL = k; paintDetail();
+  if (byTap && isPhone()) $('pM').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+const sPct = v => (v == null || !isFinite(v)) ? '<span class="dim">—</span>' : `<b class="${v >= 0 ? 'pos' : 'neg'}">${pct(v)}</b>`;
+const sDD  = v => (v == null || !isFinite(+v)) ? '<span class="dim">—</span>' : `<span class="neg">-${(+v).toFixed(1)}%</span>`;
+const benchOk = v => !(v == null || !isFinite(v) || v <= -99);
+function paintDetail() {
+  const rowsEl = $('list').querySelectorAll('tr.srow');
+  $('lCount').textContent = ROWS.length ? ROWS.length : '';
+  $('list').classList.toggle('own', !!(window.btSync && btSync.isOwner()));
+  if (!gSel()) SEL = (ROWS.length && !isPhone()) ? identityKey(ROWS[0].rep.cfg) : null;
+  rowsEl.forEach(tr => tr.classList.toggle('on', tr.dataset.k === SEL));
+  const g = gSel();
+  if (!g) {
+    $('dTitle').textContent = 'Strategy'; $('dOpen').classList.add('hidden'); $('dFav').classList.add('hidden');
+    $('dBody').innerHTML = `<div class="os-empty">${ROWS.length ? 'Tap a strategy in the list to see its details.' : 'No strategy to show.'}</div>`;
+    $('yNote').textContent = ''; $('yChart').innerHTML = ''; $('yBody').innerHTML = '<div class="os-empty">Year-by-year returns of the selected strategy appear here.</div>';
+    return;
+  }
+  const it = g.rep, c = it.cfg, k = identityKey(c);
+  const fav = isFav(loadFavs(), c);
+  $('dTitle').innerHTML = `<span class="sw-sn">${esc(SERIAL.get(k) || '—')}</span> Strategy`;
+  $('dOpen').classList.remove('hidden'); $('dOpen').href = './strategy-backtest.html?id=' + encodeURIComponent(it.id);
+  $('dFav').classList.remove('hidden'); $('dFav').classList.toggle('on', fav);
+  $('dFav').textContent = fav ? '★ Favourite' : '☆ Favourite';
+  $('dFav').title = fav ? 'Remove from favourites' : 'Add to favourites';
+  $('dFav').onclick = () => toggleFav(k);
+  const counts = [...new Set([...g.vars.values()].map(v => v.cfg.topN).filter(v => v != null))].sort((a, b) => a - b);
+  const expr = filterExpr(c);
+  const saved = it.ts ? new Date(it.ts).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+  let h = `<div class="sec"><div class="dnm">${esc(strategyEnglish(c))}</div>
+    <div class="dcode">Code-name: ${esc(nameWithBasis(it.name, c))}</div></div>
+   <div class="sec"><h4>Rule</h4><table class="kv">
+    <tr><td>Universe</td><td>${esc(universeLabel(c))}</td></tr>
+    <tr><td>Rebalance</td><td>${esc(FREQ[c.freq] || c.freq + 'mo')}</td></tr>
+    <tr><td>Stocks</td><td>${esc(counts.length ? counts.join('/') : c.topN)}</td></tr>
+    <tr><td>Ranked by</td><td>${esc(SORTL[c.sortBy] || c.sortBy)} ${c.dir === 'high' ? '↓' : '↑'}</td></tr>
+    <tr><td>Filters</td><td>${expr ? esc(expr) : '<span class="dim">none</span>'}</td></tr>
+    <tr><td>Last saved</td><td>${esc(saved)}</td></tr></table></div>`;
+  // returns: headline + the four baked market-cycle windows
+  const wRows = WAVE_ORDER.map(key => {
+    const r = snapResult(key, c);
+    return `<tr><td>${esc(WAVE_NAME[key])}<span class="dim" style="display:block;font-size:11px">${esc(waveColWindow(key))}</span></td>
+      <td>${r && r.ret != null ? sPct(r.ret) : `<span class="dim" title="${esc(waveMissingWhy())}">—</span>`}</td>
+      <td>${r && r.cagr != null ? pct(r.cagr) : '<span class="dim">—</span>'}</td>
+      <td>${r ? sDD(r.maxDD) : '<span class="dim">—</span>'}</td></tr>`;
+  }).join('');
+  h += `<div class="sec"><h4>Returns <i>CAGR of the longest saved backtest: ${isFinite(g.cagr) ? sPct(g.cagr) : '—'}</i></h4>
+    <div class="scr"><table class="bk"><thead><tr><th>Market cycle</th><th>Return</th><th>CAGR</th><th>Max DD</th></tr></thead><tbody>${wRows}</tbody></table></div>
+    <div class="dim" style="font-size:11px;margin-top:6px">${WAVE_SNAP && WAVE_SNAP.date ? 'From the ' + esc(WAVE_SNAP.date) + ' snapshot — every strategy over the same four windows.' : 'Market-cycle snapshot not loaded yet.'}</div></div>`;
+  if (windowMode() && CUSTOM_WIN && !CUSTOM_WIN.wave) {
+    const cr = waveResult(c);
+    h += `<div class="sec"><h4>Custom window <i>${esc(CUSTOM_WIN.start)} → ${esc(CUSTOM_WIN.end)}${CUSTOM_WIN.topN != null ? ' · top-' + CUSTOM_WIN.topN : ''}</i></h4>
+      ${cr && cr.cagr != null ? `Return ${sPct(cr.ret)} · CAGR ${pct(cr.cagr)} · Max DD ${sDD(cr.maxDD)}` : '<span class="dim">Not computed for this window yet — press Compute.</span>'}</div>`;
+  }
+  const lp = livePerf(c);
+  if (lp && !lp.skip && lp.n) {
+    const held = LIVEHELD.get(k) || [];
+    h += `<div class="sec"><h4>Held basket <i>since the ${esc(lp.rebDate)} rebalance · ${lp.n} stock${lp.n > 1 ? 's' : ''}</i></h4>
+      <div style="margin-bottom:6px">Today ${sPct(lp.day)} · Since rebalance ${sPct(lp.ret)}</div>
+      <div class="scr"><table class="bk"><thead><tr><th>Stock</th><th>Entry ₹</th><th>Today</th><th>Since reb.</th></tr></thead><tbody>${held.map(x =>
+        `<tr><td>${esc(x.sym || '')}</td><td>${x.entry != null && isFinite(x.entry) ? (+x.entry).toFixed(2) : '—'}</td><td>${sPct(x.day)}</td><td>${sPct(x.ret)}</td></tr>`).join('')}</tbody></table></div></div>`;
+  }
+  const list = g.list;
+  h += `<div class="sec"><h4>Saved backtests <i>${list.length}</i></h4>
+    <div class="scr"><table class="bk"><thead><tr><th>Window</th><th>CAGR</th><th>Max DD</th><th>₹1L →</th><th>Nifty 500</th></tr></thead><tbody>${list.map(b => {
+      const m = b.m || {}, bc = b.cfg;
+      return `<tr><td>${esc(bc.start || '')} → ${esc(windowEnd(bc))}${bc.topN != null ? ` <span class="os-tag">top-${esc(bc.topN)}</span>` : ''}${bc.method ? ` <span class="os-tag">${bc.method === 'hold' ? 'hold' : 'reset'}</span>` : ''}</td>
+        <td>${sPct(m.cagr)}</td><td>${sDD(m.maxDD)}</td><td>${m.finalV != null && isFinite(m.finalV) ? fmtINR(m.finalV) : '<span class="dim">—</span>'}</td>
+        <td>${typeof m.benchCagr === 'number' && isFinite(m.benchCagr) ? pct(m.benchCagr) : '<span class="dim">—</span>'}</td></tr>`;
+    }).join('')}</tbody></table></div>
+    <div class="dim" style="font-size:11px;margin-top:6px">Live picks, rewind, run history and edit are on the strategy page.</div></div>`;
+  $('dBody').innerHTML = h;
+  paintYears(g);
+}
+function paintYears(g) {
+  const rows = yearRows({ rep: g.rep, allIds: g.allIds }), c = g.rep.cfg;
+  $('yNote').textContent = c.topN != null ? c.topN + ' stocks' : '';
+  if (!rows.length) {
+    $('yChart').innerHTML = '';
+    $('yBody').innerHTML = `<div class="os-empty">No year-wise data yet — no saved backtest of this strategy${c.topN != null ? ` at ${esc(c.topN)} stocks` : ''} covers ${YR_FROM} onward.</div>`;
+    return;
+  }
+  const part = rows.some(r => r.ret != null && !r.full);
+  $('yBody').innerHTML = `<div class="sec"><table class="bk"><thead><tr><th>Year</th><th>Strategy</th><th>Nifty 500</th></tr></thead><tbody>${rows.map(r =>
+    `<tr><td>${r.year}${r.ret != null && !r.full ? '<span style="color:var(--warn,#d97706)">*</span>' : ''}</td><td>${sPct(r.ret)}</td><td>${benchOk(r.bench) ? pct(r.bench) : '<span class="dim">—</span>'}</td></tr>`).join('')}</tbody></table>
+    ${part ? '<div class="dim" style="font-size:11px;margin-top:6px">* part-year — the backtest window starts or ends mid-year</div>' : ''}
+    <div class="dim" style="font-size:11px;margin-top:4px">Calendar-year returns stored with this strategy’s saved backtests; nothing is recomputed here.</div></div>`;
+  drawYears(rows);
+}
+let YROWS = null;
+function drawYears(rows) {
+  YROWS = rows;
+  const el = $('yChart'), W = Math.max(220, el.clientWidth), H = el.clientHeight || 250;
+  const vals = [];
+  rows.forEach(r => { if (r.ret != null && isFinite(r.ret)) vals.push(r.ret); if (benchOk(r.bench)) vals.push(r.bench); });
+  if (!vals.length) { el.innerHTML = ''; return; }
+  const hi = Math.max(0, ...vals), lo = Math.min(0, ...vals), span = (hi - lo) || 1;
+  const L = 8, R = 8, T = 20, B = 22, ph = H - T - B, pw = W - L - R;
+  const y = v => T + (hi - v) / span * ph, slot = pw / rows.length, bw = Math.max(3, Math.min(22, slot * 0.34));
+  const lab = v => (v >= 0 ? '+' : '') + (Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(1));
+  let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Year by year returns, strategy against Nifty 500"><line class="ax" x1="${L}" x2="${W - R}" y1="${y(0)}" y2="${y(0)}"/>`;
+  rows.forEach((r, i) => {
+    const cx = L + slot * (i + 0.5);
+    const bar = (v, x, cls, name) => { const y0 = y(Math.max(0, v)), hh = Math.max(1, Math.abs(y(v) - y(0))); return `<rect class="${cls}" x="${x.toFixed(1)}" y="${y0.toFixed(1)}" width="${bw.toFixed(1)}" height="${hh.toFixed(1)}"><title>${r.year} ${name}: ${pct(v)}</title></rect>`; };
+    if (r.ret != null && isFinite(r.ret)) {
+      s += bar(r.ret, cx - bw - 1, r.ret >= 0 ? 'bp' : 'bn', 'strategy');
+      if (slot >= 38) s += `<text x="${(cx - bw / 2 - 1).toFixed(1)}" y="${(r.ret >= 0 ? y(r.ret) - 4 : y(r.ret) + 12).toFixed(1)}" text-anchor="middle">${lab(r.ret)}</text>`;
+    }
+    if (benchOk(r.bench)) s += bar(r.bench, cx + 1, 'bb', 'Nifty 500');
+    s += `<text x="${cx.toFixed(1)}" y="${H - 7}" text-anchor="middle">${slot >= 34 ? r.year : "'" + String(r.year).slice(2)}${r.ret != null && !r.full ? '*' : ''}</text>`;
+  });
+  el.innerHTML = s + '</svg>';
+}
+// render() repaints the list wholesale — re-attach the selection and the two right-hand panes after it
+const _render = render;
+render = function () { ROWS = []; _render(); paintDetail(); K.fitGrid($('grid')); };
+document.addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const t = e.target, tag = t && t.tagName;
+  if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+  if (!ROWS.length) return;
+  const i = ROWS.findIndex(g => identityKey(g.rep.cfg) === SEL);
+  let j = null;
+  if (e.key === 'ArrowDown') j = Math.min(ROWS.length - 1, i + 1);
+  else if (e.key === 'ArrowUp') j = Math.max(0, i - 1);
+  else if (e.key === 'Home') j = 0;
+  else if (e.key === 'End') j = ROWS.length - 1;
+  else if (e.key === 'Enter' && i >= 0 && tag !== 'BUTTON' && tag !== 'A') { openStrategy(ROWS[i]); return; }
+  if (j == null) return;
+  e.preventDefault();
+  selectRow(identityKey(ROWS[j].rep.cfg), false);
+  const tr = $('list').querySelector('tr.srow.on'); if (tr) tr.scrollIntoView({ block: 'nearest' });
+});
+{ let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { K.fitGrid($('grid')); if (YROWS && gSel()) drawYears(YROWS); }, 120); }); }
+
 /* ---------- boot ---------- */
 $('clearAll').onclick = () => { if (confirm('Delete ALL shared strategies for everyone?')) { saveLS('bt_strategies', []); if (window.btSync) btSync.pushStrategies(); render(); } };
 if ($('clearAll') && !(window.btSync && btSync.isOwner())) $('clearAll').style.display = 'none';   // visitors can't clear the shared list
@@ -1474,7 +1686,7 @@ function wireUI() {
   const t = new Date(), today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
   if (!$('cFrom').value) $('cFrom').value = '2021-01-01';
   if (!$('cTo').value)   $('cTo').value = today;
-  $('cCompute').onclick = () => { document.querySelectorAll('.preset').forEach(b => b.classList.remove('!bg-indigo-600', '!text-white')); computeCustom(); };
+  $('cCompute').onclick = () => { document.querySelectorAll('.preset').forEach(b => b.classList.remove('on')); computeCustom(); };
   document.querySelectorAll('.preset').forEach(b => b.onclick = () => runPreset(b.dataset.preset));
   $('liveRefresh').onclick = () => refreshLivePerf();   // re-quote + re-price; re-screens only if the set moved
 }
@@ -1562,8 +1774,9 @@ function wireUI() {
   // Don't eager-load the 17 MB + 90 MB engine — the list + 👁 results work from saved data alone.
   // Market data loads on demand only when you open Today's Picks (ensureEngine), so first paint is instant.
   $('status').textContent = strategies().length
-    ? 'Click a strategy to open its page — live picks, backtests, rewind & edit.'
+    ? 'Click a strategy for its details · double-click or Enter opens its page (live picks, backtests, rewind, edit).'
     : '';
+  K.fitGrid($('grid'));
 })();
 </script>
 </body>
