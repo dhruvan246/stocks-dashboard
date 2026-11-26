@@ -12,41 +12,115 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./bt-sync.js"></script>
+<script src="./os-kit.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .hidden{display:none!important}
   .pos{color:var(--pos)}.neg{color:var(--neg)}
-  .lbl{display:block;font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px}
-  .inp{width:100%;padding:.5rem .6rem;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;background:var(--surface);color:var(--text)}
-  .inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
-  .chip{font-size:10px;font-weight:600;border:1px solid var(--border,var(--border));border-radius:var(--radius-sm);padding:1px 7px;white-space:nowrap}
-  .dot{width:10px;height:10px;border-radius:999px;display:inline-block;flex-shrink:0}
-  .srow:hover{background:var(--surface-2,var(--surface-2))}
-  .srow input[type=checkbox]{accent-color:#4f46e5;width:15px;height:15px}
-  /* matrix cells: background tint carries the signal, the number stays in text ink */
-  .cell{font-size:12px;font-weight:700;text-align:center;padding:8px 6px;border:1px solid var(--border,var(--border))}
+  .dim{color:var(--text-faint)}
+  #grid{grid-template-columns:minmax(280px,.8fr) minmax(380px,1.3fr) minmax(340px,1.1fr)}
+  /* controls */
+  .os-sg button i{font-style:normal;font-weight:500;margin-left:5px;font-size:11.5px}
+  .os-sg button i.mstat:not(.pos):not(.neg){color:var(--text-faint)}
+  .os-sg button.on i{color:inherit!important;opacity:.9}
+  html[data-theme] .dt{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-faint)}
+  html[data-theme] .dt input{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 6px;font-size:12.5px;color:var(--text);min-height:0;height:29px;box-shadow:none;width:auto}
+  html[data-theme] .go{background:var(--accent);color:var(--on-accent,#fff);border:1px solid var(--accent);border-radius:6px;padding:5px 14px;font-size:12.5px;font-weight:600;cursor:pointer;min-height:0;white-space:nowrap}
+  html[data-theme] .go:disabled{opacity:.5;cursor:default}
+  #runMsg{white-space:normal;max-width:60ch}
+  html[data-theme] .inp{padding:3px 7px;border:1px solid var(--border);border-radius:6px;font-size:12.5px;background:var(--surface);color:var(--text);min-height:0;height:27px;box-shadow:none}
+  html[data-theme] .inp:focus{outline:none;border-color:var(--accent)}
+  .chip{font-size:11px;font-weight:500;border:1px solid var(--border);border-radius:5px;padding:1px 7px;white-space:nowrap}
+  html[data-theme] button.chip{background:var(--surface);color:var(--text-muted);min-height:0;cursor:pointer;padding:3px 9px}
+  html[data-theme] button.chip:hover{border-color:var(--border-strong);color:var(--text)}
+  .dot{width:9px;height:9px;border-radius:999px;display:inline-block;flex-shrink:0}
+  /* left: strategies to tick */
+  #stratList{overflow:auto}
+  .srow{display:flex;align-items:center;gap:9px;padding:6px 10px;border-bottom:1px solid var(--border);cursor:pointer;box-shadow:inset 2px 0 0 transparent}
+  .srow:hover{background:var(--surface-2)}
+  .srow.on{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent)}
+  .srow.cur{outline:1px solid var(--border-strong);outline-offset:-1px}
+  .srow input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;flex:none;margin:0}
+  .srow .nm{flex:1;min-width:0}
+  .srow .snm{display:block;font-size:12.5px;font-weight:500;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srow.on .snm{color:var(--accent-text)}
+  .srow .smeta{display:block;font-size:11.5px;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srow .cg{flex:none;text-align:right;font-size:12px;font-weight:600;line-height:1.2}
+  .srow .cg i{display:block;font-style:normal;font-size:10px;font-weight:400;color:var(--text-faint)}
+  #listMsg{padding:24px 12px;text-align:center;font-size:12.5px;color:var(--text-faint)}
+  html[data-theme] #q{width:150px}
+  /* middle: the mix */
+  .mb{flex:1;min-height:0;overflow:auto;font-size:12.5px;color:var(--text)}
+  .sec{padding:10px 12px;border-bottom:1px solid var(--border)}
+  .sec h4{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin:0 0 7px}
+  #mixEmpty{font-size:12.5px;color:var(--text-faint);padding:6px 0}
+  #mixRows > div{padding:2px 0}
+  #mixRows .inp{height:26px}
+  #mixTotal{display:flex;justify-content:space-between;font-weight:600;border-top:1px solid var(--border);margin-top:7px;padding-top:7px}
+  #mixBtns,#mixPresets{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
+  #presetMsg{font-size:11.5px;color:var(--neg)}
+  #resBar{position:sticky;top:0;z-index:2;background:var(--surface);padding:8px 12px;border-bottom:1px solid var(--border);overflow-x:auto}
+  #resBar .os-sg{flex-wrap:nowrap;white-space:nowrap}
+  #grid:not(.ran) .res{display:none!important}
+  #grid.ran .nores{display:none}
+  .rp{display:none;padding:10px 12px}
+  .rp.on{display:block}
+  .rp .os-note{margin:8px 0 0;padding:0}
+  .rp .rh{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  .rp table{font-variant-numeric:tabular-nums}
+  .rp table.w-full td,.rp table.w-full th{padding:5px 8px!important;font-size:12px!important}
+  .rp table.w-full thead tr{background:none!important;text-transform:none!important;letter-spacing:0!important}
+  .rp table.w-full th{font-weight:500!important;color:var(--text-faint);font-size:11.5px!important}
+  .rp td .font-bold,.rp td .font-semibold,.rp td.font-bold,.rp td.font-semibold{font-weight:600}
+  #tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  #tiles .card{border:0;border-right:1px solid var(--border);border-bottom:1px solid var(--border);border-radius:0;background:none;padding:8px 10px;margin:0 -1px -1px 0}
+  #tiles .card > div:first-child{font-size:11px;font-weight:500;letter-spacing:.02em;text-transform:none;color:var(--text-faint)}
+  #tiles .card > div:nth-child(2){font-size:15px;font-weight:600;line-height:1.3;margin:1px 0 0}
+  #tiles .card > div:nth-child(3){font-size:11px;color:var(--text-faint)}
+  .cell{font-size:12px;font-weight:600;text-align:center;padding:6px 6px;border:1px solid var(--border)}
+  th.cell{background:var(--surface)!important}
   .tint-lo{background:rgba(16,185,129,.12)} .tint-mid{background:rgba(245,158,11,.14)} .tint-hi{background:rgba(244,63,94,.14)}
-  .legit{cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
-         border:1px solid var(--border,var(--border));border-radius:var(--radius-sm);padding:3px 10px}
-  .legit.off{opacity:.38}
-  .tick{font-size:11px;font-weight:650;border:1px solid var(--border,var(--border));border-radius:7px;padding:3px 7px;white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
-  /* mode cards — the two ways to put the money in */
-  .modecard{text-align:left;border:1.5px solid var(--border,var(--border));border-radius:var(--radius);padding:10px 12px;transition:.15s;background:var(--surface,var(--surface));cursor:pointer}
-  .modecard:hover{border-color:#a5b4fc}
-  .modecard[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.14)}
-  .modecard .mtitle{font-size:12.5px;font-weight:750;display:flex;align-items:center;gap:6px}
-  .modecard .mdesc{font-size:10.5px;line-height:1.45;margin-top:3px;color:var(--text-muted)}
-  .modecard[aria-pressed="true"] .mtitle{color:var(--accent-text)}
-  html[data-theme="dark"] .modecard[aria-pressed="true"] .mtitle{color:var(--accent-text)}
-  .mradio{width:13px;height:13px;border-radius:999px;border:2px solid var(--border,var(--border-strong));flex-shrink:0}
-  .modecard[aria-pressed="true"] .mradio{border-color:var(--accent);background:radial-gradient(circle,#4f46e5 0 3px,transparent 3.5px)}
-  .kx{font-size:9.5px;font-weight:750;border-radius:4px;padding:1px 4px;background:rgba(79,70,229,.12);color:var(--accent-text)}
-  html[data-theme="dark"] .kx{color:var(--accent-text)}
+  .tick{font-size:11px;font-weight:600;border:1px solid var(--border);border-radius:5px;padding:2px 6px;white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
+  .tick em{font-style:normal;font-weight:400;color:var(--text-faint)}
+  .kx{font-size:9.5px;font-weight:700;border-radius:4px;padding:1px 4px;background:var(--accent-soft);color:var(--accent-text)}
+  #splitMath{font-size:12px;margin-bottom:8px;border:1px solid var(--border);border-radius:6px;padding:7px 10px;background:var(--surface-2)}
+  #holdSub{font-size:11.5px;color:var(--text-faint);margin-bottom:8px}
+  html[data-theme] #tdCsv{min-height:0}
+  /* right: charts */
+  #legend{display:block;padding:6px 12px;border-bottom:1px solid var(--border)}
+  .legit{display:flex;align-items:center;gap:7px;font-size:11.5px;padding:2px 0;user-select:none}
+  .legit[data-tg]{cursor:pointer}
+  .legit.off{opacity:.4}
+  .legit .ln{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-muted)}
+  .legit .lv{flex:none;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums}
+  .legit .lv span{font-weight:500;margin-left:6px}
+  #eqWrap,#ddWrap{padding:6px 8px 0}
+  #eqWrap svg,#ddWrap svg{display:block}
+  .chh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 12px;border-top:1px solid var(--border);font-size:11.5px;color:var(--text-faint)}
+  .chh b{font-weight:600;color:var(--text);font-size:12px}
+  .chh .os-sg{flex:none}
+  #ddtip{font-size:11.5px;color:var(--text-muted);padding:0 12px 8px;min-height:22px}
+  #mrWrap{overflow-x:auto;padding:8px}
+  .cp{display:none}.cp.on{display:block}
+  details.fold{margin-top:10px;font-size:12px;color:var(--text-muted)}
+  details.fold summary{cursor:pointer;color:var(--text-faint);font-size:12px}
+  details.fold p{margin:8px 0 0;max-width:110ch;line-height:1.55}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(250px,.8fr) minmax(330px,1.25fr) minmax(300px,1fr)} }
+  @media (max-width:899px){
+    #grid{grid-template-columns:minmax(0,1fr)}
+    #stratList{max-height:52vh}
+    #pM{scroll-margin-top:64px}
+    .mb{flex:none;overflow-x:auto;overflow-y:visible}
+    #resBar{position:static}
+    #tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .os-vbar{gap:10px}
+    #runMsg{max-width:none}
+  }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -55,160 +129,138 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-  <h1 class="text-xl font-bold text-slate-900">Strategy Mixer — blend strategies into one portfolio</h1>
-  <p class="text-sm text-slate-500 mt-1 mb-5 max-w-3xl">Pick a few of your saved strategies, decide how many rupees go into each, and see how the <b>combined portfolio</b> would have done — growth, worst fall, how much the strategies overlap, and whether mixing them actually made the ride smoother. Choose whether each strategy runs on <b>its own money</b> or everything goes into <b>one shared basket</b> (where a stock two strategies both pick gets double the money). Every strategy runs over the <b>same dates</b> with the same engine as its own backtest page.</p>
-
-  <!-- grid-cols-1 = minmax(0,1fr): without it the phone column sized itself to the longest nowrap strategy
-       name (865px on a 375px screen) and the whole page scrolled sideways (found 2026-10-13) -->
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 items-start" data-jump="Setup">
-    <!-- 1 · pick -->
-    <section class="card p-4">
-      <div class="flex items-center justify-between gap-2 mb-2">
-        <div class="text-sm font-bold text-slate-900">1 · Pick strategies <span class="text-slate-400 font-semibold">(2–8)</span></div>
-        <input id="q" class="inp" style="width:150px;padding:.3rem .55rem;font-size:12px" placeholder="filter by name…">
-      </div>
-      <div id="listMsg" class="text-sm text-slate-500 py-6 text-center">Loading saved strategies…</div>
-      <div id="stratList" class="max-h-[26rem] overflow-y-auto -mx-1 px-1"></div>
-      <div class="text-[11px] text-slate-400 mt-2 border-t border-slate-100 pt-2">⭐ = your Favourites from <a href="./saved-strategies.html?view=fav" class="text-indigo-600 hover:underline">Saved Strategies</a> (shown first). The CAGR chip is that strategy's own saved backtest (longest window).</div>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Strategy Mixer</h1>
+    <span class="os-asof">Blend 2–8 saved strategies into one portfolio — same dates, same engine as each strategy's own backtest</span>
+  </div>
+  <div class="os-bar">
+    <div class="os-sg"><span class="lbl">Money goes into</span>
+      <button id="mSplit" class="modecard on" aria-pressed="true" title="Each strategy invests its own money and rebalances on its own schedule. A stock two strategies both pick is simply bought twice, once in each bucket.">Separate buckets <i class="mstat">—</i></button>
+      <button id="mPool" class="modecard" aria-pressed="false" title="All the picks go into one basket and the whole amount is spread across them — so a stock picked by 2 strategies gets double the money, by 3 gets triple.">One combined portfolio <i class="mstat">—</i></button>
+    </div>
+    <label class="dt" for="dFrom">From <input id="dFrom" type="date"></label>
+    <label class="dt" for="dTo">To <input id="dTo" type="date"></label>
+    <button id="runBtn" class="go">▶ Run the mix</button>
+    <span id="runMsg" class="os-hint"></span>
+    <span class="sp"></span>
+    <span class="os-hint keys"><b>↑ ↓</b> move · <b>Space</b> tick · <b>Enter</b> run</span>
+  </div>
+  <div class="os-grid" id="grid">
+    <section class="os-pane" id="pL">
+      <div class="os-ph"><span class="ttl">Strategies <i id="lCount"></i></span><span class="r"><input id="q" class="inp" placeholder="filter by name…"></span></div>
+      <div id="listMsg">Loading saved strategies…</div>
+      <div id="stratList" class="os-list"></div>
+      <div class="os-note" style="padding:7px 10px;border-top:1px solid var(--border)">⭐ = your Favourites from <a href="./saved-strategies.html?view=fav" style="color:var(--accent-text)">Saved Strategies</a> (shown first). CAGR = that strategy's own saved backtest (longest window).</div>
     </section>
 
-    <!-- 2 · allocate + run -->
-    <section class="card p-4">
-      <div class="text-sm font-bold text-slate-900 mb-2">2 · Money in each strategy</div>
-      <div id="mixEmpty" class="text-sm text-slate-400 py-6 text-center border border-dashed border-slate-200 rounded-lg">Tick strategies on the left — they appear here with a ₹ box each.</div>
-      <div id="mixRows" class="space-y-1.5"></div>
-      <div id="mixTotal" class="hidden text-[13px] font-bold text-slate-900 flex items-center justify-between border-t border-slate-200 mt-2.5 pt-2.5"></div>
-      <div id="mixBtns" class="hidden flex-wrap gap-1.5 mt-2 flex">
-        <button id="bEq" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="Same ₹ into every selected strategy, keeping the current total">Equal split</button>
-        <button id="bLakh" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="₹1,00,000 into every selected strategy">₹1L each</button>
-        <button id="bFav" class="chip text-slate-600 bg-slate-50 hover:border-indigo-300" title="Tick every ⭐ favourite"><svg class="sw-i" style="font-size:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Add favourites</button>
-        <button id="bClear" class="chip text-slate-600 bg-slate-50 hover:border-rose-300">Clear all</button>
+    <section class="os-pane os-main" id="pM">
+      <div class="os-ph"><span class="ttl">The mix <i id="mCount"></i></span><span class="r" id="mHead"></span></div>
+      <div class="mb">
+        <div class="sec">
+          <h4>Money in each strategy</h4>
+          <div id="mixEmpty">Tick strategies on the left — they appear here with a ₹ box each.</div>
+          <div id="mixRows"></div>
+          <div id="mixTotal" class="hidden"></div>
+          <div id="mixBtns" class="hidden">
+            <button id="bEq" class="chip" title="Same ₹ into every selected strategy, keeping the current total">Equal split</button>
+            <button id="bLakh" class="chip" title="₹1,00,000 into every selected strategy">₹1L each</button>
+            <button id="bFav" class="chip" title="Tick every ⭐ favourite">⭐ Add favourites</button>
+            <button id="bClear" class="chip">Clear all</button>
+          </div>
+          <div id="mixPresets" class="hidden"></div>
+          <div id="presetMsg"></div>
+        </div>
+        <div id="results" class="hidden"></div>
+        <div class="os-empty nores">Tick at least 2 strategies, give each some money, then press <b>Run the mix</b>.<br>Every strategy runs over the one From → To window above, so numbers here can differ from a strategy's own saved backtest. Dates before 2019 load extra history once.</div>
+        <div id="resBar" class="res">
+          <div class="os-sg" id="resSg">
+            <button data-rp="sum" class="on">Summary</button>
+            <button data-rp="per">Each strategy</button>
+            <button data-rp="ov">Overlap</button>
+            <button data-rp="hold">Portfolio</button>
+            <button data-rp="pool" id="rpPoolBtn" class="hidden">Split changes</button>
+            <button data-rp="corr">Correlation</button>
+            <button data-rp="year">Yearly</button>
+            <button data-rp="reb">Rebalances</button>
+            <button data-rp="trd">Trades</button>
+          </div>
+        </div>
+        <div class="res">
+          <div class="rp on" data-rp="sum">
+            <div id="tiles"></div>
+          </div>
+          <div class="rp" data-rp="per">
+            <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="perStrat"></table></div>
+            <div class="os-note">Profit = final value minus what was put in. Win % = that strategy's own positive rebalance periods. This table always shows each strategy run <b>on its own</b> with that money, so in <b>one combined portfolio</b> mode it is the comparison rather than what the mix did.</div>
+          </div>
+          <div class="rp" data-rp="ov">
+            <div class="os-note" style="margin:0 0 8px">Are you buying the same stocks twice? Each strategy's basket as of its last rebalance in the window. The diagonal is the basket size; every other cell = stocks the two share (and what share of the smaller basket that is). Hover a cell to see which stocks.</div>
+            <div class="overflow-x-auto"><table class="border-collapse" id="ovMatrix"></table></div>
+            <div id="sharedChips" class="mt-3"></div>
+          </div>
+          <div class="rp" data-rp="hold">
+            <div id="holdSub"></div>
+            <div id="splitMath" class="hidden"></div>
+            <div class="overflow-x-auto tscroll"><table class="w-full text-sm border-collapse" id="holdTbl"></table></div>
+          </div>
+          <!-- pooled mode only: how the split moved from one rebalance to the next -->
+          <div class="rp hidden" id="poolRebCard" data-rp="pool">
+            <div class="os-note" style="margin:0 0 8px">Newest first. Every time any strategy reshuffles, the whole portfolio is re-spread across the new set of picks. <span class="kx">×2</span> means two strategies were picking that stock that month, so it got two shares of the money. 🆕 = wasn't held the previous rebalance.</div>
+            <div id="poolRebOut"></div>
+            <div id="poolRebMore" class="mt-2"></div>
+          </div>
+          <div class="rp" id="corrCard" data-rp="corr">
+            <div class="os-note" style="margin:0 0 8px">Do the strategies move together? Correlation of monthly returns: 1 = they swing together (mixing adds little) · near 0 = unrelated (good diversification) · negative = one zigs when the other zags (best). <b>Green ≤ 0.4 · amber 0.4–0.7 · red &gt; 0.7.</b></div>
+            <div class="overflow-x-auto"><table class="border-collapse" id="corrTbl"></table></div>
+          </div>
+          <div class="rp" data-rp="year">
+            <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="yearTbl"></table></div>
+            <div class="os-note">* partial year (the window starts or ends inside it).</div>
+          </div>
+          <div class="rp" data-rp="reb">
+            <div class="rh"><span class="dim">Every reshuffle in the mix, newest first</span><select id="rbWho" class="inp" style="width:auto"></select></div>
+            <div id="rbOut"></div>
+            <div id="rbMore" class="mt-2"></div>
+            <div class="os-note">Each row is one strategy's rebalance day: what its bucket was worth, how it moved since its previous rebalance, how many names it swapped in, and the basket it then held (🆕 = new that day). Weights are of that strategy's own bucket.</div>
+          </div>
+          <div class="rp" data-rp="trd">
+            <div class="rh"><span class="dim">Every position the mix took, newest first</span>
+              <span style="display:inline-flex;gap:6px;align-items:center"><select id="tdWho" class="inp" style="width:auto"></select><button id="tdCsv" class="os-btn">↓ CSV</button></span></div>
+            <div id="tdStats" class="flex flex-wrap gap-1.5 mb-2"></div>
+            <div id="tdOut"></div>
+            <div id="tdMore" class="mt-2"></div>
+          </div>
+        </div>
       </div>
-      <div id="mixPresets" class="hidden flex-wrap items-center gap-1.5 mt-2 flex"></div>
-      <div class="text-sm font-bold text-slate-900 mt-4 mb-1.5">3 · How the money is invested</div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        <button id="mSplit" class="modecard" aria-pressed="true">
-          <span class="mtitle"><span class="mradio"></span>Separate buckets</span>
-          <span class="mdesc block">Each strategy invests <b>its own money</b> and rebalances on its own schedule. A stock two strategies both pick is simply bought twice, once in each bucket.</span>
-          <span class="mstat block text-[10.5px] font-bold mt-1.5 text-slate-400">—</span>
-        </button>
-        <button id="mPool" class="modecard" aria-pressed="false">
-          <span class="mtitle"><span class="mradio"></span>One combined portfolio</span>
-          <span class="mdesc block">All the picks go into <b>one basket</b> and the whole amount is spread across them — so a stock picked by 2 strategies gets <b>double</b> the money, by 3 gets triple.</span>
-          <span class="mstat block text-[10.5px] font-bold mt-1.5 text-slate-400">—</span>
-        </button>
+    </section>
+
+    <section class="os-pane" id="pR">
+      <div class="os-ph"><span class="ttl">Charts</span><span class="r"><div class="os-sg res" id="chSg"><button data-cp="eq" class="on">Growth + drawdown</button><button data-cp="mr">Month by month</button></div></span></div>
+      <div class="mb">
+        <div class="os-empty nores">The growth, drawdown and month-by-month charts of the mix appear here after a run.</div>
+        <div class="res cp on" data-cp="eq">
+          <div class="chh" style="border-top:0;padding-bottom:0"><b>Growth of the mix</b><span id="eqDate"></span></div>
+          <div id="legend" title="click a strategy name to hide/show its line · hover the chart for values on that date"></div>
+          <div id="eqWrap"></div>
+          <div class="chh"><span title="How far below its peak the mix was — 0% = at an all-time high. The deepest dip is the max drawdown."><b>Drawdown</b> below peak</span>
+            <div id="ddTog" class="os-sg" title="Monthly = month-end marks (as simulated); Daily marks every trading-day close, so it catches intramonth lows">
+              <button data-dd="month">Monthly</button><button data-dd="day">Daily</button>
+            </div></div>
+          <div id="ddWrap"></div>
+        </div>
+        <div class="res cp" data-cp="mr">
+          <div class="os-note" style="padding:8px 12px 0">The mix's return each month. Blue = ended the month higher, red = lower. Hover a bar for the exact move.</div>
+          <div id="mrWrap"></div>
+        </div>
       </div>
-      <div class="grid grid-cols-2 gap-3 mt-4">
-        <div><label class="lbl" for="dFrom">From</label><input id="dFrom" type="date" class="inp"></div>
-        <div><label class="lbl" for="dTo">To</label><input id="dTo" type="date" class="inp"></div>
-      </div>
-      <div class="text-[11px] text-slate-400 mt-1.5">Every strategy in the mix runs over this one window, so the numbers here can differ from a strategy's own saved backtest (which may use a different window). Dates before 2019 load extra history once.</div>
-      <button id="runBtn" class="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg> Run the mix</button>
-      <div id="runMsg" class="text-xs text-slate-500 mt-2 min-h-[1rem]"></div>
     </section>
   </div>
-
-  <!-- results -->
-  <div id="results" class="hidden">
-    <div id="tiles" data-jump="Summary" class="grid gap-3 mt-6 mb-4" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
-
-    <section class="card p-4 mb-4" data-jump="Growth">
-      <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
-        <div class="text-sm font-bold text-slate-900">Growth of the mix</div>
-        <div class="text-[11px] text-slate-400">click a name to hide/show its line · hover for values</div>
-      </div>
-      <div id="legend" class="flex flex-wrap gap-1.5 mb-2"></div>
-      <div id="eqWrap"></div>
-    </section>
-
-    <section class="card p-4 mb-4" data-jump="Drawdown">
-      <div class="flex items-start justify-between flex-wrap gap-2 mb-1">
-        <div>
-          <div class="text-sm font-bold text-slate-900">Drawdown — how far below its peak the mix was</div>
-          <div class="text-[11px] text-slate-400">0% = at an all-time high. The deepest dip is the max drawdown. Hover for the date.</div>
-        </div>
-        <div id="ddTog" class="inline-flex rounded-lg border border-slate-200 overflow-hidden text-xs font-semibold shrink-0" title="Monthly = month-end marks (as simulated); Daily marks every trading-day close, so it catches intramonth lows">
-          <button data-dd="month" class="px-2.5 py-1 hover:bg-slate-50">Monthly</button>
-          <button data-dd="day" class="px-2.5 py-1 border-l border-slate-200 hover:bg-slate-50">Daily</button>
-        </div>
-      </div>
-      <div id="ddWrap"></div>
-    </section>
-
-    <section class="card p-4 mb-4" data-jump="Monthly">
-      <div class="text-sm font-bold text-slate-900 mb-1">Month by month — the mix's return each month</div>
-      <div class="text-[11px] text-slate-400 mb-2">Blue = the mix ended the month higher, red = lower. Hover a bar for the exact move.</div>
-      <div id="mrWrap" style="overflow-x:auto"></div>
-    </section>
-
-    <section class="card p-4 mb-4" data-jump="Strategies">
-      <div class="text-sm font-bold text-slate-900 mb-2">Each strategy inside the mix</div>
-      <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="perStrat"></table></div>
-      <div class="text-[11px] text-slate-400 mt-2">Profit = final value minus what was put in. Win % = that strategy's own positive rebalance periods. This table always shows each strategy run <b>on its own</b> with that money, so in <b>one combined portfolio</b> mode it is the comparison rather than what the mix did.</div>
-    </section>
-
-    <section class="card p-4 mb-4" data-jump="Overlap">
-      <div class="text-sm font-bold text-slate-900 mb-1">Stock overlap — are you buying the same stocks twice?</div>
-      <div class="text-[11px] text-slate-400 mb-3">Each strategy's basket as of its last rebalance in the window. The diagonal is the basket size; every other cell = stocks the two share (and what share of the smaller basket that is). Hover a cell to see which stocks.</div>
-      <div class="overflow-x-auto"><table class="border-collapse" id="ovMatrix"></table></div>
-      <div id="sharedChips" class="mt-3"></div>
-    </section>
-
-    <section class="card p-4 mb-4" data-jump="Portfolio">
-      <div class="text-sm font-bold text-slate-900 mb-1">The combined portfolio</div>
-      <div class="text-[11px] text-slate-400 mb-2" id="holdSub"></div>
-      <div id="splitMath" class="hidden text-[12px] mb-3 rounded-lg px-3 py-2" style="background:var(--surface-2,#f8fafc)"></div>
-      <div class="overflow-x-auto tscroll"><table class="w-full text-sm border-collapse" id="holdTbl"></table></div>
-    </section>
-
-    <!-- pooled mode only: how the split moved from one rebalance to the next -->
-    <section class="card p-4 mb-4 hidden" id="poolRebCard" data-jump="Split Changes">
-      <div class="text-sm font-bold text-slate-900 mb-1">How the split changed each rebalance</div>
-      <div class="text-[11px] text-slate-400 mb-2">Newest first. Every time any strategy reshuffles, the whole portfolio is re-spread across the new set of picks. <span class="kx">×2</span> means two strategies were picking that stock that month, so it got two shares of the money. 🆕 = wasn't held the previous rebalance.</div>
-      <div id="poolRebOut"></div>
-      <div id="poolRebMore" class="mt-2"></div>
-    </section>
-
-    <section class="card p-4 mb-4" id="corrCard" data-jump="Correlation">
-      <div class="text-sm font-bold text-slate-900 mb-1">Do the strategies move together? (correlation of monthly returns)</div>
-      <div class="text-[11px] text-slate-400 mb-3">1 = they swing together (mixing adds little) · near 0 = unrelated (good diversification) · negative = one zigs when the other zags (best). <span class="font-semibold">Green ≤ 0.4 · amber 0.4–0.7 · red &gt; 0.7.</span></div>
-      <div class="overflow-x-auto"><table class="border-collapse" id="corrTbl"></table></div>
-    </section>
-
-    <section class="card p-4 mb-4" data-jump="Yearly">
-      <div class="text-sm font-bold text-slate-900 mb-2">Year by year</div>
-      <div class="overflow-x-auto"><table class="w-full text-sm border-collapse" id="yearTbl"></table></div>
-      <div class="text-[11px] text-slate-400 mt-2">* partial year (the window starts or ends inside it).</div>
-    </section>
-
-    <!-- Rebalance + trade logs: the strategy page shows ONE strategy's, so here every row is tagged
-         with which strategy it belongs to and the picker narrows to one at a time. -->
-    <section class="card p-4 mb-4" data-jump="Rebalances">
-      <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
-        <div class="text-sm font-bold text-slate-900">Rebalance log — every reshuffle in the mix</div>
-        <select id="rbWho" class="inp" style="width:auto;padding:.3rem .5rem;font-size:12px"></select>
-      </div>
-      <div class="text-[11px] text-slate-400 mb-2">Newest first. Each row is one strategy's rebalance day: what its bucket was worth, how it moved since its previous rebalance, how many names it swapped in, and the basket it then held (🆕 = new that day). Weights are of that strategy's own bucket.</div>
-      <div id="rbOut"></div>
-      <div id="rbMore" class="mt-2"></div>
-    </section>
-
-    <section class="card p-4 mb-4" data-jump="Trades">
-      <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
-        <div class="text-sm font-bold text-slate-900">Trade log — every position the mix took</div>
-        <div class="flex items-center gap-1.5 flex-wrap">
-          <select id="tdWho" class="inp" style="width:auto;padding:.3rem .5rem;font-size:12px"></select>
-          <button id="tdCsv" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>
-        </div>
-      </div>
-      <div id="tdStats" class="flex flex-wrap gap-1.5 mb-2"></div>
-      <div id="tdOut"></div>
-      <div id="tdMore" class="mt-2"></div>
-    </section>
-
-    <p class="text-[11px] text-slate-400 mb-6">The rebalance and trade logs are each strategy's own, tagged and merged — pick one strategy in either dropdown to read it exactly as its backtest page shows it. A trade's sell price on a "still held" row is the last available price in the window. <b>Separate buckets</b>: each strategy runs exactly like its own backtest — same engine, same survivorship-free prices, rebalancing its own stocks on its own schedule — on the rupees you gave it, and the mix is simply the sum of those buckets marked month by month, with money never shifted between strategies. <b>One combined portfolio</b>: the same strategy signals, but the whole amount sits in a single basket — each strategy asks for as many slots as it holds names, a stock several strategies want fills several slots and carries that multiple of the money, and the entire portfolio is re-spread to the new plan (at its current value) whenever any strategy rebalances. A strategy holding nothing keeps its share in cash rather than crowding the others. Market cap in the portfolio table is <b>today's</b>, not the company's size on the rebalance date — the survivorship-free price history these runs use carries prices, not share counts, so no point-in-time market cap exists; large/mid/small follow the usual top-100 / next-150 / rest split on that same current ranking. Brokerage, taxes and slippage are not modelled; a delisted stock's position is written down to zero. Benchmark = Nifty 500 total of the same total capital (Nifty 50 when 500 history is unavailable).</p>
-  </div>
+  <details class="fold">
+    <summary>How the mix is calculated</summary>
+    <p>Pick a few of your saved strategies, decide how many rupees go into each, and see how the <b>combined portfolio</b> would have done — growth, worst fall, how much the strategies overlap, and whether mixing them actually made the ride smoother. Choose whether each strategy runs on <b>its own money</b> or everything goes into <b>one shared basket</b> (where a stock two strategies both pick gets double the money). Every strategy runs over the <b>same dates</b> with the same engine as its own backtest page.</p>
+    <p>The rebalance and trade logs are each strategy's own, tagged and merged — pick one strategy in either dropdown to read it exactly as its backtest page shows it. A trade's sell price on a "still held" row is the last available price in the window. <b>Separate buckets</b>: each strategy runs exactly like its own backtest — same engine, same survivorship-free prices, rebalancing its own stocks on its own schedule — on the rupees you gave it, and the mix is simply the sum of those buckets marked month by month, with money never shifted between strategies. <b>One combined portfolio</b>: the same strategy signals, but the whole amount sits in a single basket — each strategy asks for as many slots as it holds names, a stock several strategies want fills several slots and carries that multiple of the money, and the entire portfolio is re-spread to the new plan (at its current value) whenever any strategy rebalances. A strategy holding nothing keeps its share in cash rather than crowding the others. Market cap in the portfolio table is <b>today's</b>, not the company's size on the rebalance date — the survivorship-free price history these runs use carries prices, not share counts, so no point-in-time market cap exists; large/mid/small follow the usual top-100 / next-150 / rest split on that same current ranking. Brokerage, taxes and slippage are not modelled; a delisted stock's position is written down to zero. Benchmark = Nifty 500 total of the same total capital (Nifty 50 when 500 history is unavailable).</p>
+  </details>
 </main>
 
 <script src="./backtest-engine.js"></script>
@@ -323,15 +375,19 @@ function renderPresets(){
   if (!isMixOwner()){ box.classList.add('hidden'); box.innerHTML = ''; return; }
   const ps = loadPresets(), canSave = SEL.size >= 2;
   box.classList.toggle('hidden', !ps.length && !canSave);
-  box.innerHTML = (ps.length ? '<span class="text-[11px] font-semibold text-slate-400 mr-0.5">Saved mixes:</span>' : '')
-    + ps.map((p, i) => `<span class="chip text-slate-600 bg-slate-50 inline-flex items-center gap-1">
-        <button data-ld="${i}" class="font-semibold hover:text-indigo-600" title="Load this mix — ${p.sel.length} strategies">${esc(p.label)}</button>
-        <button data-del="${i}" class="text-slate-300 hover:text-rose-500" title="Delete this saved mix">✕</button></span>`).join('')
-    + (canSave ? '<button id="bSaveMix" class="chip text-indigo-600 bg-indigo-50 hover:border-indigo-300" title="Save the current selection (strategies + ₹ + mode) under a name"><svg class="sw-i" style="font-size:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save mix as…</button>' : '');
+  const _nm = $('mixName') ? $('mixName').value : '';
+  box.innerHTML = (ps.length ? '<span class="dim" style="font-size:11.5px">Saved mixes:</span>' : '')
+    + ps.map((p, i) => `<span class="chip" style="display:inline-flex;align-items:center;gap:5px">
+        <button data-ld="${i}" style="font-weight:600;color:var(--text)" title="Load this mix — ${p.sel.length} strategies">${esc(p.label)}</button>
+        <button data-del="${i}" style="color:var(--text-faint)" title="Delete this saved mix">✕</button></span>`).join('')
+    + (canSave ? '<input id="mixName" class="inp" style="width:140px" placeholder="name this mix" maxlength="40"><button id="bSaveMix" class="chip" title="Save the current selection (strategies + ₹ + mode) under a name">Save mix</button>' : '');
+  if ($('mixName')) $('mixName').value = _nm;
   box.querySelectorAll('button[data-ld]').forEach(b => b.onclick = () => applyPreset(loadPresets()[+b.dataset.ld]));
   box.querySelectorAll('button[data-del]').forEach(b => b.onclick = () => {
     const ps2 = loadPresets(), p = ps2[+b.dataset.del];
-    if (p && confirm('Delete saved mix "' + p.label + '"?')){ ps2.splice(+b.dataset.del, 1); savePresets(ps2); renderPresets(); }
+    if (!p) return;
+    if (b.dataset.arm !== '1'){ b.dataset.arm = '1'; b.textContent = 'delete?'; b.style.color = 'var(--neg)'; return; }
+    ps2.splice(+b.dataset.del, 1); savePresets(ps2); renderPresets();
   });
   const sv = $('bSaveMix'); if (sv) sv.onclick = saveCurrentAsPreset;
 }
@@ -353,8 +409,9 @@ function applyPreset(p){
 }
 function saveCurrentAsPreset(){
   if (SEL.size < 2) return;
-  const label = (prompt('Name this mix:', '') || '').trim();
-  if (!label) return;
+  const label = ($('mixName') ? $('mixName').value : '').trim();
+  if (!label){ presetMsg('Type a name for this mix in the box, then press Save mix.'); if ($('mixName')) $('mixName').focus(); return; }
+  presetMsg(''); $('mixName').value = '';
   const ps = loadPresets().filter(p => p.label !== label);
   ps.unshift({ label, sel: [...SEL.keys()], alloc: Object.fromEntries([...SEL.entries()].map(([k,v]) => [k, v.alloc])), mode: MODE, ts: Date.now() });
   savePresets(ps.slice(0, 12));
@@ -365,37 +422,6 @@ function saveCurrentAsPreset(){
 function stratName(s){ return strategyEnglish(s.cfg) || s.name || (typeof strategyLabel === 'function' ? strategyLabel(s.cfg) : ''); }
 function stratHref(s){ return './strategy-backtest.html?id=' + encodeURIComponent(s.id); }
 function shortName(s, n){ const t = stratName(s); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
-
-function renderList(){
-  const favs = loadFavs(), q = ($('q').value || '').toLowerCase();
-  const rows = ALL
-    .filter(s => !q || stratName(s).toLowerCase().includes(q))
-    .sort((a,b) => (isFav(favs,b.cfg)?1:0) - (isFav(favs,a.cfg)?1:0) ||
-                   String(stratName(a)).localeCompare(String(stratName(b)), 'en', {numeric:true, sensitivity:'base'}));
-  $('stratList').innerHTML = rows.map(s => {
-    const k = identityKey(s.cfg), on = SEL.has(k), c = s.cfg;
-    const own = ownCagr(c);
-    return `<label class="srow flex items-center gap-2.5 px-2 py-2 rounded-lg cursor-pointer border-b border-slate-50">
-      <input type="checkbox" data-k="${esc(k)}" ${on ? 'checked' : ''} ${!on && SEL.size >= MAX_SEL ? 'disabled' : ''}>
-      <span class="min-w-0 flex-1">
-        <span class="block text-[12.5px] font-semibold text-slate-800 truncate">${isFav(favs,c) ? '<span class="text-amber-500">⭐</span> ' : ''}${esc(stratName(s))}</span>
-        <span class="flex flex-wrap items-center gap-1 mt-0.5">
-          <span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIALS.get(k) || '—')}</span>
-          <span class="chip text-slate-500 bg-slate-50">${esc(universeLabel(c))}</span>
-          <span class="chip text-slate-500 bg-slate-50">${FREQL[c.freq] || c.freq + 'mo'}</span>
-          <span class="chip text-slate-500 bg-slate-50">Top ${c.topN || 5}</span>
-          ${(c.filters || []).length ? `<span class="chip text-slate-500 bg-slate-50">${c.filters.length} filter${c.filters.length>1?'s':''}</span>` : ''}
-          ${!c.indexName ? '<span class="chip text-amber-600 bg-amber-50" title="Screens the whole market every rebalance — slower to simulate">whole-market · slow</span>' : ''}
-        </span>
-      </span>
-      ${own ? `<span class="text-[11px] font-bold ${own.cagr >= 0 ? 'pos' : 'neg'} shrink-0" title="Its own saved backtest since ${esc(own.start || '')}">${pct(own.cagr)}<span class="block text-[9px] font-semibold text-slate-400 text-right">CAGR</span></span>` : ''}
-    </label>`;
-  }).join('');
-  $('stratList').querySelectorAll('input[data-k]').forEach(cb => cb.onchange = () => toggleSel(cb.dataset.k, cb.checked));
-  $('listMsg').classList.toggle('hidden', ALL.length > 0);
-  if (!ALL.length) $('listMsg').innerHTML = 'No saved strategies yet. <a class="text-indigo-600 font-semibold hover:underline" href="./stock-backtest.html">Create one →</a>';
-  else if (!rows.length) { $('listMsg').classList.remove('hidden'); $('listMsg').textContent = 'No strategy matches that filter.'; }
-}
 
 function toggleSel(k, on){
   if (on){
@@ -419,17 +445,18 @@ function renderMix(){
     <div class="flex items-center gap-2">
       <span class="dot" style="background:${p.s[i % p.s.length]}"></span>
       <span class="sw-sn shrink-0" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIALS.get(k) || '—')}</span>
-      <span class="text-[12px] font-semibold text-slate-700 truncate flex-1 min-w-0" title="${esc(stratName(v.s))}">${esc(shortName(v.s, 34))}</span>
-      <span class="text-[11px] text-slate-400 w-11 text-right shrink-0">${tot > 0 && v.alloc > 0 ? (v.alloc / tot * 100).toFixed(0) + '%' : '—'}</span>
-      <span class="relative shrink-0"><span class="absolute left-2 top-1/2 -translate-y-1/2 text-[12px] text-slate-400">₹</span>
-        <input type="number" min="0" step="10000" value="${v.alloc}" data-al="${esc(k)}" class="inp" style="width:118px;padding-left:1.15rem;padding-top:.3rem;padding-bottom:.3rem;font-size:13px"></span>
-      <button data-rm="${esc(k)}" class="text-slate-300 hover:text-rose-500 text-sm shrink-0" title="Remove from the mix">✕</button>
+      <span class="truncate flex-1 min-w-0" style="font-size:12.5px;font-weight:500" title="${esc(stratName(v.s))}">${esc(shortName(v.s, 34))}</span>
+      <span class="dim w-11 text-right shrink-0" style="font-size:11.5px">${tot > 0 && v.alloc > 0 ? (v.alloc / tot * 100).toFixed(0) + '%' : '—'}</span>
+      <span class="relative shrink-0"><span class="absolute left-2 top-1/2 -translate-y-1/2 dim" style="font-size:12px">₹</span>
+        <input type="number" min="0" step="10000" value="${v.alloc}" data-al="${esc(k)}" class="inp" style="width:112px;padding-left:1.15rem"></span>
+      <button data-rm="${esc(k)}" class="shrink-0" style="color:var(--text-faint)" title="Remove from the mix">✕</button>
     </div>`).join('');
   $('mixTotal').innerHTML = `<span>Total invested</span><span>₹${fmtIN(tot)}</span>`;
   $('mixRows').querySelectorAll('input[data-al]').forEach(inp => inp.onchange = () => {
     const v = SEL.get(inp.dataset.al); if (v){ v.alloc = Math.max(0, +inp.value || 0); renderMix(); saveState(); }
   });
   $('mixRows').querySelectorAll('button[data-rm]').forEach(b => b.onclick = () => toggleSel(b.dataset.rm, false));
+  $('mCount').textContent = SEL.size ? SEL.size + ' of ' + MAX_SEL + ' max' : '';
   renderPresets();   // the row lives under the tray buttons; selection size gates the 💾 button
 }
 
@@ -469,7 +496,7 @@ async function runMix(){
     renderResults();
     setMsg(errs.length ? '⚠ Skipped (couldn’t run): ' + errs.join('; ') : '');
     $('results').classList.remove('hidden');
-    $('results').scrollIntoView({ behavior:'smooth', block:'start' });
+    afterRun();
     saveState();
   } catch(e){
     setMsg('Run failed — ' + (e.message || e), true);
@@ -646,18 +673,18 @@ function renderTiles(M){
 /* ---------- charts (site idiom: inline SVG + crosshair tooltip) ---------- */
 function seriesForChart(M){
   const p = pal();
-  const out = [{ name: MODE === 'pool' ? 'One portfolio' : 'Separate buckets', color:p.mix, w:2.6, vals:M.cur.comb, dash:'' }];
+  const out = [{ lid:-1, name: MODE === 'pool' ? 'One portfolio' : 'Separate buckets', color:p.mix, w:2.6, vals:M.cur.comb, dash:'' }];
   // the mode you're NOT on, so the two are visible side by side
-  out.push({ name: MODE === 'pool' ? 'Separate buckets' : 'One portfolio', color:p.alt, w:1.5,
+  out.push({ lid:-3, name: MODE === 'pool' ? 'Separate buckets' : 'One portfolio', color:p.alt, w:1.5,
              vals:(MODE === 'pool' ? M.split : M.pool).comb, dash:'5 3' });
-  M.per.forEach((x, i) => { if (!HID.has(i)) out.push({ name: shortName(x.s, 26), color: p.s[i % p.s.length], w:1.4, vals:x.eq, dash:'' }); });
-  if (M.bench) out.push({ name:M.benchLabel, color:p.bench, w:1.5, vals:M.bench, dash:'4 3' });
+  M.per.forEach((x, i) => { if (!HID.has(i)) out.push({ lid:i, name: shortName(x.s, 26), color: p.s[i % p.s.length], w:1.4, vals:x.eq, dash:'' }); });
+  if (M.bench) out.push({ lid:-2, name:M.benchLabel, color:p.bench, w:1.5, vals:M.bench, dash:'4 3' });
   return out;
 }
 function drawEq(M){
   const S = seriesForChart(M), dates = M.dates, n = dates.length;
   if (n < 2){ $('eqWrap').innerHTML = '<div class="text-xs text-slate-400 py-4">Window too short to chart.</div>'; return; }
-  const W = 940, H = 330, PL = 68, PR = 14, PT = 12, PB = 26;
+  const W = Math.max(300, Math.round($('eqWrap').clientWidth - 16) || 940), H = 300, PL = 62, PR = 10, PT = 12, PB = 26;
   const all = S.flatMap(s => s.vals).filter(v => v != null);
   const mn = Math.min(...all), mx = Math.max(...all);
   const x = i => PL + (W - PL - PR) * i / (n - 1);
@@ -668,7 +695,7 @@ function drawEq(M){
     const v = mn + (mx - mn) * k / 4, yy = y(v);
     g += `<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="var(--border,#f1f5f9)"/><text x="${PL-5}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${fmtINR(v)}</text>`;
   }
-  const step = Math.ceil(n / 8);
+  const step = Math.ceil(n / Math.max(3, Math.floor(W / 80)));
   dates.forEach((d, i) => { if (i % step) return; g += `<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#94a3b8" text-anchor="middle">${d.slice(0,7)}</text>`; });
   const lines = S.map(s => `<path d="${path(s.vals)}" fill="none" stroke="${s.color}" stroke-width="${s.w}"${s.dash ? ` stroke-dasharray="${s.dash}"` : ''}/>`).join('');
   const dots = S.map((s, si) => `<circle id="eqd${si}" r="3.4" fill="${s.color}" stroke="var(--surface,#fff)" style="display:none"></circle>`).join('');
@@ -683,21 +710,21 @@ function drawEq(M){
     i = Math.max(0, Math.min(n - 1, i));
     const sx = x(i);
     gl.setAttribute('x1', sx); gl.setAttribute('x2', sx); gl.style.display = '';
-    let html = `<b>${dates[i]}</b>`, topY = H;
+    let topY = H; $('eqDate').textContent = 'values on ' + dates[i];
     S.forEach((s, si) => {
       const v = s.vals[i], d = $('eqd' + si);
-      if (v == null){ d.style.display = 'none'; return; }
+      if (v == null){ d.style.display = 'none'; lv(s.lid, '—'); return; }
       d.setAttribute('cx', sx); d.setAttribute('cy', y(v)); d.style.display = '';
       topY = Math.min(topY, y(v));
       const base = s.vals.find(b => b != null), r = base ? (v / base - 1) * 100 : null;
-      html += `<br><span style="color:${s.color}">●</span> ${esc(stratName(s))} ${fmtINR(v)}${r == null ? '' : ` <span style="color:${r >= 0 ? '#4ade80' : '#f87171'}">(${r >= 0 ? '+' : ''}${r.toFixed(1)}%)</span>`}`;
+      lv(s.lid, fmtINR(v) + (r == null ? '' : `<span class="${r >= 0 ? 'pos' : 'neg'}">${r >= 0 ? '+' : ''}${r.toFixed(1)}%</span>`));
     });
-    tip.innerHTML = html; tip.style.display = '';
-    tip.style.left = (sx / W * rect.width) + 'px';
-    tip.style.top = (topY / H * rect.height) + 'px';
   }
   hit.addEventListener('mousemove', at);
-  svg.addEventListener('mouseleave', () => { tip.style.display = 'none'; gl.style.display = 'none'; S.forEach((s, si) => { $('eqd' + si).style.display = 'none'; }); });
+  // at rest the legend shows the last date's values
+  const rest = () => { at({ clientX: 1e9 }); gl.style.display = 'none'; S.forEach((s, si) => { $('eqd' + si).style.display = 'none'; }); };
+  svg.addEventListener('mouseleave', rest);
+  rest();
 }
 let DD_MODE = 'month';   // 'month' = month-end marks (as simulated) · 'day' = every trading-day close
 function drawDD(M){
@@ -706,8 +733,7 @@ function drawDD(M){
   if (tog) tog.querySelectorAll('button').forEach(b => {
     const on = b.dataset.dd === DD_MODE, dis = b.dataset.dd === 'day' && !canDay;
     // inline !important: the page's Tailwind-preflight `button{background:transparent}` otherwise wins
-    if (on && !dis){ b.style.setProperty('background-color','#4f46e5','important'); b.style.setProperty('color','#fff','important'); b.style.fontWeight='700'; }
-    else { b.style.removeProperty('background-color'); b.style.removeProperty('color'); b.style.fontWeight=''; }
+    b.classList.toggle('on', on && !dis);
     b.disabled = dis; b.style.opacity = dis ? '0.4' : ''; b.style.cursor = dis ? 'not-allowed' : 'pointer';
     b.onclick = () => { if (b.disabled || DD_MODE === b.dataset.dd) return; DD_MODE = b.dataset.dd; drawDD(M); };
   });
@@ -716,7 +742,7 @@ function drawDD(M){
   const comb = useDay ? M.cur.combDaily : M.cur.comb;
   const n = dates.length; if (n < 2){ $('ddWrap').innerHTML = ''; return; }
   let peak = -Infinity; const dd = comb.map(v => { if (v > peak) peak = v; return peak > 0 ? (v / peak - 1) * 100 : 0; });
-  const W = 940, H = 170, PL = 44, PR = 14, PT = 8, PB = 24;
+  const W = Math.max(300, Math.round($('ddWrap').clientWidth - 16) || 940), H = 150, PL = 40, PR = 10, PT = 8, PB = 24;
   const mn = Math.min(-1, ...dd);
   const x = i => PL + (W - PL - PR) * i / (n - 1);
   const y = v => PT + (H - PT - PB) * (v / mn);          // 0 at top, deepest fall at bottom
@@ -725,7 +751,7 @@ function drawDD(M){
     const v = mn * k / 2, yy = y(v);
     g += `<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="var(--border,#f1f5f9)"/><text x="${PL-5}" y="${(yy+3).toFixed(1)}" font-size="9" fill="#94a3b8" text-anchor="end">${v.toFixed(0)}%</text>`;
   }
-  const step = Math.ceil(n / 8);
+  const step = Math.ceil(n / Math.max(3, Math.floor(W / 80)));
   dates.forEach((d, i) => { if (i % step) return; g += `<text x="${x(i).toFixed(1)}" y="${H-7}" font-size="9" fill="#94a3b8" text-anchor="middle">${d.slice(0,7)}</text>`; });
   const line = dd.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
   const area = line + ` L ${x(n-1).toFixed(1)} ${y(0).toFixed(1)} L ${x(0).toFixed(1)} ${y(0).toFixed(1)} Z`;
@@ -734,7 +760,7 @@ function drawDD(M){
     <line id="ddg" x1="0" y1="${PT}" x2="0" y2="${H-PB}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>
     <circle id="dddot" r="3.2" fill="#f43f5e" stroke="var(--surface,#fff)" style="display:none"></circle>
     <rect id="ddhit" x="${PL}" y="${PT}" width="${W-PL-PR}" height="${H-PT-PB}" fill="transparent" style="cursor:crosshair"/></svg>
-    <div id="ddtip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:#fff;font-size:11px;padding:5px 8px;border-radius:6px;white-space:nowrap;transform:translate(-50%,calc(-100% - 8px));z-index:20"></div></div>`;
+    </div><div id="ddtip">deepest fall ${Math.min(...dd).toFixed(1)}% on ${dates[dd.indexOf(Math.min(...dd))]} · hover for any date</div>`;
   const svg = $('ddsvg'), tip = $('ddtip'), gl = $('ddg'), dot = $('dddot');
   $('ddhit').addEventListener('mousemove', ev => {
     const rect = svg.getBoundingClientRect();
@@ -744,9 +770,8 @@ function drawDD(M){
     gl.setAttribute('x1', sx); gl.setAttribute('x2', sx); gl.style.display = '';
     dot.setAttribute('cx', sx); dot.setAttribute('cy', sy); dot.style.display = '';
     tip.innerHTML = `<b>${dates[i]}</b> · ${dd[i].toFixed(1)}% below peak`;
-    tip.style.display = ''; tip.style.left = (sx / W * rect.width) + 'px'; tip.style.top = (sy / H * rect.height) + 'px';
   });
-  svg.addEventListener('mouseleave', () => { tip.style.display = 'none'; gl.style.display = 'none'; dot.style.display = 'none'; });
+  svg.addEventListener('mouseleave', () => { gl.style.display = 'none'; dot.style.display = 'none'; });
 }
 function renderLegend(M){
   const p = pal();
@@ -755,8 +780,8 @@ function renderLegend(M){
     .concat(M.per.map((x, i) => ({ label: shortName(x.s, 26), color: p.s[i % p.s.length], idx:i })))
     .concat(M.bench ? [{ label:M.benchLabel + ' (dashed)', color:p.bench, idx:-2 }] : []);
   $('legend').innerHTML = items.map(it =>
-    `<span class="legit ${it.idx >= 0 && HID.has(it.idx) ? 'off' : ''}" ${it.idx >= 0 ? `data-tg="${it.idx}"` : ''} title="${it.idx >= 0 ? esc(stratName(M.per[it.idx].s)) : ''}">
-       <span class="dot" style="background:${it.color}"></span>${esc(it.label)}</span>`).join('');
+    `<span class="legit ${it.idx >= 0 && HID.has(it.idx) ? 'off' : ''}" data-lid="${it.idx}" ${it.idx >= 0 ? `data-tg="${it.idx}"` : ''} title="${it.idx >= 0 ? esc(stratName(M.per[it.idx].s)) + ' — click to hide/show its line' : ''}">
+       <span class="dot" style="background:${it.color}"></span><span class="ln">${esc(it.label)}</span><span class="lv"></span></span>`).join('');
   $('legend').querySelectorAll('[data-tg]').forEach(el => el.onclick = () => {
     const i = +el.dataset.tg;
     if (HID.has(i)) HID.delete(i); else HID.add(i);
@@ -1179,13 +1204,14 @@ function renderPoolRebs(M){
 
 /* ---------- mode ---------- */
 function paintModeCards(){
+  $('mSplit').classList.toggle('on', MODE === 'split'); $('mPool').classList.toggle('on', MODE === 'pool');
   $('mSplit').setAttribute('aria-pressed', String(MODE === 'split'));
   $('mPool').setAttribute('aria-pressed', String(MODE === 'pool'));
   const stat = (el, S) => {
     const e = el.querySelector('.mstat');
-    if (!LAST || !S){ e.textContent = '—'; e.className = 'mstat block text-[10.5px] font-bold mt-1.5 text-slate-400'; return; }
+    if (!LAST || !S){ e.textContent = '—'; e.className = 'mstat'; return; }
     e.innerHTML = `${pct(S.cagr)} a year · ${fmtINR(S.finalV)}`;
-    e.className = 'mstat block text-[10.5px] font-bold mt-1.5 ' + (S.cagr >= 0 ? 'pos' : 'neg');
+    e.className = 'mstat ' + (S.cagr >= 0 ? 'pos' : 'neg');
   };
   stat($('mSplit'), LAST && LAST.split); stat($('mPool'), LAST && LAST.pool);
 }
@@ -1212,6 +1238,104 @@ function renderResults(){
 // theme flips repaint the charts with the dark-validated palette
 new MutationObserver(() => { if (LAST && !$('results').classList.contains('hidden')) renderResults(); })
   .observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+
+/* ---------- one-screen glue: list rows, cursor + keys, result / chart tabs ---------- */
+const K = window.OSKit;
+let CUR = null;                     // keyboard cursor in the strategies list (identity key)
+function renderList(){
+  const favs = loadFavs(), q = ($('q').value || '').toLowerCase();
+  const rows = ALL
+    .filter(s => !q || stratName(s).toLowerCase().includes(q))
+    .sort((a,b) => (isFav(favs,b.cfg)?1:0) - (isFav(favs,a.cfg)?1:0) ||
+                   String(stratName(a)).localeCompare(String(stratName(b)), 'en', {numeric:true, sensitivity:'base'}));
+  $('stratList').innerHTML = rows.map(s => {
+    const k = identityKey(s.cfg), on = SEL.has(k), c = s.cfg;
+    const own = ownCagr(c);
+    const meta = [esc(universeLabel(c)), FREQL[c.freq] || c.freq + 'mo', 'Top ' + (c.topN || 5)]
+      .concat((c.filters || []).length ? [c.filters.length + ' filter' + (c.filters.length > 1 ? 's' : '')] : [])
+      .concat(!c.indexName ? ['<span title="Screens the whole market every rebalance — slower to simulate">whole-market · slow</span>'] : []);
+    return `<label class="srow${on ? ' on' : ''}${k === CUR ? ' cur' : ''}" data-k="${esc(k)}" title="${esc(stratName(s))}">
+      <input type="checkbox" data-k="${esc(k)}" ${on ? 'checked' : ''} ${!on && SEL.size >= MAX_SEL ? 'disabled' : ''}>
+      <span class="nm">
+        <span class="snm">${isFav(favs,c) ? '⭐ ' : ''}${esc(stratName(s))}</span>
+        <span class="smeta"><span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIALS.get(k) || '—')}</span> ${meta.join(' · ')}</span>
+      </span>
+      ${own ? `<span class="cg ${own.cagr >= 0 ? 'pos' : 'neg'}" title="Its own saved backtest since ${esc(own.start || '')}">${pct(own.cagr)}<i>CAGR</i></span>` : ''}
+    </label>`;
+  }).join('');
+  $('stratList').querySelectorAll('input[data-k]').forEach(cb => cb.onchange = () => { CUR = cb.dataset.k; toggleSel(cb.dataset.k, cb.checked); });
+  $('listMsg').classList.toggle('hidden', ALL.length > 0);
+  if (!ALL.length) $('listMsg').innerHTML = 'No saved strategies yet. <a style="color:var(--accent-text);font-weight:600" href="./stock-backtest.html">Create one →</a>';
+  else if (!rows.length) { $('listMsg').classList.remove('hidden'); $('listMsg').textContent = 'No strategy matches that filter.'; }
+  $('lCount').textContent = ALL.length ? rows.length + (rows.length !== ALL.length ? ' of ' + ALL.length : '') : '';
+  $('mCount').textContent = SEL.size ? SEL.size + ' of ' + MAX_SEL + ' max' : '';
+}
+function listKeys(){ return [...$('stratList').querySelectorAll('.srow')].map(r => r.dataset.k); }
+function setCur(k){
+  CUR = k;
+  $('stratList').querySelectorAll('.srow').forEach(r => {
+    const on = r.dataset.k === k; r.classList.toggle('cur', on);
+    if (on) r.scrollIntoView({ block:'nearest' });
+  });
+}
+document.addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const t = e.target, tag = t && t.tagName;
+  const isCb = tag === 'INPUT' && t.type === 'checkbox';
+  if ((tag === 'INPUT' && !isCb) || tag === 'SELECT' || tag === 'TEXTAREA'){ if (e.key === 'Escape') t.blur(); return; }
+  const keys = listKeys(); if (!keys.length) return;
+  const i = keys.indexOf(CUR);
+  if (e.key === 'ArrowDown'){ e.preventDefault(); setCur(keys[Math.min(keys.length - 1, i + 1)]); }
+  else if (e.key === 'ArrowUp'){ e.preventDefault(); setCur(keys[Math.max(0, i < 0 ? 0 : i - 1)]); }
+  else if (e.key === 'Home'){ e.preventDefault(); setCur(keys[0]); }
+  else if (e.key === 'End'){ e.preventDefault(); setCur(keys[keys.length - 1]); }
+  else if (e.key === ' ' && !isCb && tag !== 'BUTTON' && tag !== 'SUMMARY' && tag !== 'A'){
+    if (i < 0) return;
+    e.preventDefault();
+    const on = SEL.has(CUR);
+    if (!on && SEL.size >= MAX_SEL) return;
+    toggleSel(CUR, !on);
+  }
+  else if (e.key === 'Enter' && tag !== 'BUTTON' && tag !== 'A' && tag !== 'SUMMARY'){ e.preventDefault(); runMix(); }
+});
+
+// value read-out lives in the legend rows (was a floating tooltip)
+function lv(id, h){ const el = document.querySelector('#legend [data-lid="' + id + '"] .lv'); if (el) el.innerHTML = h; }
+function presetMsg(t){ $('presetMsg').textContent = t || ''; }
+
+// result tabs (middle) and chart tabs (right): one panel at a time
+let RP = 'sum', CP = 'eq';
+function showRP(k){
+  if (k === 'pool' && MODE !== 'pool') k = 'sum';
+  RP = k;
+  $('resSg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.rp === k));
+  document.querySelectorAll('.rp').forEach(p => p.classList.toggle('on', p.dataset.rp === k));
+}
+function showCP(k){
+  CP = k;
+  $('chSg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.cp === k));
+  document.querySelectorAll('.cp').forEach(p => p.classList.toggle('on', p.dataset.cp === k));
+  if (!LAST) return;
+  if (k === 'mr') drawMonthly(LAST); else { drawEq(LAST); drawDD(LAST); }   // drawn at the pane's real width
+}
+$('resSg').addEventListener('click', e => { const b = e.target.closest('button[data-rp]'); if (b) showRP(b.dataset.rp); });
+$('chSg').addEventListener('click', e => { const b = e.target.closest('button[data-cp]'); if (b) showCP(b.dataset.cp); });
+function afterRun(){
+  $('grid').classList.add('ran');
+  if (window.innerWidth < 900) $('resBar').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+const _renderResults = renderResults;
+renderResults = function(){
+  if (!LAST) return;
+  $('grid').classList.add('ran');           // panes must be visible first: the charts size to them
+  _renderResults();
+  $('rpPoolBtn').classList.toggle('hidden', MODE !== 'pool');
+  if (RP === 'pool' && MODE !== 'pool') showRP('sum');
+  const A = LAST.cur;
+  $('mHead').innerHTML = `<span class="dim">${esc(LAST.start)} → ${esc(LAST.end)}</span> &nbsp;<b class="${A.cagr >= 0 ? 'pos' : 'neg'}">${pct(A.cagr)}</b> <span class="dim">a year · max fall</span> <b class="neg">-${A.maxDD.toFixed(1)}%</b>`;
+};
+let _rsz = null;
+window.addEventListener('resize', () => { clearTimeout(_rsz); _rsz = setTimeout(() => { K.fitGrid($('grid')); if (LAST && $('grid').classList.contains('ran')) showCP(CP); }, 150); });
 
 /* ---------- boot ---------- */
 $('q').oninput = renderList;
@@ -1267,6 +1391,7 @@ $('bFav').onclick = () => {
     });
   }
   renderList(); renderMix(); paintModeCards();
+  K.fitGrid($('grid'));
   if (SEL.size >= 2) runMix();     // returning visitor: re-run their last mix automatically
 })();
 </script>
