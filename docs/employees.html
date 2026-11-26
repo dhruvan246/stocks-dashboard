@@ -8,194 +8,297 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg)}
-  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
-  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
-  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:var(--radius-sm);white-space:nowrap;letter-spacing:.02em}
-  .chip.now{background:var(--pos-soft);color:var(--pos)}.chip.left{background:var(--surface-2);color:var(--text-muted)}
-  html[data-theme="dark"] .chip.now{background:rgba(16,185,129,.18);color:var(--pos)}
-  html[data-theme="dark"] .chip.left{background:rgba(148,163,184,.14);color:var(--text)}
-  .vbtn{padding:6px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;
-        background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border))}
-  .vbtn.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
-  select,input[type=text]{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border-strong));border-radius:var(--radius);font-size:13px;padding:7px 10px;color:inherit}
-  table{border-collapse:separate;border-spacing:0}
-  th,td{white-space:nowrap}
-  thead th{position:sticky;top:0;background:var(--surface,var(--surface));z-index:5;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted,var(--text-muted))}
-  tbody tr{cursor:pointer;border-top:1px solid var(--border,var(--border))}
-  tbody tr:hover{background:var(--surface-2,var(--surface-2))}
-  .fy{ text-align:right; font-variant-numeric:tabular-nums }
-  .miss{color:var(--text-faint,#cbd5e1)}
-  .exp{background:var(--surface-2,var(--surface-2))}
-  .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .spark rect{fill:var(--accent,var(--accent-text))}
-  .subnote{font-size:12px;color:var(--text-muted,var(--text-muted))}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(300px,380px) minmax(300px,380px) minmax(0,1fr)}
+  #lHead,.lr{grid-template-columns:28px minmax(0,1fr) 72px 58px}
+  #lHead span:nth-child(2),.lr > span:nth-child(2){text-align:left}
+  .lr .rk{color:var(--text-faint);font-size:11.5px;text-align:left}
+  html[data-theme] .os-sg select{border:0;border-left:1px solid var(--border);border-radius:0;background:transparent;color:var(--text);font:inherit;font-size:12.5px;font-weight:500;padding:5px 8px;height:auto;min-height:0;cursor:pointer;max-width:170px}
+  #dHead,.dr{grid-template-columns:44px minmax(0,1fr) 58px minmax(0,1fr)}
+  .dr{height:auto;padding-top:6px;padding-bottom:6px;cursor:default;row-gap:1px}
+  .dr:hover{background:none}
+  .dr .fy{font-weight:600;color:var(--text)}
+  .dr .sub{grid-column:1 / -1;text-align:left !important;color:var(--text-faint);font-size:11.5px;white-space:normal !important;line-height:1.35}
+  #dNote{border-top:1px solid var(--border)}
+  #hc{position:absolute;inset:0;padding:8px 10px 4px}
+  #hc svg{display:block;width:100%;height:100%}
+  #hc text{font-family:inherit;fill:var(--text-muted);font-size:11px}
+  #hc text.v{fill:var(--text);font-weight:600}
+  #hc text.yy{font-size:10.5px}
+  #hc .b1{fill:var(--accent)} #hc .b2{fill:none;stroke:var(--text-faint);stroke-width:1;stroke-dasharray:3 2}
+  #hc line{stroke:var(--border)}
+  #hcKey{position:absolute;left:12px;top:8px;font-size:11.5px;color:var(--text-faint);z-index:2;pointer-events:none}
+  #hcKey i{display:inline-block;width:10px;height:10px;vertical-align:-1px;margin:0 4px 0 10px;background:var(--accent)}
+  #hcKey i.t{background:none;border:1px dashed var(--text-faint)}
+  #tBox{overflow:auto;max-height:calc(100vh - 190px);min-height:300px}
+  #tTbl{border-collapse:separate;border-spacing:0;font-size:12.5px;font-variant-numeric:tabular-nums;width:100%}
+  html[data-theme] #tTbl th{position:sticky;top:0;z-index:2;background:var(--surface-2);color:var(--text-muted);font-weight:500;font-size:11.5px;padding:7px 8px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--border);text-transform:none;letter-spacing:0}
+  html[data-theme] #tTbl td{padding:0 8px;height:29px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+  html[data-theme] #tTbl th.nm,html[data-theme] #tTbl td.nm{text-align:left;position:sticky;left:0;background:var(--surface);max-width:250px;overflow:hidden;text-overflow:ellipsis}
+  html[data-theme] #tTbl th.nm{background:var(--surface-2);z-index:3}
+  #tTbl tr{cursor:pointer} #tTbl tbody tr:hover td{background:var(--surface-2)}
+  #tTbl td.miss{color:var(--text-faint)}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  #how summary{cursor:pointer;color:var(--text-muted)}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(260px,320px) minmax(260px,320px) minmax(0,1fr)} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #pD .os-list{max-height:none !important} #pC .os-chartwrap{height:300px}
+    html[data-theme] #tTbl th.nm,html[data-theme] #tTbl td.nm{max-width:140px} #tBox{max-height:70vh} }
 </style>
 </head>
-<body class="min-h-screen" style="background:var(--bg,#f8fafc);color:var(--text,#0f172a)">
+<body class="bg-slate-50 min-h-screen text-slate-800">
 
-<header class="sticky top-0 z-40 backdrop-blur-md border-b" style="background:color-mix(in srgb, var(--surface,#fff) 90%, transparent);border-color:var(--border,#e2e8f0)">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
-      <span class="font-bold tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
     </a>
     <nav></nav>
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">Employee Headcount <span class="font-semibold text-base" style="color:var(--text-muted,#94a3b8)">· how many people each company employs</span></h1>
-    <p class="subnote mt-1 max-w-3xl">Employee headcount for the <b>Nifty-500</b>, survivorship-free (includes names that have since left the index), read from each company's own <b>annual report / BRSR</b> filed on BSE. <b>Annual</b> figures (fiscal year ending March) — India does not report headcount quarterly. <span id="updated"></span></p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Employee Headcount</h1>
+    <div class="os-vtabs" id="views" role="tablist" aria-label="View"></div>
+    <div class="os-asof" id="asof"></div>
   </div>
-
-  <div id="status" class="subnote py-10 text-center">Loading headcount data…</div>
+  <div id="status" class="os-empty">Loading headcount data…</div>
 
   <div id="content" class="hidden">
-    <!-- coverage + controls -->
-    <div class="card p-3 mb-4">
-      <!-- Phone (2026-10-13): the search box is hoisted next to a Filters button; sector, membership, metric and
-           sort open under it (theme.css .sw-filters). -->
-      <div class="flex flex-wrap items-center gap-2 justify-between sw-filters">
-        <div class="flex flex-wrap items-center gap-2">
-          <input id="q" type="text" placeholder="Search company…" autocomplete="off" class="w-44" data-keep="search" />
-          <select id="fSector"><option value="">All sectors</option></select>
-          <select id="fMember">
-            <option value="all">All (survivorship-free)</option>
-            <option value="now">In Nifty-500 now</option>
-            <option value="left">Has left Nifty-500</option>
-          </select>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="subnote hidden sm:inline">Metric</span>
-          <span id="mEmp" class="vbtn on">Employees</span>
-          <span id="mTot" class="vbtn">Total workforce</span>
-          <select id="fSort">
-            <option value="latest">Largest workforce</option>
-            <option value="growth">Fastest growing (YoY)</option>
-            <option value="shrink">Shrinking (YoY)</option>
-            <option value="name">Name (A–Z)</option>
-          </select>
-        </div>
-      </div>
-      <div id="cov" class="subnote mt-2"></div>
+    <div class="os-bar">
+      <div class="os-sg" id="mets" role="group" aria-label="Metric"></div>
+      <div class="os-sg" id="mems" role="group" aria-label="Index membership"></div>
+      <span class="os-sg" id="secWrap"><span class="lbl">Sector</span><select id="fSector" aria-label="Sector"><option value="">All sectors</option></select></span>
+      <div class="os-sg" id="sorts" role="group" aria-label="Sort"></div>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>←→</b> headcount / price · <b>/</b> search · <b>Enter</b> open · <b>F</b> focus</span>
     </div>
 
-    <div class="card tscroll">
-      <table class="w-full text-sm">
-        <thead><tr id="head"></tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pL" aria-label="Companies">
+        <div class="os-ph"><span class="ttl" id="lTitle">Companies</span><span class="r" id="lCount"></span></div>
+        <div class="os-ps"><input id="q" type="search" placeholder="Search company or symbol" autocomplete="off" aria-label="Search company" /></div>
+        <div class="os-ch" id="lHead"></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="Companies"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Year by year">
+        <div class="os-ph"><span class="ttl" id="dTitle">Year by year</span><span class="r" id="dTag"></span></div>
+        <div class="os-ch" id="dHead"><span>FY</span><span>Employees</span><span>YoY</span><span>Total workforce</span></div>
+        <div class="os-list" id="dList"></div>
+        <div class="os-note" id="dNote">Employees = permanent on-roll (permanent employees + permanent workers), or total reported employees where that gives a consistent series. Total workforce additionally includes contractual/other. Source: annual report on BSE (page &amp; method shown). YoY on a year row is shown only against the fiscal year just before it.</div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span class="sym" id="cSym"></span><span class="nm" id="cName"></span>
+          <span class="r"><a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a>
+            <button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-ps"><div class="os-sg" id="cMode" role="group" aria-label="Chart"></div>
+          <div class="os-sg hidden" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg hidden" id="cRg" role="group" aria-label="Range"></div></div>
+        <div class="os-chartwrap">
+          <div id="hcKey"></div><div id="hc"></div>
+          <div class="os-legend hidden" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart hidden" id="cChart"></div>
+        </div>
+        <div class="os-stats" id="cStats"></div>
+      </section>
     </div>
-    <p class="subnote mt-3" id="foot"></p>
+
+    <div id="tWrap" class="hidden os-pane"><div id="tBox"><table id="tTbl"><thead><tr id="tHead"></tr></thead><tbody id="tRows"></tbody></table></div></div>
+
+    <details id="how"><summary>How these numbers are made</summary>
+      <p>Employee headcount for the <b>Nifty-500</b>, survivorship-free (includes names that have since left the index), read from each company's own <b>annual report / BRSR</b> filed on BSE. <b>Annual</b> figures (fiscal year ending March) — India does not report headcount quarterly.</p>
+      <p id="foot"></p>
+      <p><b>YoY</b> in the company list = the latest year on file against the year on file before it. <b>Since</b> = the latest year against the first year on file. <b>Women</b> = women ÷ (men + women) of the latest year that reports both. The price chart is the stock's own daily prices and is there only for context.</p>
+    </details>
   </div>
 </main>
 
 <script>
+'use strict';
+const K=window.OSKit, $=id=>document.getElementById(id), esc=K.esc;
 const IN = n => (n==null ? '' : Number(n).toLocaleString('en-IN'));
-const state = { metric:'emp', q:'', sector:'', member:'all', sort:'latest' };
-let DATA=null, FYS=[];
+const state = { metric:'emp', q:'', sector:'', member:'all', sort:'latest', view:'tracker', sel:null, chart:'hc', focus:false };
+let DATA=null, FYS=[], ROWS=[], CH=null, TOK=0;
+const Q=new URLSearchParams(location.search);
+if(Q.get('m')==='tot') state.metric='tot';
+if(['now','left'].includes(Q.get('in'))) state.member=Q.get('in');
+if(['latest','growth','shrink','name'].includes(Q.get('sort'))) state.sort=Q.get('sort');
+if(Q.get('view')==='table') state.view='table';
+if(Q.get('chart')==='price') state.chart='px';
 
-function sparkline(vals){
-  const xs = FYS.map(fy=>vals[fy]).map(v=> v==null?null:v);
-  const present = xs.filter(v=>v!=null);
-  if(present.length<2) return '';
-  const mx=Math.max(...present), mn=Math.min(...present), rng=(mx-mn)||1;
-  const w=7,g=2,h=22;
-  let bars='';
-  xs.forEach((v,i)=>{ if(v==null) return;
-    const bh = 4 + 16*(v-mn)/rng;
-    bars += `<rect x="${i*(w+g)}" y="${h-bh}" width="${w}" height="${bh}" rx="1"/>`;
-  });
-  return `<svg class="spark" width="${FYS.length*(w+g)}" height="${h}" viewBox="0 0 ${FYS.length*(w+g)} ${h}">${bars}</svg>`;
-}
-
+/* ---- the old page's own calculations, unchanged ---- */
 function seriesOf(r){ return state.metric==='emp' ? r.emp : (Object.keys(r.total||{}).length? r.total : r.emp); }
-
 function yoyOf(r){
   const s=seriesOf(r); const ys=Object.keys(s).map(Number).sort((a,b)=>a-b);
   if(ys.length<2) return null;
   const a=s[ys[ys.length-2]], b=s[ys[ys.length-1]];
   return (a&&b)? (b-a)/a : null;
 }
-
-function render(){
-  const rowsEl=document.getElementById('rows'), headEl=document.getElementById('head');
-  headEl.innerHTML = `<th class="text-left px-3 py-2">#</th><th class="text-left px-3 py-2">Company</th>`
-    + FYS.map(fy=>`<th class="fy px-2 py-2">FY${String(fy).slice(2)}</th>`).join('')
-    + `<th class="fy px-3 py-2">YoY</th><th class="px-3 py-2 text-center">Trend</th>`;
-
+const latest=r=>{const s=seriesOf(r);const ys=Object.keys(s).map(Number);return ys.length?s[Math.max(...ys)]:0;};
+function filtered(){
   let rows = DATA.rows.filter(r=>Object.keys(r.emp).length>0);
   if(state.q){ const q=state.q.toLowerCase(); rows=rows.filter(r=>r.name.toLowerCase().includes(q)||r.sym.toLowerCase().includes(q)); }
   if(state.sector) rows=rows.filter(r=>r.sector===state.sector);
   if(state.member==='now') rows=rows.filter(r=>r.now);
   if(state.member==='left') rows=rows.filter(r=>!r.now);
-
-  const latest=r=>{const s=seriesOf(r);const ys=Object.keys(s).map(Number);return ys.length?s[Math.max(...ys)]:0;};
   if(state.sort==='latest') rows.sort((a,b)=>latest(b)-latest(a));
   else if(state.sort==='name') rows.sort((a,b)=>a.name.localeCompare(b.name));
   else if(state.sort==='growth') rows.sort((a,b)=>(yoyOf(b)??-9)-(yoyOf(a)??-9));
   else if(state.sort==='shrink') rows.sort((a,b)=>(yoyOf(a)??9)-(yoyOf(b)??9));
+  return rows;
+}
+const pct=y=>y==null?'<span class="m">·</span>':`<span class="${y>=0?'os-pos':'os-neg'}">${(y*100).toFixed(1)}%</span>`;
+const cur=()=>DATA.rows.find(r=>r.sym===state.sel)||null;
 
-  rowsEl.innerHTML = rows.map((r,i)=>{
-    const s=seriesOf(r);
-    const cells = FYS.map(fy=> s[fy]!=null ? `<td class="fy px-2 py-2">${IN(s[fy])}</td>` : `<td class="fy px-2 py-2 miss">·</td>`).join('');
-    const y=yoyOf(r);
-    const yc = y==null?'<td class="fy px-3 py-2 miss">·</td>':`<td class="fy px-3 py-2 ${y>=0?'pos':'neg'}">${(y*100).toFixed(1)}%</td>`;
-    const badge = r.now?'<span class="chip now">N500</span>':'<span class="chip left">left</span>';
-    return `<tr data-i="${i}">
-      <td class="px-3 py-2 miss">${i+1}</td>
-      <td class="px-3 py-2"><div class="flex items-center gap-2"><span class="font-semibold">${r.name}</span> ${badge}</div>
-          <div class="subnote">${r.sector||''}${(r.aliases&&r.aliases.length)?` · formerly ${r.aliases.join(', ')}`:''}</div></td>
-      ${cells}${yc}
-      <td class="px-3 py-2 text-center">${sparkline(s)}</td></tr>`;
-  }).join('') || `<tr><td colspan="99" class="px-3 py-8 text-center subnote">No companies match.</td></tr>`;
+function seg(id,opts,val,fn){
+  $(id).innerHTML=opts.map(o=>`<button type="button" class="${o[0]===val?'on':''}" data-v="${o[0]}"${o[2]?` title="${o[2]}"`:''} aria-pressed="${o[0]===val}">${o[1]}</button>`).join('');
+  $(id).querySelectorAll('button').forEach(b=>b.onclick=()=>fn(b.dataset.v));
+}
+function bars(){
+  seg('views',[['tracker','Tracker'],['table','All years table']],state.view,v=>{ state.view=v; refresh(); });
+  seg('mets',[['emp','Employees','Permanent on-roll employees'],['tot','Total workforce','Including contractual / other workers']],state.metric,v=>{ state.metric=v; refresh(); });
+  seg('mems',[['all','All','Survivorship-free: every company that has been in the Nifty 500'],['now','In Nifty 500 now'],['left','Has left']],state.member,v=>{ state.member=v; refresh(); });
+  seg('sorts',[['latest','Largest'],['growth','Fastest growing'],['shrink','Shrinking'],['name','A–Z']],state.sort,v=>{ state.sort=v; refresh(); });
+}
+function saveUrl(){
+  const p=new URLSearchParams();
+  if(state.sel) p.set('s',state.sel); if(state.metric==='tot') p.set('m','tot'); if(state.member!=='all') p.set('in',state.member);
+  if(state.sort!=='latest') p.set('sort',state.sort); if(state.view==='table') p.set('view','table'); if(state.chart==='px') p.set('chart','price');
+  const s=p.toString(); try{ history.replaceState(null,'',location.pathname+(s?'?'+s:'')); }catch(e){}
+}
 
-  // row expand
-  [...rowsEl.querySelectorAll('tr[data-i]')].forEach(tr=>{
-    tr.onclick=()=>{
-      const r=rows[+tr.dataset.i]; const nx=tr.nextElementSibling;
-      if(nx && nx.classList.contains('exp')){ nx.remove(); return; }
-      const det=document.createElement('tr'); det.className='exp';
-      const yrs=Object.keys(r.emp).map(Number).sort((a,b)=>b-a);
-      const lines=yrs.map(fy=>{
-        const mf=r.mf&&r.mf[fy]; const tot=r.total&&r.total[fy];
-        return `<div class="flex flex-wrap gap-x-4 gap-y-1 py-0.5">
-          <span style="min-width:64px" class="font-semibold">FY${String(fy).slice(2)}</span>
-          <span>employees <b>${IN(r.emp[fy])}</b></span>
-          ${tot?`<span class="subnote">total workforce ${IN(tot)}</span>`:''}
-          ${mf?`<span class="subnote">♂ ${IN(mf[0])} · ♀ ${IN(mf[1])}</span>`:''}
-          <span class="subnote">src: ${r.src&&r.src[fy]||'—'}</span></div>`;
-      }).join('');
-      det.innerHTML=`<td colspan="99" class="px-4 py-3">
-        <div class="text-xs font-bold uppercase tracking-wide mb-1" style="color:var(--text-muted)">${r.name} · ${r.sym} · BSE headcount by year</div>
-        ${lines}
-        <div class="subnote mt-1">Employees = permanent on-roll (permanent employees + permanent workers), or total reported employees where that gives a consistent series. Total workforce additionally includes contractual/other. Source: annual report on BSE (page &amp; method shown).</div></td>`;
-      tr.after(det);
-    };
-  });
-  document.getElementById('cov').innerHTML =
-    `Showing <b>${rows.length}</b> companies · dataset covers <b>${DATA.covered}</b> of ${DATA.universe} survivorship-free Nifty-500 names`
-    + ` · <span class="subnote">the rest are being read from their filings</span>`;
+function renderList(){
+  ROWS=filtered();
+  $('lHead').innerHTML=`<span>#</span><span>Company</span><span>${state.metric==='emp'?'Employees':'Workforce'}</span><span>YoY</span>`;
+  $('lCount').innerHTML=`<b>${ROWS.length}</b>&nbsp;shown · ${DATA.covered} of ${DATA.universe} covered`;
+  $('lList').innerHTML=ROWS.map((r,i)=>{
+    const al=(r.aliases&&r.aliases.length)?` title="${esc(r.name)} · formerly ${esc(r.aliases.join(', '))}"`:` title="${esc(r.name)}"`;
+    return `<div class="os-row lr${r.sym===state.sel?' on':''}" role="option" aria-selected="${r.sym===state.sel}" data-s="${esc(r.sym)}"${al}>
+      <span class="rk">${i+1}</span><span class="n">${esc(r.name)}${r.now?'':'<span class="os-tag">LEFT</span>'}</span>
+      <span class="v">${IN(latest(r))}</span>${pct(yoyOf(r))}</div>`; }).join('')
+    || `<div class="os-empty">No companies match.</div>`;
+  $('lList').querySelectorAll('.os-row').forEach(el=>el.onclick=()=>pick(el.dataset.s));
+}
+function pick(sym,scroll){
+  state.sel=sym;
+  $('lList').querySelectorAll('.os-row').forEach(el=>{ const on=el.dataset.s===sym; el.classList.toggle('on',on); el.setAttribute('aria-selected',on); if(on&&scroll) el.scrollIntoView({block:'nearest'}); });
+  renderDetail(); renderChart(); saveUrl();
+}
+function renderDetail(){
+  const r=cur();
+  if(!r){ $('dTitle').textContent='Year by year'; $('dTag').textContent=''; $('dList').innerHTML='<div class="os-empty">Pick a company on the left.</div>'; return; }
+  $('dTitle').innerHTML=`${esc(r.sym)} <i>year by year</i>`;
+  $('dTag').innerHTML=(r.now?'In Nifty 500':'Has left Nifty 500');
+  const yrs=Object.keys(r.emp).map(Number).sort((a,b)=>b-a);
+  $('dList').innerHTML=((r.aliases&&r.aliases.length)||r.sector?`<div class="os-note" style="border-bottom:1px solid var(--border)">${esc(r.sector||'')}${(r.aliases&&r.aliases.length)?`${r.sector?' · ':''}formerly ${esc(r.aliases.join(', '))}`:''}</div>`:'')+
+  yrs.map(fy=>{
+    const mf=r.mf&&r.mf[fy], tot=r.total&&r.total[fy], pv=r.emp[fy-1], y=(pv&&r.emp[fy])?(r.emp[fy]-pv)/pv:null;
+    return `<div class="os-row dr"><span class="fy">FY${String(fy).slice(2)}</span><span class="v">${IN(r.emp[fy])}</span>${pct(y)}<span class="m">${tot?IN(tot):'·'}</span>
+      <span class="sub">${mf?`♂ ${IN(mf[0])} · ♀ ${IN(mf[1])} · `:''}src: ${esc(r.src&&r.src[fy]||'—')}</span></div>`; }).join('');
+}
+
+/* ---- headcount bars: one bar per fiscal year, the value written on it ---- */
+function drawHc(){
+  const r=cur(), el=$('hc'); if(!r||state.chart!=='hc'){ el.innerHTML=''; $('hcKey').innerHTML=''; return; }
+  const W=el.clientWidth-20, H=el.clientHeight-12; if(W<60||H<60) return;
+  const emp=r.emp, tot=r.total||{}, main=state.metric==='emp'?emp:seriesOf(r), other=state.metric==='emp'?tot:emp;
+  const mainNm=state.metric==='emp'?'Employees':'Total workforce', othNm=state.metric==='emp'?'Total workforce':'Employees';
+  let mx=0, showOther=false; FYS.forEach(fy=>{ if(main[fy]!=null) mx=Math.max(mx,main[fy]); if(other[fy]!=null&&other[fy]!==main[fy]){ showOther=true; mx=Math.max(mx,other[fy]); } });
+  const top=34, bot=22, n=FYS.length, slot=W/n, bw=Math.min(64,slot*.62), ph=H-top-bot, y=v=>top+ph-(mx?v/mx*ph:0);
+  let s=`<line x1="0" x2="${W}" y1="${top+ph+.5}" y2="${top+ph+.5}"/>`;
+  FYS.forEach((fy,i)=>{ const cx=slot*i+slot/2, v=main[fy], o=other[fy];
+    s+=`<text class="yy" x="${cx}" y="${H-6}" text-anchor="middle">FY${String(fy).slice(2)}</text>`;
+    if(v==null){ s+=`<text x="${cx}" y="${top+ph-6}" text-anchor="middle">·</text>`; return; }
+    if(showOther&&o!=null&&o!==v) s+=`<rect class="b2" x="${cx-bw/2-3}" y="${y(o)}" width="${bw+6}" height="${Math.max(1,top+ph-y(o))}"><title>${othNm} FY${String(fy).slice(2)}: ${IN(o)}</title></rect>`;
+    s+=`<rect class="b1" x="${cx-bw/2}" y="${y(v)}" width="${bw}" height="${Math.max(1,top+ph-y(v))}" rx="1"><title>${mainNm} FY${String(fy).slice(2)}: ${IN(v)}</title></rect>`;
+    const ly=Math.min(y(v),(showOther&&o!=null)?y(o):1e9)-5;
+    s+=`<text class="v" x="${cx}" y="${ly}" text-anchor="middle">${slot<62?K.fmtVol(v).replace('.00','').replace(/(\.\d)0(?=[A-Z])/,'$1'):IN(v)}</text>`; });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(mainNm)} by fiscal year for ${esc(r.name)}">${s}</svg>`;
+  $('hcKey').innerHTML=`<i></i>${mainNm}`+(showOther?`<i class="t"></i>${othNm}`:'');
+}
+function chartBar(){
+  seg('cMode',[['hc','Headcount','Headcount by fiscal year'],['px','Price','The stock\'s daily price chart']],state.chart,v=>{ state.chart=v; renderChart(); saveUrl(); });
+  const px=state.chart==='px';
+  ['cIv','cRg','cLegend','cChart'].forEach(id=>$(id).classList.toggle('hidden',!px)); $('hc').classList.toggle('hidden',px); $('hcKey').classList.toggle('hidden',px);
+  if(!px||!CH) return;
+  seg('cIv',[['D','D','Daily bars'],['W','W','Weekly bars'],['M','M','Monthly bars']],CH.iv,v=>{ CH.setIv(v); chartBar(); });
+  seg('cRg',['3M','6M','1Y','3Y','Max'].map(k=>[k,k]),CH.range,v=>{ CH.setRange(v); chartBar(); });
+}
+function renderChart(){
+  const r=cur(), tok=++TOK;
+  if(!r){ $('cSym').textContent=''; $('cName').textContent=''; $('cOpen').classList.add('hidden'); $('cStats').innerHTML=''; $('hc').innerHTML=''; $('hcKey').innerHTML=''; if(CH)CH.clear(''); $('cMsg').textContent='Pick a company on the left.'; chartBar(); return; }
+  $('cSym').textContent=r.sym; $('cName').textContent=r.name;
+  $('cOpen').href='./stock.html?sym='+encodeURIComponent(r.sym); $('cOpen').classList.remove('hidden');
+  const s=seriesOf(r), ys=Object.keys(s).map(Number).sort((a,b)=>a-b), l=ys[ys.length-1], f=ys[0], y=yoyOf(r);
+  const since=(ys.length>1&&s[f]&&s[l])?(s[l]-s[f])/s[f]:null;
+  const ty=Object.keys(r.total||{}).map(Number).sort((a,b)=>a-b), tl=ty[ty.length-1];
+  const my=Object.keys(r.mf||{}).map(Number).sort((a,b)=>a-b), ml=my[my.length-1], mf=ml!=null?r.mf[ml]:null, w=(mf&&(mf[0]+mf[1])>0)?mf[1]/(mf[0]+mf[1]):null;
+  const sg=v=>v==null?'—':(v>=0?'+':'')+(v*100).toFixed(1)+'%', c=v=>v==null?'':(v>=0?'os-pos':'os-neg');
+  $('cStats').innerHTML=
+    `<div><span>${state.metric==='emp'?'Employees':'Workforce'} FY${String(l).slice(2)}</span><b>${IN(s[l])}</b></div>`+
+    `<div><span>YoY</span><b class="${c(y)}">${sg(y)}</b></div>`+
+    `<div><span>Since FY${String(f).slice(2)}</span><b class="${c(since)}">${sg(since)}</b></div>`+
+    `<div><span>Total workforce${tl!=null?' FY'+String(tl).slice(2):''}</span><b>${tl!=null?IN(r.total[tl]):'—'}</b></div>`+
+    `<div><span>Women${ml!=null?' FY'+String(ml).slice(2):''}</span><b>${w==null?'—':(w*100).toFixed(1)+'%'}</b></div>`+
+    `<div><span>Years on file</span><b>${ys.length}<small>of ${FYS.length}</small></b></div>`;
+  chartBar();
+  if(state.chart==='hc'){ $('cMsg').textContent=''; drawHc(); return; }
+  $('cMsg').textContent='Loading chart…';
+  K.loadStockBars(r.sym).then(d=>{ if(tok!==TOK) return;
+    if(!CH) CH=new K.Chart({chart:$('cChart'),legend:$('cLegend'),msg:$('cMsg'),iv:'W',range:'Max'});
+    CH.show(d,{name:r.name,tag:'NSE'}); chartBar(); },
+    ()=>{ if(tok!==TOK) return; if(CH) CH.clear(''); $('cMsg').textContent='No daily price history on file for '+r.sym+'.'; });
+}
+
+function renderTable(){
+  const rows=ROWS;
+  $('tHead').innerHTML=`<th class="nm">Company</th>`+FYS.map(fy=>`<th>FY${String(fy).slice(2)}</th>`).join('')+`<th>YoY</th>`;
+  $('tRows').innerHTML=rows.map(r=>{ const s=seriesOf(r), y=yoyOf(r);
+    return `<tr data-s="${esc(r.sym)}"><td class="nm" title="${esc(r.name)}">${esc(r.name)}${r.now?'':'<span class="os-tag">LEFT</span>'}</td>`+
+      FYS.map(fy=>s[fy]!=null?`<td>${IN(s[fy])}</td>`:`<td class="miss">·</td>`).join('')+
+      (y==null?'<td class="miss">·</td>':`<td class="${y>=0?'os-pos':'os-neg'}">${(y*100).toFixed(1)}%</td>`)+`</tr>`; }).join('')
+    || `<tr><td colspan="99" class="os-empty">No companies match.</td></tr>`;
+  $('tRows').querySelectorAll('tr[data-s]').forEach(tr=>tr.onclick=()=>{ state.sel=tr.dataset.s; state.view='tracker'; refresh(); const on=$('lList').querySelector('.os-row.on'); if(on) on.scrollIntoView({block:'center'}); });
+}
+function setFocus(on){ state.focus=on==null?!state.focus:on; $('grid').classList.toggle('focus',state.focus); $('cFocus').textContent=state.focus?'Show lists':'Focus'; $('cFocus').setAttribute('aria-pressed',state.focus); setTimeout(drawHc,0); }
+function refresh(){
+  bars(); renderList();
+  if(!ROWS.some(r=>r.sym===state.sel)) state.sel=ROWS.length?ROWS[0].sym:null;
+  const t=state.view==='table'; $('grid').classList.toggle('hidden',t); $('tWrap').classList.toggle('hidden',!t);
+  if(t) renderTable();
+  else{ K.fitGrid($('grid')); $('lList').querySelectorAll('.os-row').forEach(el=>{ const on=el.dataset.s===state.sel; el.classList.toggle('on',on); el.setAttribute('aria-selected',on); }); renderDetail(); renderChart(); }
+  saveUrl();
 }
 
 fetch('./employee_headcount.json?v='+Date.now()).then(r=>r.json()).then(d=>{
   DATA=d; FYS=d.fys;
-  document.getElementById('status').classList.add('hidden');
-  document.getElementById('content').classList.remove('hidden');
-  document.getElementById('updated').textContent = 'Updated '+ (d.updated||'');
-  document.getElementById('foot').innerHTML = d.basis + ' &nbsp;·&nbsp; ' + (d.note||'');
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  $('asof').textContent='Updated '+(d.updated||'');
+  $('foot').innerHTML=esc(d.basis||'')+' &nbsp;·&nbsp; '+esc(d.note||'');
   const secs=[...new Set(d.rows.filter(r=>Object.keys(r.emp).length).map(r=>r.sector).filter(Boolean))].sort();
-  document.getElementById('fSector').insertAdjacentHTML('beforeend', secs.map(s=>`<option>${s}</option>`).join(''));
-  const bind=(id,fn)=>document.getElementById(id).addEventListener('input',e=>{fn(e.target.value);render();});
-  bind('q',v=>state.q=v); bind('fSector',v=>state.sector=v); bind('fMember',v=>state.member=v); bind('fSort',v=>state.sort=v);
-  document.getElementById('mEmp').onclick=()=>{state.metric='emp';mEmp.classList.add('on');mTot.classList.remove('on');render();};
-  document.getElementById('mTot').onclick=()=>{state.metric='tot';mTot.classList.add('on');mEmp.classList.remove('on');render();};
-  render();
-}).catch(e=>{ document.getElementById('status').textContent='Could not load headcount data: '+e; });
+  $('fSector').insertAdjacentHTML('beforeend', secs.map(s=>`<option>${esc(s)}</option>`).join(''));
+  if(!secs.length) $('secWrap').classList.add('hidden');
+  $('fSector').onchange=e=>{ state.sector=e.target.value; refresh(); };
+  let t=null; $('q').oninput=e=>{ clearTimeout(t); t=setTimeout(()=>{ state.q=e.target.value.trim(); refresh(); },120); };
+  $('cFocus').onclick=()=>setFocus();
+  const s0=(Q.get('s')||'').toUpperCase(); if(s0){ const hit=d.rows.find(r=>r.sym===s0||(r.aliases||[]).includes(s0)); if(hit&&Object.keys(hit.emp).length) state.sel=hit.sym; }
+  refresh();
+  const on=$('lList').querySelector('.os-row.on'); if(on) on.scrollIntoView({block:'nearest'});
+  window.addEventListener('resize',()=>{ if(state.view==='tracker'){ K.fitGrid($('grid')); drawHc(); } });
+  new MutationObserver(drawHc).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  document.addEventListener('keydown',e=>{
+    if(state.view!=='tracker'||e.metaKey||e.ctrlKey||e.altKey) return;
+    const tg=e.target, typing=tg&&/^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
+    if(typing){ if(e.key==='Escape'||e.key==='Enter') tg.blur(); if(e.key!=='ArrowDown'&&e.key!=='ArrowUp') return; if(tg.tagName==='SELECT') return; }
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){ const j=ROWS.findIndex(r=>r.sym===state.sel)+(e.key==='ArrowDown'?1:-1); if(ROWS[j]) pick(ROWS[j].sym,true); e.preventDefault(); }
+    else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ state.chart=e.key==='ArrowRight'?'px':'hc'; renderChart(); saveUrl(); e.preventDefault(); }
+    else if(e.key==='Enter'){ const a=$('cOpen'); if(state.sel&&a.getAttribute('href')!=='#') location.href=a.href; }
+    else if(e.key==='f'||e.key==='F'){ setFocus(); }
+    else if(e.key==='/'){ $('q').focus(); e.preventDefault(); }
+  });
+}).catch(e=>{ $('status').textContent='Could not load headcount data: '+e; console.error(e); });
 </script>
 </body>
 </html>
