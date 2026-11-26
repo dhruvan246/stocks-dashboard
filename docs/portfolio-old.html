@@ -2437,7 +2437,7 @@ boot();
 </script>
 <script>/* New / Old view switch (2026-11-26): this is the OLD design, kept as a frozen copy */
 document.querySelectorAll('#viewSw button').forEach(function(b){ b.onclick=function(){ if(b.dataset.w!=='new') return;
-  try{ localStorage.setItem('sw_view','new'); }catch(e){}
+  try{ localStorage.setItem('sw_view2','new'); }catch(e){}
   location.href=(/portfolio-old\.html$/.test(location.pathname)?'./portfolio.html':'./index.html')+location.search+location.hash; }; });
 </script>
 </body>

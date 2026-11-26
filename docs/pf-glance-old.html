@@ -144,7 +144,7 @@ keyForm.addEventListener('submit', e=>{
 });
 const vsw=document.getElementById('vsw');
 vsw.addEventListener('click', e=>{ e.stopPropagation(); const b=e.target.closest('button'); if(!b || b.dataset.w!=='new') return;
-  try{ localStorage.setItem('sw_view','new'); }catch(err){}
+  try{ localStorage.setItem('sw_view2','new'); }catch(err){}
   location.href=location.pathname.replace(/-old\.html$/,'.html')+location.search+location.hash; });
 document.body.addEventListener('click', load);
 load();

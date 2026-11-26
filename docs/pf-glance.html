@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="./pf-icon-192.png">
 <title>Portfolio</title>
 <script>/* New / Old view: the site-wide choice (localStorage sw_view) applies here too */
-try{ if(localStorage.getItem('sw_view')==='old') location.replace(location.pathname.replace(/\.html$/,'-old.html')+location.search+location.hash); }catch(e){}</script>
+try{ if(localStorage.getItem('sw_view2')!=='new') location.replace(location.pathname.replace(/\.html$/,'-old.html')+location.search+location.hash); }catch(e){}</script>
 <style>
 :root{ color-scheme: dark;
   --bg:#131312; --surface:#1a1a19; --text:#ffffff; --text-2:#8a8981;
@@ -189,7 +189,7 @@ keyForm.addEventListener('submit', e=>{
 });
 const vsw=document.getElementById('vsw');
 vsw.addEventListener('click', e=>{ e.stopPropagation(); const b=e.target.closest('button'); if(!b || b.dataset.w!=='old') return;
-  try{ localStorage.setItem('sw_view','old'); }catch(err){}
+  try{ localStorage.setItem('sw_view2','old'); }catch(err){}
   location.href=location.pathname.replace(/\.html$/,'-old.html')+location.search+location.hash; });
 document.body.addEventListener('click', load);
 load();

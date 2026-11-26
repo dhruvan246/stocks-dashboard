@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
 <script>/* New / Old view: the site-wide choice (localStorage sw_view) applies here too. The query string
    (Kite's ?request_token=, the private ?t=) and the #hash travel with it so a login still finishes. */
-try{ if(localStorage.getItem('sw_view')==='old') location.replace('./terminal-old.html'+location.search+location.hash); }catch(e){}</script>
+try{ if(localStorage.getItem('sw_view2')!=='new') location.replace('./terminal-old.html'+location.search+location.hash); }catch(e){}</script>
 <style>
 /* ---------- tokens — shared with portfolio.html so the two pages read as one product ---------- */
 :root{
@@ -1796,7 +1796,7 @@ body{background:var(--bg)}
   /* New | Old page design (site-wide choice, localStorage sw_view) */
   [].forEach.call(document.querySelectorAll('#viewSw button'),function(b){ b.addEventListener('click',function(){
     if(b.dataset.w!=='old') return;
-    try{ localStorage.setItem('sw_view','old'); }catch(e){}
+    try{ localStorage.setItem('sw_view2','old'); }catch(e){}
     location.href='./terminal-old.html'+location.hash; }); });
 
   /* init + polling */

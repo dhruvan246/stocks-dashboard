@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>/* New / Old view: the site-wide choice (localStorage sw_view) applies here too */
-try{ if(localStorage.getItem('sw_view')==='old') location.replace((/portfolio\.html$/.test(location.pathname)?'./portfolio-old.html':'./index-old.html')+location.search+location.hash); }catch(e){}</script>
+try{ if(localStorage.getItem('sw_view2')!=='new') location.replace((/portfolio\.html$/.test(location.pathname)?'./portfolio-old.html':'./index-old.html')+location.search+location.hash); }catch(e){}</script>
 <style>
 /* ---------- tokens (light) ---------- */
 :root{
@@ -2532,7 +2532,7 @@ boot();
 
   /* New | Old */
   document.querySelectorAll('#viewSw button').forEach(b=>b.onclick=()=>{ if(b.dataset.w!=='old') return;
-    put('sw_view','old');
+    put('sw_view2','old');
     location.href=(/portfolio\.html$/.test(location.pathname)?'./portfolio-old.html':'./index-old.html')+location.search+location.hash; });
 
   /* the old "cards to show" menu has no cards to act on here */

@@ -6,10 +6,15 @@
   'use strict';
   // ---- New / Old view (user, 2026-11-26): every rebuilt page keeps its previous design as
   // <page>-old.html. New is the default; the header's New | Old switch stores the choice
-  // (localStorage 'sw_view') and it then applies to every page that has an old copy. ----
+  // (localStorage 'sw_view2'; Markets has its own 'sw_view_mkt') and it then applies to every page that has an old copy. ----
   var OLD_PAGES = 'actions announcements backtest backtest-history bank-credit bull-runs capex chart commodities coverage daily-moves data-checks deals delivery discovery employees fii-dii fill-coverage fno-up3 global ideas index index-chart indices insider insurer-inbox ipos live-tracking macro market-mood monthly-returns movers mutual-funds nse-bse-dashboard options-backtest quarterly-results results-coverage saved-strategies sectors shareholding status stock strategy-mixer strategy-phases volume watchlist'.split(' ');
   var MKT = { sectors: 1, indices: 1, movers: 1 };
-  function viewPref() { try { return localStorage.getItem('sw_view') === 'old' ? 'old' : 'new'; } catch (e) { return 'new'; } }
+  // 2026-11-26 (user): the OLD design is the default on every page except Markets, which stays New.
+  // Two separate choices so one never drags the other: sw_view2 (all pages, default old) and sw_view_mkt (Markets, default new).
+  function viewIsMkt() { var f = (location.pathname.split('/').pop() || '').toLowerCase().replace(/(-old)?\.html$/, ''); return f === 'markets' || !!MKT[f]; }
+  function viewKey() { return viewIsMkt() ? 'sw_view_mkt' : 'sw_view2'; }
+  function viewPref() { var m = viewIsMkt(), v = null; try { v = localStorage.getItem(viewKey()); } catch (e) {}
+    return m ? (v === 'old' ? 'old' : 'new') : (v === 'new' ? 'new' : 'old'); }
   function viewTwin() {            // -> { cur:'new'|'old', url: the same page in the other view } or null
     var f = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
     var q = new URLSearchParams(location.search), m = /^(.+)-old\.html$/.exec(f), qs;
@@ -23,20 +28,21 @@
     if (OLD_PAGES.indexOf(n) >= 0 && !MKT[n]) return { cur: 'new', url: './' + n + '-old.html' + location.search + location.hash };
     return null;
   }
-  (function () { var t = viewTwin(); if (t && t.cur === 'new' && viewPref() === 'old') location.replace(t.url); })();
+  var swLeaving = false;   // this page is being replaced by its twin: build nothing on it
+  (function () { var t = viewTwin(); if (t && t.cur === 'new' && viewPref() === 'old') { swLeaving = true; location.replace(t.url); } })();
   function buildViewSwitch(themeBox) {
     var t = viewTwin(); if (!t || !themeBox || !themeBox.parentNode || document.getElementById('sw-view-switch')) return;
     var box = document.createElement('div');
     box.id = 'sw-view-switch'; box.className = 'sw-theme-switch';
     box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Page design');
     box.style.marginRight = '6px';
-    [['new', 'New', 'New one-screen design (default)'], ['old', 'Old', 'The previous design of this page']].forEach(function (o) {
+    [['new', 'New', 'New one-screen design'], ['old', 'Old', 'The previous design of this page']].forEach(function (o) {
       var b = document.createElement('button'); b.type = 'button'; b.textContent = o[1]; b.title = o[2];
       b.setAttribute('aria-pressed', t.cur === o[0] ? 'true' : 'false');
       b.style.cssText = 'width:auto;padding:0 9px;font-size:12px;font-weight:600';
       b.addEventListener('click', function () {
         if (t.cur === o[0]) return;
-        try { localStorage.setItem('sw_view', o[0]); } catch (e) {}
+        try { localStorage.setItem(viewKey(), o[0]); } catch (e) {}
         location.href = t.url;
       });
       box.appendChild(b);
@@ -1955,7 +1961,7 @@
     } catch (e) {}
   }
 
-  function init() { buildHeader(); buildTape(); buildSidebar(); buildNav(); buildSearch(); buildTabs(); buildGlossary(); buildFooter(); buildBottomBar(); buildInstall(); build(); buildSecNav(); watchHeader(); watchTables(); loadFeatures(); }
+  function init() { if (swLeaving || !document.body) return; buildHeader(); buildTape(); buildSidebar(); buildNav(); buildSearch(); buildTabs(); buildGlossary(); buildFooter(); buildBottomBar(); buildInstall(); build(); buildSecNav(); watchHeader(); watchTables(); loadFeatures(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
