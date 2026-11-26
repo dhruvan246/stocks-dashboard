@@ -13,7 +13,7 @@
 <style>
   body{font-feature-settings:"tnum" 1}
   .pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
-  #grid{grid-template-columns:minmax(250px,300px) minmax(250px,300px) minmax(0,1fr)}
+  #grid{grid-template-columns:minmax(240px,270px) minmax(240px,270px) minmax(0,1fr)}
   #lHead,.lr{grid-template-columns:minmax(0,1fr) 62px 58px}
   .tr{grid-template-columns:74px 60px minmax(0,1fr)} .yr{grid-template-columns:minmax(0,1fr) 70px 70px}
   .os-row.tr{cursor:default} .tr .nt{color:var(--text-faint);font-size:11.5px;overflow:hidden;text-overflow:ellipsis}
@@ -30,7 +30,11 @@
   #pC .os-chartwrap{flex:1 1 0;min-height:170px}
   .info{padding:6px 12px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:29px}
   .info b{color:var(--text);font-weight:600}
-  #sWrap{flex:0 0 44%;min-height:0;overflow:auto;border-top:1px solid var(--border);scrollbar-width:thin}
+  #sWrap{flex:0 0 54%;min-height:0;overflow:auto;border-top:1px solid var(--border);scrollbar-width:thin}
+  /* the one-index table always shows Jan–Dec + Year without sideways scroll: fixed columns, tight cells */
+  #sTbl{table-layout:fixed} html[data-theme] #sTbl th,html[data-theme] #sTbl td{padding:4px 2px;overflow:hidden;text-overflow:clip}
+  html[data-theme] #sTbl th:first-child,html[data-theme] #sTbl td:first-child{width:76px;padding-left:8px}
+  html[data-theme] #sTbl th:not(:first-child),html[data-theme] #sTbl td:not(:first-child){text-align:center}
   #tBox{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:auto;max-height:calc(100vh - 250px);min-height:300px}
   #tBox .info{border-top:0;border-bottom:1px solid var(--border);position:sticky;left:0}
   /* ---- heatmap tables ---- */
@@ -57,8 +61,11 @@
   .lgd{height:8px;width:120px;border-radius:9999px;background:linear-gradient(90deg,rgba(244,63,94,.8),rgba(244,63,94,.08) 46%,rgba(100,116,139,.06) 50%,rgba(16,185,129,.08) 54%,rgba(16,185,129,.8))}
   #note{white-space:normal;margin:-2px 0 10px;line-height:1.5;color:var(--accent-text)}
   #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55} #how summary{cursor:pointer;color:var(--text-muted)}
-  @media (max-width:1180px){ #grid{grid-template-columns:minmax(220px,260px) minmax(220px,260px) minmax(0,1fr)} }
-  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #sWrap{flex:none;max-height:70vh} #pC .os-chartwrap{flex:none}
+  /* under 1340px three panes cannot hold the 14-column month table: figures move under the index list, chart + table take the rest */
+  @media (min-width:900px) and (max-width:1339px){ #grid{grid-template-columns:250px minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
+    #pL{grid-column:1;grid-row:1} #pD{grid-column:1;grid-row:2} #pC{grid-column:2;grid-row:1 / span 2}
+    #sTbl{font-size:11.5px} html[data-theme] #sTbl th:first-child,html[data-theme] #sTbl td:first-child{width:66px;padding-left:6px} #sTbl .chipmtd{margin-left:2px;padding:0 2px} html[data-theme] #sTbl thead th.ann{padding:4px 0;letter-spacing:-.02em} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #sWrap{flex:none;max-height:70vh} #sTbl{table-layout:auto} html[data-theme] #sTbl th,html[data-theme] #sTbl td{padding:4px 6px} #pC .os-chartwrap{flex:none}
     #cards{grid-template-columns:repeat(2,minmax(0,1fr))} #cards div:nth-child(2n){border-right:0} #cards div:nth-child(-n+2){border-bottom:1px solid var(--border)}
     #tbl th:first-child,#tbl td:first-child{min-width:128px;max-width:128px;overflow:hidden;text-overflow:ellipsis} #tBox{max-height:70vh} .info{white-space:normal} }
 </style>
