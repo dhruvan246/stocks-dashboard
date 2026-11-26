@@ -226,7 +226,10 @@ const BATCH = 80;           // stock rows drawn per step
 const FNO = 'F&O stocks';
 const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-let C = null, X = null, XLOAD = null;      // core file, hover file, its promise
+let C = null;                               // the data set on screen: LIVE, or past-year files stitched together
+let LIVE = null, HIDX = null, CAL = null, HREADY = null, GOSEQ = 0;      // live file · dm_hist/index.json · every session day · its promise
+const HC = {}, SC = {}, XC = {}, MAXW = 260;     // year files · stitched sets · hover files · longest window (sessions)
+const atLatest = () => C === LIVE && TO === L - 1;
 let DAYS = [], L = 0;
 let IX = 'Nifty 50', FROM = 1, TO = 1, G = 'd', IND = '', Q = '', SORT = {k:'per', dir:-1};
 let COLS = [], ALLCOLS = [], ROWS = [], DRAWN = 0, TOUCH = false;
@@ -299,7 +302,101 @@ function sumRange(arr, f, b){
 }
 
 /* ---------- rows ---------- */
-function members(){ return ((C.idx[IX] || {}).m || []).filter(s => C.stocks[s]); }
+/* member list of roster k on the To date: today's list on the latest day, else the dated list in force that day */
+function rosterAt(k){
+  const e = C.idx[k]; if (!e) return {m:[], none:true};
+  if (atLatest() || !e.snaps) return {m:e.m || [], today:true};
+  let best = null; for (const sn of e.snaps){ if (sn[0] <= DAYS[TO]) best = sn; else break; }
+  if (!best) return {m:[], none:true, starts:e.snaps.length ? e.snaps[0][0] : null};
+  return {m:best[1], eff:best[0], un:(e.un || {})[best[0]] || []};
+}
+function members(){ return rosterAt(IX).m.filter(s => C.stocks[s]); }
+
+/* ---------- past years (docs/dm_hist, scripts/build_daily_moves_hist.py) ---------- */
+function loadCal(){
+  return HREADY || (HREADY = fetch('./dm_hist/index.json', {cache:'no-cache'}).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(j => { HIDX = j; const set = new Set(j.days); LIVE.days.forEach(d => set.add(d)); CAL = [...set].sort((a, b) => a - b); })
+    .catch(e => { console.warn('past years not available', e); HIDX = null; CAL = LIVE.days.slice(); }));
+}
+const calOnOrBefore = d => { for (let i = CAL.length - 1; i >= 1; i--) if (CAL[i] <= d) return i; return 1; };
+const calOnOrAfter = d => { for (let i = 1; i < CAL.length; i++) if (CAL[i] >= d) return i; return CAL.length - 1; };
+const yearFile = y => HC[y] || (HC[y] = gunzipFetch('./dm_hist/' + y + '.bin'));
+const hoverFile = u => XC[u] || (XC[u] = gunzipFetch(u));
+/* join files (oldest first) on one day axis. A newer file wins on a day both hold. A year file built earlier sits on
+   an older split/bonus basis, so each stock of an older file is rescaled by the days both files hold. */
+function stitch(pieces){
+  const set = new Set(); pieces.forEach(p => p.days.forEach(d => set.add(d)));
+  const days = [...set].sort((a, b) => a - b), pos = new Map(days.map((d, i) => [d, i])), n = days.length;
+  const blank = () => new Array(n).fill(null);
+  const out = {v:1, hist:true, pieces, days, end:dIso(days[n-1]), idx:{}, stocks:{}, fii:blank(), dii:blank(), fl:blank(), fs:blank(), exd:{}};
+  for (let pi = pieces.length - 1; pi >= 0; pi--){
+    const p = pieces[pi], map = p.days.map(d => pos.get(d)), m = map.length;
+    for (const k of ['fii','dii','fl','fs']){ const a = p[k] || []; for (let i = 0; i < m; i++) if (out[k][map[i]] == null && a[i] != null) out[k][map[i]] = a[i]; }
+    for (const sym in p.stocks){
+      const src = p.stocks[sym]; let o = out.stocks[sym], f = 1;
+      if (!o) o = out.stocks[sym] = {n:src.n, i:src.i, c:blank(), hh:blank(), ll:blank()};
+      else {
+        const rs = []; for (let i = 0; i < m; i++){ const a = o.c[map[i]], b = src.c[i]; if (a != null && b) rs.push(a / b); }
+        if (rs.length){ rs.sort((a, b) => a - b); f = rs[rs.length >> 1]; if (Math.abs(f - 1) < 0.01) f = 1; }
+      }
+      for (let i = 0; i < m; i++){
+        const j = map[i]; if (o.c[j] != null || src.c[i] == null) continue;
+        o.c[j] = f === 1 ? src.c[i] : Math.round(src.c[i] * f);
+        o.hh[j] = src.hh[i] == null ? null : f === 1 ? src.hh[i] : Math.round(src.hh[i] * f);
+        o.ll[j] = src.ll[i] == null ? null : f === 1 ? src.ll[i] : Math.round(src.ll[i] * f);
+      }
+    }
+    for (const k in p.idx){
+      const src = p.idx[k]; let o = out.idx[k];
+      if (!o) o = out.idx[k] = {snaps:[], un:{}, lv:blank(), hh:blank(), ll:blank(), hl:'close'};
+      for (const sn of (src.snaps || [])) if (!o.snaps.some(x => x[0] === sn[0])) o.snaps.push(sn);
+      for (const e in (src.un || {})) if (!(e in o.un)) o.un[e] = src.un[e];
+      for (const key of ['lv','hh','ll']){ const a = src[key]; if (a) for (let i = 0; i < m; i++) if (o[key][map[i]] == null && a[i] != null) o[key][map[i]] = a[i]; }
+    }
+    for (const sym in (p.exd || {})) if (!out.exd[sym]) out.exd[sym] = p.exd[sym];
+  }
+  for (const k in out.idx) out.idx[k].snaps.sort((a, b) => a[0] - b[0]);
+  return out;
+}
+function stitchX(ds, xs){
+  const pos = new Map(ds.days.map((d, i) => [d, i])), n = ds.days.length, out = {stocks:{}};
+  for (let pi = xs.length - 1; pi >= 0; pi--){
+    const p = xs[pi], map = p.days.map(d => pos.get(d));
+    for (const sym in p.stocks){
+      const src = p.stocks[sym]; let o = out.stocks[sym];
+      if (!o){ o = out.stocks[sym] = {}; for (const k of ['v','dv','r','rw','rm']) o[k] = new Array(n).fill(null); }
+      for (const k of ['v','dv','r','rw','rm']){ const a = src[k] || []; for (let i = 0; i < map.length; i++) if (map[i] != null && o[k][map[i]] == null && a[i] != null) o[k][map[i]] = a[i]; }
+    }
+  }
+  return out;
+}
+function useLive(){ C = LIVE; DAYS = C.days; L = DAYS.length; }
+/* put the window of len+1 sessions that ends on (or just before) toDate on screen; false if a newer call overtook it */
+async function go(toDate, len){
+  const my = ++GOSEQ;
+  await loadCal();
+  len = Math.max(0, Math.min(len, MAXW - 1));
+  const p = Math.max(Math.min(CAL.length - 1, 1 + len), calOnOrBefore(toDate));
+  len = Math.min(len, p - 1);
+  const dTo = CAL[p], dFirst = CAL[p - len], dBase = CAL[p - len - 1];
+  let ds = LIVE;
+  if (dBase < LIVE.days[0] && HIDX){
+    const ys = []; for (let y = Math.floor(dFirst / 10000); y <= Math.floor(dTo / 10000); y++) if (HIDX.years[y]) ys.push(y);
+    $('rewNote').classList.remove('hidden'); $('rewNote').textContent = 'Loading ' + ys.join(', ') + ' …';
+    let pcs;
+    try { pcs = await Promise.all(ys.map(yearFile)); }
+    catch (e){ ys.forEach(y => { delete HC[y]; }); if (my === GOSEQ){ $('rewNote').textContent = 'Could not load the past-year file (' + e.message + ').'; } return false; }
+    if (my !== GOSEQ) return false;
+    const lastH = pcs.length ? pcs[pcs.length-1].days[pcs[pcs.length-1].days.length - 1] : 0;
+    const withLive = dTo > lastH, key = ys.join(',') + (withLive ? '+L' : '');
+    ds = SC[key] || (SC[key] = stitch(withLive ? pcs.concat([LIVE]) : pcs));
+  }
+  if (my !== GOSEQ) return false;
+  const t = ds.days.indexOf(dTo);
+  if (t < 0 || t - len < 1){ $('rewNote').classList.remove('hidden'); $('rewNote').textContent = 'No stored sessions for ' + dLong(dTo) + '.'; return false; }
+  C = ds; DAYS = C.days; L = DAYS.length; TO = t; FROM = t - len;
+  return true;
+}
 function compute(){
   buildCols();
   const q = Q.trim().toLowerCase();
@@ -331,7 +428,7 @@ function idxInfo(){
   const per = lv && lv[TO] != null && lv[FROM-1] != null ? (lv[TO] / lv[FROM-1] - 1) * 100 : null;
   let hh = null, ll = null, src = '';
   if (lv && lv[TO] != null){
-    if (TO === L - 1 && ix.yh != null && C.idxAsof === C.end){ hh = ix.yh; ll = ix.yl; src = "NSE's 52-week high and low"; }
+    if (atLatest() && ix.yh != null && C.idxAsof === C.end){ hh = ix.yh; ll = ix.yl; src = "NSE's 52-week high and low"; }
     else if (ix.hh && ix.hh[TO] != null){ hh = ix.hh[TO]; ll = ix.ll[TO]; src = '52-week high and low of the closing level'; }
   }
   return {ix, lv, per, hh, ll, src,
@@ -450,7 +547,7 @@ function renderText(II, nSess){
   else s += '(' + nSess + (nSess === 1 ? ' session' : ' sessions') + '), <b>' + esc(IX) + '</b>: ';
   s += withPer.length ? '<b>' + up + '</b> of the <b>' + withPer.length + '</b> stocks shown ended the period higher' : 'no stock matches the filters';
   if (fTot.s != null) s += ', and FII net ' + (fTot.s >= 0 ? 'buying' : 'selling') + ' came to <b>₹' + n0(Math.abs(fTot.s)) + ' Cr</b>' + (fTot.n < fTot.of ? ' over the ' + fTot.n + ' sessions that have a figure' : '');
-  s += '. Prices up to ' + dLong(DAYS[L-1]) + '.';
+  s += '. Prices up to ' + dLong(LIVE.days[LIVE.days.length-1]) + '.';
   $('lead').innerHTML = s;
 
   const unit = G === 'd' ? 'day' : G === 'w' ? 'week' : 'month';
@@ -474,29 +571,40 @@ function renderHow(){
   p.push('<b>FII and DII</b> rows are the exchanges’ provisional cash-market net figures in rupees crore. They are stored from ' + (firstFlow >= 0 ? dLong(DAYS[firstFlow]) : '—') + '; earlier days are blank. A total marked * is missing at least one session.');
   p.push('<b>FII long : short</b> is the share of FII index-futures open interest held long versus short at the day’s close, from NSE’s participant-wise open interest files, with net contracts (NSE’s raw count) below. Red means FIIs are mostly short. In Week or Month columns it is the position on the last day of that column.');
   p.push('<b>Index level</b>: daily levels for the whole year are stored for ' + esc(long.join(', ')) + '. For the other indices they are stored from ' + (firstLvShort >= 0 ? dLong(DAYS[firstLvShort]) : '—') + ', so their index row and tile are blank before that.');
-  p.push('<b>Stocks</b> are the current members of each index (roster dates: ' + esc(effs.join('; ')) + ') and today’s F&amp;O list. The same current list is used for every past date, so a stock that left the index earlier is not shown.' + (C.missing && C.missing.length ? ' Not shown because the price store has no bars for them: ' + esc(C.missing.join(', ')) + '.' : ''));
+  p.push('<b>Stocks</b>: on the latest day they are the current members of each index (roster dates: ' + esc(effs.join('; ')) + ') and today’s F&amp;O list. <b>When you rewind</b>, they are the members on the day the window ends: the index or F&amp;O list that was in force that day, from the site’s dated member lists. A stock that left the index before that day is not shown; one that joined during the window is shown with its whole window. Old tickers are matched to the current ticker through the site’s rename table, and the current ticker and name are shown. NSE’s temporary demerger placeholders (names starting DUMMY) and a few names with no price series are left out, and the Rewind note lists them for the day.' + (C.missing && C.missing.length ? ' Not shown today because the price store has no bars for them: ' + esc(C.missing.join(', ')) + '.' : ''));
   p.push('<b>Hover figures</b>: volume and delivery % are NSE’s for that day. RSI is the 14-period Wilder RSI on daily, weekly and monthly bars; the weekly and monthly bars end at that day’s close. Ex-dividend dates are collected from NSE’s corporate-actions list from ' + dLong(20261022) + ' onward, so earlier ex-dividend days carry no dot.');
-  p.push('The file is rebuilt every trading evening after the day’s prices are stored. It holds the last ' + (L - 1) + ' sessions (' + dLong(DAYS[1]) + ' to ' + dLong(DAYS[L-1]) + '), including special sessions such as Diwali Muhurat trading.');
+  p.push('The live file is rebuilt every trading evening after the day’s prices are stored. It holds the last ' + (L - 1) + ' sessions (' + dLong(DAYS[1]) + ' to ' + dLong(DAYS[L-1]) + '), including special sessions such as Diwali Muhurat trading. <b>Rewind goes back to 1 January 2003</b>: earlier years are kept in one file per year and loaded when you go there. A window can be at most ' + MAXW + ' sessions. In those years FII and DII cash figures are blank (stored from 2026 only), FII index-futures positions start in 2012, ex-dividend dots are not shown, and the index row uses the closing level. Three sessions (16 Feb 2005, 30 Sep 2005 and 1 Nov 2006) have no stock prices in the price store, so they have no column and the next day’s change spans them. Past prices are on today’s split and bonus basis.');
   $('how').innerHTML = p.map(x => '<p>' + x + '</p>').join('');
 }
 
 /* ---------- controls ---------- */
 function syncControls(){
+  const RA = rosterAt(IX);
+  $('fIndex').innerHTML = Object.keys(LIVE.idx).map(k => { const r = rosterAt(k); return '<option value="' + esc(k) + '">' + esc(k) + (r.none ? ' (no list on this date)' : ' (' + r.m.filter(s => C.stocks[s]).length + ')') + '</option>'; }).join('');
   $('fIndex').value = IX; $('fFrom').value = dIso(DAYS[FROM]); $('fTo').value = dIso(DAYS[TO]); $('fQ').value = Q;
+  const cmin = dIso((CAL || LIVE.days)[1]), cmax = dIso(LIVE.days[LIVE.days.length-1]);
+  for (const id of ['fFrom','fTo','rewDate']){ $(id).min = cmin; $(id).max = cmax; }
   const inds = [...new Set(members().map(s => C.stocks[s].i))].sort();
   if (IND && inds.indexOf(IND) < 0) inds.push(IND);
   $('fInd').innerHTML = '<option value="">All industries</option>' + inds.map(i => '<option' + (i === IND ? ' selected' : '') + '>' + esc(i) + '</option>').join('');
   document.querySelectorAll('#gran .vbtn').forEach(b => b.classList.toggle('on', b.dataset.g === G));
   const n = TO - FROM + 1;
-  const rw = TO !== L - 1;
+  const rw = !atLatest(), cp = CAL ? CAL.indexOf(DAYS[TO]) : TO;
   $('rewDate').value = dIso(DAYS[TO]); $('rew').classList.toggle('on', rw);
-  $('rewNext').disabled = $('rewNow').disabled = !rw; $('rewPrev').disabled = FROM <= 1;
+  $('rewNext').disabled = $('rewNow').disabled = !rw; $('rewPrev').disabled = cp - (TO - FROM) <= 1;
   $('rewNote').classList.toggle('hidden', !rw);
-  if (rw) $('rewNote').innerHTML = 'Rewound to the close of <b>' + dDow(DAYS[TO]) + ' ' + dLong(DAYS[TO]) + '</b> · the ' + n + '-session window ends there and nothing later is used · stocks are today’s members of the index, not that day’s · the file holds ' + dLong(DAYS[1]) + ' to ' + dLong(DAYS[L-1]) + '.';
-  document.querySelectorAll('#rng .vbtn').forEach(b => { const k = +b.dataset.n || (L - 1); b.classList.toggle('on', n === Math.min(k, L - 1)); });
+  if (rw){
+    let mem;
+    if (RA.none) mem = '<b>' + esc(IX) + ' has no member list on this date</b>' + (RA.starts ? ' (its first stored list is from ' + dLong(RA.starts) + ')' : '');
+    else if (RA.today) mem = 'stocks are today’s members of the index, not that day’s (dated lists are not in the file yet)';
+    else mem = 'stocks are the members on that date' + (IX === FNO ? ' (F&amp;O list' : ' (index list') + ' in force since ' + dLong(RA.eff) + ')'
+             + ((RA.un || []).concat(RA.m.filter(x => !C.stocks[x])).length ? ' · no prices stored for this period, so not shown: ' + esc((RA.un || []).concat(RA.m.filter(x => !C.stocks[x])).join(', ')) : '');
+    $('rewNote').innerHTML = 'Rewound to the close of <b>' + dDow(DAYS[TO]) + ' ' + dLong(DAYS[TO]) + '</b> · the ' + n + '-session window ends there and nothing later is used · ' + mem + '.';
+  }
+  document.querySelectorAll('#rng .vbtn').forEach(b => { const k = +b.dataset.n || MAXW; b.classList.toggle('on', n === k); });
   const p = new URLSearchParams();
   if (IX !== 'Nifty 50') p.set('ix', IX);
-  if (!(TO === L - 1 && n === 20)){ p.set('from', dIso(DAYS[FROM])); if (TO !== L - 1) p.set('to', dIso(DAYS[TO])); }
+  if (!(!rw && n === 20)){ p.set('from', dIso(DAYS[FROM])); if (rw) p.set('to', dIso(DAYS[TO])); }
   if (G !== 'd') p.set('g', G);
   if (IND) p.set('ind', IND);
   const qs = p.toString();
@@ -505,34 +613,33 @@ function syncControls(){
 function idxOnOrAfter(d){ for (let i = 1; i < L; i++) if (DAYS[i] >= d) return i; return L - 1; }
 function idxOnOrBefore(d){ for (let i = L - 1; i >= 1; i--) if (DAYS[i] <= d) return i; return 1; }
 function setRange(n){ TO = L - 1; FROM = Math.max(1, L - (n || (L - 1))); }
-function defaults(){ IX = C.idx['Nifty 50'] ? 'Nifty 50' : Object.keys(C.idx)[0]; G = 'd'; IND = ''; Q = ''; SORT = {k:'per', dir:-1}; setRange(20); }
+function defaults(){ useLive(); IX = C.idx['Nifty 50'] ? 'Nifty 50' : Object.keys(C.idx)[0]; G = 'd'; IND = ''; Q = ''; SORT = {k:'per', dir:-1}; setRange(20); }
+let URLD = null;
 function readUrl(){
   const p = new URLSearchParams(location.search);
   if (p.get('ix') && C.idx[p.get('ix')]) IX = p.get('ix');
-  const f = p.get('from'), t = p.get('to');
-  if (t && /^\d{4}-\d{2}-\d{2}$/.test(t)) TO = idxOnOrBefore(+t.replace(/-/g, ''));
-  if (f && /^\d{4}-\d{2}-\d{2}$/.test(f)) FROM = Math.min(idxOnOrAfter(+f.replace(/-/g, '')), TO);
+  const f = p.get('from'), t = p.get('to'), ok = v => v && /^\d{4}-\d{2}-\d{2}$/.test(v) ? +v.replace(/-/g, '') : null;
+  URLD = (ok(f) || ok(t)) ? {f:ok(f), t:ok(t)} : null;      // applied in init through go(): the dates may lie in a past year
   if (['d','w','m'].indexOf(p.get('g')) >= 0) G = p.get('g');
   if (p.get('ind')) IND = p.get('ind');
 }
 function wire(){
   const sel = $('fIndex');
-  sel.innerHTML = Object.keys(C.idx).map(k => '<option value="' + esc(k) + '">' + esc(k) + ' (' + C.idx[k].m.filter(s => C.stocks[s]).length + ')</option>').join('');
-  $('fFrom').min = $('fTo').min = dIso(DAYS[1]); $('fFrom').max = $('fTo').max = dIso(DAYS[L-1]);
   sel.onchange = () => { IX = sel.value; IND = ''; render(); $('grid').scrollTop = 0; };
-  $('fFrom').onchange = e => { if (!e.target.value) return; FROM = idxOnOrAfter(+e.target.value.replace(/-/g, '')); if (FROM > TO) TO = FROM; render(); };
-  $('fTo').onchange = e => { if (!e.target.value) return; TO = idxOnOrBefore(+e.target.value.replace(/-/g, '')); if (TO < FROM) FROM = TO; render(); };
+  const reSort = () => { if (SORT.k[0] === 'c') SORT = {k:'per', dir:-1}; };
+  const show = async (toDate, len) => { if (await go(toDate, len)){ reSort(); render(); scrollLatest(); } };
+  $('fFrom').onchange = async e => { if (!e.target.value) return; await loadCal(); let pf = calOnOrAfter(+e.target.value.replace(/-/g, '')), pt = CAL.indexOf(DAYS[TO]); if (pf > pt) pt = pf; if (pt - pf + 1 > MAXW) pt = pf + MAXW - 1; if (await go(CAL[pt], pt - pf)){ reSort(); render(); } };
+  $('fTo').onchange = async e => { if (!e.target.value) return; await loadCal(); let pt = calOnOrBefore(+e.target.value.replace(/-/g, '')), pf = CAL.indexOf(DAYS[FROM]); if (pt < pf) pf = pt; if (pt - pf + 1 > MAXW) pf = pt - MAXW + 1; if (await go(CAL[pt], pt - pf)){ reSort(); render(); } };
   $('fInd').onchange = e => { IND = e.target.value; render(); };
   let qt = null; $('fQ').oninput = e => { clearTimeout(qt); qt = setTimeout(() => { Q = e.target.value; render(); }, 180); };
-  $('rng').onclick = e => { const b = e.target.closest('.vbtn'); if (!b) return; const n = +b.dataset.n, keep = TO; setRange(n); if (keep !== L - 1){ const len = TO - FROM; TO = keep; FROM = Math.max(1, TO - len); } G = n === 0 ? 'm' : n >= 62 ? 'w' : 'd'; if (SORT.k[0] === 'c') SORT = {k:'per', dir:-1}; render(); scrollLatest(); };
+  $('rng').onclick = e => { const b = e.target.closest('.vbtn'); if (!b) return; const n = +b.dataset.n; G = n === 0 ? 'm' : n >= 62 ? 'w' : 'd'; show(DAYS[TO], (n || MAXW) - 1); };
   $('gran').onclick = e => { const b = e.target.closest('.vbtn'); if (!b) return; G = b.dataset.g; if (SORT.k[0] === 'c') SORT = {k:'per', dir:-1}; render(); scrollLatest(); };
-  /* Rewind: the same number of sessions, ending on an earlier day (within the sessions the file holds) */
-  const slide = to => { const len = TO - FROM; TO = Math.max(1 + len, Math.min(L - 1, to)); FROM = TO - len; if (SORT.k[0] === 'c') SORT = {k:'per', dir:-1}; render(); scrollLatest(); };
-  $('rewDate').min = dIso(DAYS[1]); $('rewDate').max = dIso(DAYS[L-1]);
-  $('rewPrev').onclick = () => slide(TO - 1);
-  $('rewNext').onclick = () => slide(TO + 1);
-  $('rewNow').onclick = () => slide(L - 1);
-  $('rewDate').onchange = e => { if (!/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)){ syncControls(); return; } slide(idxOnOrBefore(+e.target.value.replace(/-/g, ''))); };
+  /* Rewind: the same number of sessions, ending on an earlier day. Days before the live file come from the past-year files. */
+  const step = async k => { await loadCal(); const p = CAL.indexOf(DAYS[TO]) + k; if (p >= 1 && p < CAL.length) show(CAL[p], TO - FROM); };
+  $('rewPrev').onclick = () => step(-1);
+  $('rewNext').onclick = () => step(1);
+  $('rewNow').onclick = () => show(LIVE.days[LIVE.days.length-1], TO - FROM);
+  $('rewDate').onchange = e => { if (!/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)){ syncControls(); return; } show(+e.target.value.replace(/-/g, ''), TO - FROM); };
   $('bReset').onclick = () => { defaults(); render(); scrollLatest(); $('grid').scrollTop = 0; };
   $('bMax').onclick = () => { const on = document.body.classList.toggle('dm-max'); $('bMax').textContent = on ? 'Exit full screen' : 'Maximise table'; };
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.body.classList.contains('dm-max')) $('bMax').click(); });
@@ -562,9 +669,12 @@ function scrollLatest(){
 let TIPKEY = '';
 function hideTip(){ $('tip').style.display = 'none'; TIPKEY = ''; }
 function ensureX(){
-  if (X || XLOAD) return;
-  XLOAD = gunzipFetch('./daily_moves_x.bin').then(d => { X = d.end === C.end ? d : {stocks:{}, stale:true}; if (TIPKEY) { const k = TIPKEY; TIPKEY = ''; const el = document.querySelector('[data-tipkey="' + k + '"]'); if (el && LASTXY) tipFor(el, LASTXY[0], LASTXY[1]); } })
-    .catch(() => { X = {stocks:{}, failed:true}; });
+  const ds = C; if (ds.X || ds.XLOAD) return;
+  const again = () => { if (C === ds && TIPKEY){ const k = TIPKEY; TIPKEY = ''; const el = document.querySelector('[data-tipkey="' + k + '"]'); if (el && LASTXY) tipFor(el, LASTXY[0], LASTXY[1]); } };
+  const src = ds === LIVE ? [LIVE] : ds.pieces;
+  ds.XLOAD = Promise.all(src.map(p => hoverFile(p === LIVE ? './daily_moves_x.bin' : './dm_hist/' + p.year + 'x.bin')))
+    .then(xs => { if (ds === LIVE) ds.X = xs[0].end === ds.end ? xs[0] : {stocks:{}, stale:true}; else ds.X = stitchX(ds, xs); again(); })
+    .catch(() => { ds.X = {stocks:{}, failed:true}; });
 }
 let LASTXY = null;
 function tipFor(target, x, y, toggle){
@@ -583,13 +693,13 @@ function tipFor(target, x, y, toggle){
         html += '<div>Close ₹' + n2(cl/100) + ' <b class="' + pc(r.cells[i]) + '">' + pct(r.cells[i]) + '</b></div>'
               + '<div class="m">Previous close ' + (base != null ? '₹' + n2(base/100) : '—') + '</div>';
         ensureX();
-        const xs = X && X.stocks[r.s];
+        const xs = C.X && C.X.stocks[r.s];
         if (xs){
           let vol = null;
           if (G === 'd') vol = xs.v[c.b]; else { vol = 0; let any = false; for (let j = c.f; j <= c.b; j++) if (xs.v[j] != null){ vol += xs.v[j]; any = true; } if (!any) vol = null; }
           html += '<div>Volume ' + (vol != null ? n0(vol) + ' shares' : '—') + (G === 'd' ? ' · Delivery ' + (xs.dv[c.b] != null ? xs.dv[c.b].toFixed(1) + '%' : '—') : '') + '</div>'
                 + '<div>RSI-14 · Daily ' + f1(xs.r[c.b]) + ' · Weekly ' + f1(xs.rw[c.b]) + ' · Monthly ' + f1(xs.rm[c.b]) + '</div>';
-        } else if (X) html += '<div class="m">Volume, delivery and RSI could not be loaded.</div>';
+        } else if (C.X) html += '<div class="m">Volume, delivery and RSI could not be loaded.</div>';
         else html += '<div class="m">Loading volume, delivery and RSI…</div>';
         html += '<div class="m">52W high ₹' + n2(st.hh[c.b]/100) + ' · low ₹' + n2(st.ll[c.b]/100) + ' on that day</div>';
         const ex = (C.exd[r.s] || []).filter(e => { const j = DAYS.indexOf(e[0]); return j >= c.f && j <= c.b; });
@@ -653,12 +763,19 @@ function exportCsv(){
 /* ---------- init ---------- */
 async function init(){
   try {
-    C = await gunzipFetch('./daily_moves.bin');
+    LIVE = C = await gunzipFetch('./daily_moves.bin');
     DAYS = C.days || []; L = DAYS.length;
     if (L < 2 || !C.idx || !Object.keys(C.idx).length || !C.stocks) throw new Error('the data file is empty');
     C.exd = C.exd || {}; C.fii = C.fii || []; C.dii = C.dii || []; C.fl = C.fl || []; C.fs = C.fs || [];
     defaults(); readUrl();
     wire(); renderHow();
+    loadCal().then(() => { if (C) syncControls(); });
+    if (URLD){
+      await loadCal();
+      let pt = URLD.t ? calOnOrBefore(URLD.t) : CAL.length - 1, pf = URLD.f ? calOnOrAfter(URLD.f) : pt - 19;
+      if (pf > pt) pf = pt; if (pt - pf + 1 > MAXW) pf = pt - MAXW + 1;
+      await go(CAL[pt], pt - Math.max(1, pf));
+    }
     $('status').classList.add('hidden'); $('content').classList.remove('hidden');
     render(); scrollLatest();
   } catch (e){

@@ -26,6 +26,10 @@ Rules:
     stored history. Weekly / monthly RSI on day t = completed weeks / months plus the running period
     ending at day t's close. Fewer than 14 changes -> null.
   * A stock with no bar on a day is null there. Nothing is filled forward.
+  * Each roster also carries "snaps": its dated member lists in force inside the window (indicesHistory /
+    fnoHistory, old tickers mapped through scripts/_rename_map.json), and the stocks of those lists are stored
+    too, so the page's Rewind shows a past day with that day's members. "m" stays today's list. The day axis is
+    still counted on today's members only. Older years: scripts/build_daily_moves_hist.py -> docs/dm_hist/.
   * Ex-dividend dates accumulate: actions.json only keeps ~30 past days, so dates already in the
     previous daily_moves.bin are carried over (inside the window).
 
@@ -205,6 +209,50 @@ def main():
         print("WARNING: last axis day %s != data end %s" % (iso(days[-1]), end))
     L = len(days)
 
+    # ---- member lists in force inside the window (Rewind shows a past day's own members). A snapshot symbol is
+    # looked up under its own name, else through _rename_map.json; names found under neither go to "un".
+    try:
+        with open(os.path.join(HERE, "_rename_map.json"), encoding="utf-8") as f:
+            rmap = json.load(f)
+    except Exception as e:
+        print("rename map not readable (%s): past members under an old ticker will be missing" % e)
+        rmap = {}
+
+    def resolve(s):
+        seen = set()
+        while s not in data or not data[s].get("d"):
+            if s in seen or s not in rmap:
+                return None
+            seen.add(s)
+            s = rmap[s]
+        return s
+
+    hist_src = dict(S.get("indicesHistory") or {})
+    if S.get("fnoHistory"):
+        hist_src[FNO_NAME] = S["fnoHistory"]
+    past = set()
+    for name, r in rosters.items():
+        sn = sorted(hist_src.get(name) or [], key=lambda x: x["effectiveDate"])
+        effs = [int(x["effectiveDate"].replace("-", "")) for x in sn]
+        a = max(0, bisect_right(effs, days[0]) - 1)
+        snaps, un = [], {}
+        for e, x in list(zip(effs, sn))[a:]:
+            if e > days[-1]:
+                break
+            ok, bad = set(), set()
+            for sym in x["symbols"]:
+                t = resolve(sym)
+                (ok if t else bad).add(t or sym)
+            snaps.append([e, sorted(ok)])
+            if bad:
+                un[str(e)] = sorted(bad)
+            past |= ok
+        if snaps:
+            r["snaps"] = snaps
+            if un:
+                r["un"] = un
+    universe = sorted(set(universe) | past)
+
     # ---- per stock
     slim_meta = S.get("meta") or {}
     stocks, extra = {}, {}
@@ -249,12 +297,26 @@ def main():
     by_name = {(x.get("n") or "").lower(): x for x in idx_json.get("indices", [])}
     hist = (js_load("indices_hist.json") or {}).get("daily", {})
     idx_asof = idx_json.get("asof") or idx_json.get("updated")
+    closes = {}
+    try:
+        cj = gz_load(os.path.join(DOCS, "idx_ohlc", "_closes.bin"))
+        from datetime import timedelta
+        cd = [date.fromisoformat(cj["d0"])]
+        for g in cj["dd"]:
+            cd.append(cd[-1] + timedelta(days=g))
+        cd = [x.isoformat() for x in cd]
+        for k, h in cj["idx"].items():
+            closes[k] = {cd[h["s"] + j]: v / 100.0 for j, v in enumerate(h["c"]) if v is not None}
+    except Exception as e:
+        print("idx_ohlc/_closes.bin not readable (%s): index levels from the short files only" % e)
     unmapped = []
     for name, r in rosters.items():
         if name == FNO_NAME:
             continue
         key = (by_name.get(name.lower()) or {}).get("k") or KEY_FALLBACK.get(name)
         px = {}
+        if key and key in closes:      # base layer: the long close history (scripts/build_index_ohlc.py)
+            px.update(closes[key])
         if key:
             for dt, row in hist.items():
                 if row.get(key) is not None:
@@ -271,15 +333,16 @@ def main():
         r["lv"] = [px.get(iso(d)) for d in days]
         # rolling 52-week high / low of the CLOSE, only where a full year of closes sits behind the day
         dts = sorted(px)
-        if long_file and len(dts) > 300:
+        if len(dts) > 300:
             ih, il = [], []
             vals = [px[x] for x in dts]
             for d in days:
                 hi_i = bisect_right(dts, iso(d))
                 lo_i = bisect_right(dts, iso(year_before(d)))
                 win = vals[lo_i:hi_i]
-                ih.append(max(win) if win and px.get(iso(d)) is not None else None)
-                il.append(min(win) if win and px.get(iso(d)) is not None else None)
+                ok = win and px.get(iso(d)) is not None and dts[0] <= iso(year_before(d))
+                ih.append(max(win) if ok else None)
+                il.append(min(win) if ok else None)
             r["hh"], r["ll"], r["hl"] = ih, il, "close"
         x = by_name.get(name.lower()) or ({} if not key else next((y for y in idx_json.get("indices", []) if y.get("k") == key), {}))
         # NSE's own 52-week high / low (intraday): true for the latest day only
