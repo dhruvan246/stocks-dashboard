@@ -3,35 +3,43 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>STOCKSWORLD · IPOs & Listings</title>
-<meta name="description" content="IPO calendar for NSE — issues open now with live subscription, upcoming issues, and every recent listing with its performance since the issue price." />
+<title>STOCKSWORLD · IPOs &amp; Listings</title>
+<meta name="description" content="IPO calendar for NSE: open and upcoming issues with live subscription numbers, plus how every listing of the last six months has fared against its issue price." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
-  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
-  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:var(--radius-sm);white-space:nowrap}
-  .chip.main{background:var(--accent-soft);color:var(--accent-text)}.chip.sme{background:var(--warn-soft);color:var(--warn)}
-  .chip.open{background:var(--pos-soft);color:var(--pos)}.chip.soon{background:var(--surface-2);color:var(--text-muted)}
-  html[data-theme="dark"] .chip.main{background:rgba(99,102,241,.18);color:var(--accent-text)}
-  html[data-theme="dark"] .chip.sme{background:rgba(245,158,11,.16);color:var(--warn)}
-  html[data-theme="dark"] .chip.open{background:rgba(16,185,129,.18);color:var(--pos)}
-  html[data-theme="dark"] .chip.soon{background:rgba(148,163,184,.14);color:var(--text)}
-  .subbar{height:6px;border-radius:9999px;background:var(--surface-2,var(--surface-2));overflow:hidden}
-  .subbar>div{height:100%;border-radius:9999px;background:linear-gradient(90deg,#4f46e5,#8b5cf6)}
-  .vbtn{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;
-        background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border))}
-  .vbtn.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
-  select,input[type=text]{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);font-size:13px;padding:7px 10px}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(320px,400px) minmax(290px,360px) minmax(0,1fr)}
+  #lHead,.lr{grid-template-columns:minmax(0,1fr) 70px 62px}
+  .sec{padding:7px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);display:flex;justify-content:space-between;position:sticky;top:0;z-index:1}
+  .sec i{font-style:normal;font-weight:400;color:var(--text-faint);text-transform:none;letter-spacing:0}
+  .kv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px}
+  .kv span{color:var(--text-muted)} .kv b{font-weight:600;color:var(--text);text-align:right}
+  .kv b.os-pos{color:var(--pos)} .kv b.os-neg{color:var(--neg)}
+  .subbar{height:6px;background:var(--surface-2);overflow:hidden;margin:0 12px 10px;border-radius:3px}
+  .subbar>div{height:100%;background:var(--accent)}
+  .dh{padding:9px 12px 6px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border)}
+  .dh i{font-style:normal;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-faint)} .dh i.ok{color:var(--pos)}
+  #pHead,.pr{grid-template-columns:54px minmax(0,1fr) minmax(0,1fr)}
+  .pr{cursor:default} .pr:hover{background:none}
+  #fc{position:absolute;inset:0;padding:8px 10px 4px}
+  #fc svg{display:block;width:100%;height:100%}
+  #fc text{font-family:inherit;fill:var(--text-muted);font-size:11px} #fc text.v{fill:var(--text);font-weight:600} #fc text.neg{fill:var(--neg)}
+  #fc .b1{fill:var(--accent)} #fc .b2{fill:var(--pos)} #fc .b2.neg{fill:var(--neg)} #fc line{stroke:var(--border)}
+  #fcKey{position:absolute;left:12px;top:8px;font-size:11.5px;color:var(--text-faint);z-index:2;pointer-events:none}
+  #fcKey i{display:inline-block;width:10px;height:10px;vertical-align:-1px;margin:0 4px 0 10px;background:var(--accent)} #fcKey i.p{background:var(--pos)}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(270px,320px) minmax(240px,300px) minmax(0,1fr)} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #grid > #pL .os-list{max-height:330px} #pD .os-list{max-height:none !important} #pC .os-chartwrap{height:300px} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -40,108 +48,268 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">IPOs &amp; Listings <span class="text-slate-400 font-semibold text-base">· the primary-market calendar</span></h1>
-    <p class="text-sm text-slate-500 mt-1">Issues you can bid on right now (with live subscription numbers), what's opening next, and how every recent listing has fared against its issue price. <span id="updated" class="text-slate-400"></span></p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>IPOs &amp; Listings</h1>
+    <div class="os-asof" id="asof"></div>
   </div>
-
-  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading IPO data…</div>
+  <div id="status" class="os-empty">Loading IPO data…</div>
 
   <div id="content" class="hidden">
-    <h2 class="text-base font-extrabold text-slate-800 mb-2">Open &amp; upcoming issues</h2>
-    <div id="issues" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-7"></div>
-
-    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <h2 class="text-base font-extrabold text-slate-800">Recently listed <span class="text-[11px] font-semibold text-slate-400">(last 6 months)</span></h2>
-      <div class="flex flex-wrap items-center gap-2">
-        <input id="q" type="text" placeholder="Search…" autocomplete="off" class="w-40" />
-        <select id="fBoard"><option value="all">Mainboard + SME</option><option value="Main">Mainboard only</option><option value="SME">SME only</option></select>
-        <select id="fSort"><option value="date">Newest first</option><option value="gain">Best since issue</option><option value="loss">Worst since issue</option></select>
-      </div>
-    </div>
-    <div class="card overflow-x-auto">
-      <table class="w-full text-sm min-w-[760px]">
-        <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-50/60"><tr>
-          <th class="text-left py-2.5 px-3">Listed</th><th class="text-left px-3">Stock</th><th class="text-center px-3">Board</th>
-          <th class="text-right px-3">Issue price</th><th class="text-right px-3">Now</th><th class="text-right px-3">Since issue</th><th class="text-right px-3">Mcap (₹ cr)</th>
-        </tr></thead>
-        <tbody id="tBody"></tbody>
-      </table>
-      <div class="p-3 text-xs text-slate-500"><span id="count"></span><span id="liveNote"></span></div>
+    <div class="os-bar">
+      <div class="os-sg" id="boards" role="group" aria-label="Board"></div>
+      <div class="os-sg" id="sorts" role="group" aria-label="Order of the listed names"></div>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>←→</b> price / financials · <b>/</b> search · <b>Enter</b> open · <b>F</b> focus</span>
     </div>
 
-    <p class="text-[11px] text-slate-500 mt-5">Source: NSE public-issues data, refreshed twice daily (mornings + weekday evenings, when subscription numbers update). "×" on an open issue = total bids ÷ shares offered so far. Mainboard includes stocks that start trading in the trade-for-trade (BE) series. Current prices &amp; market caps update live from the NSE feed while markets are open, and are baked into the daily snapshot each evening. A row shows "—" only when the feed has no quote for it yet (common for the newest SME listings). SME names show a live price where available but don't get a dedicated stock page. Click any listing with a <span class="text-slate-400">▸</span> to unfold its pre-IPO annual financials (revenue &amp; profit from the prospectus era). Educational only — not investment advice.</p>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pL" aria-label="Issues and listings">
+        <div class="os-ph"><span class="ttl">Issues &amp; listings</span><span class="r" id="count"></span></div>
+        <div class="os-ps"><input id="q" type="search" placeholder="Search symbol or company" autocomplete="off" aria-label="Search" /></div>
+        <div class="os-ch" id="lHead"><span>Stock</span><span>Date</span><span title="Open issues: times subscribed. Listed names: price now against the issue price.">Sub / since</span></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="Issues and listings"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Details">
+        <div class="os-ph"><span class="ttl" id="dTitle">Details</span><span class="r" id="dTag"></span></div>
+        <div class="os-list" id="dList"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span id="cStar"></span><span class="sym" id="cSym"></span><span class="nm" id="cName"></span>
+          <span class="r"><a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a>
+            <button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-ps"><div class="os-sg" id="cMode" role="group" aria-label="Chart"></div>
+          <div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div></div>
+        <div class="os-chartwrap">
+          <div id="fcKey" class="hidden"></div><div id="fc" class="hidden"></div>
+          <div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div>
+        </div>
+        <div class="os-stats" id="cStats"></div>
+      </section>
+    </div>
+
+    <p id="how">Source: NSE public-issues data, refreshed twice daily (mornings + weekday evenings, when subscription numbers update). "×" on an open issue = total bids ÷ shares offered so far. Mainboard includes stocks that start trading in the trade-for-trade (BE) series. Current prices &amp; market caps update live from the NSE feed while markets are open, and are baked into the daily snapshot each evening. A row shows "—" only when the feed has no quote for it yet (common for the newest SME listings). SME names show a live price where available but don't get a dedicated stock page. Pre-IPO financials are annual figures from the company's prospectus era — the years before it began filing quarterly results with the exchange; context only, <b>not used in the backtest</b>. The price chart is daily prices since listing with the issue price as a dashed line; a name listed in the last few days may have no daily price file yet. Educational only — not investment advice.</p>
   </div>
 </main>
 
 <script>
 'use strict';
-const $ = id => document.getElementById(id);
+const K=window.OSKit, $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const fmtD = iso => { if(!iso) return '—'; const p = iso.split('-'); return (+p[2]) + ' ' + MON[+p[1]-1] + " '" + p[0].slice(2); };
 const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN');
-const pctc = v => v == null ? '<span class="text-slate-300">—</span>' : '<span class="' + (v >= 0 ? 'pos':'neg') + '">' + (v > 0 ? '+' : '') + v.toFixed(0) + '%</span>';
-const slink = (sym, name, board) => (board === 'Main' ? '<span class="sw-star" data-sym="' + esc(sym) + '"></span> ' +
-    '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name) + '">' + esc(sym) + '</a>'
-  : '<span class="font-bold text-slate-700">' + esc(sym) + '</span>') +
-  '<div class="text-[11px] text-slate-400 font-normal max-w-[220px] truncate">' + esc(name) + '</div>';
+const pctc = v => v == null ? '<span class="m">—</span>' : '<span class="' + (v >= 0 ? 'os-pos':'os-neg') + '">' + (v > 0 ? '+' : '') + v.toFixed(0) + '%</span>';
+const gain = r => (r[4] && r[5]) ? (r[5] - r[4]) / r[4] * 100 : null;
 
 let DATA = null;
 let SHARES = {};   // sym -> shares outstanding (cr), derived from baked mcap÷price, for live mcap
-let PRE = {};      // sym -> pre-IPO annual history entry (docs/ipo_prehistory.json), for the expandable row
+let PRE = {};      // sym -> pre-IPO annual history entry (docs/ipo_prehistory.json)
 const todayISO = new Date().toISOString().slice(0,10);
+const S = { q:'', board:'all', sort:'date', sel:null, mode:'px', focus:false };   // sel = 'i:SYM' (issue) or 'l:SYM' (listed)
+let LIST = [], CH = null, TOK = 0, subNote = '', pxNote = '', PRE_OK = false;
+const Q = new URLSearchParams(location.search);
+if (['Main','SME'].includes(Q.get('board'))) S.board = Q.get('board');
+if (['gain','loss'].includes(Q.get('sort'))) S.sort = Q.get('sort');
+if (Q.get('chart') === 'fin') S.mode = 'fin';
 
 async function load(){
   try { DATA = await (await fetch('./ipos.json?t=' + Date.now())).json(); }
   catch(e){ $('status').textContent = 'Could not load ipos.json — run scripts/fetch_ipos.py first.'; return; }
   if (!DATA){ $('status').textContent = 'No IPO data yet.'; return; }
-  $('updated').textContent = '· updated ' + DATA.updated + ' IST';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
   SHARES = {};
   for (const r of (DATA.listed || [])) if (r[4] && r[5] && r[6]) SHARES[r[0]] = r[6] / r[5];  // mcap(cr)÷price = shares(cr)
-  renderIssues(); renderListed();
-  loadPre();                                                          // pre-IPO annual history -> expandable rows
+  const s0 = (Q.get('s') || Q.get('sym') || '').toUpperCase();
+  if (s0){ if ((DATA.upcoming || []).some(r => r[0] === s0)) S.sel = 'i:' + s0; else if ((DATA.listed || []).some(r => r[0] === s0)) S.sel = 'l:' + s0; }
+  wire(); asof(); refresh();
+  const on = $('lList').querySelector('.os-row.on'); if (on) on.scrollIntoView({block:'nearest'});
+  loadPre();                                                          // pre-IPO annual history
   liveSubs(); liveListed();
   setTimeout(() => { if (!document.hidden) liveListed(); }, 20000);   // 2nd pass fills symbols Yahoo dropped transiently
-  ['q','fBoard','fSort'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', renderListed));
-  $('tBody').addEventListener('click', onListedClick);               // delegated: survives renderListed() re-renders
 }
+function asof(){
+  $('asof').className = 'os-asof' + (subNote || pxNote ? ' live' : '');
+  $('asof').innerHTML = (subNote || pxNote ? '<span class="os-dot on"></span>' + [pxNote, subNote].filter(Boolean).join(' · ') + ' · ' : '') + 'file ' + esc(DATA.updated) + ' IST';
+}
+const isOpenNow = r => r[3] && r[4] && r[3] <= todayISO && todayISO <= r[4];
 
-function issueCard(r){
-  const [sym, name, board, open, close, band, shares, status, sub] = r;
-  const isOpen = open && close && open <= todayISO && todayISO <= close;
+function build(){
+  const q = S.q.toLowerCase(), board = S.board, sort = S.sort;
+  const hit = r => (board === 'all' || r[2] === board) && (!q || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q));
+  const iss = (DATA.upcoming || []).filter(hit);
+  let rows = (DATA.listed || []).filter(hit);
+  if (sort === 'gain') rows = rows.slice().sort((a,b) => (gain(b) ?? -1e9) - (gain(a) ?? -1e9));
+  else if (sort === 'loss') rows = rows.slice().sort((a,b) => (gain(a) ?? 1e9) - (gain(b) ?? 1e9));
+  LIST = iss.map(r => ({k:'i:' + r[0], t:'i', r})).concat(rows.map(r => ({k:'l:' + r[0], t:'l', r})));
+  return {iss, rows};
+}
+function renderList(keep){
+  const {iss, rows} = build(), box = $('lList'), top = box.scrollTop;
+  const tag = b => '<span class="os-tag">' + (b === 'SME' ? 'SME' : 'MAIN') + '</span>';
+  let h = '<div class="sec"><span>Open &amp; upcoming</span><i>' + iss.length + '</i></div>';
+  h += iss.length ? iss.map(r => { const k = 'i:' + r[0], on = k === S.sel, op = isOpenNow(r);
+      return '<div class="os-row lr' + (on ? ' on' : '') + '" role="option" aria-selected="' + on + '" data-k="' + esc(k) + '" title="' + esc(r[1] || r[0]) + '">' +
+        '<span class="n">' + esc(r[0]) + tag(r[2]) + '<i>' + esc(r[1] || '') + '</i></span>' +
+        '<span class="' + (op ? 'os-pos' : 'm') + '">' + (op ? 'Open' : (r[3] && r[3] > todayISO ? fmtD(r[3]).replace(/ '\d\d$/, '') : esc(r[7] || '—'))) + '</span>' +
+        '<span class="v">' + (r[8] != null ? '<span class="' + (r[8] >= 1 ? 'os-pos' : '') + '">' + r[8].toFixed(2) + '×</span>' : '<span class="m">—</span>') + '</span></div>'; }).join('')
+    : '<div class="os-empty">' + (S.q || S.board !== 'all' ? 'No open or announced issue matches.' : 'No open or announced issues right now.') + '</div>';
+  h += '<div class="sec"><span>Recently listed <i>last 6 months</i></span><i>' + rows.length + '</i></div>';
+  h += rows.length ? rows.map(r => { const k = 'l:' + r[0], on = k === S.sel;
+      return '<div class="os-row lr' + (on ? ' on' : '') + '" role="option" aria-selected="' + on + '" data-k="' + esc(k) + '" title="' + esc(r[1]) + '">' +
+        '<span class="n">' + esc(r[0]) + tag(r[2]) + '<i>' + esc(r[1]) + '</i></span><span class="m">' + fmtD(r[3]) + '</span><span class="v">' + pctc(gain(r)) + '</span></div>'; }).join('')
+    : '<div class="os-empty">Nothing matches.</div>';
+  box.innerHTML = h; if (keep) box.scrollTop = top;
+  $('count').textContent = rows.length.toLocaleString('en-IN') + ' listings in the last 6 months';
+}
+const cur = () => LIST.find(x => x.k === S.sel) || null;
+function pick(k, scroll){
+  S.sel = k;
+  $('lList').querySelectorAll('.os-row').forEach(el => { const on = el.dataset.k === k; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); if (on && scroll) el.scrollIntoView({block:'nearest'}); });
+  renderDetail(); renderChart(true); saveUrl();
+}
+const kv = (a, b, c) => '<div class="kv"><span>' + a + '</span><b' + (c ? ' class="' + c + '"' : '') + '>' + b + '</b></div>';
+function issueSize(r){ const band = r[5], shares = r[6];
   const upper = band ? +((band.match(/[\d.]+(?!.*[\d.])/) || [0])[0]) : 0;   // last number in the band
-  const sizeCr = (shares && upper) ? shares * upper / 1e7 : null;
-  return '<div class="card p-4">' +
-    '<div class="flex items-start justify-between gap-2">' +
-      '<div><div class="text-[15px] font-bold text-slate-800 leading-snug">' + esc(name || sym) + '</div>' +
-      '<div class="text-[11px] text-slate-400 font-semibold mt-0.5">' + esc(sym) + '</div></div>' +
-      '<div class="flex flex-col items-end gap-1"><span class="chip ' + (board==='SME'?'sme">SME':'main">Mainboard') + '</span>' +
-      '<span class="chip ' + (isOpen ? 'open">OPEN NOW' : 'soon">' + (open && open > todayISO ? 'Opens ' + fmtD(open) : esc(status || '—'))) + '</span></div></div>' +
-    '<div class="grid grid-cols-2 gap-2 mt-3 text-[12.5px] text-slate-600">' +
-      '<div><span class="text-slate-400">Price band</span><br><b>' + esc(band || '—') + '</b></div>' +
-      '<div><span class="text-slate-400">Issue size</span><br><b>' + (sizeCr ? '≈ ₹' + Math.round(sizeCr).toLocaleString('en-IN') + ' cr' : '—') + '</b></div>' +
-      '<div><span class="text-slate-400">Opens</span><br><b>' + fmtD(open) + '</b></div>' +
-      '<div><span class="text-slate-400">Closes</span><br><b>' + fmtD(close) + '</b></div></div>' +
-    (sub != null ?
-      '<div class="mt-3"><div class="flex justify-between text-[11px] mb-1"><span class="text-slate-400 font-semibold">Subscribed</span>' +
-      '<b class="' + (sub >= 1 ? 'pos' : 'text-slate-600') + '">' + sub.toFixed(2) + '×</b></div>' +
-      '<div class="subbar"><div style="width:' + Math.min(100, sub * 100) + '%"></div></div></div>' : '') +
-    '</div>';
+  return (shares && upper) ? shares * upper / 1e7 : null; }
+function preOf(sym){ const pe = PRE[sym]; return (pe && pe.status === 'filled' && pe.rows && pe.rows.length) ? pe : null; }
+function renderDetail(){
+  const x = cur();
+  if (!x){ $('dTitle').textContent = 'Details'; $('dTag').textContent = ''; $('dList').innerHTML = '<div class="os-empty">Nothing selected.</div>'; return; }
+  const r = x.r; let h = '';
+  if (x.t === 'i'){
+    const [sym, name, board, open, close, band, shares, status, sub] = r, sizeCr = issueSize(r), op = isOpenNow(r);
+    $('dTitle').innerHTML = esc(sym) + ' <i>issue</i>';
+    $('dTag').innerHTML = op ? '<span class="os-pos">OPEN NOW</span>' : (open && open > todayISO ? 'Opens ' + fmtD(open) : esc(status || '—'));
+    h += kv('Company', esc(name || sym)) + kv('Board', board === 'SME' ? 'SME' : 'Mainboard') + kv('Price band', esc(band || '—')) +
+      kv('Issue size', sizeCr ? '≈ ₹' + Math.round(sizeCr).toLocaleString('en-IN') + ' cr' : '—') + kv('Opens', fmtD(open)) + kv('Closes', fmtD(close)) +
+      kv('Shares offered', shares ? inr(shares) : '—') + kv('Status', esc(status || '—'));
+    if (sub != null) h += kv('Subscribed', sub.toFixed(2) + '×', sub >= 1 ? 'os-pos' : '') + '<div class="subbar"><div style="width:' + Math.min(100, sub * 100) + '%"></div></div>';
+    else h += kv('Subscribed', '—');
+  } else {
+    const g = gain(r);
+    $('dTitle').innerHTML = esc(r[0]) + ' <i>listed ' + fmtD(r[3]) + '</i>'; $('dTag').textContent = r[2] === 'SME' ? 'SME' : 'Mainboard';
+    h += kv('Company', esc(r[1])) + kv('Listed', fmtD(r[3])) + kv('Issue price', inr(r[4])) + kv('Now', inr(r[5])) +
+      kv('Since issue', g == null ? '—' : (g > 0 ? '+' : '') + g.toFixed(0) + '%', g == null ? '' : (g >= 0 ? 'os-pos' : 'os-neg')) + kv('Market cap (₹ cr)', inr(r[6]));
+  }
+  const pe = preOf(r[0]);
+  if (pe){
+    const src = pe.source === 'screener' ? 'Screener' : 'MoneyControl';
+    h += '<div class="dh">Pre-IPO financials · ' + (pe.verified ? '<i class="ok">✓ matches filed results</i>' : '<i>as reported to ' + src + '</i>') + '</div>' +
+      '<div class="os-ch" id="pHead"><span>FY</span><span>Revenue (₹ cr)</span><span>Net profit (₹ cr)</span></div>' +
+      pe.rows.map(row => '<div class="os-row pr"><span class="n">FY' + String(row[0]).slice(2) + '</span>' +
+        '<span>' + (row[1] == null ? '—' : Number(row[1]).toLocaleString('en-IN', {maximumFractionDigits:0})) + '</span>' +
+        '<span class="' + (row[2] != null && row[2] < 0 ? 'os-neg' : '') + '">' + (row[2] == null ? '—' : Number(row[2]).toLocaleString('en-IN', {maximumFractionDigits:0})) + '</span></div>').join('') +
+      '<div class="os-note">Annual figures from the company’s prospectus era, via ' + src + ' — the years before it began filing quarterly results with the exchange. Context only; <b>not used in the backtest</b>.</div>';
+  } else if (x.t === 'l') h += '<div class="os-note">No pre-IPO annual financials on file for this name.</div>';
+  $('dList').innerHTML = h;
 }
 
-function renderIssues(){
-  const rows = DATA.upcoming || [];
-  $('issues').innerHTML = rows.length ? rows.map(issueCard).join('')
-    : '<div class="text-sm text-slate-400 py-6">No open or announced issues right now.</div>';
+/* ---- right pane: price since listing (issue price = dashed line), or the pre-IPO revenue / profit bars ---- */
+function seg(id, opts, val, fn){
+  $(id).innerHTML = opts.map(o => '<button type="button" class="' + (o[0] === val ? 'on' : '') + '" data-v="' + o[0] + '"' + (o[2] ? ' title="' + o[2] + '"' : '') + (o[3] ? ' disabled' : '') + '>' + o[1] + '</button>').join('');
+  $(id).querySelectorAll('button').forEach(b => b.onclick = () => fn(b.dataset.v));
+}
+function chartBar(){
+  const x = cur(), fin = S.mode === 'fin', hasPre = !!(x && preOf(x.r[0]));
+  seg('cMode', [['px','Price','Daily prices since listing'],['fin','Pre-IPO financials','Revenue and net profit by year, from the prospectus era', !hasPre]], S.mode, v => { S.mode = v; renderChart(); saveUrl(); });
+  ['cIv','cRg','cLegend','cChart'].forEach(id => $(id).classList.toggle('hidden', fin)); $('fc').classList.toggle('hidden', !fin); $('fcKey').classList.toggle('hidden', !fin);
+  if (fin) return;
+  const iv = CH ? CH.iv : 'D', rg = CH ? CH.range : 'Max';
+  seg('cIv', [['D','D','Daily bars'],['W','W','Weekly bars'],['M','M','Monthly bars']], iv, v => { if (!CH) return; CH.setIv(v); chartBar(); });
+  seg('cRg', ['3M','6M','1Y','3Y','Max'].map(k => [k, k]), rg, v => { if (!CH) return; CH.setRange(v); chartBar(); });
+}
+function drawFin(){
+  const x = cur(), el = $('fc'), pe = x && preOf(x.r[0]);
+  if (!pe || S.mode !== 'fin'){ el.innerHTML = ''; $('fcKey').innerHTML = ''; return; }
+  const W = el.clientWidth - 20, H = el.clientHeight - 12; if (W < 60 || H < 60) return;
+  const rows = pe.rows, vals = []; rows.forEach(r => { if (r[1] != null) vals.push(r[1]); if (r[2] != null) vals.push(r[2]); });
+  const mx = Math.max(0, ...vals), mn = Math.min(0, ...vals), span = (mx - mn) || 1;
+  const top = 36, bot = 24, ph = H - top - bot - (mn < 0 ? 14 : 0), y = v => top + (mx - v) / span * ph, y0 = y(0);
+  const n = rows.length, slot = W / n, bw = Math.min(46, slot * .3), f = v => Number(v).toLocaleString('en-IN', {maximumFractionDigits:0});
+  let s = '<line x1="0" x2="' + W + '" y1="' + (y0 + .5) + '" y2="' + (y0 + .5) + '"/>';
+  rows.forEach((r, i) => { const cx = slot * i + slot / 2;
+    s += '<text x="' + cx + '" y="' + (H - 6) + '" text-anchor="middle">FY' + String(r[0]).slice(2) + '</text>';
+    [[r[1], 'b1', -1], [r[2], 'b2', 1]].forEach(([v, c, side]) => { const bx = cx + (side < 0 ? -bw - 2 : 2);
+      if (v == null){ s += '<text x="' + (bx + bw / 2) + '" y="' + (y0 - 5) + '" text-anchor="middle">—</text>'; return; }
+      const yy = v >= 0 ? y(v) : y0, hh = Math.max(1, Math.abs(y(v) - y0));
+      s += '<rect class="' + c + (v < 0 ? ' neg' : '') + '" x="' + bx + '" y="' + yy + '" width="' + bw + '" height="' + hh + '" rx="1"><title>' + (c === 'b1' ? 'Revenue' : 'Net profit') + ' FY' + String(r[0]).slice(2) + ': ₹' + f(v) + ' cr</title></rect>' +
+        '<text class="v' + (v < 0 ? ' neg' : '') + '" x="' + (bx + bw / 2) + '" y="' + (v >= 0 ? yy - 5 : yy + hh + 12) + '" text-anchor="middle">' + f(v) + '</text>'; }); });
+  el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="Pre-IPO revenue and net profit by fiscal year">' + s + '</svg>';
+  $('fcKey').innerHTML = '<i></i>Revenue (₹ cr)<i class="p"></i>Net profit (₹ cr)';
+}
+let showTimer = null;
+function renderChart(lazy){
+  const x = cur(), tok = ++TOK; clearTimeout(showTimer);
+  if (!x){ $('cStar').innerHTML = ''; $('cSym').textContent = ''; $('cName').textContent = ''; $('cOpen').classList.add('hidden'); $('cStats').innerHTML = ''; $('fc').innerHTML = ''; if (CH) CH.clear(''); $('cMsg').textContent = 'Nothing selected.'; chartBar(); return; }
+  const r = x.r, sym = r[0], main = r[2] === 'Main', listed = x.t === 'l';
+  $('cStar').innerHTML = (listed && main) ? '<span class="sw-star" data-sym="' + esc(sym) + '"></span>' : '';
+  $('cSym').textContent = sym; $('cName').textContent = r[1] || '';
+  if (listed && main){ $('cOpen').href = './stock.html?sym=' + encodeURIComponent(sym); $('cOpen').classList.remove('hidden'); } else $('cOpen').classList.add('hidden');
+  if (S.mode === 'fin' && PRE_OK && !preOf(sym)) S.mode = 'px';
+  stats(x); chartBar();
+  if (S.mode === 'fin'){ $('cMsg').textContent = PRE_OK ? '' : 'Loading pre-IPO financials…'; drawFin(); return; }
+  if (!listed){ if (CH) CH.clear(''); $('cMsg').textContent = 'Not listed yet — no price to chart.' + (preOf(sym) ? ' Pre-IPO financials are on file.' : ''); return; }
+  showTimer = setTimeout(() => {
+    $('cMsg').textContent = 'Loading chart…';
+    K.loadStockBars(sym).then(d => { if (tok !== TOK) return;
+      if (!CH) CH = new K.Chart({chart:$('cChart'), legend:$('cLegend'), msg:$('cMsg'), iv:'D', range:'Max'});
+      const v = Object.assign({}, d, {bars: d.bars.filter(b => K.tsISO(b.ts) >= r[3])});      // the chart is 'since listing': bars dated before the listing date are left out
+      if (!v.bars.length){ CH.clear(''); $('cMsg').textContent = 'No daily price on file for ' + sym + ' since it listed on ' + fmtD(r[3]) + '.'; return; }
+      CH.show(v, {name:sym, tag:(main ? 'NSE' : 'NSE SME') + ' · since listing', live: r[4] ? {price:r[4], title:'Issue'} : null}); chartBar(); },
+      () => { if (tok !== TOK) return; if (CH) CH.clear(''); $('cMsg').textContent = 'No daily price history on file yet for ' + sym + '.' + (preOf(sym) ? ' Pre-IPO financials are on file — see the tab above.' : ''); });
+  }, lazy ? 140 : 0);
+}
+function stats(x){
+  const r = x.r, b = (a, v, c) => '<div><span>' + a + '</span><b' + (c ? ' class="' + c + '"' : '') + '>' + v + '</b></div>';
+  if (x.t === 'i'){ const sz = issueSize(r);
+    $('cStats').innerHTML = b('Opens', fmtD(r[3])) + b('Closes', fmtD(r[4])) + b('Price band', esc(r[5] || '—')) + b('Issue size', sz ? '≈ ₹' + Math.round(sz).toLocaleString('en-IN') + ' cr' : '—') +
+      b('Subscribed', r[8] != null ? r[8].toFixed(2) + '×' : '—', r[8] != null && r[8] >= 1 ? 'os-pos' : '') + b('Board', r[2] === 'SME' ? 'SME' : 'Mainboard');
+  } else { const g = gain(r);
+    $('cStats').innerHTML = b('Listed', fmtD(r[3])) + b('Issue price', inr(r[4])) + b('Now', inr(r[5])) + b('Since issue', g == null ? '—' : (g > 0 ? '+' : '') + g.toFixed(0) + '%', g == null ? '' : (g >= 0 ? 'os-pos' : 'os-neg')) +
+      b('Mcap (₹ cr)', inr(r[6])) + b('Board', r[2] === 'SME' ? 'SME' : 'Mainboard'); }
+}
+function bars(){
+  seg('boards', [['all','Mainboard + SME'],['Main','Mainboard'],['SME','SME']], S.board, v => { S.board = v; refresh(); });
+  seg('sorts', [['date','Newest first'],['gain','Best since issue'],['loss','Worst since issue']], S.sort, v => { S.sort = v; refresh(); });
+}
+function refresh(keep){
+  bars(); renderList(keep);
+  let changed = false;
+  if (!LIST.some(x => x.k === S.sel)){ S.sel = LIST.length ? LIST[0].k : null; changed = true;
+    $('lList').querySelectorAll('.os-row').forEach(el => { const on = el.dataset.k === S.sel; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); }); }
+  K.fitGrid($('grid'));
+  renderDetail();
+  if (!keep || changed) renderChart(); else { const x = cur(); if (x) stats(x); }      // a live refresh must not reload the chart
+  saveUrl();
+}
+function saveUrl(){
+  const p = new URLSearchParams();
+  if (S.sel) p.set('s', S.sel.slice(2)); if (S.board !== 'all') p.set('board', S.board); if (S.sort !== 'date') p.set('sort', S.sort); if (S.mode === 'fin') p.set('chart', 'fin');
+  const s = p.toString(); try { history.replaceState(null, '', location.pathname + (s ? '?' + s : '')); } catch (e) {}
+}
+function setFocus(on){ S.focus = on == null ? !S.focus : on; $('grid').classList.toggle('focus', S.focus); $('cFocus').textContent = S.focus ? 'Show lists' : 'Focus'; $('cFocus').setAttribute('aria-pressed', S.focus); setTimeout(drawFin, 0); }
+function wire(){
+  $('lList').addEventListener('click', e => { const el = e.target.closest('.os-row'); if (!el) return; pick(el.dataset.k); if (window.innerWidth < 900) $('pD').scrollIntoView({behavior:'smooth', block:'start'}); });
+  let t = null; $('q').oninput = e => { clearTimeout(t); t = setTimeout(() => { S.q = e.target.value.trim(); refresh(); }, 120); };
+  $('cFocus').onclick = () => setFocus();
+  window.addEventListener('resize', () => { K.fitGrid($('grid')); drawFin(); });
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const tg = e.target, typing = tg && /^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
+    if (typing){ if (e.key === 'Escape' || e.key === 'Enter') tg.blur(); if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ const j = LIST.findIndex(x => x.k === S.sel) + (e.key === 'ArrowDown' ? 1 : -1); if (LIST[j]) pick(LIST[j].k, true); e.preventDefault(); }
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ const x = cur(); if (e.key === 'ArrowRight' && !(x && preOf(x.r[0]))) return; S.mode = e.key === 'ArrowRight' ? 'fin' : 'px'; renderChart(); saveUrl(); e.preventDefault(); }
+    else if (e.key === 'Enter'){ const a = $('cOpen'); if (!a.classList.contains('hidden')) location.href = a.href; }
+    else if (e.key === 'f' || e.key === 'F'){ setFocus(); }
+    else if (e.key === '/'){ $('q').focus(); e.preventDefault(); }
+  });
 }
 
 /* ---- live subscription via our Cloudflare Worker (?ipo=SYM): NSE's bid data
    updates all day while an issue is open — the baked feed only refreshes twice
    a day. Overwrites each open issue's x-subscribed in place and re-renders.
-   Fails silently (cards keep the baked multiple). ---- */
+   Fails silently (rows keep the baked multiple). ---- */
 const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
 async function liveSubs(){
   if (!DATA) return;
@@ -155,9 +323,9 @@ async function liveSubs(){
     } catch (e) { /* keep baked multiple for this issue */ }
   }));
   if (!ut) return;
-  renderIssues();
   const t = /(\d{1,2}:\d{2})/.exec(ut);
-  $('updated').innerHTML = ' · <span style="color:var(--pos);font-weight:800">● LIVE</span> subscription' + (t ? ' as of ' + t[1] + ' IST' : '') + ' · refreshes every few minutes';
+  subNote = 'Live subscription' + (t ? ' as of ' + t[1] + ' IST' : ''); asof();
+  refresh(true);
 }
 setInterval(() => { if (!document.hidden){ liveSubs(); liveListed(); } }, 180000);
 
@@ -189,72 +357,21 @@ async function liveListed(){
     } catch (e) { /* keep baked values for this batch */ }
   }));
   if (!any) return;
-  renderListed();
   if (asOf){
     const t = new Date(asOf + 330 * 60000);   // -> IST
     const hh = String(t.getUTCHours()).padStart(2,'0'), mm = String(t.getUTCMinutes()).padStart(2,'0');
-    $('liveNote').innerHTML = ' · <span style="color:var(--pos);font-weight:800">● LIVE</span> prices as of ' + hh + ':' + mm + ' IST';
+    pxNote = 'Live prices as of ' + hh + ':' + mm + ' IST'; asof();
   }
-}
-
-function renderListed(){
-  const q = $('q').value.trim().toLowerCase(), board = $('fBoard').value, sort = $('fSort').value;
-  const gain = r => (r[4] && r[5]) ? (r[5] - r[4]) / r[4] * 100 : null;
-  let rows = (DATA.listed || []).filter(r =>
-    (board === 'all' || r[2] === board) &&
-    (!q || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)));
-  if (sort === 'gain') rows = rows.slice().sort((a,b) => (gain(b) ?? -1e9) - (gain(a) ?? -1e9));
-  else if (sort === 'loss') rows = rows.slice().sort((a,b) => (gain(a) ?? 1e9) - (gain(b) ?? 1e9));
-  let h = '';
-  for (const r of rows){
-    const g = gain(r);
-    const pe = PRE[r[0]];
-    const canExp = pe && pe.status === 'filled' && pe.rows && pe.rows.length;
-    h += '<tr class="ipo-row border-b border-slate-50 align-top hover:bg-slate-50' + (canExp ? ' cursor-pointer' : '') + '">' +
-      '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + fmtD(r[3]) + '</td>' +
-      '<td class="py-2.5 px-3">' + (canExp ? '<span class="pre-caret text-slate-400 mr-1 select-none">▸</span>' : '') + slink(r[0], r[1], r[2]) + '</td>' +
-      '<td class="py-2.5 px-3 text-center"><span class="chip ' + (r[2]==='SME'?'sme">SME':'main">Main') + '</span></td>' +
-      '<td class="py-2.5 px-3 text-right">' + inr(r[4]) + '</td>' +
-      '<td class="py-2.5 px-3 text-right">' + inr(r[5]) + '</td>' +
-      '<td class="py-2.5 px-3 text-right font-semibold">' + pctc(g) + '</td>' +
-      '<td class="py-2.5 px-3 text-right text-slate-600">' + inr(r[6]) + '</td></tr>';
-    if (canExp) h += '<tr class="pre-row" hidden><td colspan="7" class="px-3 pb-3 pt-0">' + preTable(pe) + '</td></tr>';
-  }
-  $('tBody').innerHTML = h || '<tr><td colspan="7" class="py-10 text-center text-sm text-slate-400">Nothing matches.</td></tr>';
-  if (window.swWatch) swWatch.paintAll($('tBody'));
-  $('count').textContent = rows.length.toLocaleString('en-IN') + ' listings in the last 6 months';
+  refresh(true);
 }
 
 /* ---- pre-IPO annual history (docs/ipo_prehistory.json): the DRHP-era revenue+PAT a name shows
    before it ever filed a quarter. Mainboard names also carry it on their stock page; SME names
-   have no stock page, so this expandable row is where their history lives. Display-only — the
-   backtest never reads this file. Loads after first paint and re-renders the table in place. ---- */
+   have no stock page, so this page is where their history lives. Display-only — the
+   backtest never reads this file. Loads after first paint. ---- */
 function loadPre(){
   fetch('./ipo_prehistory.json?t=' + Date.now()).then(r => r.ok ? r.json() : null)
-    .then(j => { PRE = (j && j.data) || {}; renderListed(); }).catch(() => {});
-}
-function onListedClick(e){
-  if (e.target.closest('a, .sw-star')) return;            // let the stock link / watchlist star do their thing
-  const tr = e.target.closest('tr.ipo-row'); if (!tr) return;
-  const det = tr.nextElementSibling;
-  if (!det || !det.classList.contains('pre-row')) return;
-  det.hidden = !det.hidden;
-  const c = tr.querySelector('.pre-caret'); if (c) c.textContent = det.hidden ? '▸' : '▾';
-}
-function preTable(pe){
-  const src = pe.source === 'screener' ? 'Screener' : 'MoneyControl';
-  const badge = pe.verified ? '<span style="color:var(--pos);font-weight:700">✓ matches filed results</span>'
-                            : 'as reported to ' + src;
-  let t = '<div class="text-[11px] font-semibold text-slate-500 mb-1">Pre-IPO financials · ' + badge + '</div>' +
-    '<table class="text-xs" style="font-variant-numeric:tabular-nums"><thead class="text-[10px] uppercase text-slate-400"><tr>' +
-    '<th class="text-left pr-5 pb-1">FY</th><th class="text-right px-3 pb-1">Revenue (₹ cr)</th><th class="text-right px-3 pb-1">Net profit (₹ cr)</th></tr></thead><tbody>';
-  for (const row of pe.rows){
-    t += '<tr><td class="pr-5 font-semibold text-slate-600">FY' + String(row[0]).slice(2) + '</td>' +
-      '<td class="px-3 text-right">' + (row[1] == null ? '—' : Number(row[1]).toLocaleString('en-IN', {maximumFractionDigits:0})) + '</td>' +
-      '<td class="px-3 text-right' + (row[2] != null && row[2] < 0 ? ' neg' : '') + '">' + (row[2] == null ? '—' : Number(row[2]).toLocaleString('en-IN', {maximumFractionDigits:0})) + '</td></tr>';
-  }
-  return t + '</tbody></table><div class="text-[10px] text-slate-400 mt-1.5 max-w-xl">Annual figures from the company’s prospectus era, via ' + src +
-    ' — the years before it began filing quarterly results with the exchange. Context only; <b>not used in the backtest</b>.</div>';
+    .then(j => { PRE = (j && j.data) || {}; }).catch(() => {}).then(() => { PRE_OK = true; renderDetail(); chartBar(); if (S.mode === 'fin') renderChart(); });
 }
 
 load();
