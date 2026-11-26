@@ -419,6 +419,7 @@ async function loadHist(){
     const [b,xm,xh]=await Promise.all([gunzipJSON('./idx_ohlc/_closes.bin'),
       fetch('./nse_extra_indices/members.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
       fetch('./nse_extra_indices/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null)]);
+    for(const k in b.idx) if(/\b(TR|PR)\b/i.test(k)) delete b.idx[k];     /* user 2026-11-26: no Nifty 50 TR / PR (leverage, inverse, futures TR) rows */
     const day=iso=>Math.round(Date.parse(iso+'T00:00:00Z')/864e5), dn=[day(b.d0)]; for(const g of b.dd) dn.push(dn[dn.length-1]+g);
     HIST={dn, iso:n=>new Date(n*864e5).toISOString().slice(0,10), idx:b.idx}; XMEM=xm; XHIST=xh;
     if(XMEM&&XMEM.indices){ XMEM.byNorm={}; for(const n in XMEM.indices) XMEM.byNorm[normNm(n)]=Object.assign({name:n},XMEM.indices[n]); }
