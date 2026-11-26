@@ -321,9 +321,16 @@ let liveBusy=false;
 async function liveStocks(){
   if(!SL.ok||liveBusy) return; liveBusy=true;
   try{
-    const j=await fetch(WORKER+'/?nse=traded',{cache:'no-store'}).then(r=>r.json());
-    const m=/^(\d{1,2})-([A-Za-z]{3})-(\d{4}) (\d{2}):(\d{2})/.exec((j&&j.timestamp)||'');
-    if(!m||!MON[m[2]]||!j.data||Object.keys(j.data).length<200) return;
+    // NSE's feed answers 502 / 403 now and then through our Worker (measured 2026-11-26: 502, then 200 a minute later) — try 4 times
+    let j=null, m=null;
+    for(let a=0;a<4;a++){
+      try{ j=await fetch(WORKER+'/?nse=traded',{cache:'no-store'}).then(r=>r.json()); }catch(e){ j=null; }
+      m=/^(\d{1,2})-([A-Za-z]{3})-(\d{4}) (\d{2}):(\d{2})/.exec((j&&j.timestamp)||'');
+      if(m&&MON[m[2]]&&j.data&&Object.keys(j.data).length>=200) break;
+      m=null; if(a<3) await new Promise(r=>setTimeout(r,2000*(a+1)));
+    }
+    if(!m){ SL.liveFail=1; if(REW==null&&!SL.live) renderMembers(true); if(marketOpenIST()) setTimeout(liveStocks,15000); return; }   // do not wait a full minute after a failed round
+    SL.liveFail=0;
     const date=m[3]+'-'+MON[m[2]]+'-'+m[1].padStart(2,'0'), off=offOf(date); if(!(off>SL.EOD)) return;      // the end-of-day file already has this day
     const pv=prevWeekday(off); let n=0;
     for(const sym in j.data){ const q=j.data[sym], t=sym+'.NS', s=SL.SERIES[t], ltp=+q[0], prev=+q[1]; if(!s||!s.d.length||!(ltp>0)) continue;
@@ -428,12 +435,13 @@ function renderMembers(keep){
   MROWS.sort((a,b)=>{ if(k==='n') return dir*a.sym.localeCompare(b.sym); const av=a[k], bv=b[k];
     if(av==null&&bv==null) return a.sym.localeCompare(b.sym); if(av==null) return 1; if(bv==null) return -1; return dir*(av-bv)||a.sym.localeCompare(b.sym); });
   const up=MROWS.filter(m=>m.r>0).length, dn=MROWS.filter(m=>m.r<0).length, nop=MROWS.filter(m=>m.p==null).length;
-  $('mBreadth').innerHTML=`<span class="os-pos">${up} up</span> · <span class="os-neg">${dn} down</span>`+(nop?` · ${nop} no price`:'');
+  const stale=REW==null&&!SL.live&&marketOpenIST()&&isoOff(SL.EOD)<istNow().toISOString().slice(0,10);
+  $('mBreadth').innerHTML=`<span class="os-pos">${up} up</span> · <span class="os-neg">${dn} down</span>`+(nop?` · ${nop} no price`:'')+(stale?` · <b class="os-neg" title="Today's live stock prices have not loaded${SL.liveFail?' — the feed did not answer':''}. Retrying every minute.">not live</b>`:'');
   $('mCopy').disabled=false;
   const st=L.scrollTop;
   L.innerHTML=MROWS.map((m,i)=>`<div class="os-row mr${m.t&&m.t===S.stk?' on':''}" role="option" aria-selected="${!!(m.t&&m.t===S.stk)}" data-i="${i}" title="${esc(m.name||m.sym)}"><span class="n"><b>${esc(m.sym)}</b><i>${esc(m.name)}</i></span>`+
     `<span class="m">${m.p==null?'—':fmtN(m.p)}</span><span class="v ${cls(m.r)}">${fmtPct(m.r)}</span></div>`).join('')+
-    `<div class="os-note">${ml.note}${REW==null&&SL.live?' Prices live at '+SL.live.time+' IST.':REW==null?' Prices: close of '+niceDate(isoOff(SL.EOD))+'.':''}${nop?' '+nop+' member'+(nop>1?'s have':' has')+' no price on file under that ticker.':''}</div>`;
+    `<div class="os-note">${ml.note}${REW==null&&SL.live?' Prices live at '+SL.live.time+' IST.':REW==null?' Prices: close of '+niceDate(isoOff(SL.EOD))+'.'+(stale?' <b>Today\'s live prices have not loaded'+(SL.liveFail?' (the feed did not answer)':'')+' — the figures here are NOT today\'s move.</b> Retrying every minute.':''):''}${nop?' '+nop+' member'+(nop>1?'s have':' has')+' no price on file under that ticker.':''}</div>`;
   L.querySelectorAll('.mr').forEach(el=>el.onclick=()=>{ S.pane='mem'; pickStock(MROWS[+el.dataset.i]); });
   if(keep) L.scrollTop=st; else L.scrollTop=0;
 }
