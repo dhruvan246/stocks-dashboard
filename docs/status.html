@@ -8,20 +8,32 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .dot{width:.65rem;height:.65rem;border-radius:9999px;flex:none}
-  .dot.ok{background:var(--pos);box-shadow:0 0 0 3px #dcfce7}
-  .dot.bad{background:var(--neg);box-shadow:0 0 0 3px #fee2e2;animation:pulse 1.6s infinite}
-  .dot.na{background:#cbd5e1;box-shadow:0 0 0 3px #f1f5f9}
-  @keyframes pulse{50%{opacity:.45}}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(230px,290px) minmax(330px,440px) minmax(0,1fr)}
+  #gHead,.gr{grid-template-columns:minmax(0,1fr) 46px 40px}
+  #fHead,.fr{grid-template-columns:minmax(0,1fr) 74px 62px}
+  .hd{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:1px;flex:none}
+  .hd.ok{background:var(--pos)} .hd.bad{background:var(--neg)} .hd.na{background:var(--text-faint)}
+  .bad-t{color:var(--neg);font-weight:600}
+  #dBody{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin}
+  .kv{display:grid;grid-template-columns:130px minmax(0,1fr);gap:0 12px;padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;line-height:1.5}
+  .kv > span:first-child{color:var(--text-faint);font-size:12px}
+  .kv > span:last-child{color:var(--text);overflow-wrap:anywhere}
+  .kv a{color:var(--accent-text)} .kv a:hover{text-decoration:underline}
+  .kv code{font-size:12px}
+  html[data-theme] .os-ps input[type="search"]{flex:1 1 0;min-width:0}
+  #status{margin:10px 0}
+  #status a{color:var(--accent-text)}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(200px,240px) minmax(280px,340px) minmax(0,1fr)} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} .kv{grid-template-columns:104px minmax(0,1fr)} #dBody{overflow:visible} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -30,22 +42,47 @@
   </div>
 </header>
 
-<main class="max-w-screen-lg mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Data health</h1>
-    <p class="text-sm text-slate-500 mt-1">Every auto-refreshed feed behind the dashboards, checked nightly at <b>~03:00 IST</b>. Green = fresh and sane. Red = a pipeline needs attention (an alert issue is opened automatically on GitHub).</p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Data health</h1>
+    <div class="os-asof" id="asof"></div>
   </div>
+  <div id="status" class="os-empty">Loading health board…</div>
 
-  <div id="banner" class="card p-4 mb-5 text-sm text-slate-500">Loading health board…</div>
+  <div id="content" class="hidden">
+    <div class="os-bar">
+      <div class="os-sg" id="bys" role="group" aria-label="Group the feeds by"><span class="lbl">Group by</span></div>
+      <div class="os-sg" id="shows" role="group" aria-label="Which feeds to show"></div>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>← →</b> switch list · <b>/</b> search · <b>Enter</b> open workflow</span>
+    </div>
 
-  <div id="sections"></div>
-
-  <p class="text-[11px] text-slate-400 mt-6">Checks: file exists · valid JSON · not suspiciously small · last update within each feed's expected cadence (see <code>docs/feeds.json</code>). Workflows also refuse to commit a feed that shrank drastically or fails to parse (<code>scripts/guard_feed.py</code>).</p>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pG" aria-label="Groups">
+        <div class="os-ph"><span class="ttl" id="gTitle"></span><span class="r" id="gCount"></span></div>
+        <div class="os-ch" id="gHead"><span>Group</span><span>Feeds</span><span>Bad</span></div>
+        <div class="os-list" id="gList" role="listbox" aria-label="Groups"></div>
+      </section>
+      <section class="os-pane" id="pF" aria-label="Feeds">
+        <div class="os-ph"><span class="ttl" id="fTitle"></span><span class="r" id="fCount"></span></div>
+        <div class="os-ps"><input id="fSearch" type="search" placeholder="Find a feed, file or workflow" autocomplete="off" aria-label="Find a feed" /></div>
+        <div class="os-ch" id="fHead"></div>
+        <div class="os-list" id="fList" role="listbox" aria-label="Feeds"></div>
+      </section>
+      <section class="os-pane os-main" id="pD" aria-label="Feed detail">
+        <div class="os-ph"><span class="sym" id="dName"></span><span class="r" id="dChip"></span></div>
+        <div class="os-stats" id="dStats" style="border-top:0;border-bottom:1px solid var(--border)"></div>
+        <div id="dBody"></div>
+        <div class="os-note" style="border-top:1px solid var(--border)">Every auto-refreshed feed behind the dashboards is checked nightly at ~03:00 IST. Green = fresh and sane. Red = a pipeline needs attention (an alert issue is opened automatically on GitHub). Checks: file exists · valid JSON · not suspiciously small · last update within each feed's expected cadence (see <code>docs/feeds.json</code>). Workflows also refuse to commit a feed that shrank drastically or fails to parse (<code>scripts/guard_feed.py</code>). This page has no chart: the monitor keeps only the latest check, not a history.</div>
+      </section>
+    </div>
+  </div>
 </main>
 
 <script>
 (function () {
   var WF = 'https://github.com/dhruvan246/stocks-dashboard/actions/workflows/';
+  var K = window.OSKit, $ = function (id) { return document.getElementById(id); };
 
   // Owner-only page (client-side curtain; nav hides it for non-owners too).
   function swLock(){ document.querySelector('main').innerHTML =
@@ -56,6 +93,7 @@
 
   if (!SW_OWNER) { swLock(); return; }
 
+  // ---- formatters: unchanged from the old page ----
   function fmtBytes(b) {
     if (b == null) return '';
     if (b >= 1048576) return (b / 1048576).toFixed(1) + ' MB';
@@ -71,72 +109,171 @@
   function fmtWhen(ms) {
     return new Date(ms).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true });
   }
-  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function isOk(f) { return f.status === 'ok'; }
+  function dotCls(f) { return isOk(f) ? (f.static ? 'na' : 'ok') : 'bad'; }
+  function schedOf(f) { return (f.cadence && f.cadence !== 'infra') ? f.cadence : (f.schedule || '—'); }
+  function ranOf(f) { return (f.age_hours != null && GEN) ? fmtWhen(GEN - f.age_hours * 3600e3) : '—'; }
+  function typeOf(f) { return f.cadence === 'infra' ? 'Infrastructure' : f.static ? 'Reference (manual)' : 'Auto-refreshed'; }
+  function ageText(f) { return isOk(f) ? (f.static ? 'static' : (fmtAge(f.age_hours) || 'fresh')) : f.status; }
 
-  function row(f) {
-    var ok = f.status === 'ok';
-    var dotCls = ok ? (f.static ? 'na' : 'ok') : 'bad';
-    var sched = (f.cadence && f.cadence !== 'infra') ? f.cadence : (f.schedule || '—');
-    var ran = (f.age_hours != null && GEN) ? fmtWhen(GEN - f.age_hours * 3600e3) : '—';
-    var right = '<div class="text-right shrink-0 w-20">' +
-      '<div class="text-xs font-semibold ' + (ok ? 'text-slate-600' : 'text-red-600') + '">' +
-      (ok ? (f.static ? 'static' : esc(fmtAge(f.age_hours)) || 'fresh') : esc(f.status)) + '</div>' +
-      '<div class="text-[11px] text-slate-400">' + esc(fmtBytes(f.bytes)) + '</div></div>';
-    var wf = f.workflow
-      ? ' · <a class="text-indigo-500 hover:underline" target="_blank" rel="noopener" href="' + WF + esc(f.workflow) + '">' + esc(f.workflow.replace('.yml', '')) + '</a>'
-      : '';
-    return '<div class="flex items-center gap-3 px-4 py-2.5 border-b border-slate-100 last:border-0' + (ok ? '' : ' bg-red-50/60') + '">' +
-      '<span class="dot ' + dotCls + '"></span>' +
-      '<div class="min-w-0 flex-1">' +
-        '<div class="text-sm font-semibold text-slate-800 truncate">' + esc(f.name) + '</div>' +
-        '<div class="text-[11px] text-slate-400 truncate"><code>' + esc(f.file) + '</code>' + wf +
-        (f.detail ? ' · <span class="text-red-500">' + esc(f.detail) + '</span>' : '') + '</div>' +
-        '<div class="sm:hidden text-[11px] text-slate-400 mt-0.5">runs ' + esc(sched) + ' · last ' + esc(ran) + '</div>' +
-      '</div>' +
-      '<div class="hidden sm:block w-40 shrink-0 text-[11px] text-slate-500">' + esc(sched) + '</div>' +
-      '<div class="hidden sm:block w-32 shrink-0 text-[11px] text-slate-500">' + esc(ran) + '</div>' +
-      right + '</div>';
+  var FEEDS = [], GROUPS = [], ROWS = [];
+  var S = { by: 'type', show: 'all', g: 'all', f: null, q: '', sort: 'status', dir: 1, pane: 2 };
+  var BYS = [['type', 'Type'], ['workflow', 'Workflow'], ['page', 'Page']];
+  var SHOWS = [['all', 'All'], ['bad', 'Needs attention'], ['ok', 'Healthy']];
+
+  function seg(el, list, cur, fn) {
+    var lbl = el.querySelector('.lbl');
+    el.innerHTML = (lbl ? lbl.outerHTML : '') + list.map(function (x) { return '<button type="button" data-v="' + x[0] + '"' + (x[0] === cur ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('');
+    el.onclick = function (e) { var b = e.target.closest('button'); if (b) fn(b.dataset.v); };
   }
 
-  function section(title, feeds) {
-    if (!feeds.length) return '';
-    return '<div class="mb-5"><div class="text-[11px] uppercase tracking-wide text-slate-500 font-bold mb-2">' + esc(title) + '</div>' +
-      '<div class="card overflow-hidden">' +
-      '<div class="hidden sm:flex items-center gap-3 px-4 py-1.5 border-b border-slate-100 text-[10px] uppercase tracking-wide text-slate-400 font-bold">' +
-        '<span class="w-[.65rem] shrink-0"></span>' +
-        '<div class="flex-1 min-w-0">Feed</div>' +
-        '<div class="w-40 shrink-0">Schedule</div>' +
-        '<div class="w-32 shrink-0">Last updated (IST)</div>' +
-        '<div class="w-20 shrink-0 text-right">Age / size</div></div>' +
-      feeds.map(row).join('') + '</div></div>';
+  function buildGroups() {
+    var out = [{ key: 'all', name: 'All feeds', feeds: FEEDS.slice() }];
+    if (S.by === 'type') {
+      // the same three sections as the old page
+      var auto = [], infra = [], ref = [];
+      FEEDS.forEach(function (f) { if (f.cadence === 'infra') infra.push(f); else if (f.static) ref.push(f); else auto.push(f); });
+      [['Auto-refreshed feeds', auto], ['Infrastructure', infra], ['Reference files (manual)', ref]].forEach(function (x) { if (x[1].length) out.push({ key: x[0], name: x[0], feeds: x[1] }); });
+    } else {
+      var m = {}, order = [];
+      FEEDS.forEach(function (f) {
+        var ks = S.by === 'workflow' ? [f.workflow ? f.workflow.replace('.yml', '') : '(no workflow)'] : ((f.pages && f.pages.length) ? f.pages : ['(no page)']);
+        ks.forEach(function (k) { if (!m[k]) { m[k] = []; order.push(k); } m[k].push(f); });
+      });
+      order.sort(function (a, b) { return a.localeCompare(b); }).forEach(function (k) { out.push({ key: k, name: k, feeds: m[k] }); });
+    }
+    out.forEach(function (g) { g.bad = g.feeds.filter(function (f) { return !isOk(f); }).length; });
+    GROUPS = out;
+    if (!GROUPS.some(function (g) { return g.key === S.g; })) S.g = 'all';
+  }
+
+  function renderGroups() {
+    $('gTitle').textContent = S.by === 'type' ? 'Feed types' : S.by === 'workflow' ? 'Workflows' : 'Pages';
+    $('gCount').textContent = (GROUPS.length - 1) + ' groups';
+    $('gList').innerHTML = GROUPS.map(function (g) {
+      return '<div class="os-row gr' + (g.key === S.g ? ' on' : '') + '" role="option" data-k="' + esc(g.key) + '" title="' + esc(g.name) + '">' +
+        '<span class="n">' + esc(g.name) + '</span><span class="m">' + g.feeds.length + '</span>' +
+        '<span class="' + (g.bad ? 'bad-t' : 'm') + '">' + (g.bad || '0') + '</span></div>';
+    }).join('');
+  }
+
+  function rowsNow() {
+    var g = GROUPS.filter(function (x) { return x.key === S.g; })[0] || GROUPS[0];
+    var q = S.q.trim().toLowerCase();
+    var rows = g.feeds.filter(function (f) {
+      if (S.show === 'bad' && isOk(f)) return false;
+      if (S.show === 'ok' && !isOk(f)) return false;
+      if (q && (f.name + ' ' + f.file + ' ' + (f.workflow || '')).toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    var d = S.dir, idx = new Map(FEEDS.map(function (f, i) { return [f, i]; }));
+    rows.sort(function (a, b) {
+      var r = 0;
+      if (S.sort === 'name') r = a.name.localeCompare(b.name);
+      else if (S.sort === 'age') r = (a.age_hours == null ? Infinity : a.age_hours) - (b.age_hours == null ? Infinity : b.age_hours);
+      else if (S.sort === 'size') r = (a.bytes == null ? -1 : a.bytes) - (b.bytes == null ? -1 : b.bytes);
+      else r = (isOk(a) - isOk(b));            // old page's order: unhealthy first, then the file's own order
+      return r * d || (idx.get(a) - idx.get(b));
+    });
+    return { g: g, rows: rows };
+  }
+
+  function renderFeeds(keep) {
+    var x = rowsNow(); ROWS = x.rows;
+    $('fTitle').textContent = x.g.name;
+    $('fCount').textContent = ROWS.length + ' of ' + x.g.feeds.length;
+    var hs = [['name', 'Feed'], ['age', 'Age'], ['size', 'Size']];
+    $('fHead').innerHTML = hs.map(function (h) { return '<span data-k="' + h[0] + '"' + (S.sort === h[0] ? ' class="on"' : '') + '>' + h[1] + (S.sort === h[0] ? (S.dir > 0 ? ' ↑' : ' ↓') : '') + '</span>'; }).join('');
+    if (!keep || ROWS.indexOf(S.f) < 0) S.f = ROWS[0] || null;
+    $('fList').innerHTML = ROWS.length ? ROWS.map(function (f, i) {
+      var ok = isOk(f);
+      return '<div class="os-row fr' + (f === S.f ? ' on' : '') + '" role="option" data-i="' + i + '" title="' + esc(f.name) + '">' +
+        '<span class="n"><span class="hd ' + dotCls(f) + '"></span>' + esc(f.name) + '</span>' +
+        '<span class="' + (ok ? 'm' : 'bad-t') + '">' + esc(ageText(f)) + '</span>' +
+        '<span class="m">' + esc(fmtBytes(f.bytes)) + '</span></div>';
+    }).join('') : '<div class="os-empty">' + (S.q.trim() ? 'No feed matches “' + esc(S.q.trim()) + '”.' : S.show === 'bad' ? 'Nothing needs attention in this group.' : 'No feeds in this group.') + '</div>';
+    renderDetail();
+  }
+
+  function renderDetail() {
+    var f = S.f;
+    if (!f) { $('dName').textContent = 'No feed selected'; $('dChip').innerHTML = ''; $('dStats').innerHTML = ''; $('dBody').innerHTML = '<div class="os-empty">Pick a feed from the list.</div>'; return; }
+    var ok = isOk(f);
+    $('dName').innerHTML = '<span class="hd ' + dotCls(f) + '"></span>' + esc(f.name);
+    $('dName').title = f.name;
+    $('dChip').innerHTML = '<span class="os-chg ' + (ok ? (f.static ? '' : 'os-pos') : 'os-neg') + '">' + (ok ? (f.static ? 'static' : 'healthy') : esc(f.status)) + '</span>';
+    $('dStats').innerHTML =
+      '<div><span>Status</span><b class="' + (ok ? 'os-pos' : 'os-neg') + '">' + esc(f.status) + '</b></div>' +
+      '<div><span>Age</span><b>' + (f.age_hours == null ? '—' : esc(fmtAge(f.age_hours))) + '</b></div>' +
+      '<div><span>Last updated (IST)</span><b>' + esc(ranOf(f)) + '</b></div>' +
+      '<div><span>Size</span><b>' + (esc(fmtBytes(f.bytes)) || '—') + '</b></div>' +
+      '<div><span>Type</span><b>' + esc(typeOf(f)) + '</b></div>' +
+      '<div><span>Used by</span><b>' + ((f.pages || []).length) + ' <small>' + ((f.pages || []).length === 1 ? 'page' : 'pages') + '</small></b></div>';
+    var pages = (f.pages || []).map(function (p) { return '<a href="./' + esc(p) + '">' + esc(p) + '</a>'; }).join(' · ') || '—';
+    $('dBody').innerHTML =
+      (f.detail ? '<div class="kv"><span>Problem</span><span class="bad-t">' + esc(f.detail) + '</span></div>' : '') +
+      '<div class="kv"><span>File</span><span><code>' + esc(f.file) + '</code></span></div>' +
+      '<div class="kv"><span>Schedule</span><span>' + esc(schedOf(f)) + '</span></div>' +
+      '<div class="kv"><span>Last updated (IST)</span><span>' + esc(ranOf(f)) + (f.age_hours == null ? '' : ' · ' + esc(fmtAge(f.age_hours))) + '</span></div>' +
+      '<div class="kv"><span>Workflow</span><span>' + (f.workflow ? '<a id="dWf" target="_blank" rel="noopener" href="' + WF + esc(f.workflow) + '">' + esc(f.workflow.replace('.yml', '')) + ' ↗</a>' : '—') + '</span></div>' +
+      '<div class="kv"><span>Pages that read it</span><span>' + pages + '</span></div>' +
+      '<div class="kv"><span>Size in bytes</span><span>' + (f.bytes == null ? '—' : Number(f.bytes).toLocaleString('en-IN')) + '</span></div>';
+  }
+
+  function markOn(listId, sel) {
+    var el = $(listId), cur = el.querySelector('.os-row.on'); if (cur) cur.classList.remove('on');
+    var n = el.querySelector(sel); if (n) { n.classList.add('on'); n.scrollIntoView({ block: 'nearest' }); }
+  }
+  function pickGroup(key) { S.g = key; markOn('gList', '.os-row[data-k="' + (window.CSS && CSS.escape ? CSS.escape(key) : key) + '"]'); renderFeeds(false); }
+  function pickFeed(i) { if (!ROWS[i]) return; S.f = ROWS[i]; markOn('fList', '.os-row[data-i="' + i + '"]'); renderDetail(); }
+  function setBy(v) { S.by = v; seg($('bys'), BYS, S.by, setBy); buildGroups(); renderGroups(); renderFeeds(true); }
+  function setShow(v) { S.show = v; seg($('shows'), SHOWS, S.show, setShow); renderFeeds(true); }
+
+  function wire() {
+    seg($('bys'), BYS, S.by, setBy); seg($('shows'), SHOWS, S.show, setShow);
+    $('gList').onclick = function (e) { var r = e.target.closest('.os-row'); if (r) { S.pane = 1; pickGroup(r.dataset.k); } };
+    $('fList').onclick = function (e) { var r = e.target.closest('.os-row'); if (r) { S.pane = 2; pickFeed(+r.dataset.i); } };
+    $('fHead').onclick = function (e) { var s = e.target.closest('span[data-k]'); if (!s) return;
+      if (S.sort === s.dataset.k) S.dir = -S.dir; else { S.sort = s.dataset.k; S.dir = s.dataset.k === 'name' ? 1 : -1; }
+      renderFeeds(true); };
+    $('fSearch').oninput = function () { S.q = this.value; renderFeeds(true); };
+    window.addEventListener('resize', function () { K.fitGrid($('grid')); });
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      var inField = /^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''));
+      if (e.key === 'Escape' && inField) { e.target.blur(); return; }
+      if (inField) return;
+      if (e.key === '/') { e.preventDefault(); $('fSearch').focus(); return; }
+      if (e.key === 'ArrowLeft') { S.pane = 1; e.preventDefault(); return; }
+      if (e.key === 'ArrowRight') { S.pane = 2; e.preventDefault(); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault(); var d = e.key === 'ArrowDown' ? 1 : -1;
+        if (S.pane === 1) { var gi = GROUPS.findIndex(function (g) { return g.key === S.g; }), ni = Math.max(0, Math.min(GROUPS.length - 1, gi + d)); if (ni !== gi) pickGroup(GROUPS[ni].key); }
+        else { var fi = ROWS.indexOf(S.f), nf = Math.max(0, Math.min(ROWS.length - 1, fi + d)); if (nf !== fi) pickFeed(nf); }
+        return;
+      }
+      if (e.key === 'Enter') { var a = $('dWf'); if (a) window.open(a.href, '_blank', 'noopener'); }
+    });
   }
 
   fetch('./status.json', { cache: 'no-store' })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (s) {
       GEN = Date.parse(s.generated_utc) || 0;
-      var bad = s.feeds.filter(function (f) { return f.status !== 'ok'; });
+      FEEDS = s.feeds || [];
+      var bad = FEEDS.filter(function (f) { return f.status !== 'ok'; });
       var when = new Date(s.generated_utc).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
-      document.getElementById('banner').innerHTML = bad.length === 0
-        ? '<div class="flex items-center gap-3"><span class="dot ok"></span><div><div class="font-bold text-emerald-700">All systems green — ' + s.checked + '/' + s.checked + ' healthy</div><div class="text-xs text-slate-400">Last checked ' + esc(when) + ' IST</div></div></div>'
-        : '<div class="flex items-center gap-3"><span class="dot bad"></span><div><div class="font-bold text-red-600">' + bad.length + ' of ' + s.checked + ' unhealthy</div><div class="text-xs text-slate-400">Last checked ' + esc(when) + ' IST · an alert issue is open on GitHub</div></div></div>';
-
-      var auto = [], infra = [], ref = [];
-      s.feeds.forEach(function (f) {
-        if (f.cadence === 'infra') infra.push(f);
-        else if (f.static) ref.push(f);
-        else auto.push(f);
-      });
-      var order = function (a, b) { return (a.status === 'ok') - (b.status === 'ok'); };
-      auto.sort(order); infra.sort(order); ref.sort(order);
-      document.getElementById('sections').innerHTML =
-        section('Auto-refreshed feeds', auto) +
-        section('Infrastructure', infra) +
-        section('Reference files (manual)', ref);
+      $('asof').className = 'os-asof live';
+      $('asof').innerHTML = bad.length === 0
+        ? '<span class="os-dot" style="background:var(--pos)"></span><span class="os-pos">All systems green — ' + s.checked + '/' + s.checked + ' healthy</span> · last checked ' + esc(when) + ' IST'
+        : '<span class="os-dot" style="background:var(--neg)"></span><span class="os-neg">' + bad.length + ' of ' + s.checked + ' unhealthy</span> · last checked ' + esc(when) + ' IST · an alert issue is open on GitHub';
+      if (bad.length) S.show = 'bad';
+      $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+      buildGroups(); wire(); renderGroups(); renderFeeds(false); K.fitGrid($('grid'));
     })
     .catch(function (e) {
-      document.getElementById('banner').innerHTML =
-        '<div class="text-sm text-slate-500">No health data yet — the monitor runs nightly at ~03:00 IST (or trigger <a class="text-indigo-500 hover:underline" target="_blank" rel="noopener" href="' + WF + 'feed-monitor.yml">feed-monitor</a> manually).</div>';
+      $('status').innerHTML = 'No health data yet — the monitor runs nightly at ~03:00 IST (or trigger <a target="_blank" rel="noopener" href="' + WF + 'feed-monitor.yml">feed-monitor</a> manually).';
     });
 })();
 </script>
