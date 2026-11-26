@@ -31236,7 +31236,7 @@ shows its last close — the tooltip says so.
 
 ## §ONE-SCREEN-KIT — shared list → detail → chart layout; Indices page rebuilt on it (2026-11-26, user: "continue with changing the other page designs like u did for sector page")
 
-- **New / Old view switch (user, 2026-11-26).** Every rebuilt page keeps its previous design as a frozen copy `docs/<page>-old.html`
+- **New / Old view switch (user, 2026-11-26).** Every rebuilt page keeps its previous design as a frozen copy `docs/<page>-old.html` The three private pages carry the same switch in their own headers (they do not load theme.js): `portfolio.html` ↔ `portfolio-old.html`, `pf-glance.html` ↔ `pf-glance-old.html` (sources `index.html`/`index-old.html`, `glance.html`/`glance-old.html` in `~/stocks-portfolio`; `deploy.sh` copies all four and runs its leak guard on all four), and `terminal.html` ↔ `terminal-old.html` (repo only). Each new page redirects to its old twin while `sw_view` is `old`, carrying the query string and hash so the Kite `?request_token=` login and the `?t=` key still land. Terminal: the one-screen account view (list → chart + numbers → Sell panel) is ≥1100px only; its Sell button is the same `[data-sell]` button handled by `rowSell()`, no order code was changed.
   (46 files; Markets maps to `sectors-old` / `indices-old` / `movers-old` by its `v=` view). New is the default. `theme.js` (top of
   the file: `OLD_PAGES`, `viewTwin`, `buildViewSwitch`) draws a `New | Old` pill left of the theme pill (its own line above `main`
   on phones), stores the choice in localStorage `sw_view`, and redirects a new page to its old copy while the choice is `old`.

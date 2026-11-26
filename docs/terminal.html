@@ -8,6 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+<script>/* New / Old view: the site-wide choice (localStorage sw_view) applies here too. The query string
+   (Kite's ?request_token=, the private ?t=) and the #hash travel with it so a login still finishes. */
+try{ if(localStorage.getItem('sw_view')==='old') location.replace('./terminal-old.html'+location.search+location.hash); }catch(e){}</script>
 <style>
 /* ---------- tokens — shared with portfolio.html so the two pages read as one product ---------- */
 :root{
@@ -305,6 +308,137 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   .ktools{margin:0 0 6px}
   .av-kpis{grid-template-columns:1fr 1fr}
 }
+
+/* ================= one-screen layout (2026-11-26) =================
+   Flat panes, 1px borders, colour only on data and the selected row. On a wide screen the account
+   view is list -> detail + chart -> sell panel, all visible at once. Below 1100px it falls back to
+   the stacked tables, and on a phone to the Kite-style cards, exactly as before. */
+body{background:var(--bg)}
+.top{max-width:none;padding:8px 14px}
+.logo{width:26px;height:26px;border-radius:6px;background:var(--accent);box-shadow:none}
+.bname{font-size:15px}
+.app{max-width:none;margin:0;border-radius:0;border-left:0;border-right:0;box-shadow:none;background:var(--surface)}
+.foot{max-width:none;padding:10px 14px 30px}
+.btn{border-radius:6px;background:transparent}
+.btn:hover{transform:none}
+.btn.on{background:var(--accent)}
+.statuschip{border-radius:6px;background:transparent}
+.oseg{display:inline-flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;flex:none}
+.oseg button{border:0;background:transparent;color:var(--text-2);font-size:12px;font-weight:600;padding:6px 11px;line-height:1.3}
+.oseg button+button{border-left:1px solid var(--border)}
+.oseg button.on{background:var(--accent);color:#fff}
+.strip{background:transparent}
+.idx{padding:6px 14px}
+.stripr{padding:6px 14px}
+/* section tabs: one compact row */
+.pane.mw{background:transparent}
+.pfcard{padding:8px 14px 7px;gap:8px;min-width:170px}
+.pfc-ic{display:none}
+.pfc-body{display:flex;align-items:baseline;gap:10px;min-width:0}
+.pfc-sum{margin-top:0}
+.pfcard.on{background:transparent}
+.pane.focus{padding:0}
+.acctview{padding:10px 14px 14px}
+.av-head{margin-bottom:8px}
+.av-title{font-size:13.5px}
+.av-title::before{display:none}
+.usertag,.livetag{border-radius:4px}
+/* funds strip */
+.av-kpis{display:flex;gap:0;border:1px solid var(--border);margin-bottom:10px;overflow-x:auto;scrollbar-width:none}
+.av-kpis::-webkit-scrollbar{display:none}
+.avk{flex:1 1 0;min-width:148px;border:0;border-right:1px solid var(--border);border-radius:0;background:none;padding:7px 12px 6px}
+.avk:last-child{border-right:0}
+.avk::before{display:none}
+.avk .l{font-size:9.5px}
+.avk .v{font-size:16px;margin-top:2px}
+.avk .s{font-size:10.5px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.atbl-wrap{border-radius:0}
+.ktools button,.ofilt{border-radius:6px;background:transparent}
+.xset{border-radius:0;background:transparent}
+.abtn{border-radius:6px}
+.cbtn,.crow input,.curl{border-radius:6px}
+.lockcard{border-radius:0;box-shadow:none}
+/* pieces that only exist in the one-screen view */
+.tlist,.tm,.tsell{display:none}
+
+@media (min-width:1100px){
+  .tgrid{display:grid;grid-template-columns:minmax(400px,470px) minmax(0,1fr) minmax(250px,290px);grid-template-areas:"l m r";gap:10px;min-height:420px}
+  .tpane{border:1px solid var(--border);background:var(--surface);min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+  .tl{grid-area:l} .tm{grid-area:m;display:flex} .tr{grid-area:r;overflow-y:auto}
+  /* left: Holdings | Positions, filter + sort chips, dense rows */
+  .tl .ktabs{display:flex;border-bottom:1px solid var(--border);flex:none}
+  .tl .ktabs button{flex:1;background:none;border:0;border-bottom:2px solid transparent;color:var(--text-3);font:inherit;font-size:12.5px;font-weight:700;padding:8px 4px 6px;cursor:pointer}
+  .tl .ktabs button+button{border-left:1px solid var(--border)}
+  .tl .ktabs button.on{color:var(--text);border-bottom-color:var(--accent)}
+  .tl .ktabs .cnt{font-size:10.5px;font-weight:800;color:var(--text-3);margin-left:6px}
+  .tl .ksec[data-sec]{display:none}
+  .tl .ksec[data-sec].on{display:flex;flex-direction:column;min-height:0;flex:1}
+  .tl .ksec .av-sec,.tl .atbl-wrap,.tl .kcards{display:none}
+  .tl .ktools{margin:0;padding:5px 8px;border-bottom:1px solid var(--border-2);flex:none}
+  .tl .ktools button{padding:3px 8px;font-size:11px}
+  .tlist{display:flex;flex-direction:column;min-height:0;flex:1}
+  .trow,.thead,.tfootr{display:grid;grid-template-columns:minmax(0,1fr) 78px 58px 88px 96px;gap:0 6px;align-items:center;padding:0 10px}
+  .thead{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);height:26px;border-bottom:1px solid var(--border);flex:none}
+  .thead span:not(:first-child),.trow .n,.tfootr .n{text-align:right}
+  .tbody{overflow-y:scroll;flex:1;min-height:0}
+  .thead,.tfootr{padding-right:19px}
+  .trow{height:38px;border-bottom:1px solid var(--border-2);font-size:12.5px;cursor:pointer;font-variant-numeric:tabular-nums;border-left:2px solid transparent}
+  .trow:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+  .trow.on{background:color-mix(in srgb,var(--accent) 13%,transparent);border-left-color:var(--accent)}
+  .trow .c1{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+  .trow .xtag{font-size:8.5px;color:var(--text-3);border:1px solid var(--border);border-radius:3px;padding:0 4px;margin-left:5px;font-weight:800;vertical-align:middle}
+  .trow .n small{display:block;font-size:10px;font-weight:600;line-height:1.1}
+  .trow .n{line-height:1.15;white-space:nowrap}
+  .tfootr{height:32px;border-top:1px solid var(--border);font-size:12px;font-weight:800;flex:none;font-variant-numeric:tabular-nums}
+  .tfootr .c1{font-size:10.5px;color:var(--text-2);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* middle: the picked row */
+  .td-head{display:flex;align-items:flex-end;gap:10px;padding:10px 14px 8px;border-bottom:1px solid var(--border);flex:none}
+  .td-nm{font-size:18px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .td-sub{font-size:11px;color:var(--text-3);font-weight:600;margin-top:3px}
+  .td-px{margin-left:auto;text-align:right;font-variant-numeric:tabular-nums}
+  .td-px .p{font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .td-px .c{font-size:12px;font-weight:700;margin-top:2px}
+  .td-chart{position:relative;flex:1;min-height:150px;margin:8px 14px 0}
+  .td-chart svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .td-chart .tnote{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;color:var(--text-3)}
+  .td-cap{padding:3px 14px 8px;font-size:10.5px;color:var(--text-3);font-weight:600;display:flex;gap:14px;flex-wrap:wrap;flex:none;font-variant-numeric:tabular-nums}
+  .td-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--border);flex:none}
+  .td-stats div{padding:7px 14px;border-right:1px solid var(--border-2);border-bottom:1px solid var(--border-2);min-width:0}
+  .td-stats div:nth-child(4n){border-right:0}
+  .td-stats .k{display:block;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3)}
+  .td-stats .v{display:block;font-size:13.5px;font-weight:700;margin-top:1px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .td-stats .v small{font-size:10.5px;font-weight:700;margin-left:5px}
+  .td-ord{flex:none;max-height:30%;overflow-y:auto}
+  .td-ordh{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);padding:7px 14px 5px;display:flex;gap:8px;position:sticky;top:0;background:var(--surface)}
+  .td-ordh a{margin-left:auto;text-transform:none;letter-spacing:0;font-size:11px;font-weight:600}
+  .td-or{display:grid;grid-template-columns:48px 44px minmax(0,1fr) 84px auto;gap:0 8px;align-items:center;padding:5px 14px;border-top:1px solid var(--border-2);font-size:12px;font-variant-numeric:tabular-nums}
+  .td-or .n{text-align:right}
+  .td-none{padding:4px 14px 12px;font-size:12px;color:var(--text-3)}
+  /* right: sell panel for the picked row, slicing settings under it */
+  .tsell{display:block;padding:12px 12px 10px;border-bottom:1px solid var(--border);order:-1}
+  .ts-h{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3)}
+  .ts-sym{font-size:17px;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+  .ts-rows{margin:9px 0 10px;border-top:1px solid var(--border-2)}
+  .ts-rows div{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--border-2);font-size:12px;color:var(--text-2);font-variant-numeric:tabular-nums}
+  .ts-rows b{color:var(--text);font-weight:700}
+  .tsell .abtn[data-sell]{display:grid;width:100%;height:38px;font-size:14px;font-weight:800;background:var(--sell);color:#fff;border-color:var(--sell)}
+  .tsell .abtn[data-sell]:hover{filter:brightness(1.08)}
+  .ts-note{font-size:11px;color:var(--text-3);line-height:1.45;margin-top:8px}
+  .tr .xset{flex-direction:column;align-items:stretch;gap:7px;margin:0;border:0;padding:12px}
+  .tr .xset label{justify-content:flex-start;white-space:normal;gap:6px;font-weight:500}
+  .tr .xset input{width:58px;flex:none}
+  .tr .xset .xh{margin:2px 0 0;line-height:1.45}
+}
+@media (max-width:1099px){
+  .xset{margin-top:0}
+}
+@media (max-width:768px){
+  .av-kpis{display:grid;grid-template-columns:1fr 1fr;border:0;gap:8px}
+  .avk{border:1px solid var(--border);min-width:0}
+  .avk:last-child{border-right:1px solid var(--border)}
+  .acctview{padding:10px 12px 18px}
+  #viewSw button{padding:5px 9px}
+}
 </style>
 </head>
 <body>
@@ -317,6 +451,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   <span class="statuschip"><span class="livedot" id="liveDot"></span><span id="liveTxt">Connecting…</span></span>
   <div class="spacer"></div>
   <a class="btn" href="./portfolio.html" title="Back to the portfolio dashboard"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Portfolio</a>
+  <span class="oseg" id="viewSw" title="Page design"><button class="on" data-w="new">New</button><button data-w="old">Old</button></span>
   <span class="hgroup">
     <button class="btn ico" id="privBtn" title="Blur account numbers" aria-label="Toggle privacy blur"></button>
     <button class="btn ico" id="themeBtn" title="Toggle theme" aria-label="Toggle theme"></button>
@@ -957,8 +1092,8 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     if(!ACCT.user) return;
     var acctDay=ACCT.holdDay+ACCT.posDay, acctTot=ACCT.holdTot+ACCT.posTot;
     var dayPctAll=(ACCT.curVal-ACCT.holdDay)?ACCT.holdDay/(ACCT.curVal-ACCT.holdDay)*100:0, totPctAll=ACCT.invested?ACCT.holdTot/ACCT.invested*100:0;
-    var h='<div class="av-head"><span class="av-title">Zerodha account</span><span class="usertag"><i></i>'+esc(ACCT.user)+'</span>'+(mktOpenIST()?'<span class="livetag">● Live</span>':'')+'<span class="av-upd">updated '+istTimeSec(Date.now())+' · <a href="#" data-act="logout">logout</a></span></div>'+
-      '<div class="xset"><span class="xl">Sell slicing</span>'+
+    var h='<div class="av-head"><span class="av-title">Zerodha account</span><span class="usertag"><i></i>'+esc(ACCT.user)+'</span>'+(mktOpenIST()?'<span class="livetag">● Live</span>':'')+'<span class="av-upd">updated '+istTimeSec(Date.now())+' · <a href="#" data-act="logout">logout</a></span></div>';
+    var xsetH='<div class="xset"><span class="xl">Sell slicing</span>'+
       '<label>≤ ₹<input id="slLakh" value="'+sliceLakh()+'" inputmode="decimal"> L per slice</label>'+
       '<label>every <input id="slGap" value="'+sliceGap()+'" inputmode="numeric"> s</label>'+
       '<label>limit <input id="slRng" value="'+sliceRng()+'" inputmode="decimal"> % below live</label>'+
@@ -992,6 +1127,8 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       .concat(Object.keys(prodN).sort().map(function(k){ return ['p:'+k,k,prodN[k]]; }))
       .filter(function(f){ return f[2]>0; });
     if(POS_FILT && !pfiltDefs.some(function(f){ return f[0]===POS_FILT; })){ POS_FILT=''; plist=posRows(); }
+    tPick(hlist,plist);
+    h+='<div class="tgrid" id="tGrid"><div class="tpane tr">'+xsetH+tSellBox()+'</div><div class="tpane tl">';
     h+='<div class="ktabs"><button data-sec="hold" class="'+(KSEC==='hold'?'on':'')+'">Holdings<span class="cnt">'+hlist.length+(HOLD_FILT?' / '+ACCT.hold.length:'')+'</span></button>'+
       '<button data-sec="pos" class="'+(KSEC==='pos'?'on':'')+'">Positions<span class="cnt">'+plist.length+(POS_FILT?' / '+ACCT.pos.length:'')+'</span></button></div>';
     if(ACCT.pos.length){
@@ -1025,7 +1162,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       var pDay=0,pTot=0; plist.forEach(function(r){ pDay+=(r.dayPnl||0); pTot+=(r.pnl||0); });
       var pName=POS_FILT==='fo'?'F&O':POS_FILT.slice(2);
       var pLbl=POS_FILT?'Total · '+esc(pName)+' '+plist.length+' of '+ACCT.pos.length:'Total';
-      h+='<div class="ksec" data-sec="pos"><div class="av-sec">Open positions · '+plist.length+(POS_FILT?' of '+ACCT.pos.length:'')+'</div>'+ptools+'<div class="kcards">'+pcards+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
+      h+='<div class="ksec" data-sec="pos"><div class="av-sec">Open positions · '+plist.length+(POS_FILT?' of '+ACCT.pos.length:'')+'</div>'+ptools+tList('pos',plist)+'<div class="kcards">'+pcards+'</div><div class="atbl-wrap"><table class="atbl postbl"><thead><tr>'+
         ths('Contract','sym',POS_SORT)+ths('Qty','qty',POS_SORT)+ths('Avg','avg',POS_SORT)+ths('LTP','ltp',POS_SORT)+ths2('Day P&amp;L','dayPnl','dayPct',POS_SORT)+ths2('P&amp;L','pnl','pnlPct',POS_SORT)+'<th></th>'+
         '</tr></thead><tbody>'+prows+'</tbody>'+
         '<tfoot><tr><td>'+pLbl+'</td><td></td><td></td><td></td>'+
@@ -1078,15 +1215,18 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
           '<div class="kfoot">'+qtyBit+' @ '+r.avg.toFixed(2)+' · LTP '+r.ltp.toFixed(2)+' · <span class="secret">'+zinr(r.val)+'</span></div>'+
           (r.cashHit==null?'':'<div class="kfoot">Cash today <b class="secret '+cashCls(r.cashHit)+'">'+(Math.abs(r.cashHit)<0.5?'₹0':inrSigned(r.cashHit))+'</b> · MTM block <span class="secret">'+zinr(r.blkNow)+'</span></div>')+'</div>';
       }).join('');
-      h+='<div class="ksec" data-sec="hold"><div class="av-sec">Holdings · '+hlist.length+(HOLD_FILT?' of '+ACCT.hold.length:'')+'</div>'+htools+'<div class="kcards">'+hcards+'</div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
+      h+='<div class="ksec" data-sec="hold"><div class="av-sec">Holdings · '+hlist.length+(HOLD_FILT?' of '+ACCT.hold.length:'')+'</div>'+htools+tList('hold',hlist)+'<div class="kcards">'+hcards+'</div><div class="atbl-wrap"><table class="atbl holdtbl"><thead><tr>'+
         ths('Stock','sym',HOLD_SORT)+ths('Qty','qty',HOLD_SORT)+ths('Avg','avg',HOLD_SORT)+ths('LTP','ltp',HOLD_SORT)+ths2("Day's P&amp;L",'dayPnl','dayPct',HOLD_SORT)+ths2('Total P&amp;L','totPnl','totPct',HOLD_SORT)+ths('Cash today','cashHit',HOLD_SORT).replace('<th ','<th title="MTF only: what today\'s move will add to (+) or take from (−) your cash at day-end, via Zerodha\'s MTM block (loss below your MTF buy price)" ')+ths('Value','val',HOLD_SORT)+'<th></th>'+
         '</tr></thead><tbody>'+hrows+'</tbody><tfoot><tr><td>'+fLbl+'</td><td></td><td></td><td></td><td class="secret '+(fDay>=0?'up':'down')+'">'+inrSigned(fDay)+'</td><td class="secret '+(fTot>=0?'up':'down')+'">'+inrSigned(fTot)+'</td>'+(fCashN?'<td class="secret '+cashCls(fCash)+'">'+inrSigned(fCash)+'</td>':'<td></td>')+'<td class="secret">'+zinr(fVal)+'</td><td></td></tr></tfoot></table></div></div>';
     }
     if(!ACCT.pos.length && !ACCT.hold.length) h+='<div class="acct-msg">No open positions or holdings.</div>';
+    h+='</div><div class="tpane tm" id="tDetail">'+tDetail()+'</div></div>';
     h+='<div class="kdppl"><span>Day&#39;s P&amp;L</span><span class="secret '+(acctDay>=0?'up':'down')+'">'+inrSigned(acctDay)+' <span style="font-weight:600">'+signed(dayPctAll)+'</span></span></div>';
+    var _tb=document.querySelector('#acctView .ksec.on .tbody'), _tst=_tb?_tb.scrollTop:0;
     document.getElementById('acctView').innerHTML=h;
     var sec0=document.querySelector('.ksec[data-sec="'+KSEC+'"]')||document.querySelector('.ksec[data-sec]');
     if(sec0) sec0.classList.add('on');
+    tAfter(_tst);
     /* The 30s account poll rebuilds this HTML, which used to orphan a running slicer's button —
        progress showed 1/9 then "disappeared" while the slices kept firing underneath (2026-08-31).
        Re-point every live slicer at its fresh button and restore the n/N label. */
@@ -1503,6 +1643,161 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       });
       return; }
   });
+
+  /* ================= one-screen account view (2026-11-26) =================
+     Wide screens: list (Holdings | Positions) -> the picked row's chart, numbers and today's orders -> its Sell panel.
+     Nothing here places, changes or cancels an order: the Sell button in the panel is the same [data-sell] button the
+     table rows carry, handled by rowSell() exactly as before (first tap arms, second confirms). */
+  var TSEL={kind:'',sym:''}, TCH={};
+  function tWide(){ return window.innerWidth>=1100; }
+  function tKind(){ return (KSEC==='pos' && ACCT.pos.length) ? 'pos' : (ACCT.hold.length ? 'hold' : (ACCT.pos.length?'pos':'')); }
+  function tRows(kind,list){ return sortRows(list,kind==='pos'?POS_SORT:HOLD_SORT); }
+  function tPick(hlist,plist){
+    var kind=tKind(), rows=tRows(kind,kind==='pos'?plist:hlist);
+    if(TSEL.kind!==kind || !rows.some(function(r){ return r.sym===TSEL.sym; })) TSEL={kind:kind,sym:rows.length?rows[0].sym:''};
+  }
+  function tRow(){ var l=TSEL.kind==='pos'?ACCT.pos:ACCT.hold, i; for(i=0;i<(l||[]).length;i++) if(l[i].sym===TSEL.sym) return l[i]; return null; }
+  function tUd(v){ return v==null?'flat':(v>=0?'up':'down'); }
+  function tList(kind,list){
+    var rows=tRows(kind,list), d=0,t=0, isH=kind==='hold';
+    var body=rows.map(function(r){
+      var day=r.dayPnl, tot=isH?r.totPnl:r.pnl, totPct=isH?r.totPct:r.pnlPct, mv=isH?r.dayPct:r.movePct;
+      d+=(day||0); t+=(tot||0);
+      return '<div class="trow'+(TSEL.kind===kind&&TSEL.sym===r.sym?' on':'')+'" data-trow="'+kind+'" data-sy="'+esc(r.sym)+'">'+
+        '<span class="c1">'+esc(r.sym)+(isH?(r.isMtf?'<span class="xtag">MTF</span>':''):'<span class="xtag">'+esc(r.product)+'</span>')+'</span>'+
+        '<span class="n">'+r.ltp.toFixed(2)+'</span>'+
+        '<span class="n '+tUd(mv)+'">'+(mv==null?'—':signed(mv))+'</span>'+
+        '<span class="n secret '+tUd(day)+'">'+(day==null?'—':inrSigned(day))+'</span>'+
+        '<span class="n secret '+tUd(tot)+'">'+inrSigned(tot)+(totPct==null?'':'<small>'+signed(totPct)+'</small>')+'</span></div>';
+    }).join('');
+    return '<div class="tlist"><div class="thead"><span>'+(isH?'Stock':'Contract')+'</span><span>LTP</span><span>Day %</span><span>Day</span><span>Total</span></div>'+
+      '<div class="tbody">'+(body||'<div class="td-none" style="padding-top:12px">Nothing in this list.</div>')+'</div>'+
+      '<div class="tfootr"><span class="c1">'+rows.length+(isH?' holding':' position')+(rows.length===1?'':'s')+'</span><span></span><span></span>'+
+      '<span class="n secret '+tUd(d)+'">'+inrSigned(d)+'</span><span class="n secret '+tUd(t)+'">'+inrSigned(t)+'</span></div></div>';
+  }
+  function tStat(k,v,cls){ return '<div><span class="k">'+k+'</span><span class="v '+(cls||'')+'">'+v+'</span></div>'; }
+  function tDetail(){
+    var r=tRow(); if(!r) return '<div class="td-none" style="padding-top:14px">Pick a row on the left.</div>';
+    var isH=TSEL.kind==='hold', fo=!isH&&isFo(r), mv=isH?r.dayPct:r.movePct;
+    var h='<div class="td-head"><div><div class="td-nm">'+esc(r.sym)+'</div><div class="td-sub">'+esc(r.exch)+
+        (isH?(r.isMtf?' · MTF':' · Delivery'):' · '+esc(r.product)+(r.qty<0?' · SHORT':' · LONG'))+'</div></div>'+
+      '<div class="td-px"><div class="p">₹'+r.ltp.toFixed(2)+'</div><div class="c '+tUd(mv)+'">'+(mv==null?'—':signed(mv)+' today')+'</div></div></div>'+
+      '<div class="td-chart" id="tChart"></div><div class="td-cap" id="tCap"></div><div class="td-stats">';
+    if(isH){
+      h+=tStat('Qty',r.qty.toLocaleString('en-IN'),'secret')+tStat('Avg','₹'+r.avg.toFixed(2))+tStat('Value',zinr(r.val),'secret')+tStat('Invested',zinr(r.inv),'secret')+
+        tStat("Day's P&amp;L",inrSigned(r.dayPnl)+(r.dayPct==null?'':'<small>'+signed(r.dayPct)+'</small>'),'secret '+tUd(r.dayPnl))+
+        tStat('Total P&amp;L',inrSigned(r.totPnl)+'<small>'+signed(r.totPct)+'</small>','secret '+tUd(r.totPnl))+
+        tStat('MTF qty',(r.mq||0)?r.mq.toLocaleString('en-IN'):'—','secret')+
+        tStat('Cash today',r.cashHit==null?'—':(Math.abs(r.cashHit)<0.5?'₹0':inrSigned(r.cashHit))+'<small>block '+zinr(r.blkNow)+'</small>',r.cashHit==null?'':'secret '+cashCls(r.cashHit));
+    } else {
+      h+=tStat('Qty',r.qty.toLocaleString('en-IN'),'secret')+tStat('Avg','₹'+r.avg.toFixed(2))+
+        tStat('Day P&amp;L',(r.dayPnl==null?'—':inrSigned(r.dayPnl))+(r.dayPct==null?'':'<small>'+signed(r.dayPct)+'</small>'),'secret '+tUd(r.dayPnl))+
+        tStat('P&amp;L',inrSigned(r.pnl)+(r.pnlPct==null?'':'<small>'+signed(r.pnlPct)+'</small>'),'secret '+tUd(r.pnl));
+    }
+    h+='</div><div class="td-ord">';
+    var b=baseSym(r.sym), ol=(ACCT.ord||[]).filter(function(o){ return fo?(o.tradingsymbol===r.sym):(baseSym(o.tradingsymbol)===b); });
+    h+='<div class="td-ordh"><span>Today’s orders in '+esc(r.sym)+(ol.length?' · '+ol.length:'')+'</span><a href="#" data-topen="orders">all orders ▸</a></div>';
+    if(!ACCT.ord) h+='<div class="td-none">Orders not loaded yet.</div>';
+    else if(!ol.length) h+='<div class="td-none">None today.</div>';
+    else h+=ol.slice().reverse().map(function(o){ var i=ordRowInfo(o);
+      return '<div class="td-or"><span>'+esc(i.time)+'</span><span class="'+(i.side==='BUY'?'obuy':'osell')+'" style="font-weight:800;color:var(--'+(i.side==='BUY'?'buy':'sell')+')">'+esc(i.side)+'</span>'+
+        '<span class="secret">'+i.qf+'/'+i.qt+' · '+esc(i.typ)+'</span><span class="n">'+i.px+'</span><span class="ochip '+i.cls+'">'+esc(i.st)+'</span></div>'; }).join('');
+    return h+'</div>';
+  }
+  /* what the Sell button would send, read-only: the same buckets rowSellOrders() builds (delivery and MTF apart,
+     pledged left out) and the same buildSlices() split. The real plan is made again at the tap, off the clock. */
+  function tSellBox(){
+    var r=tRow(); if(!r) return '<div class="tsell"><div class="ts-h">Sell</div><div class="ts-note">Pick a row on the left.</div></div>';
+    var isH=TSEL.kind==='hold', bk=[], rows='', can=true, why='';
+    if(isH){
+      var cnc=r.qty-(r.mq||0)-(r.cq||0);
+      if(cnc>0) bk.push({o:{},qty:cnc,ltp:r.ltp||0});
+      if((r.mq||0)>0) bk.push({o:{},qty:r.mq,ltp:r.ltp||0});
+      rows+='<div>Delivery<b class="secret">'+Math.max(0,cnc).toLocaleString('en-IN')+'</b></div>';
+      if((r.mq||0)>0) rows+='<div>MTF<b class="secret">'+r.mq.toLocaleString('en-IN')+'</b></div>';
+      if((r.cq||0)>0) rows+='<div>Pledged · stays put<b class="secret">'+r.cq.toLocaleString('en-IN')+'</b></div>';
+    } else {
+      if(r.qty>0 && !isFo(r)) bk.push({o:{},qty:r.qty,ltp:r.ltp||0});
+      else { can=false; why=isFo(r)?'F&O legs are closed from the F&O plan tab or on Kite, not from here.':'This is a short position. Sell here only covers long equity legs.'; }
+      rows+='<div>'+esc(r.product||'Qty')+'<b class="secret">'+r.qty.toLocaleString('en-IN')+'</b></div>';
+    }
+    var q=bk.reduce(function(a,b){ return a+b.qty; },0);
+    if(can && !q){ can=false; why='Nothing sellable in this row.'; }
+    if(can){ var n=buildSlices(bk).length;
+      rows+='<div>Sells<b class="secret">'+q.toLocaleString('en-IN')+' · '+zinr(q*(r.ltp||0))+'</b></div>'+
+        '<div>Slices at the usual pace<b>'+n+(n>1?' · '+sliceGap()+' s apart':'')+'</b></div>'+
+        '<div>Each slice<b>'+(sliceRng()>0?'limit '+sliceRng()+'% below live':'market')+'</b></div>'; }
+    return '<div class="tsell"><div class="ts-h">Sell</div><div class="ts-sym">'+esc(r.sym)+'</div><div class="ts-rows">'+rows+'</div>'+
+      (can?'<button class="abtn s" data-sell="'+TSEL.kind+'" data-sy="'+esc(r.sym)+'" title="Sell this row">Sell</button>'+
+           '<div class="ts-note">First tap arms it and shows the plan, second tap sends. Tap again mid-run to stop. Keep this tab open while slices run.</div>'
+          :'<div class="ts-note">'+why+'</div>')+'</div>';
+  }
+  /* intraday chart of the picked stock: the quote worker's ?chart= feed (Yahoo NSE, ~15 min delayed), kept 60 s */
+  function tLoadChart(sym){
+    var k=baseSym(sym), c=TCH[k]; if(c && (c.busy || Date.now()-c.at<60000)) return;
+    TCH[k]={busy:true,at:0,ok:c?c.ok:null,T:c?c.T:[],C:c?c.C:[],prev:c?c.prev:null,gmt:c?c.gmt:19800,hi:c?c.hi:null,lo:c?c.lo:null};
+    fetch(workerUrl()+'/?chart='+encodeURIComponent(k+'.NS'),{cache:'no-store'}).then(function(r){ return r.json(); }).then(function(j){
+      var r=j&&j.chart&&j.chart.result&&j.chart.result[0]; if(!r||!r.meta) throw 0;
+      var m=r.meta, ts=r.timestamp||[], q=(r.indicators&&r.indicators.quote&&r.indicators.quote[0])||{}, cl=q.close||[], T=[], C=[], i;
+      for(i=0;i<ts.length;i++){ if(cl[i]!=null){ T.push(ts[i]); C.push(cl[i]); } }
+      TCH[k]={busy:false,at:Date.now(),ok:C.length>1,T:T,C:C,prev:(m.chartPreviousClose!=null?m.chartPreviousClose:m.previousClose),gmt:(m.gmtoffset||19800),hi:m.regularMarketDayHigh,lo:m.regularMarketDayLow};
+    }).catch(function(){ TCH[k]={busy:false,at:Date.now(),ok:false,T:[],C:[]}; })
+      .then(function(){ if(baseSym(TSEL.sym)===k) tDrawChart(); });
+  }
+  function tDrawChart(){
+    var el=document.getElementById('tChart'), cap=document.getElementById('tCap'); if(!el) return;
+    var r=tRow(); if(!r){ return; }
+    if(TSEL.kind==='pos' && isFo(r)){ el.innerHTML='<div class="tnote">No intraday chart for F&amp;O contracts here.</div>'; if(cap) cap.innerHTML=''; return; }
+    var c=TCH[baseSym(TSEL.sym)];
+    if(!c || c.ok==null){ el.innerHTML='<div class="tnote">Loading chart…</div>'; if(cap) cap.innerHTML=''; return; }
+    if(!c.ok){ el.innerHTML='<div class="tnote">No intraday chart for '+esc(TSEL.sym)+' right now.</div>'; if(cap) cap.innerHTML=''; return; }
+    var C=c.C, n=C.length, lo=Math.min.apply(null,C), hi=Math.max.apply(null,C);
+    if(c.prev>0){ lo=Math.min(lo,c.prev); hi=Math.max(hi,c.prev); }
+    var sp=(hi-lo)||1, col=(c.prev>0 && C[n-1]<c.prev)?'var(--down)':'var(--up)';
+    function X(i){ return i/(n-1)*1000; } function Y(v){ return 300-((v-lo)/sp)*276-12; }
+    var pts=C.map(function(v,i){ return X(i).toFixed(1)+' '+Y(v).toFixed(1); }), py=c.prev>0?Y(c.prev):NaN;
+    el.innerHTML='<svg viewBox="0 0 1000 300" preserveAspectRatio="none">'+
+      (isFinite(py)?'<line x1="0" x2="1000" y1="'+py.toFixed(1)+'" y2="'+py.toFixed(1)+'" stroke="var(--text-3)" stroke-width="1" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>':'')+
+      '<path fill="'+col+'" fill-opacity=".10" d="M0 300 L'+pts.join(' L')+' L1000 300 Z"/>'+
+      '<path fill="none" stroke="'+col+'" stroke-width="1.7" vector-effect="non-scaling-stroke" stroke-linejoin="round" d="M'+pts.join(' L')+'"/></svg>';
+    function hm(t){ var d=new Date((t+c.gmt)*1000), p=function(x){ return String(x).padStart(2,'0'); }; return p(d.getUTCHours())+':'+p(d.getUTCMinutes()); }
+    if(cap) cap.innerHTML='<span>Intraday · 1 min · Yahoo NSE, ~15 min delayed</span><span>'+hm(c.T[0])+' – '+hm(c.T[n-1])+'</span>'+
+      (c.prev>0?'<span>Prev close '+fmt(c.prev,2)+' (dashed)</span>':'')+(c.lo!=null?'<span>Low '+fmt(c.lo,2)+'</span>':'')+(c.hi!=null?'<span>High '+fmt(c.hi,2)+'</span>':'');
+  }
+  function tFit(){
+    var g=document.getElementById('tGrid'); if(!g) return;
+    if(!tWide() || VIEW!=='account'){ g.style.height=''; return; }
+    g.style.height=Math.max(420,window.innerHeight-g.getBoundingClientRect().top-12)+'px';
+  }
+  function tAfter(st){
+    if(!document.getElementById('tGrid')) return;
+    tFit();   // the panes get their height first, or the list is not scrollable yet and the position is lost
+    var tb=document.querySelector('#acctView .ksec.on .tbody'); if(tb && st) tb.scrollTop=st;
+    tDrawChart();
+    var r=tRow(); if(r && tWide() && !(TSEL.kind==='pos' && isFo(r))) tLoadChart(r.sym);
+  }
+  function tSelect(sym){ if(!sym || sym===TSEL.sym) return; TSEL.sym=sym; renderAcctView();
+    var on=document.querySelector('#acctView .ksec.on .trow.on'); if(on && on.scrollIntoView) on.scrollIntoView({block:'nearest'}); }
+  document.getElementById('acctView').addEventListener('click',function(e){
+    var tr=e.target.closest('[data-trow]'); if(tr){ tSelect(tr.dataset.sy); return; }
+    if(e.target.closest('.ktabs [data-sec]')){ if(ACCT.user) renderAcctView(); return; }
+    var op=e.target.closest('[data-topen]'); if(op){ e.preventDefault(); openOrders(); }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='ArrowDown' && e.key!=='ArrowUp') return;
+    if(VIEW!=='account' || !tWide() || e.altKey || e.ctrlKey || e.metaKey) return;
+    var a=document.activeElement; if(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return;
+    var rows=[].slice.call(document.querySelectorAll('#acctView .ksec.on .trow')); if(!rows.length) return;
+    var i=-1; rows.forEach(function(x,k){ if(x.classList.contains('on')) i=k; });
+    var j=Math.max(0,Math.min(rows.length-1,i+(e.key==='ArrowDown'?1:-1)));
+    e.preventDefault(); if(j!==i) tSelect(rows[j].dataset.sy);
+  });
+  window.addEventListener('resize',function(){ tFit(); tDrawChart(); });
+  /* New | Old page design (site-wide choice, localStorage sw_view) */
+  [].forEach.call(document.querySelectorAll('#viewSw button'),function(b){ b.addEventListener('click',function(){
+    if(b.dataset.w!=='old') return;
+    try{ localStorage.setItem('sw_view','old'); }catch(e){}
+    location.href='./terminal-old.html'+location.hash; }); });
 
   /* init + polling */
   renderIdxLoading(); renderMW(); renderFocusShell(); syncSide();

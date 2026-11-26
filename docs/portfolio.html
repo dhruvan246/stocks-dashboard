@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>/* New / Old view: the site-wide choice (localStorage sw_view) applies here too */
+try{ if(localStorage.getItem('sw_view')==='old') location.replace((/portfolio\.html$/.test(location.pathname)?'./portfolio-old.html':'./index-old.html')+location.search+location.hash); }catch(e){}</script>
 <style>
 /* ---------- tokens (light) ---------- */
 :root{
@@ -416,6 +418,68 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 /* phone header: icon-only actions on one row, the status chip on its own line — the wrapped 3-row bar was 153px tall */
 @media(max-width:640px){ .hwrap{gap:6px;padding:8px 12px} .hwrap .btn .t{display:none} #btnZview,.hwrap a.btn{width:34px;height:33px;padding:0;justify-content:center} .brand::after{display:none}
   .statuschip{order:10;width:100%;justify-content:center;padding:4px 10px} }
+
+/* ================= one-screen layout (2026-11-26): strategies -> holdings -> charts =================
+   Layout only. Every number is still produced by the same functions as the old page (index-old.html). */
+main{max-width:none; padding:10px 14px 14px}
+#app{display:flex; flex-direction:column; gap:8px}
+.idxstrip{margin:0}
+.obar{display:flex; align-items:center; gap:14px; flex-wrap:wrap; border-bottom:1px solid var(--border)}
+body.zview #app>.obar{display:flex}
+body.zview #filters{display:none}
+.vtabs{display:flex; gap:18px; overflow-x:auto; scrollbar-width:none} .vtabs::-webkit-scrollbar{display:none}
+.vtab{background:none; border:0; border-bottom:2px solid transparent; padding:8px 1px; font:inherit; font-size:13.5px; font-weight:600; color:var(--text-2); cursor:pointer; white-space:nowrap}
+.vtab:hover{color:var(--text)}
+.vtab.on{color:var(--text); border-bottom-color:var(--accent)}
+#filters{position:static; margin:0 0 0 auto; padding:4px 0; background:none; border:0; backdrop-filter:none; -webkit-backdrop-filter:none; box-shadow:none}
+.kpis{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:0; margin:0; border:1px solid var(--border); border-radius:8px; background:var(--surface); overflow:hidden}
+.kpis .card.kpi{border:0; border-right:1px solid var(--border); border-radius:0; box-shadow:none; padding:7px 12px 8px; background:none}
+.kpis .card.kpi::before,.kpis .card.kpi::after{display:none}
+.kpis .card.kpi:last-child{border-right:0}
+.kpi .lab{font-size:10px} .kpi .kd{font-size:11px; padding:1px 5px}
+.kpi .val{font-size:17px; margin-top:2px; letter-spacing:-.01em}
+.kpi .sub2{font-size:11px; min-height:0; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ogrid{display:grid; grid-template-columns:minmax(260px,310px) minmax(0,1fr) minmax(350px,450px); gap:8px; min-height:420px}
+.opane{background:var(--surface); border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; min-height:0; min-width:0; overflow:hidden}
+.oph{display:flex; align-items:center; gap:8px; padding:9px 12px; border-bottom:1px solid var(--border); min-height:40px}
+.oph .ttl{font-size:13.5px; font-weight:700} .oph .r{margin-left:auto; font-size:11.5px; color:var(--text-3); white-space:nowrap}
+.ops{padding:8px 10px; display:flex; gap:6px; flex-wrap:wrap; border-bottom:1px solid var(--border)}
+.oseg{display:inline-flex; border:1px solid var(--border); border-radius:6px; overflow:hidden; background:var(--surface)}
+.oseg.wrap{flex-wrap:wrap}
+.oseg button{border:0; border-left:1px solid var(--border); background:none; color:var(--text-2); font:inherit; font-size:12px; font-weight:600; padding:5px 9px; cursor:pointer; white-space:nowrap}
+.oseg button:first-child{border-left:0}
+.oseg button:hover{color:var(--text)}
+.oseg button.on{background:var(--accent); color:#fff}
+.och,.orow{display:grid; grid-template-columns:minmax(0,1fr) 62px 58px; gap:8px; align-items:center; padding:0 12px}
+.och{font-size:11.5px; color:var(--text-3); padding-top:6px; padding-bottom:6px; border-bottom:1px solid var(--border)}
+.och span:not(:first-child),.orow span:not(:first-child){text-align:right; white-space:nowrap}
+.olist{flex:1; min-height:0; overflow-y:auto; outline:none; scrollbar-width:thin}
+.orow{height:34px; border-bottom:1px solid var(--border); cursor:pointer; font-size:13px; box-shadow:inset 2px 0 0 transparent; font-variant-numeric:tabular-nums}
+.orow:hover{background:var(--surface-2)}
+.orow.on{background:color-mix(in srgb,var(--accent) 12%,transparent); box-shadow:inset 2px 0 0 var(--accent)}
+.orow .n{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600}
+.orow .v{color:var(--text-2)}
+.ohint{padding:7px 12px; font-size:11px; color:var(--text-3); border-top:1px solid var(--border); line-height:1.4}
+#pHold .card,#pChart .card,.oview .card{border:0; border-radius:0; box-shadow:none; background:none}
+#pHold .card{display:flex; flex-direction:column; min-height:0; flex:1}
+#pHold .card .body{flex:1; min-height:0; display:flex; flex-direction:column; padding:6px 0 0}
+#pHold .tvscroll{max-height:none; flex:1; min-height:0; overflow:auto}
+#pHold thead th{top:0}
+.chbody{flex:1; min-height:0; overflow-y:auto; scrollbar-width:thin}
+.chbody>.card{display:none} .chbody>.card.on{display:block}
+.oview{border:1px solid var(--border); border-radius:8px; background:var(--surface); overflow:auto}
+#btnSections,#secMenu{display:none!important}
+#viewSw{margin-right:2px}
+@media(max-width:1100px){ .ogrid{grid-template-columns:230px minmax(0,1fr)} #pChart{grid-column:1/-1} #pStrat,#pHold{max-height:70vh} }
+@media(max-width:760px){
+  .ogrid{grid-template-columns:minmax(0,1fr)} #pChart{grid-column:auto} .olist{max-height:250px} #pHold{max-height:none} #pHold .tvscroll{max-height:62vh}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} .kpis .card.kpi{border-bottom:1px solid var(--border)} #filters{margin-left:0}
+  main{padding:8px 10px 60px}
+}
+
+#pHold.one th:nth-child(2),#pHold.one td:nth-child(2){display:none}   /* one strategy picked: its name is already the selected row */
+#pHold td,#pHold th{padding-top:5px; padding-bottom:5px}
+
 </style>
 </head>
 <body>
@@ -427,6 +491,7 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
     <div class="spacer"></div>
     <button class="btn" id="btnZview" title="Zerodha live account — funds, holdings, orders, trading"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg><span class="t">Zerodha</span></button>
     <a class="btn" href="https://dhruvan246.github.io/stocks-dashboard/terminal.html" title="Live terminal — Zerodha positions, orders & strategy baskets"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 9l3 3-3 3M12 15h6"/></svg><span class="t">Terminal</span></a>
+    <span class="oseg" id="viewSw" title="Page design"><button class="on" data-w="new">New</button><button data-w="old">Old</button></span>
     <span class="hgroup">
       <button class="btn ico" id="btnSections" title="Show / hide / jump to cards"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button>
       <button class="btn ico" id="btnPrivate" title="Blur every number"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
@@ -443,15 +508,21 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 
     <div class="idxstrip" id="idxStrip"></div>
 
-    <div class="filters" id="filters"></div>
+    <div class="obar">
+      <div class="vtabs" id="vTabs" role="tablist">
+        <button class="vtab on" data-v="hold">Holdings</button>
+        <button class="vtab" data-v="today">Today table</button>
+        <button class="vtab" data-v="model">You vs strategy</button>
+        <button class="vtab" data-v="closed">Closed trades</button>
+        <button class="vtab" data-v="acct">Accounts</button>
+        <button class="vtab" data-v="zerodha">Zerodha</button>
+      </div>
+      <div class="filters" id="filters"></div>
+    </div>
 
     <div class="kpis" id="kpis"></div>
 
-    <div class="card c12" data-card="today" style="margin-bottom:14px"><h2 id="todayH">Today, by strategy</h2>
-      <div class="sub" id="todaySub"></div>
-      <div class="body"><div class="twrap"><table id="tblToday"></table></div></div></div>
-
-    <div class="card c12" data-card="zerodha" style="margin-bottom:14px">
+    <div class="card" data-card="zerodha">
       <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
         <h2>Zerodha — live account</h2>
         <div style="margin:11px 16px 0; display:flex; gap:7px">
@@ -462,67 +533,76 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
       <div class="body" id="zBody"><span class="sym">…</span></div>
     </div>
 
-    <div class="grid">
-      <div class="sechead c12">You vs your strategies</div>
-      <div class="card c12" id="cardModel" data-card="model"><h2>You vs the strategy — since its last rebalance</h2>
-        <div class="sub" id="modelSub"></div>
-        <div class="body" id="modelBody"></div></div>
-
-      <div class="sechead c12">Trades</div>
-      <div class="card c12" data-card="closed"><h2>Closed trades — realized P&amp;L</h2>
-        <div class="sub" id="closedSub"></div>
-        <div class="body" id="closedBody"></div></div>
-
-      <div class="sechead c12">Value &amp; allocation</div>
-      <div class="card c8" data-card="value"><h2>Portfolio value</h2>
-        <div class="sub" id="valueSub"></div>
-        <div class="body"><div id="chValue"></div></div></div>
-
-      <div class="card c12" data-card="stackvalue"><h2>Portfolio value by strategy</h2>
-        <div class="sub" id="stackSub">Each strategy’s share of the total market value over time — the bands stack to the whole book.</div>
-        <div class="body"><div id="chStackVal"></div></div></div>
-
-      <div class="card c4" data-card="allocation"><h2>Allocation</h2>
-        <div class="sub">Share of current market value.</div>
-        <div class="body">
-          <div class="filters" style="margin:0 0 8px 4px" id="allocModes"></div>
-          <div id="chAlloc"></div></div></div>
-
-      <div class="sechead c12">Performance &amp; risk</div>
-      <div class="card c6" data-card="growth"><h2>Growth of ₹100 vs Nifty 500</h2>
-        <div class="sub" id="twrSub">Time-weighted return — immune to money added or removed.</div>
-        <div class="body"><div id="chTwr"></div></div></div>
-
-      <div class="card c6" data-card="drawdown"><h2>Drawdown from peak</h2>
-        <div class="sub">How far below its own high-water mark the portfolio has been.</div>
-        <div class="body"><div id="chDD"></div></div></div>
-
-      <div class="card c6" data-card="contribution"><h2 id="dayH">Today's contribution</h2>
-        <div class="sub" id="daySub">What each holding added to or took off today's P&amp;L.</div>
-        <div class="body"><div id="chDay"></div></div></div>
-
-      <div class="card c6" data-card="pnl"><h2>Unrealised P&amp;L by holding</h2>
-        <div class="sub">Market value minus cost, per stock, across every portfolio.</div>
-        <div class="body"><div id="chPnl"></div></div></div>
-
-      <div class="card c6" data-card="monthly"><h2>Monthly return</h2>
-        <div class="sub">Time-weighted return per calendar month.</div>
-        <div class="body"><div id="chMonth"></div></div></div>
-
-      <div class="card c6" data-card="weights"><h2>Position weights</h2>
-        <div class="sub">Concentration — largest positions first.</div>
-        <div class="body"><div id="chWeight"></div></div></div>
-
-      <div class="sechead c12">The book</div>
-      <div class="card c12" data-card="holdings"><div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
+    <div class="ogrid" id="vHold" data-view="hold">
+      <section class="opane" id="pStrat">
+        <div class="oph"><span class="ttl">Strategies</span><span class="r" id="stratCount"></span></div>
+        <div class="ops"><div class="oseg" id="stratMode"><button data-m="day" class="on">Today</button><button data-m="mon">Month</button><button data-m="buy">Since buy</button></div></div>
+        <div class="och sl"><span>Strategy</span><span>Value</span><span id="stratModeH">Today</span></div>
+        <div class="olist" id="stratList" role="listbox" tabindex="0" aria-label="Strategies"></div>
+        <div class="ohint">Click a strategy: its holdings and charts fill the other two panes. <b>↑↓</b> moves.</div>
+      </section>
+      <section class="opane" id="pHold">
+      <div class="card" data-card="holdings" id="cardHold"><div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px">
           <h2>Holdings</h2>
           <div style="margin:11px 16px 0; display:flex; gap:7px">
             <button class="btn" id="btnOrder" title="Place an order for any stock through Zerodha — you confirm it on Zerodha's own page">New order</button>
             <button class="btn" id="btnCsv" title="Download the rows shown (respects the account/portfolio filter) as a spreadsheet">Export CSV</button></div></div>
         <div class="sub" id="holdSub"></div>
         <div class="body"><div class="twrap tvscroll"><table id="tblHold"></table></div></div></div>
+      </section>
+      <section class="opane" id="pChart">
+        <div class="ops"><div class="oseg wrap" id="chSeg"><button data-c="value" class="on">Value</button><button data-c="stackvalue">By strategy</button><button data-c="growth">vs Nifty 500</button><button data-c="drawdown">Drawdown</button><button data-c="monthly">Monthly</button><button data-c="allocation">Allocation</button><button data-c="contribution">Contribution</button><button data-c="pnl">P&amp;L</button><button data-c="weights">Weights</button></div></div>
+        <div class="chbody" id="chBody">
+      <div class="card" data-card="value"><h2>Portfolio value</h2>
+        <div class="sub" id="valueSub"></div>
+        <div class="body"><div id="chValue"></div></div></div>
+      <div class="card" data-card="stackvalue"><h2>Portfolio value by strategy</h2>
+        <div class="sub" id="stackSub">Each strategy’s share of the total market value over time — the bands stack to the whole book.</div>
+        <div class="body"><div id="chStackVal"></div></div></div>
+      <div class="card" data-card="growth"><h2>Growth of ₹100 vs Nifty 500</h2>
+        <div class="sub" id="twrSub">Time-weighted return — immune to money added or removed.</div>
+        <div class="body"><div id="chTwr"></div></div></div>
+      <div class="card" data-card="drawdown"><h2>Drawdown from peak</h2>
+        <div class="sub">How far below its own high-water mark the portfolio has been.</div>
+        <div class="body"><div id="chDD"></div></div></div>
+      <div class="card" data-card="monthly"><h2>Monthly return</h2>
+        <div class="sub">Time-weighted return per calendar month.</div>
+        <div class="body"><div id="chMonth"></div></div></div>
+      <div class="card" data-card="allocation"><h2>Allocation</h2>
+        <div class="sub">Share of current market value.</div>
+        <div class="body">
+          <div class="filters" style="margin:0 0 8px 4px" id="allocModes"></div>
+          <div id="chAlloc"></div></div></div>
+      <div class="card" data-card="contribution"><h2 id="dayH">Today's contribution</h2>
+        <div class="sub" id="daySub">What each holding added to or took off today's P&amp;L.</div>
+        <div class="body"><div id="chDay"></div></div></div>
+      <div class="card" data-card="pnl"><h2>Unrealised P&amp;L by holding</h2>
+        <div class="sub">Market value minus cost, per stock, across every portfolio.</div>
+        <div class="body"><div id="chPnl"></div></div></div>
+      <div class="card" data-card="weights"><h2>Position weights</h2>
+        <div class="sub">Concentration — largest positions first.</div>
+        <div class="body"><div id="chWeight"></div></div></div>
+        </div>
+      </section>
+    </div>
 
-      <div class="card c12" data-card="accounts"><h2>Accounts</h2>
+    <div class="oview" data-view="today" style="display:none">
+    <div class="card" data-card="today"><h2 id="todayH">Today, by strategy</h2>
+      <div class="sub" id="todaySub"></div>
+      <div class="body"><div class="twrap"><table id="tblToday"></table></div></div></div>
+    </div>
+    <div class="oview" data-view="model" style="display:none">
+      <div class="card" id="cardModel" data-card="model"><h2>You vs the strategy — since its last rebalance</h2>
+        <div class="sub" id="modelSub"></div>
+        <div class="body" id="modelBody"></div></div>
+    </div>
+    <div class="oview" data-view="closed" style="display:none">
+      <div class="card" data-card="closed"><h2>Closed trades — realized P&amp;L</h2>
+        <div class="sub" id="closedSub"></div>
+        <div class="body" id="closedBody"></div></div>
+    </div>
+    <div class="oview" data-view="acct" style="display:none">
+      <div class="card" data-card="accounts"><h2>Accounts</h2>
         <div class="sub">Tag each portfolio with the account that holds it — the account views above use this. Saved to holdings.json.</div>
         <div class="body"><div class="twrap"><table id="tblAcct"></table></div>
           <div style="padding:12px 9px 0; display:flex; align-items:center; gap:8px; flex-wrap:wrap">
@@ -2433,6 +2513,99 @@ async function zbPlaceAll(){
   if(pref==='1' || (pref===null && onWeb)){ document.body.classList.add('private'); $('btnPrivate').classList.add('on'); }
 })();
 boot();
+</script>
+<script>
+/* ================= one-screen layout wiring (2026-11-26) =================
+   Adds: view tabs, the strategies list (click = the existing portfolio filter), one chart at a time.
+   It only calls the page's own functions and state (SEL, ROWS, renderAll, zShowView…); no figure is computed differently. */
+(function(){
+  'use strict';
+  const el=id=>document.getElementById(id);
+  const get=(k,d)=>{ try{ return localStorage.getItem(k)||d; }catch(e){ return d; } };
+  const put=(k,v)=>{ try{ localStorage.setItem(k,v); }catch(e){} };
+  const CHARTS=['value','stackvalue','growth','drawdown','monthly','allocation','contribution','pnl','weights'];
+  const VIEWS=['hold','today','model','closed','acct','zerodha'];
+  let VIEW='hold', LASTV='hold';
+  let CH=get('pf_os_chart','value'); if(CHARTS.indexOf(CH)<0) CH='value';
+  let SM=get('pf_os_strat','day');   if(['day','mon','buy'].indexOf(SM)<0) SM='day';
+  let IDS=[];                                    // strategy ids in list order ('' = all)
+
+  /* New | Old */
+  document.querySelectorAll('#viewSw button').forEach(b=>b.onclick=()=>{ if(b.dataset.w!=='old') return;
+    put('sw_view','old');
+    location.href=(/portfolio\.html$/.test(location.pathname)?'./portfolio-old.html':'./index-old.html')+location.search+location.hash; });
+
+  /* the old "cards to show" menu has no cards to act on here */
+  applyHidden=function(){ document.querySelectorAll('.card-hidden').forEach(e=>e.classList.remove('card-hidden')); };
+
+  function fit(){
+    const g=el('vHold'); if(!g) return;
+    if(innerWidth>1100 && VIEW==='hold'){ const top=g.getBoundingClientRect().top+scrollY; g.style.height=Math.max(420, innerHeight-top-12)+'px'; }
+    else g.style.height='';
+  }
+  function syncTabs(){
+    document.querySelectorAll('#vTabs .vtab').forEach(b=>b.classList.toggle('on', b.dataset.v===VIEW));
+    document.querySelectorAll('#app [data-view]').forEach(n=>{ n.style.display = n.dataset.view===VIEW ? '' : 'none'; });
+    el('kpis').style.display = (VIEW==='zerodha') ? 'none' : '';
+  }
+  function setView(v){
+    if(VIEWS.indexOf(v)<0) v='hold';
+    VIEW=v; if(v!=='zerodha') LASTV=v;
+    if((v==='zerodha')!==ZVIEW) zShowView(v==='zerodha'); else syncTabs();
+    if(v!=='zerodha' && DOC) renderAll(); else fit();
+  }
+  const _z=zShowView;
+  zShowView=function(on){ _z(on); VIEW = on ? 'zerodha' : LASTV; syncTabs(); fit(); };   // header button and #view=zerodha land here too
+  document.querySelectorAll('#vTabs .vtab').forEach(b=>b.onclick=()=>setView(b.dataset.v));
+
+  function showChart(){
+    document.querySelectorAll('#chSeg button').forEach(b=>b.classList.toggle('on', b.dataset.c===CH));
+    document.querySelectorAll('#chBody>.card').forEach(c=>c.classList.toggle('on', c.dataset.card===CH));
+  }
+  document.querySelectorAll('#chSeg button').forEach(b=>b.onclick=()=>{ CH=b.dataset.c; put('pf_os_chart',CH); showChart(); if(DOC) renderAll(); });
+  document.querySelectorAll('#stratMode button').forEach(b=>b.onclick=()=>{ SM=b.dataset.m; put('pf_os_strat',SM); renderStrat(); });
+
+  function pick(id){ SEL.pf.clear(); if(id) SEL.pf.add(id); filterToHash(); renderAll(); }
+  function renderStrat(){
+    const host=el('stratList'); if(!host || !DOC) return;
+    const rows=ROWS.filter(r=>SEL.acct.size===0 || SEL.acct.has(r.account||''));
+    const one=g=>{ const a=agg(g), base=a.value-a.day, m=monthAgg(g);
+      return {value:a.value, day:base>0? a.day/base*100 : null, mon:m.pct, buy:a.cost>0? a.pnl/a.cost*100 : null}; };
+    const list=[...groupBy(rows,r=>r.pf).entries()].map(([id,g])=>{
+      const i=(DOC.portfolios||[]).findIndex(p=>p.id===id);
+      return Object.assign(one(g),{id:id, name:g[0].pfName||id, n:g.length, sw:SLOT[(i<0?0:i)%8]}); })
+      .sort((x,y)=>(y.value||0)-(x.value||0));
+    const all=Object.assign(one(rows),{id:'', name:'All strategies', n:rows.length, sw:''});
+    const cur = SEL.pf.size===1 ? [...SEL.pf][0] : (SEL.pf.size===0 ? '' : null);
+    IDS=[''].concat(list.map(x=>x.id));
+    const lab={day:dayWord(), mon:'Month', buy:'Since buy'}[SM];
+    el('stratModeH').textContent=lab;
+    document.querySelectorAll('#stratMode button').forEach(b=>{ b.classList.toggle('on', b.dataset.m===SM); if(b.dataset.m==='day') b.textContent=dayWord(); });
+    el('pHold').classList.toggle('one', SEL.pf.size===1);
+    el('stratCount').textContent=list.length+(SEL.pf.size>1?' · '+SEL.pf.size+' selected':'');
+    host.innerHTML=[all].concat(list).map(x=>{ const v=x[SM];
+      return '<div class="orow'+((cur!==null && x.id===cur)||(cur===null && SEL.pf.has(x.id))?' on':'')+'" role="option" data-id="'+esc(x.id)+'" title="'+esc(x.name)+' · '+x.n+' holdings">'+
+        '<span class="n">'+(x.sw?'<span class="sw2" style="background:'+x.sw+'"></span>':'')+esc(x.name)+'</span>'+
+        '<span class="v secret">'+(x.value?inr(x.value,1):'—')+'</span>'+
+        '<span class="'+cls(v)+'"><b>'+pct(v)+'</b></span></div>'; }).join('');
+    host.querySelectorAll('.orow').forEach(r=>r.onclick=()=>{ pick(r.dataset.id); host.focus(); });
+  }
+  el('stratList').addEventListener('keydown',e=>{
+    if(e.key!=='ArrowDown' && e.key!=='ArrowUp') return;
+    e.preventDefault();
+    const cur = SEL.pf.size===1 ? [...SEL.pf][0] : '';
+    let i=IDS.indexOf(cur); if(i<0) i=0;
+    i=Math.max(0, Math.min(IDS.length-1, i+(e.key==='ArrowDown'?1:-1)));
+    pick(IDS[i]); const on=el('stratList').querySelector('.orow.on'); if(on) on.scrollIntoView({block:'nearest'});
+  });
+
+  const _ra=renderAll;
+  renderAll=function(){ fit(); _ra(); renderStrat(); showChart(); fit(); };
+  addEventListener('resize',fit);
+  showChart(); syncTabs();
+  if(ZVIEW){ VIEW='zerodha'; syncTabs(); }
+})();
+
 </script>
 </body>
 </html>

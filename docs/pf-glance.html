@@ -12,6 +12,8 @@
 <link rel="icon" href="./pf-icon-192.png">
 <link rel="apple-touch-icon" href="./pf-icon-192.png">
 <title>Portfolio</title>
+<script>/* New / Old view: the site-wide choice (localStorage sw_view) applies here too */
+try{ if(localStorage.getItem('sw_view')==='old') location.replace(location.pathname.replace(/\.html$/,'-old.html')+location.search+location.hash); }catch(e){}</script>
 <style>
 :root{ color-scheme: dark;
   --bg:#131312; --surface:#1a1a19; --text:#ffffff; --text-2:#8a8981;
@@ -23,50 +25,69 @@ body{
   background:var(--bg); color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   font-feature-settings:"tnum" 1;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding: env(safe-area-inset-top,0) 20px env(safe-area-inset-bottom,0);
+  display:flex; flex-direction:column; align-items:center;
+  padding: env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);
   user-select:none; -webkit-user-select:none;
 }
 .up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--flat)}
-.wrap{width:100%; max-width:420px; text-align:center}
-.lab{font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-2)}
-.hero{font-size:88px; font-weight:800; letter-spacing:-.03em; line-height:1; margin:10px 0 26px; transition:opacity .15s}
-.row{display:flex; justify-content:center; gap:14px; margin-top:4px}
-.chip{
-  background:var(--surface); border:1px solid var(--border); border-radius:14px;
-  padding:12px 18px; min-width:118px;
-}
-.chip .l{font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-2)}
-.chip .v{font-size:21px; font-weight:800; margin-top:4px}
-.status{margin-top:34px; font-size:12px; color:var(--text-2); display:flex; align-items:center; gap:7px}
-.dot{width:7px;height:7px;border-radius:50%; background:var(--flat)}
+/* one screen: today -> the three figures -> the market beside you (2026-11-26) */
+.wrap{width:100%; max-width:460px; flex:1; min-height:0; display:flex; flex-direction:column}
+.top{display:flex; align-items:flex-end; gap:12px; padding:22px 18px 14px; border-bottom:1px solid var(--border)}
+.lab{font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-2)}
+.hero{font-size:56px; font-weight:800; letter-spacing:-.03em; line-height:1; margin-top:6px; transition:opacity .15s}
+.top .r{margin-left:auto; text-align:right; font-size:12px; color:var(--text-2); line-height:1.5; padding-bottom:4px}
+.top .r b{display:block; font-size:17px; font-weight:800}
+.stats{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-bottom:1px solid var(--border)}
+.stats>div{padding:11px 14px; border-right:1px solid var(--border); min-width:0}
+.stats>div:last-child{border-right:0}
+.stats .l{font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.stats .v{font-size:19px; font-weight:800; margin-top:3px}
+.ch,.rw{display:grid; grid-template-columns:minmax(0,1fr) 74px 82px; gap:8px; align-items:center; padding:0 18px}
+.ch{font-size:11px; color:var(--text-2); padding-top:8px; padding-bottom:8px; border-bottom:1px solid var(--border)}
+.ch span:not(:first-child),.rw span:not(:first-child){text-align:right; white-space:nowrap}
+.list{flex:1; min-height:0; overflow-y:auto}
+.rw{height:38px; border-bottom:1px solid var(--border); font-size:14px}
+.rw .n{font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.rw.me{background:var(--surface); box-shadow:inset 2px 0 0 var(--up)}
+.rw b{font-weight:700}
+.note{padding:10px 18px; font-size:11.5px; color:var(--text-2); line-height:1.5}
+.foot{display:flex; align-items:center; gap:7px; padding:10px 18px; border-top:1px solid var(--border); font-size:12px; color:var(--text-2)}
+.dot{width:7px;height:7px;border-radius:50%; background:var(--flat); flex:0 0 auto}
 .dot.on{background:var(--up); box-shadow:0 0 0 3px color-mix(in srgb,var(--up) 25%,transparent); animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.err{color:var(--down); font-size:14px; margin-top:16px; max-width:320px; line-height:1.5}
-.tapHint{position:fixed; bottom:18px; left:0; right:0; text-align:center; font-size:11px; color:var(--text-2); opacity:.7}
-.keyForm{display:none; gap:8px; margin:14px auto 0; max-width:340px}
+.err{color:var(--down); font-size:14px; padding:0 18px; line-height:1.5}
+.err:not(:empty){padding-top:12px}
+.keyForm{display:none; gap:8px; margin:12px 18px 0}
 .keyForm.on{display:flex}
 .keyForm input{flex:1; min-width:0; background:var(--surface); color:var(--text); border:1px solid var(--border);
-  border-radius:10px; padding:10px 12px; font:inherit; font-size:14px; user-select:text; -webkit-user-select:text}
-.keyForm button{background:var(--up); color:#fff; border:0; border-radius:10px; padding:10px 16px; font:inherit; font-size:14px; font-weight:700; cursor:pointer}
+  border-radius:8px; padding:10px 12px; font:inherit; font-size:14px; user-select:text; -webkit-user-select:text}
+.keyForm button{background:var(--up); color:#fff; border:0; border-radius:8px; padding:10px 16px; font:inherit; font-size:14px; font-weight:700; cursor:pointer}
+.vsw{margin-left:auto; display:flex; border:1px solid var(--border); border-radius:8px; overflow:hidden}
+.vsw button{background:none; border:0; color:var(--text-2); font:inherit; font-size:11.5px; font-weight:700; padding:5px 9px; cursor:pointer}
+.vsw button.on{background:var(--surface); color:var(--text)}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="lab" id="mainLab">TODAY</div>
-  <div class="hero flat" id="hero">···</div>
-  <div class="row">
-    <div class="chip"><div class="l">Month-end</div><div class="v flat" id="mtd">···</div></div>
-    <div class="chip"><div class="l">Overall</div><div class="v flat" id="total">···</div></div>
+  <div class="top">
+    <div><div class="lab" id="mainLab">TODAY</div><div class="hero flat" id="hero">···</div></div>
+    <div class="r"><b class="flat" id="alpha">···</b><span id="alphaLab">vs Nifty 500</span></div>
   </div>
-  <div class="status"><span class="dot" id="dot"></span><span id="status">loading…</span></div>
+  <div class="stats">
+    <div><div class="l">Month-end</div><div class="v flat" id="mtd">···</div></div>
+    <div><div class="l">Overall</div><div class="v flat" id="total">···</div></div>
+    <div><div class="l">Nifty 500</div><div class="v flat" id="n500">···</div></div>
+  </div>
   <div class="err" id="err"></div>
   <form class="keyForm" id="keyForm" autocomplete="off">
     <input id="keyIn" type="password" placeholder="Paste your key" spellcheck="false" autocapitalize="off">
     <button type="submit">Save</button>
   </form>
+  <div class="ch"><span>Today</span><span>Move</span><span>You ahead by</span></div>
+  <div class="list" id="list"></div>
+  <div class="foot"><span class="dot" id="dot"></span><span id="status">loading…</span>
+    <span class="vsw" id="vsw"><button data-w="new" class="on">New</button><button data-w="old">Old</button></span></div>
 </div>
-<div class="tapHint">tap anywhere to refresh</div>
 <script>
 'use strict';
 const SUPA='https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/pf_feed_get';
@@ -88,10 +109,37 @@ function marketOpen(){
   return m>=555 && m<=930;
 }
 function cls(v){ return v==null?'flat':(v>0?'up':v<0?'down':'flat'); }
+/* ---- the market beside you: public NSE index feed (the same one the portfolio page's strip reads).
+   Only public index figures are added; the private feed is still three percentages and a timestamp. ---- */
+const INDEX_FEED='https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json';
+const IDX_WANT=[['NIFTY 50','Nifty 50'],['NIFTY NEXT 50','Nifty Next 50'],['NIFTY 500','Nifty 500'],['NIFTY MIDCAP 100','Nifty Midcap 100'],['NIFTY SMLCAP 100','Nifty Smallcap 100'],['NIFTY BANK','Bank Nifty'],['NIFTY IT','Nifty IT']];
+let MY=null, IDX=null;
+const sg=v=>(v==null||!isFinite(v))?'—':(v>=0?'+':'−')+Math.abs(v).toFixed(2)+'%';
+function paint(){
+  const rows=[];
+  if(MY!=null) rows.push('<div class="rw me"><span class="n">Your portfolio</span><span class="'+cls(MY)+'"><b>'+sg(MY)+'</b></span><span></span></div>');
+  (IDX||[]).forEach(r=>{ const d=(MY!=null && r.p!=null)? MY-r.p : null;
+    rows.push('<div class="rw"><span class="n">'+r.n+'</span><span class="'+cls(r.p)+'">'+sg(r.p)+'</span><span class="'+cls(d)+'">'+(d==null?'—':sg(d).replace('%',' pts'))+'</span></div>'); });
+  document.getElementById('list').innerHTML=rows.join('')+(IDX?'':'<div class="note">Index moves not loaded yet.</div>');
+  const n5=(IDX||[]).find(r=>r.k==='NIFTY 500'), el=document.getElementById('n500'), al=document.getElementById('alpha');
+  el.textContent=n5?sg(n5.p):'—'; el.className='v '+cls(n5?n5.p:null);
+  const a=(n5 && MY!=null)? MY-n5.p : null;
+  al.textContent=a==null?'—':sg(a).replace('%',' pts'); al.className=cls(a);
+}
+async function loadIdx(){
+  try{
+    const j=await fetch(INDEX_FEED+'?cb='+Date.now(),{cache:'no-store'}).then(r=>r.json());
+    const by={}; ((j&&j.data)||[]).forEach(r=>{ by[String(r.indexName||'').toUpperCase()]=r; });
+    const out=IDX_WANT.map(x=>{ const r=by[x[0]]; const p=r?parseFloat(r.percChange):NaN; return isFinite(p)?{k:x[0],n:x[1],p:p}:null; }).filter(Boolean);
+    if(out.length) IDX=out;
+  }catch(e){}
+  paint();
+}
 async function load(){
   const t=readToken();
   if(!t){
     document.getElementById('hero').textContent='—';
+    MY=null; paint(); loadIdx();
     document.getElementById('status').textContent='no key';
     /* The paste box is the only way in for an installed app (Dock / home screen): it has its own
        storage, no address bar, and always opens start_url without ?t= (5 Oct 2026). */
@@ -108,6 +156,7 @@ async function load(){
     if(!d) throw new Error('no data for this key');
     const hero=document.getElementById('hero');
     hero.textContent=d.dayTxt||'—'; hero.className='hero '+cls(d.day);
+    MY=(typeof d.day==='number')?d.day:null; paint(); loadIdx();
     const mtd=document.getElementById('mtd'); mtd.textContent=d.mtdTxt||'—'; mtd.className='v '+cls(d.mtd);
     const tot=document.getElementById('total'); tot.textContent=d.totalTxt||'—'; tot.className='v '+cls(d.total);
     document.getElementById('err').textContent='';
@@ -138,6 +187,10 @@ keyForm.addEventListener('submit', e=>{
   document.getElementById('keyIn').value='';
   load();
 });
+const vsw=document.getElementById('vsw');
+vsw.addEventListener('click', e=>{ e.stopPropagation(); const b=e.target.closest('button'); if(!b || b.dataset.w!=='old') return;
+  try{ localStorage.setItem('sw_view','old'); }catch(err){}
+  location.href=location.pathname.replace(/\.html$/,'-old.html')+location.search+location.hash; });
 document.body.addEventListener('click', load);
 load();
 setInterval(()=>{ if(!document.hidden && marketOpen()) load(); }, 30000);
