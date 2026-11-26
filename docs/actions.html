@@ -4,36 +4,38 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Ex-Dates Calendar</title>
-<meta name="description" content="Upcoming ex-dates on NSE — dividends with yields, bonuses, splits, rights and buybacks, so corporate actions never catch you by surprise." />
+<meta name="description" content="Ex-dates calendar for NSE: upcoming dividends, bonuses, splits, rights and buybacks ordered by ex-date, with dividend yield against the latest close." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
-  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
-  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:var(--radius-sm);white-space:nowrap}
-  .chip.D{background:var(--pos-soft);color:var(--pos)}.chip.B{background:#ede9fe;color:#6d28d9}
-  .chip.S{background:#e0f2fe;color:#0369a1}.chip.R{background:var(--warn-soft);color:var(--warn)}
-  .chip.BB{background:var(--neg-soft);color:var(--neg)}.chip.O{background:var(--surface-2);color:var(--text-muted)}
-  html[data-theme="dark"] .chip.D{background:rgba(16,185,129,.18);color:var(--pos)}
-  html[data-theme="dark"] .chip.B{background:rgba(139,92,246,.18);color:#c4b5fd}
-  html[data-theme="dark"] .chip.S{background:rgba(14,165,233,.16);color:#7dd3fc}
-  html[data-theme="dark"] .chip.R{background:rgba(245,158,11,.16);color:var(--warn)}
-  html[data-theme="dark"] .chip.BB{background:rgba(244,63,94,.16);color:var(--neg)}
-  html[data-theme="dark"] .chip.O{background:rgba(148,163,184,.14);color:var(--text)}
-  .vbtn{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;
-        background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border))}
-  .vbtn.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
-  select,input[type=text]{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);font-size:13px;padding:7px 10px}
-  tr.newday>td{border-top:2px solid var(--border-strong,var(--border-strong))}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(320px,400px) minmax(290px,360px) minmax(0,1fr)}
+  #lHead,.lr{grid-template-columns:minmax(0,1fr) 68px 52px}
+  .sec{padding:6px 12px;border-bottom:1px solid var(--border);background:var(--surface-2);font-size:11.5px;font-weight:600;color:var(--text-muted);display:flex;justify-content:space-between;position:sticky;top:0;z-index:1}
+  .sec.today{color:var(--accent-text)} .sec i{font-style:normal;font-weight:400;color:var(--text-faint)}
+  #sum{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #sum div:nth-child(2){border-right:0} #sum div:nth-child(-n+2){border-bottom:1px solid var(--border)}
+  #sum div[data-go]{cursor:pointer} #sum div[data-go]:hover{background:var(--surface-2)}
+  #sum small{display:block;margin:2px 0 0;font-size:11px;font-weight:400;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px}
+  .kv span{color:var(--text-muted);white-space:nowrap} .kv b{font-weight:600;color:var(--text);text-align:right;overflow-wrap:anywhere}
+  .kv b.os-pos{color:var(--pos)}
+  .det{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;line-height:1.5;color:var(--text);overflow-wrap:anywhere}
+  .dh{padding:9px 12px 6px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border)}
+  .or{grid-template-columns:86px minmax(0,1fr) 52px}
+  .or > span:nth-child(2){text-align:left}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(270px,320px) minmax(240px,300px) minmax(0,1fr)} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #grid > #pL .os-list{max-height:330px} #pD .os-list{max-height:none !important} #pC .os-chartwrap{height:300px} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -42,72 +44,83 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Ex-Dates Calendar <span class="text-slate-400 font-semibold text-base">· dividends, bonuses, splits &amp; buybacks</span></h1>
-    <p class="text-sm text-slate-500 mt-1">Every announced corporate action on NSE, ordered by <b>ex-date</b> — own the stock <i>before</i> that day to receive the dividend/bonus/split. Yields are computed against the latest close. <span id="updated" class="text-slate-400"></span></p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Ex-Dates Calendar</h1>
+    <div class="os-vtabs" id="views" role="tablist" aria-label="Which dates"></div>
+    <div class="os-asof" id="asof"></div>
   </div>
-
-  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading calendar…</div>
+  <div id="status" class="os-empty">Loading calendar…</div>
 
   <div id="content" class="hidden">
-    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
-
-    <div class="mb-3 flex flex-wrap items-center gap-2">
-      <div class="flex gap-1.5">
-        <span id="vUp" class="vbtn on">Upcoming</span>
-        <span id="vPast" class="vbtn">Past 30 days</span>
-      </div>
-      <input id="q" type="text" placeholder="Search stock…" autocomplete="off" class="w-44" />
-      <select id="fKind"><option value="all">All actions</option><option value="D">Dividends</option><option value="BS">Bonus &amp; splits</option><option value="RBB">Rights &amp; buybacks</option><option value="O">Other</option></select>
-      <select id="fYld"><option value="0">Any yield</option><option value="1">≥ 1% yield</option><option value="2">≥ 2% yield</option><option value="4">≥ 4% yield</option></select>
+    <div class="os-bar">
+      <div class="os-sg" id="kinds" role="group" aria-label="Kind of action"></div>
+      <div class="os-sg" id="ylds" role="group" aria-label="Minimum dividend yield"></div>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>/</b> search · <b>Enter</b> open stock · <b>F</b> focus</span>
     </div>
 
-    <div class="card sw-cards overflow-x-auto">
-      <table class="w-full text-sm min-w-[820px]">
-        <thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-50/60"><tr>
-          <th class="text-left py-2.5 px-3">Ex-date</th><th class="text-left px-3">Stock</th><th class="text-center px-3">Action</th>
-          <th class="text-left px-3 w-[34%]">Details</th><th class="text-right px-3">Yield</th><th class="text-right px-3">Record date</th>
-        </tr></thead>
-        <tbody id="tBody"></tbody>
-      </table>
-      <div class="p-3 text-xs text-slate-500"><span id="count"></span></div>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pL" aria-label="Actions by ex-date">
+        <div class="os-ph"><span class="ttl" id="lTitle">Actions</span><span class="r" id="count"></span></div>
+        <div class="os-ps"><input id="q" type="search" placeholder="Search stock" autocomplete="off" aria-label="Search stock" /></div>
+        <div class="os-ch" id="lHead"><span>Stock</span><span>Action</span><span>Yield</span></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="Actions by ex-date"></div>
+        <div class="os-stats" id="sum"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Details">
+        <div class="os-ph"><span class="ttl" id="dTitle">Details</span><span class="r" id="dTag"></span></div>
+        <div class="os-list" id="dList"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span id="cStar"></span><span class="sym" id="cSym"></span><span class="nm" id="cName"></span>
+          <span class="r"><a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a>
+            <button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
+          <span class="os-hint" id="cMark" style="margin-left:auto"></span></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-stats" id="cStats"></div>
+      </section>
     </div>
 
-    <p class="text-[11px] text-slate-500 mt-5">Source: NSE corporate-actions filings, refreshed every morning and weekday evening (window: last 30 days + next ~75 days — actions are announced a few weeks ahead, so the far end fills in as companies file). To be eligible you must BUY at least one trading day before the ex-date. Yield = announced dividend ÷ latest close (per-share; interim + final may appear as separate rows). Educational only — not investment advice.</p>
+    <p id="how">Every announced corporate action on NSE, ordered by <b>ex-date</b> — own the stock <i>before</i> that day to receive the dividend/bonus/split. Source: NSE corporate-actions filings, refreshed every morning and weekday evening (window: last 30 days + next ~75 days — actions are announced a few weeks ahead, so the far end fills in as companies file). To be eligible you must BUY at least one trading day before the ex-date. Yield = announced dividend ÷ latest close (per-share; interim + final may appear as separate rows). The chart is the stock's own daily prices; the arrow marks the first bar on or after an ex-date that has already passed. Educational only — not investment advice.</p>
   </div>
 </main>
 
 <script>
 'use strict';
-const $ = id => document.getElementById(id);
+const K=window.OSKit, $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const fmtD = iso => { if(!iso) return '—'; const p = iso.split('-'), dt = new Date(+p[0], +p[1]-1, +p[2]);
   return DOW[dt.getDay()] + ', ' + (+p[2]) + ' ' + MON[+p[1]-1] + " '" + p[0].slice(2); };
 const KINDL = { D:'Dividend', B:'Bonus', S:'Split', R:'Rights', BB:'Buyback', O:'Other' };
-const slink = (sym, name) => '<span class="sw-star" data-sym="' + esc(sym) + '"></span> ' +
-  '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name || '') + '">' + esc(sym) + '</a>' +
-  (name ? '<div class="text-[11px] text-slate-400 font-normal max-w-[200px] truncate">' + esc(name) + '</div>' : '');
 
 let DATA = null, view = 'up';
 const todayISO = new Date().toISOString().slice(0,10);
+const S = { q:'', kind:'all', minY:0, sel:null, focus:false };     // sel = a row of DATA.rows
+let LIST = [], CH = null, TOK = 0, MARK = null;
+const Q = new URLSearchParams(location.search);
+if (Q.get('view') === 'past') view = 'past';
+if (['D','BS','RBB','O'].includes(Q.get('kind'))) S.kind = Q.get('kind');
+if (['1','2','4'].includes(Q.get('y'))) S.minY = +Q.get('y');
 
 async function load(){
   try { DATA = await (await fetch('./actions.json?t=' + Date.now())).json(); }
   catch(e){ $('status').textContent = 'Could not load actions.json — run scripts/fetch_actions.py first.'; return; }
   if (!DATA || !DATA.rows || !DATA.rows.length){ $('status').textContent = 'No corporate actions in the window.'; return; }
-  $('updated').textContent = '· window ' + DATA.from + ' → ' + DATA.to + ' · updated ' + DATA.updated + ' IST';
+  $('asof').textContent = 'window ' + DATA.from + ' → ' + DATA.to + ' · updated ' + DATA.updated + ' IST';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
-  renderCards(); render();
-  ['q','fKind','fYld'].forEach(id => $(id).addEventListener(id==='q'?'input':'change', render));
-  $('vUp').onclick = () => setView('up');
-  $('vPast').onclick = () => setView('past');
+  const s0 = (Q.get('s') || Q.get('sym') || '').toUpperCase();
+  if (s0){ const inView = r => view === 'up' ? r[0] >= todayISO : r[0] < todayISO;
+    let hit = DATA.rows.find(r => r[1] === s0 && inView(r)); if (!hit){ hit = DATA.rows.find(r => r[1] === s0); if (hit) view = hit[0] >= todayISO ? 'up' : 'past'; }
+    if (hit) S.sel = hit; }
+  wire(); chartBar(); renderCards(); refresh();
+  const on = $('lList').querySelector('.os-row.on'); if (on) on.scrollIntoView({block:'center'});
 }
 
-function setView(v){ view = v;
-  $('vUp').classList.toggle('on', v==='up'); $('vPast').classList.toggle('on', v==='past'); render(); }
+function setView(v){ view = v; $('lList').scrollTop = 0; refresh(); }
 
 function renderCards(){
   const fut = DATA.rows.filter(r => r[0] >= todayISO);
@@ -117,36 +130,141 @@ function renderCards(){
   const thisWeek = fut.filter(r => r[0] <= wISO).length;
   const withY = fut.filter(r => r[7] != null).sort((a,b) => b[7] - a[7]);
   const corp = fut.filter(r => 'BSR'.includes(r[3]) || r[3] === 'BB').length;
-  const card = (t,v,sub,cls) => '<div class="card p-3"><div class="text-[10px] uppercase text-slate-500">' + t + '</div><div class="text-lg font-bold ' + (cls||'') + '">' + v + '</div><div class="text-[11px] text-slate-400">' + sub + '</div></div>';
-  $('cards').innerHTML =
+  const card = (t,v,sub,cls,go) => '<div' + (go ? ' data-go="1" title="Show this action"' : '') + '><span>' + t + '</span><b class="' + (cls||'') + '">' + v + '</b><small>' + (sub || '&nbsp;') + '</small></div>';
+  $('sum').innerHTML =
      card('Going ex today', exToday, exToday ? 'buy was needed yesterday' : 'nothing today')
     + card('Next 7 days', thisWeek, 'actions with an ex-date this week')
-    + card('Best upcoming yield', withY.length ? esc(withY[0][1]) : '—', withY.length ? withY[0][7].toFixed(1) + '% · ex ' + fmtD(withY[0][0]) : '', 'pos')
+    + card('Best upcoming yield', withY.length ? esc(withY[0][1]) : '—', withY.length ? withY[0][7].toFixed(1) + '% · ex ' + fmtD(withY[0][0]) : '', 'os-pos', withY.length)
     + card('Bonus / split / buyback', corp, 'upcoming non-dividend actions');
+  const go = $('sum').querySelector('[data-go]');
+  if (go) go.onclick = () => { $('q').value = ''; S.q = ''; S.kind = 'all'; S.minY = 0; view = 'up'; S.sel = withY[0]; refresh(); const on = $('lList').querySelector('.os-row.on'); if (on) on.scrollIntoView({block:'center'}); };
 }
 
-function render(){
-  const q = $('q').value.trim().toLowerCase(), kind = $('fKind').value, minY = +$('fYld').value;
+function build(){
+  const q = S.q.toLowerCase(), kind = S.kind, minY = S.minY;
   let rows = DATA.rows.filter(r => view === 'up' ? r[0] >= todayISO : r[0] < todayISO);
   if (view === 'past') rows = rows.slice().reverse();          // most recent past first
   rows = rows.filter(r =>
     (!q || r[1].toLowerCase().includes(q) || r[2].toLowerCase().includes(q)) &&
     (kind === 'all' || (kind === 'BS' ? (r[3]==='B'||r[3]==='S') : kind === 'RBB' ? (r[3]==='R'||r[3]==='BB') : r[3] === kind)) &&
     (!minY || (r[7] || 0) >= minY));
+  LIST = rows;
+}
+function renderList(){
+  build();
+  const per = {}; LIST.forEach(r => per[r[0]] = (per[r[0]] || 0) + 1);
   let h = '', prev = '';
-  for (const r of rows){
-    const nd = r[0] !== prev; prev = r[0];
-    h += '<tr class="border-b border-slate-50 align-top hover:bg-slate-50' + (nd ? ' newday' : '') + '">'
-      + '<td class="py-2.5 px-3 whitespace-nowrap ' + (nd ? 'font-semibold text-slate-800' : 'text-slate-300') + '">' + fmtD(r[0]) + '</td>'
-      + '<td class="py-2.5 px-3">' + slink(r[1], r[2]) + '</td>'
-      + '<td class="py-2.5 px-3 text-center"><span class="chip ' + r[3] + '">' + KINDL[r[3]] + '</span></td>'
-      + '<td class="py-2.5 px-3 text-[12.5px] text-slate-600 leading-relaxed">' + esc(r[4]) + '</td>'
-      + '<td class="py-2.5 px-3 text-right">' + (r[7] == null ? '<span class="text-slate-300">—</span>' : '<span class="pos">' + r[7].toFixed(1) + '%</span>') + '</td>'
-      + '<td class="py-2.5 px-3 text-right whitespace-nowrap text-slate-600">' + (r[5] ? fmtD(r[5]) : '—') + '</td></tr>';
-  }
-  $('tBody').innerHTML = h || '<tr><td colspan="6" class="py-10 text-center text-sm text-slate-400">Nothing matches.</td></tr>';
-  if (window.swWatch) swWatch.paintAll($('tBody'));
-  $('count').textContent = rows.length.toLocaleString('en-IN') + (view==='up' ? ' upcoming actions' : ' actions in the last 30 days');
+  LIST.forEach((r, i) => {
+    if (r[0] !== prev){ prev = r[0]; h += '<div class="sec' + (r[0] === todayISO ? ' today' : '') + '"><span>' + fmtD(r[0]) + (r[0] === todayISO ? ' · today' : '') + '</span><i>' + per[r[0]] + '</i></div>'; }
+    const on = r === S.sel;
+    h += '<div class="os-row lr' + (on ? ' on' : '') + '" role="option" aria-selected="' + on + '" data-i="' + i + '" title="' + esc(r[2] || r[1]) + ' — ' + esc(r[4]) + '">' +
+      '<span class="n">' + esc(r[1]) + '<i>' + esc(r[2] || '') + '</i></span><span class="m">' + KINDL[r[3]] + '</span>' +
+      '<span class="v">' + (r[7] == null ? '<span class="m">—</span>' : '<span class="os-pos">' + r[7].toFixed(1) + '%</span>') + '</span></div>'; });
+  $('lList').innerHTML = h || '<div class="os-empty">Nothing matches.</div>';
+  $('lTitle').textContent = view === 'up' ? 'Upcoming actions' : 'Past 30 days';
+  $('count').textContent = LIST.length.toLocaleString('en-IN') + (view==='up' ? ' upcoming actions' : ' actions in the last 30 days');
+}
+function pick(r, scroll){
+  S.sel = r;
+  $('lList').querySelectorAll('.os-row').forEach(el => { const on = LIST[+el.dataset.i] === r; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); if (on && scroll) el.scrollIntoView({block:'nearest'}); });
+  renderDetail(); renderChart(true); saveUrl();
+}
+const kv = (a, b, c) => '<div class="kv"><span>' + a + '</span><b' + (c ? ' class="' + c + '"' : '') + '>' + b + '</b></div>';
+function renderDetail(){
+  const r = S.sel;
+  if (!r){ $('dTitle').textContent = 'Details'; $('dTag').textContent = ''; $('dList').innerHTML = '<div class="os-empty">Nothing selected.</div>'; return; }
+  $('dTitle').innerHTML = esc(r[1]) + ' <i>' + KINDL[r[3]].toLowerCase() + '</i>';
+  $('dTag').textContent = r[0] === todayISO ? 'ex today' : (r[0] > todayISO ? 'upcoming' : 'past');
+  const others = DATA.rows.filter(x => x[1] === r[1] && x !== r);
+  let h = '<div class="det">' + esc(r[4]) + '</div>' +
+    kv('Company', esc(r[2] || r[1])) + kv('Action', KINDL[r[3]]) + kv('Ex-date', fmtD(r[0])) + kv('Record date', r[5] ? fmtD(r[5]) : '—') +
+    kv('Amount per share', r[6] == null ? '—' : '₹' + Number(r[6]).toLocaleString('en-IN', {maximumFractionDigits:5})) +
+    kv('Yield on latest close', r[7] == null ? '—' : r[7].toFixed(1) + '%', r[7] == null ? '' : 'os-pos');
+  h += '<div class="dh">Other actions of ' + esc(r[1]) + ' in the window · ' + others.length + '</div>';
+  h += others.length ? others.map(x => '<div class="os-row or" data-j="' + DATA.rows.indexOf(x) + '" title="' + esc(x[4]) + '"><span class="n">' + fmtD(x[0]).replace(/^\w+, /, '') + '</span><span class="m">' + KINDL[x[3]] + '</span>' +
+      '<span class="v">' + (x[7] == null ? '<span class="m">—</span>' : '<span class="os-pos">' + x[7].toFixed(1) + '%</span>') + '</span></div>').join('')
+    : '<div class="os-note">None in ' + DATA.from + ' → ' + DATA.to + '.</div>';
+  $('dList').innerHTML = h;
+  $('dList').querySelectorAll('.or').forEach(el => el.onclick = () => { const x = DATA.rows[+el.dataset.j]; $('q').value = ''; S.q = ''; S.kind = 'all'; S.minY = 0; view = x[0] >= todayISO ? 'up' : 'past'; S.sel = x; refresh(); const on = $('lList').querySelector('.os-row.on'); if (on) on.scrollIntoView({block:'center'}); });
+}
+
+/* ---- right pane: the stock's daily chart, ex-date marked when it has passed ---- */
+function seg(id, opts, val, fn){
+  $(id).innerHTML = opts.map(o => '<button type="button" class="' + (String(o[0]) === String(val) ? 'on' : '') + '" data-v="' + o[0] + '"' + (o[2] ? ' title="' + o[2] + '"' : '') + '>' + o[1] + '</button>').join('');
+  $(id).querySelectorAll('button').forEach(b => b.onclick = () => fn(b.dataset.v));
+}
+function chartBar(){
+  const iv = CH ? CH.iv : 'D', rg = CH ? CH.range : '6M';
+  seg('cIv', [['D','D','Daily bars'],['W','W','Weekly bars'],['M','M','Monthly bars']], iv, v => { if (!CH) return; CH.setIv(v); chartBar(); mark(); });
+  seg('cRg', ['3M','6M','1Y','3Y','Max'].map(k => [k, k]), rg, v => { if (!CH) return; CH.setRange(v); chartBar(); });
+}
+function mark(){
+  const r = S.sel, LC = window.LightweightCharts; $('cMark').textContent = '';
+  if (!r || !CH || !CH.ch || !CH.data || !LC || !LC.createSeriesMarkers) return;
+  if (MARK && MARK.ch === CH.ch){ try { MARK.h.setMarkers([]); } catch (e) {} }
+  const ser = CH.data.ohlc ? CH.ch.candle : CH.ch.line, b = CH.bars.find(x => K.tsISO(x.ts) >= r[0]);
+  if (!b){ $('cMark').textContent = 'ex-date ' + fmtD(r[0]) + ' is after the last daily bar on file'; return; }
+  try { MARK = {ch: CH.ch, h: LC.createSeriesMarkers(ser, [{time: K.tsISO(b.ts), position: 'aboveBar', shape: 'arrowDown', color: CH.ch.accent, text: 'Ex'}])}; } catch (e) {}
+  $('cMark').textContent = '▼ ex-date ' + fmtD(r[0]);
+}
+function stats(r, d){
+  let cl = null, dl = null; if (d && d.bars.length){ const L = d.bars[d.bars.length - 1]; cl = L.c; dl = K.tsISO(L.ts); }
+  const b = (a, v, c) => '<div><span>' + a + '</span><b' + (c ? ' class="' + c + '"' : '') + '>' + v + '</b></div>';
+  const sd = iso => fmtD(iso).replace(/^\w+, /, '');
+  $('cStats').innerHTML = b('Ex-date', sd(r[0])) + b('Record date', r[5] ? sd(r[5]) : '—') + b('Action', KINDL[r[3]]) +
+    b('Per share', r[6] == null ? '—' : '₹' + Number(r[6]).toLocaleString('en-IN', {maximumFractionDigits:5})) +
+    b('Yield', r[7] == null ? '—' : r[7].toFixed(1) + '%', r[7] == null ? '' : 'os-pos') +
+    b('Close' + (dl ? ' ' + fmtD(dl).replace(/^\w+, /, '') : ''), cl == null ? '—' : K.fmtN(cl));
+}
+let showTimer = null;
+function renderChart(lazy){
+  const r = S.sel, tok = ++TOK; clearTimeout(showTimer);
+  if (!r){ $('cStar').innerHTML = ''; $('cSym').textContent = ''; $('cName').textContent = ''; $('cOpen').classList.add('hidden'); $('cStats').innerHTML = ''; $('cMark').textContent = ''; if (CH) CH.clear(''); $('cMsg').textContent = 'Nothing selected.'; return; }
+  $('cStar').innerHTML = '<span class="sw-star" data-sym="' + esc(r[1]) + '"></span>';
+  $('cSym').textContent = r[1]; $('cName').textContent = r[2] || '';
+  $('cOpen').href = './stock.html?sym=' + encodeURIComponent(r[1]); $('cOpen').classList.remove('hidden');
+  stats(r, null);
+  showTimer = setTimeout(() => {
+    $('cMsg').textContent = 'Loading chart…';
+    K.loadStockBars(r[1]).then(d => { if (tok !== TOK) return;
+      if (!CH) CH = new K.Chart({chart:$('cChart'), legend:$('cLegend'), msg:$('cMsg'), iv:'D', range:'6M'});
+      CH.show(d, {name:r[1], tag:'NSE'}); chartBar(); mark(); stats(r, d); },
+      () => { if (tok !== TOK) return; if (CH) CH.clear(''); $('cMark').textContent = ''; $('cMsg').textContent = 'No daily price history on file for ' + r[1] + '.'; });
+  }, lazy ? 140 : 0);
+}
+function bars(){
+  seg('views', [['up','Upcoming'],['past','Past 30 days']], view, setView);
+  seg('kinds', [['all','All actions'],['D','Dividends'],['BS','Bonus &amp; splits'],['RBB','Rights &amp; buybacks'],['O','Other']], S.kind, v => { S.kind = v; refresh(); });
+  seg('ylds', [[0,'Any yield'],[1,'≥ 1%'],[2,'≥ 2%'],[4,'≥ 4%']], S.minY, v => { S.minY = +v; refresh(); });
+}
+function refresh(){
+  bars(); const before = S.sel; build();
+  if (LIST.indexOf(S.sel) < 0) S.sel = LIST[0] || null;
+  renderList(); K.fitGrid($('grid')); renderDetail();
+  if (S.sel !== before || !CH || !S.sel) renderChart();
+  saveUrl();
+}
+function saveUrl(){
+  const p = new URLSearchParams();
+  if (S.sel) p.set('s', S.sel[1]); if (view === 'past') p.set('view', 'past'); if (S.kind !== 'all') p.set('kind', S.kind); if (S.minY) p.set('y', S.minY);
+  const s = p.toString(); try { history.replaceState(null, '', location.pathname + (s ? '?' + s : '')); } catch (e) {}
+}
+function setFocus(on){ S.focus = on == null ? !S.focus : on; $('grid').classList.toggle('focus', S.focus); $('cFocus').textContent = S.focus ? 'Show lists' : 'Focus'; $('cFocus').setAttribute('aria-pressed', S.focus); }
+function wire(){
+  $('lList').addEventListener('click', e => { const el = e.target.closest('.os-row'); if (!el) return; pick(LIST[+el.dataset.i]); if (window.innerWidth < 900) $('pD').scrollIntoView({behavior:'smooth', block:'start'}); });
+  let t = null; $('q').oninput = e => { clearTimeout(t); t = setTimeout(() => { S.q = e.target.value.trim(); refresh(); }, 120); };
+  $('cFocus').onclick = () => setFocus();
+  window.addEventListener('resize', () => K.fitGrid($('grid')));
+  new MutationObserver(() => setTimeout(mark, 0)).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const tg = e.target, typing = tg && /^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
+    if (typing){ if (e.key === 'Escape' || e.key === 'Enter') tg.blur(); if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ const j = LIST.indexOf(S.sel) + (e.key === 'ArrowDown' ? 1 : -1); if (LIST[j]) pick(LIST[j], true); e.preventDefault(); }
+    else if (e.key === 'Enter'){ const a = $('cOpen'); if (S.sel && !a.classList.contains('hidden')) location.href = a.href; }
+    else if (e.key === 'f' || e.key === 'F'){ setFocus(); }
+    else if (e.key === '/'){ $('q').focus(); e.preventDefault(); }
+  });
 }
 
 load();
