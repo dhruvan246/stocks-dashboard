@@ -7,13 +7,42 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./os-kit.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
   main{width:100%;min-width:0}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
   #chartWrap{position:relative}
-  #chart{height:calc(100vh - 330px);min-height:360px}
-  @media (max-width:640px){ #chart{height:calc(100vh - 380px);min-height:300px} }
+  /* one-screen layout: saved charts left, the chart fills the right pane */
+  #g{grid-template-columns:minmax(220px,270px) minmax(0,1fr)}
+  #pL{overflow:visible}
+  #topBar{display:flex;align-items:center;gap:8px;margin:0 0 10px}
+  #topBar #exprBox{flex:1;min-width:0}
+  html[data-theme] #expr{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;color:var(--text);min-height:0;height:auto}
+  .os-vbar .os-hint{white-space:normal}
+  .subh{display:flex;justify-content:space-between;gap:8px;padding:6px 12px;border-bottom:1px solid var(--border);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);background:var(--surface-2)}
+  .subh i{font-style:normal;font-weight:400;letter-spacing:0;text-transform:none}
+  .cx{grid-template-columns:minmax(0,1fr) auto;gap:8px}
+  .cx .n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cx .c{font-size:11.5px;color:var(--text-faint);white-space:nowrap}
+  #chartCard{overflow:visible}
+  #chartCard .os-ps{gap:5px}
+  #chartWrap{flex:1 1 auto;min-height:260px}
+  #chart{position:absolute;inset:0}
+  #legend{padding:8px 12px;border-top:1px solid var(--border);max-height:104px;overflow-y:auto;scrollbar-width:thin}
+  #legend:empty{display:none}
+  details.how{margin-top:10px;font-size:12px;color:var(--text-muted)}
+  details.how summary{cursor:pointer;color:var(--text-muted)}
+  details.how > div{margin-top:6px;line-height:1.5}
+  @media (max-width:899px){
+    #g{grid-template-columns:minmax(0,1fr)}
+    #chartCard{order:1} #pL{order:2}
+    #chartWrap{flex:none;height:calc(100vh - 330px);min-height:320px}
+    #chips{max-height:240px}
+    #legend{max-height:none}
+    #topBar{flex-wrap:wrap} #topBar #exprBox{flex:1 1 100%}
+    html[data-theme] #ranges button{padding:5px 6px;font-size:12px}
+  }
   #chartWrap.drawing{cursor:crosshair;touch-action:none}
   #zoomBar{position:absolute;left:50%;bottom:38px;transform:translateX(-50%);display:none;gap:6px;z-index:5}
   #zoomBar button{width:32px;height:32px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;line-height:1;font-weight:600;cursor:pointer;box-shadow:0 4px 12px -6px rgba(0,0,0,.35);opacity:.9;display:flex;align-items:center;justify-content:center;padding:0}
@@ -28,13 +57,12 @@
   @media (max-width:640px){ #indPanel{position:fixed;left:12px;right:12px;top:auto;bottom:72px;width:auto;max-height:60vh;overflow-y:auto;z-index:80} }
   #chartCard:fullscreen{display:flex;flex-direction:column;border-radius:0;padding:10px 12px;overflow:auto;background:var(--surface)}
   #chartCard:fullscreen #chartWrap{flex:1 1 auto;min-height:240px}
-  #chartCard:fullscreen #chart{height:100%;min-height:240px}
+  #chartCard:fullscreen #chart{min-height:240px}
   .cmp-x{cursor:pointer;text-decoration:underline}
   @media (max-width:640px){ #tip{font-size:.66rem} #tip div{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden} }
   .rng,.tool{cursor:pointer;user-select:none}
-  html[data-theme] .rng.on{color:#fff !important}
-  .rng.on,.tool.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff !important;border-color:transparent}
-  .tool{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .55rem;border-radius:var(--radius);border:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);background:var(--surface);line-height:1.3}
+  html[data-theme] .tool.on{background:var(--accent);color:var(--on-accent,#fff) !important;border-color:var(--accent)}
+  html[data-theme] .tool{display:inline-flex;align-items:center;gap:.3rem;padding:5px 8px;border-radius:6px;border:1px solid var(--border);font-size:12px;font-weight:500;color:var(--text-muted);background:var(--surface);line-height:1.3;min-height:0;box-shadow:none}
   .tool:hover{border-color:var(--accent)}
   .tool[disabled]{opacity:.4;cursor:default}
   .tool svg{width:14px;height:14px}
@@ -54,60 +82,63 @@
 </style>
 </head>
 <body>
-<main class="max-w-screen-xl mx-auto px-3 sm:px-4 py-4 space-y-3">
-
-  <div class="card p-4">
-    <div class="flex items-center justify-between flex-wrap gap-2">
-      <div>
-        <div class="text-lg font-bold text-slate-800">Charts</div>
-        <div class="text-slate-500 text-xs">One symbol, a ratio (A/B) or a basket (A+B+C). Draw on it; drawings are saved in this browser, per chart, with no limit.</div>
-      </div>
-    </div>
-    <form id="exprForm" class="flex items-center gap-2 mt-3">
-      <div id="exprBox" class="flex-1 min-w-0">
-        <input id="expr" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-controls="sug" aria-expanded="false" placeholder="Type a name: nif, reliance…   or a ratio: CANFINHOME/NIFTY   ·   PFC+RECLTD" class="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full" />
+<main id="pageMain" class="os-wide mx-auto px-3 sm:px-4 py-4">
+  <div class="os-vbar">
+    <h1>Charts</h1>
+    <span class="os-hint">One symbol, a ratio (A/B) or a basket (A+B+C). Draw on it; drawings are saved in this browser, per chart, with no limit.</span>
+  </div>
+  <form id="exprForm">
+    <div id="topBar">
+      <div id="exprBox">
+        <input id="expr" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-controls="sug" aria-expanded="false" placeholder="Type a name: nif, reliance…   or a ratio: CANFINHOME/NIFTY   ·   PFC+RECLTD" />
         <div id="sug" role="listbox" aria-label="Matching indices and stocks"></div>
       </div>
-      <button class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-800 text-white">Show</button>
-      <button type="button" id="cmpBtn" class="px-3 py-2 rounded-lg text-sm font-semibold border border-slate-300 text-slate-600" title="Draw what is typed in the box on top of the current chart, both as % change">Compare</button>
-    </form>
-    <div id="chips" class="flex flex-wrap items-center gap-1.5 mt-2"></div>
-  </div>
-
-  <div class="card p-3 sm:p-4" id="chartCard">
-    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div id="tools" class="flex items-center gap-1 flex-wrap"></div>
-      <div class="flex items-center gap-2 flex-wrap">
-        <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
-        <span id="tfBtns" class="flex items-center gap-1" title="Bar size: daily, weekly or monthly"><span data-tf="D" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Daily bars">D</span><span data-tf="W" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Weekly bars">W</span><span data-tf="M" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Monthly bars">M</span></span>
-        <select id="typeSel" class="sel" title="Chart type" aria-label="Chart type"><option value="line">Line</option><option value="candle">Candles</option><option value="bar">Bars</option><option value="ha">Heikin Ashi</option></select>
-        <span id="logBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Logarithmic price scale">Log</span>
-        <span id="pctBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Percent scale: change from the first bar on screen">%</span>
-        <span id="indBox" style="position:relative"><span id="indBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Moving averages, Bollinger Bands, RSI, MACD, volume">Indicators</span><div id="indPanel"></div></span>
-        <input id="goDate" type="date" class="sel" title="Go to a date" aria-label="Go to a date" />
-        <span id="favBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Add this chart to your favourites (kept in this browser)">&#9734;</span>
-        <span id="shotBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Save the chart as a picture (PNG)">Image</span>
-        <span id="csvBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Download the plotted bars as a CSV file">CSV</span>
-        <span id="fsBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Full screen (F)">Full screen</span>
-      </div>
+      <button class="os-btn on">Show</button>
+      <button type="button" id="cmpBtn" class="os-btn" title="Draw what is typed in the box on top of the current chart, both as % change">Compare</button>
     </div>
-    <div id="chartWrap"><div id="chart"></div><div id="tip"></div><div id="zoomBar"><button type="button" data-z="out" title="Zoom out" aria-label="Zoom out">&minus;</button><button type="button" data-z="in" title="Zoom in" aria-label="Zoom in">+</button><button type="button" data-z="reset" title="Back to the selected range" aria-label="Reset zoom" style="font-size:15px">&#8634;</button></div></div>
-    <div id="legend" class="mt-2 text-[11px] text-slate-500 space-y-0.5"></div>
+  </form>
+
+  <div class="os-grid" id="g">
+    <section class="os-pane" id="pL" aria-label="Your charts">
+      <div class="os-ph"><span class="ttl">Your charts</span><span class="r">&uarr;&darr; to move</span></div>
+      <div class="os-list" id="chips" role="listbox" aria-label="Favourite, saved, recent and example charts"></div>
+    </section>
+
+    <section class="os-pane os-main" id="chartCard" aria-label="Chart">
+      <div class="os-ps" id="tools"></div>
+      <div class="os-ps">
+        <div class="os-sg" id="ranges" role="group" aria-label="Range"></div>
+        <div class="os-sg" id="tfBtns" role="group" aria-label="Bar size" title="Bar size: daily, weekly or monthly"><button type="button" data-tf="D" title="Daily bars">D</button><button type="button" data-tf="W" title="Weekly bars">W</button><button type="button" data-tf="M" title="Monthly bars">M</button></div>
+        <select id="typeSel" class="sel" title="Chart type" aria-label="Chart type"><option value="line">Line</option><option value="candle">Candles</option><option value="bar">Bars</option><option value="ha">Heikin Ashi</option></select>
+        <button type="button" id="logBtn" class="os-btn" title="Logarithmic price scale">Log</button>
+        <button type="button" id="pctBtn" class="os-btn" title="Percent scale: change from the first bar on screen">%</button>
+        <span id="indBox" style="position:relative"><button type="button" id="indBtn" class="os-btn" title="Moving averages, Bollinger Bands, RSI, MACD, volume">Indicators</button><div id="indPanel"></div></span>
+        <input id="goDate" type="date" class="sel" title="Go to a date" aria-label="Go to a date" />
+        <button type="button" id="favBtn" class="os-btn" title="Add this chart to your favourites (kept in this browser)">&#9734;</button>
+        <button type="button" id="shotBtn" class="os-btn" title="Save the chart as a picture (PNG)">Image</button>
+        <button type="button" id="csvBtn" class="os-btn" title="Download the plotted bars as a CSV file">CSV</button>
+        <button type="button" id="fsBtn" class="os-btn" title="Full screen (F)">Full screen</button>
+      </div>
+      <div id="chartWrap"><div id="chart"></div><div id="tip"></div><div id="zoomBar"><button type="button" data-z="out" title="Zoom out" aria-label="Zoom out">&minus;</button><button type="button" data-z="in" title="Zoom in" aria-label="Zoom in">+</button><button type="button" data-z="reset" title="Back to the selected range" aria-label="Reset zoom" style="font-size:15px">&#8634;</button></div></div>
+      <div id="legend" class="text-[11px] text-slate-500 space-y-0.5"></div>
+    </section>
   </div>
 
-  <div class="card p-4 text-xs text-slate-500 space-y-1">
-    <div class="font-semibold text-slate-700 text-sm">How to use</div>
+  <details class="how">
+    <summary>How to use: symbols, maths, drawing, chart types, compare, keys and the data behind each series</summary>
+    <div class="space-y-1">
     <div><b>Symbols:</b> any NSE/BSE symbol on this site (RELIANCE, M&amp;M, BAJAJ-AUTO), or an index: NIFTY, CNX500, BANKNIFTY, CNXPSUBANK, CNXIT, CNXPHARMA, CNXAUTO, CNXMETAL, CNXREALTY, CNXPSE… TradingView-style <code>NSE:</code> / <code>BSE:</code> prefixes are accepted and ignored.</div>
     <div><b>Maths:</b> <code>+ - * /</code>, brackets and plain numbers. Put spaces around a minus sign (<code>A - B</code>), because some symbols contain a hyphen.</div>
     <div><b>Drawing:</b> pick a tool, then click two points (or press and drag). Horizontal line, Vertical line and Text need one click. Ray is a trend line that carries on past its second point. Measure shows the change, the % change, the bars and the days between two points. With the pointer tool, click a drawing to select it, drag it or its end points to move it, and press Delete to remove it. Undo and Redo step through your changes on the chart that is open.</div>
     <div><b>Chart types:</b> Line, Candles, Bars (open-high-low-close) and Heikin Ashi (smoothed candles: the bars drawn are averages, the numbers at the top left stay the real prices). <b>Indicators:</b> up to three moving averages (simple or exponential, any length), Bollinger Bands, RSI and MACD, all worked out on the closes of the bars on screen (daily, weekly or monthly). Volume is offered for a single stock on daily bars and covers the last 400 sessions only.</div>
     <div><b>Compare:</b> open a chart, type another symbol or ratio in the box and press Compare. Both are then drawn as % change from the first bar on screen (up to four at once); remove one under the chart. The <b>%</b> button puts a single chart on the same percent scale.</div>
-    <div><b>Keys:</b> <code>+</code> / <code>-</code> zoom, <code>&larr;</code> / <code>&rarr;</code> move, <code>/</code> jump to the symbol box, <code>F</code> full screen, <code>Ctrl+Z</code> / <code>Ctrl+Y</code> undo and redo a drawing, <code>Esc</code> drop the tool, <code>Delete</code> remove the selected drawing.</div>
+    <div><b>Keys:</b> <code>+</code> / <code>-</code> zoom, <code>&larr;</code> / <code>&rarr;</code> move, <code>&uarr;</code> / <code>&darr;</code> previous or next chart in the list, <code>/</code> jump to the symbol box, <code>F</code> full screen, <code>Ctrl+Z</code> / <code>Ctrl+Y</code> undo and redo a drawing, <code>Esc</code> drop the tool, <code>Delete</code> remove the selected drawing.</div>
     <div><b>Global:</b> USDINR, DXY, US10Y · USOIL (US crude), BRENT, NATGAS, GOLD and SILVER ($/oz), GOLDINR (Rs/10g), SILVERINR (Rs/kg), XAUINRG (Rs/gram), COPPER, ALUMINIUM, BTCUSD · SENSEX — daily closes (most from 2012), so <code>NIFTY/USDINR</code> or <code>NIFTY/USOIL</code> work. TradingView prefixes (<code>TVC:</code>, <code>SP:</code>, <code>FX_IDC:</code>…) are accepted.</div>
     <div><b>World indices</b> (daily open, high, low and close, whole history, refreshed every night, from Yahoo unless said): <b>Americas</b> SPX, NASDAQ, NDX, DJI, RUT, NYA, VIX (US), TSX, IBOV, MEXBOL · <b>Europe</b> FTSE, FTSE250, DAX, MDAX, CAC40, STOXX50, STOXX600, AEX, SMI, IBEX, FTSEMIB, BEL20, ATX, PSI, ISEQ, OMXS30, OMXC25, OMXH25, OSEBX, ATHEX, BIST100 · <b>Asia-Pacific</b> NIKKEI, HSI, HSCEI, SHCOMP, SZCOMP, CSI300 (from the index owner, closes from 2002, open/high/low from 2005), VNINDEX (Vietnam, from VNDIRECT, Aug 2017 onwards), KOSPI, KOSDAQ, TAIEX, STI, KLCI, JCI, ASX200, ALLORDS, NZX50 · <b>Middle East and Africa</b> TA125, TA35, JSE, JSE40. <b>Read by hand from TradingView charts on 25 Nov 2026 — not refreshed automatically, each ends on the date its legend shows</b>: MERVAL (Argentina, from Sep 2004, ends 16 Oct 2026), WIG20 (Poland, 1994), BUX (Hungary, 2002), MOEX (Russia — TradingView's “Russia Index”, starts at 100 on 22 Sep 1997; not checked against the exchange), SET (Thailand, 1982), PSEI (Philippines, 1987), KSE100 (Pakistan, 2013), CSEALL (Sri Lanka, 2012), TASI (Saudi Arabia, 1986), EGX30 (Egypt, 1998), DFM (Dubai, 2005), QSI (Qatar, 1999). Typing a country (japan, korea, germany) finds its index, and <code>NIFTY/SPX</code> or <code>CNX500/NIKKEI</code> work. They are in their own currency and points. On a ratio with an Indian index each day uses the world index bar of the same calendar date. An Asian index can be a day behind until its close is published. IPSA (Chile): daily closes only, from findic.cl, Jan 1989 onwards, refreshed every night — Line only, no candles; the index has been run by MSCI instead of S&P since 1 Sep 2026 and the series carries on across that date.</div>
     <div><b>BSE indices and MCX:</b> <code>BSE:METAL</code>, <code>BSE:MIDCAP</code>, <code>BSE:SMLCAP</code>, <code>BSE:POWER</code>, <code>BSE:PSU</code> · MCX futures in rupees, front month <code>1!</code> and second month <code>2!</code>: <code>MCX:COPPER1!</code>, <code>MCX:ALUMINIUM1!</code>, <code>MCX:CRUDEOIL1!</code>, <code>MCX:NATURALGAS2!</code>, and the MCX copper index <code>MCX:MCXCOPRDEX</code> · NSE index futures, front month: <code>NSE:NIFTY1!</code>, <code>NSE:BANKNIFTY1!</code> (from NSE's daily F&amp;O file). These come from the BSE and MCX websites, which only answer a browser, so they are refreshed by hand and not every night — the line under the chart shows the last date. A futures series is the contracts joined end to end without adjustment, so the price steps on each roll day; a day the contract did not trade has no bar.</div>
     <div><b>Data:</b> split/bonus-adjusted daily closes. Not available here: other currencies, GIFT Nifty, India money supply, intraday prices.</div>
-  </div>
+    </div>
+  </details>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
@@ -614,7 +645,7 @@ function applyRange(){ ZPEND=null; const zb=document.getElementById('zoomBar'); 
   const from=RANGE==='YTD'?Date.UTC(new Date(last*1000).getUTCFullYear(),0,1)/1000:last-rangeDays(RANGE)*DAY;
   ts.setVisibleRange({from:Math.max(first,from), to:last}); }
 function renderRanges(){
-  $('ranges').innerHTML=['1M','3M','6M','YTD','1Y','3Y','5Y','10Y','Max'].map(r=>`<span class="rng ${r===RANGE?'on':'text-slate-500'} px-1.5 sm:px-2 py-1 rounded-md border border-slate-200" data-r="${r}">${r}</span>`).join('');
+  $('ranges').innerHTML=['1M','3M','6M','YTD','1Y','3Y','5Y','10Y','Max'].map(r=>`<button type="button" class="${r===RANGE?'on':''}" data-r="${r}">${r}</button>`).join('');
   $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; renderRanges(); applyRange(); });
 }
 $('typeSel').value=MODE;
@@ -659,7 +690,7 @@ $('cmpBtn').onclick=()=>{ sugClose(); const v=$('expr').value.trim(); if(!v) ret
 let CMPNEW='';
 
 /* ---------- load an expression ----------------------------------------------------------------- */
-let LOADSEQ=0;
+let LOADSEQ=0, NAVLOAD=false;
 async function computeExpr(src,ohlc,seq){
   await wIndex();                                  // the tokenizer needs the world codes to accept TVC:NI225, XETR:DAX …
   const r=await resolveTokens(tokenize(src)); if(seq!==LOADSEQ) return null;
@@ -714,7 +745,7 @@ async function loadExpr(raw,push){
   $('expr').value=KEY; document.title='STOCKSWORLD · '+KEY;
   $('goDate').min=tsToIso(TIMES[0]); $('goDate').max=tsToIso(TIMES[TIMES.length-1]); $('goDate').value='';
   if(push!==false){ const u=new URL(location.href); u.searchParams.set('s',KEY); if(CMPKEYS.length) u.searchParams.set('c',CMPKEYS.join(',')); else u.searchParams.delete('c'); history.replaceState(null,'',u); }
-  rememberRecent(KEY); renderChips(); renderLegend(ops); renderFav(); FLASHING=false; showBar();
+  if(!NAVLOAD) rememberRecent(KEY); NAVLOAD=false; renderChips(); renderLegend(ops); renderFav(); FLASHING=false; showBar();
   if(cmpMsgs.length) flash(cmpMsgs.join(' '));
 }
 function showEmpty(msg){
@@ -745,12 +776,14 @@ const EXAMPLES=['NIFTY','RELIANCE','CANFINHOME/NIFTY','NIFTY/USDINR','NIFTY/USOI
 function renderChips(){
   let r=lsGet(LS_RECENT,[]); if(!Array.isArray(r)) r=[];
   const saved=Object.keys(allDrawings()).filter(k=>(allDrawings()[k]||[]).length);
-  const mk=(k,extra)=>'<span class="chip" data-x="'+esc(k)+'">'+esc(k)+(extra||'')+'</span>';
+  // one row per chart, grouped; the chart that is open carries the selected-row mark
+  const mk=(k,extra)=>'<div class="os-row cx'+(k===KEY?' on':'')+'" role="option" aria-selected="'+(k===KEY)+'" data-x="'+esc(k)+'" title="'+esc(k)+'"><span class="n">'+esc(k)+'</span><span class="c">'+(extra||'')+'</span></div>';
+  const hd=(t,n)=>'<div class="subh"><span>'+t+'</span><i>'+n+'</i></div>';
   let h=''; const fav=favs();
-  if(fav.length) h+='<span class="text-[11px] text-slate-400">&#9733; Favourites</span>'+fav.map(k=>mk(k)).join('');
-  if(saved.length) h+='<span class="text-[11px] text-slate-400'+(h?' ml-2':'')+'">With drawings</span>'+saved.slice(0,30).map(k=>mk(k,' <span class="text-slate-400 ml-1">'+allDrawings()[k].length+'</span>')).join('');
-  const rec=r.filter(k=>!saved.includes(k)&&!fav.includes(k)).slice(0,6); if(rec.length) h+='<span class="text-[11px] text-slate-400'+(h?' ml-2':'')+'">Recent</span>'+rec.map(k=>mk(k)).join('');
-  h+='<span class="text-[11px] text-slate-400'+(h?' ml-2':'')+'">Examples</span>'+EXAMPLES.filter(k=>!r.includes(k)&&!saved.includes(k)&&!fav.includes(k)).map(k=>mk(k)).join('');
+  if(fav.length) h+=hd('&#9733; Favourites',fav.length)+fav.map(k=>mk(k)).join('');
+  if(saved.length){ const sv=saved.slice(0,30); h+=hd('With drawings',sv.length)+sv.map(k=>{ const n=allDrawings()[k].length; return mk(k,n+(n===1?' drawing':' drawings')); }).join(''); }
+  const rec=r.filter(k=>!saved.includes(k)&&!fav.includes(k)).slice(0,6); if(rec.length) h+=hd('Recent',rec.length)+rec.map(k=>mk(k)).join('');
+  const ex=EXAMPLES.filter(k=>!r.includes(k)&&!saved.includes(k)&&!fav.includes(k)); if(ex.length) h+=hd('Examples',ex.length)+ex.map(k=>mk(k)).join('');
   $('chips').innerHTML=h; $('chips').querySelectorAll('[data-x]').forEach(c=>c.onclick=()=>loadExpr(c.dataset.x));
 }
 $('exprForm').onsubmit=e=>{ e.preventDefault(); sugClose(); loadExpr($('expr').value); };
@@ -1048,8 +1081,17 @@ function renderTools(){
   $('clearBtn').onclick=()=>{ if(DRAWINGS.length&&confirm('Remove all '+DRAWINGS.length+' drawings on '+KEY+'? This cannot be undone.')){ DRAWINGS=[]; SEL=null; saveDrawings(); redraw(); } };
 }
 
+/* ---------- one-screen layout: pane height, and up / down through the list ---------------------- */
+function fitPanes(){ if(window.OSKit) OSKit.fitGrid($('g')); }
+window.addEventListener('resize',fitPanes); window.addEventListener('load',fitPanes); setTimeout(fitPanes,0); setTimeout(fitPanes,600);   // the site shell is added after this script runs, which moves the panes down
+document.addEventListener('keydown',e=>{ const tag=(e.target&&e.target.tagName)||''; if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
+  if(e.ctrlKey||e.metaKey||e.altKey||(e.key!=='ArrowUp'&&e.key!=='ArrowDown')) return;
+  const rows=[...$('chips').querySelectorAll('[data-x]')]; if(!rows.length) return; e.preventDefault();
+  const at=rows.findIndex(x=>x.classList.contains('on')), to=at<0?0:Math.max(0,Math.min(rows.length-1,at+(e.key==='ArrowDown'?1:-1)));
+  if(to===at) return; NAVLOAD=true; loadExpr(rows[to].dataset.x).finally(()=>{ NAVLOAD=false; }); });
+
 /* ---------- boot ------------------------------------------------------------------------------- */
-renderRanges(); renderTools(); renderChips(); renderIndPanel(); renderFav();
+fitPanes(); renderRanges(); renderTools(); renderChips(); renderIndPanel(); renderFav();
 (function boot(){ const q=new URLSearchParams(location.search); const s=q.get('s')||q.get('sym')||'';
   CMPKEYS=s?(q.get('c')||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,4):[]; if(s) loadExpr(s,false); else showEmpty('Type a symbol, a ratio or a basket above and press Show.'); })();
 </script>
