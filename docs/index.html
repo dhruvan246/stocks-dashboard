@@ -7,6 +7,7 @@
 <meta name="description" content="Live dashboards for Indian stocks, sectors and mutual funds, plus a strategy backtester over 25+ years of data." />
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./os-kit.js"></script>
 <style>
   :root{ --up:var(--pos); --up-soft:var(--pos-soft); --down:var(--neg); --down-soft:var(--neg-soft); }
   *{box-sizing:border-box;}
@@ -31,116 +32,79 @@
      the theme pill ran into each other on a 360-400px screen. */
   @media (max-width:430px){.hd{gap:8px;}.logo{font-size:0;gap:0;}.logo .mark{font-size:12px;}}
 
-  /* ---- page head: title + market status on the left, quick links on the right ---- */
-  .ctr{display:flex;align-items:flex-end;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;padding:22px 0 16px;}
-  .ctr h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.15;color:var(--text);}
-  .ctr-status{margin-top:5px;font-size:12.5px;font-weight:500;color:var(--text-muted);}
-  .ctr-status .on{color:var(--up);font-weight:700;}
-  .chips{display:flex;gap:8px;flex-wrap:wrap;}
-  .chip{font-size:12px;font-weight:600;color:var(--text);background:var(--surface);
-    border:1px solid var(--border);border-radius:var(--radius);padding:7px 12px;transition:var(--tr);}
-  .chip:hover{color:var(--accent-text);border-color:var(--accent);}
-  @media (max-width:520px){.ctr{padding:16px 0 12px;}.ctr h1{font-size:22px;}}
-
-  /* ---- bento deck ---- */
-  .deck{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:repeat(5,128px);grid-auto-rows:auto;gap:10px;margin:0 0 8px;}
-  .bt{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;
-    box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);}
-  a.bt:hover{box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--border));}
-  .bt-h{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text-muted);}
-  .bt-h .to{font-weight:700;letter-spacing:0;color:var(--text-faint);}
-  a.bt:hover .bt-h .to{color:var(--accent);}
-  .skel{color:transparent!important;background:var(--surface-3);border-radius:6px;animation:sk 1.2s ease-in-out infinite;}
+  /* ---- one-screen home: three bordered panes (indices + market stats / sectors + world / every page) ---- */
+  main.wrap{padding-top:14px;padding-bottom:40px;}
+  .os-vbar{margin-bottom:10px}
+  .os-vbar .qk{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:7px}
+  #home{grid-template-columns:minmax(300px,1fr) minmax(300px,1fr) minmax(320px,1.15fr)}
+  #home a{color:inherit}
+  #home a.os-row:focus{outline:none;background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent)}
+  #home a.os-row:focus .n{color:var(--accent-text)}
+  .os-ph a.to{font-size:12px;color:var(--text-faint)} .os-ph a.to:hover{color:var(--accent-text)}
+  .scr{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+  .subh{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid var(--border);border-top:1px solid var(--border);margin-top:-1px;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);background:var(--surface-2)}
+  .subh i,.subh a{font-style:normal;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-faint)}
+  .subh a:hover{color:var(--accent-text)}
+  .skel{color:transparent!important;background:var(--surface-3);border-radius:4px;animation:sk 1.2s ease-in-out infinite;}
   @keyframes sk{50%{opacity:.5;}}
-
-  #tIndices{grid-column:span 8;grid-row:span 2;}
-  #tHeat{grid-column:span 4;grid-row:span 3;}
-  #tBreadth{grid-column:span 4;grid-row:span 1;}
-  #tFlows{grid-column:span 4;grid-row:span 1;}
-  #tGlobal{grid-column:span 8;grid-row:span 2;}
-  #tIpo{grid-column:span 4;grid-row:span 2;}
-  #tTools{grid-column:span 12;grid-row:span 1;flex-direction:row;align-items:center;gap:12px;}
-
-  /* indices sub-grid: 7 cards in two rows of four — seven across left 87px per card at 1440px and the price overflowed */
-  .ixg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;flex:1;min-height:0;margin-top:10px;}
-  .ix{display:flex;flex-direction:column;justify-content:center;gap:2px;border-radius:var(--radius);padding:8px 11px;min-width:0;min-height:0;overflow:hidden;
-    background:var(--surface-2);border:1px solid var(--border);transition:border-color var(--tr);}
-  .ix:hover{border-color:var(--accent);}
-  .ix .nm{font-size:10.5px;font-weight:700;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ix .px{font-size:18px;font-weight:700;letter-spacing:-.02em;min-height:22px;}
-  .ix .chg{font-size:11.5px;font-weight:700;min-height:15px;}
-  .ix .chg.up{color:var(--up);}.ix .chg.down{color:var(--down);}
-  .ix .spark{width:100%;height:18px;margin-top:3px;opacity:.9;}
-  .lv{font-size:8px;font-weight:800;letter-spacing:.05em;color:var(--up);}
-  .ac{font-size:8px;font-weight:700;letter-spacing:.05em;color:var(--text-faint);}
-
-  /* sector heatmap cells */
-  .heat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;flex:1;margin-top:12px;}
-  .hc{border-radius:var(--radius);padding:9px 10px;display:flex;flex-direction:column;justify-content:space-between;min-height:0;}
-  .hc .n{font-size:11px;font-weight:700;color:var(--text);}
-  .hc .v{font-size:12.5px;font-weight:800;min-height:15px;}
-
-  /* small stat tiles */
-  .big{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;}
-  .big b{font-size:17px;font-weight:800;}
-  .big .lb{font-size:10.5px;color:var(--text-faint);font-weight:700;}
-  .bar{height:5px;border-radius:5px;background:var(--surface-3);overflow:hidden;display:flex;}
-  .bar i{display:block;height:100%;}
-  .foot{font-size:10px;color:var(--text-faint);}
   .pos{color:var(--up);}.neg{color:var(--down);}
 
-  /* overnight world markets — mini tiles keyed on global.json */
-  #tGlobal .gxg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:10px;flex:1;min-height:0;margin-top:8px;}
-  .gx{display:flex;flex-direction:column;gap:2px;border-radius:var(--radius);padding:7px 9px;min-width:0;overflow:hidden;
-    background:var(--surface-2);border:1px solid var(--border);}
-  .gx .gnm{font-size:10px;font-weight:700;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em;}
-  .gx .gchg{font-size:13px;font-weight:800;letter-spacing:-.01em;min-height:16px;}
-  .gx .gchg.up{color:var(--up);}.gx .gchg.down{color:var(--down);}
-  .gx .spark{height:15px;margin-top:auto;opacity:.85;}
+  /* index rows: name + state tag, 30-day line, level, 1-day move */
+  #ixHead,.ix{grid-template-columns:minmax(0,1fr) 48px 78px 56px;gap:8px}
+  .ix .n{display:flex;align-items:center;min-width:0;font-weight:600;color:var(--text)}
+  .ix .n u{text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .ix .px,.ix .chg,.gx .gv,.gx .gchg,.hr .v{text-align:right;white-space:nowrap}
+  .ix .px{font-weight:600;color:var(--text)}
+  .ix .chg,.gx .gchg,.hr .v{font-weight:600}
+  .ix .chg.up,.gx .gchg.up{color:var(--up)} .ix .chg.down,.gx .gchg.down{color:var(--down)}
+  .spark{display:block;width:100%;height:18px;opacity:.9}
+  .lv,.ac{flex:none;margin-left:6px;font-size:9px;font-weight:600;letter-spacing:.04em;white-space:nowrap}
+  .lv{color:var(--up)} .ac{color:var(--text-faint)}
 
-  /* ipo */
-  .colv{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:6px;margin-top:8px;font-size:11.5px;color:var(--text-muted);}
-  .colv b{font-size:14.5px;font-weight:800;color:var(--text);}
-  #tIpo .colv{font-size:13px;}#tIpo .colv div:first-child b{font-size:22px;font-weight:700;letter-spacing:-.02em;}
+  /* market stat blocks under the indices */
+  a.blk{display:block;padding:9px 12px 10px;border-bottom:1px solid var(--border)}
+  a.blk:hover{background:var(--surface-2)}
+  .blk .bh{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin-bottom:5px}
+  .blk .bh i{font-style:normal;font-weight:400;letter-spacing:0;text-transform:none}
+  .big{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;}
+  .big b{font-size:15px;font-weight:700;}
+  .big .lb{font-size:11px;color:var(--text-faint);font-weight:500;}
+  .bar{height:4px;border-radius:2px;background:var(--surface-3);overflow:hidden;display:flex;margin-top:7px}
+  .bar i{display:block;height:100%;}
+  .foot{font-size:11px;color:var(--text-faint);margin-top:4px}
+  .colv{display:flex;gap:4px 16px;flex-wrap:wrap;align-items:baseline;font-size:12px;color:var(--text-muted);}
+  .colv b{font-size:14px;font-weight:700;color:var(--text);}
 
-  /* tools pills */
-  .tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-  .tool{font-size:12px;font-weight:600;color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 13px;transition:var(--tr);}
-  .tool:hover{border-color:var(--accent);color:var(--accent-text);}
+  /* sector rows: name, size-of-move bar, 1-day move */
+  .hr{grid-template-columns:minmax(0,1fr) minmax(40px,90px) 62px;gap:8px}
+  .hr .n{font-weight:600;color:var(--text)}
+  .hr .mb{height:4px;border-radius:2px;background:var(--surface-3);overflow:hidden}
+  .hr .mb i{display:block;height:100%}
+  /* world rows: name, recent line, last value, 1-day move */
+  #gxHead,.gx{grid-template-columns:minmax(0,1fr) 56px 84px 58px;gap:8px}
+  .gx .gnm{font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gx .gv{color:var(--text-muted)}
 
-  /* responsive deck — ID selectors here on purpose: the base spans above are
-     ID-specificity, so a class rule can't override them in this media block */
-  @media (max-width:1020px){
-    .deck{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:auto;}
-    #tIndices,#tGlobal,#tHeat,#tTools{grid-column:1/-1;grid-row:auto;}
-    #tBreadth,#tFlows,#tIpo{grid-column:auto;grid-row:auto;min-height:96px;}
-    .ixg{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .ix{min-height:92px;}
-    .ixg .ix:last-child:nth-child(odd){grid-column:1/-1;}   /* only an odd card out spans the row */
+  /* every page of the site, one group at a time */
+  #pDir .os-ps{padding:8px 10px}
+  .dr{grid-template-columns:26px minmax(0,1fr);gap:10px;height:auto;min-height:33px;padding:7px 12px;align-items:start}
+  .dr .ic{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;font-size:13px;background:var(--surface-2);color:var(--text-muted)}
+  .dr span,.dr .tt{text-align:left} .dr .tt{display:block;font-weight:600;color:var(--text)}
+  .dr .td{white-space:normal;text-align:left;font-size:11.5px;color:var(--text-muted);line-height:1.4;margin-top:1px}
+
+  /* mid-width desktops: two panes side by side, the directory full width below; the page scrolls */
+  @media (min-width:900px) and (max-width:1339px){
+    #home{grid-template-columns:minmax(0,1fr) minmax(0,1fr);height:auto!important;align-items:start}
+    #pDir{grid-column:1 / -1}
+    #pDir .os-list{max-height:420px}
+    .scr{overflow:visible}
   }
-  @media (max-width:520px){
-    .heat{grid-template-columns:repeat(3,minmax(0,1fr));}
-    #tGlobal .gxg{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto;}
+  @media (max-width:899px){
+    #home{grid-template-columns:minmax(0,1fr)}
+    .scr{overflow:visible}
+    #pDir .os-list{max-height:none}
+    #ixHead,.ix,#gxHead,.gx{grid-template-columns:minmax(0,1fr) 44px 80px 56px;gap:6px}
   }
-
-  /* sections + tiles (site directory below the deck) */
-  .sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:30px 0 12px;}
-  .sec-h h2{font-size:16px;font-weight:700;letter-spacing:-.01em;margin:0;}
-  .sec-h .grp{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);}
-  .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}
-  .tile{display:flex;gap:13px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-    padding:13px;transition:border-color var(--tr);}
-  .tile:hover{border-color:var(--accent);}
-  .tile .ic{flex:none;width:34px;height:34px;border-radius:var(--radius);display:grid;place-items:center;font-size:16px;background:var(--accent-soft);color:var(--accent-text);}
-  .tile .tt{font-size:13.5px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:6px;color:var(--text);}
-  .tile .tt .arrow{color:var(--text-faint);font-size:13px;transition:transform var(--tr);}
-  .tile:hover .tt .arrow{transform:translate(3px,-3px);color:var(--accent);}
-  .tile .td{font-size:12px;color:var(--text-muted);line-height:1.45;margin-top:4px;}
-
-  main.wrap{padding-bottom:64px;}  /* beat .wrap's padding shorthand (else footer overlaps tiles) */
-  @media (max-width:1500px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr));}}
-  @media (max-width:860px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr));}}
-  @media (max-width:520px){.tiles{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -152,97 +116,82 @@
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap os-wide">
 
-  <!-- PAGE HEAD — title + market status, quick links (search lives in the header on every page) -->
-  <section class="ctr">
-    <div>
-      <h1>Market overview</h1>
-      <div class="ctr-status" id="ctrStatus">&nbsp;</div>
+  <div class="os-vbar">
+    <h1>Market overview</h1>
+    <div class="qk">
+      <a class="os-btn" href="./stock.html?sym=RELIANCE">RELIANCE</a>
+      <a class="os-btn" href="./markets.html?v=sectors">Sector heatmap</a>
+      <a class="os-btn" href="./saved-strategies.html">Saved strategies</a>
+      <a class="os-btn" href="./quarterly-results.html">Results today</a>
     </div>
-    <div class="chips">
-      <a class="chip" href="./stock.html?sym=RELIANCE">RELIANCE</a>
-      <a class="chip" href="./markets.html?v=sectors">Sector heatmap</a>
-      <a class="chip" href="./saved-strategies.html">Saved strategies</a>
-      <a class="chip" href="./quarterly-results.html">Results today</a>
-    </div>
-  </section>
+    <span class="os-asof" id="ctrStatus">&nbsp;</span>
+  </div>
 
-  <!-- BENTO DECK -->
-  <section class="deck">
+  <div class="os-grid" id="home">
 
-    <!-- indices: the 5 live cards (same feeds as before — committed JSON seed, Worker/proxy live top-up) -->
-    <div class="bt" id="tIndices">
-      <div class="bt-h"><span>INDICES</span><a class="to" href="./markets.html?v=indices">index browser →</a></div>
-      <div class="ixg" id="indices">
-        <a class="ix" href="./index-chart.html?ix=nifty"     data-src="nifty.json"       data-ysym="%5ENSEI"     data-name="NIFTY 50"   data-kind="index"></a>
-        <a class="ix" href="./index-chart.html?ix=nifty500"  data-src="nifty500.json"    data-ysym="%5ECRSLDX"   data-name="NIFTY 500"  data-kind="index"></a>
-        <a class="ix" href="./index-chart.html?ix=banknifty" data-src="nifty_bank.json"  data-ysym="%5ENSEBANK"  data-name="NIFTY BANK" data-kind="index"></a>
-        <a class="ix" href="./index-chart.html?ix=vix"       data-src="india_vix.json"   data-ysym="%5EINDIAVIX" data-name="INDIA VIX"  data-kind="vix"></a>
-        <!-- GIFT NIFTY (NSE IX futures) has no Yahoo symbol and no committed daily JSON — live-only
-             via the Worker's ?gift=1 route, falling back to public CORS proxies. -->
-        <a class="ix" href="https://www.nseix.com/markets/derivatives-watch" target="_blank" rel="noopener"
-                                                             data-name="GIFT NIFTY" data-kind="gift"></a>
-        <!-- BSE SME IPO: official BSE end-of-day level (scripts/fetch_bse_sme_ipo.py, runbook §195) — no live feed -->
-        <a class="ix" href="./index-chart.html?ix=smeipo"    data-src="bse_sme_ipo.json" data-name="BSE SME IPO" data-kind="eod"></a>
-        <!-- Nifty SME Emerge: NSE's official end-of-day close (scripts/fetch_nse_sme_emerge.py, runbook §210) — no live feed -->
-        <a class="ix" href="./index-chart.html?ix=smeemerge" data-src="nifty_sme_emerge.json" data-name="NIFTY SME EMERGE" data-kind="eod"></a>
-        <!-- Nifty Microcap 250: NSE's official end-of-day close (scripts/fetch_nifty_microcap250.py, runbook §227) — no live feed -->
-        <a class="ix" href="./index-chart.html?ix=microcap"  data-src="nifty_microcap250.json" data-name="NIFTY MICROCAP 250" data-kind="eod"></a>
+    <!-- indices (committed JSON seed, Worker/proxy live top-up) + breadth, flows, IPOs -->
+    <section class="os-pane" id="pIx" aria-label="Indices and market statistics">
+      <div class="os-ph"><span class="ttl">Indices</span><span class="r"><span title="Green dot: live quote. Grey dot: last close."><span class="lv" style="margin:0">●</span> live <span class="ac">●</span> close</span><a class="to" href="./markets.html?v=indices">index browser &rarr;</a></span></div>
+      <div class="os-ch" id="ixHead"><span>Index</span><span>30 days</span><span>Level</span><span>1 day</span></div>
+      <div class="scr">
+        <div id="indices">
+          <a class="os-row ix" href="./index-chart.html?ix=nifty"     data-src="nifty.json"       data-ysym="%5ENSEI"     data-name="NIFTY 50"   data-kind="index"></a>
+          <a class="os-row ix" href="./index-chart.html?ix=nifty500"  data-src="nifty500.json"    data-ysym="%5ECRSLDX"   data-name="NIFTY 500"  data-kind="index"></a>
+          <a class="os-row ix" href="./index-chart.html?ix=banknifty" data-src="nifty_bank.json"  data-ysym="%5ENSEBANK"  data-name="NIFTY BANK" data-kind="index"></a>
+          <a class="os-row ix" href="./index-chart.html?ix=vix"       data-src="india_vix.json"   data-ysym="%5EINDIAVIX" data-name="INDIA VIX"  data-kind="vix"></a>
+          <!-- GIFT NIFTY (NSE IX futures) has no Yahoo symbol and no committed daily JSON — live-only
+               via the Worker's ?gift=1 route, falling back to public CORS proxies. -->
+          <a class="os-row ix" href="https://www.nseix.com/markets/derivatives-watch" target="_blank" rel="noopener"
+                                                               data-name="GIFT NIFTY" data-kind="gift"></a>
+          <div class="subh"><span>End of day only</span><i id="eodDate">no live feed</i></div>
+          <!-- BSE SME IPO: official BSE end-of-day level (scripts/fetch_bse_sme_ipo.py, runbook §195) — no live feed -->
+          <a class="os-row ix" href="./index-chart.html?ix=smeipo"    data-src="bse_sme_ipo.json" data-name="BSE SME IPO" data-kind="eod"></a>
+          <!-- Nifty SME Emerge: NSE's official end-of-day close (scripts/fetch_nse_sme_emerge.py, runbook §210) — no live feed -->
+          <a class="os-row ix" href="./index-chart.html?ix=smeemerge" data-src="nifty_sme_emerge.json" data-name="NIFTY SME EMERGE" data-kind="eod"></a>
+          <!-- Nifty Microcap 250: NSE's official end-of-day close (scripts/fetch_nifty_microcap250.py, runbook §227) — no live feed -->
+          <a class="os-row ix" href="./index-chart.html?ix=microcap"  data-src="nifty_microcap250.json" data-name="NIFTY MICROCAP 250" data-kind="eod"></a>
+        </div>
+        <!-- market breadth: committed market_breadth.json (EOD, lazy-loaded) -->
+        <a class="blk" id="tBreadth" href="./market-mood.html">
+          <div class="bh"><span>Breadth &middot; Nifty 500</span><i id="brDate"></i></div>
+          <div class="big" id="brNums"><b class="skel">000</b></div>
+          <div class="bar" id="brBar"></div>
+        </a>
+        <!-- FII/DII flows: committed fii_dii.json -->
+        <a class="blk" id="tFlows" href="./fii-dii.html">
+          <div class="bh"><span>FII / DII &middot; cash</span><i id="flDate"></i></div>
+          <div class="big" id="flNums"><b class="skel">+₹000 cr</b></div>
+          <div class="foot">provisional daily net · flows page →</div>
+        </a>
+        <!-- IPO pipeline: ipos.json -->
+        <a class="blk" id="tIpo" href="./ipos.html">
+          <div class="bh"><span>IPO pipeline</span><i>IPOs page →</i></div>
+          <div class="colv" id="ipoBody"><b class="skel">0 open</b></div>
+        </a>
       </div>
-    </div>
+    </section>
 
-    <!-- sector heatmap: CORS-open niftyindices live feed (same source the Indices page reads) -->
-    <a class="bt" id="tHeat" href="./markets.html?v=sectors">
-      <div class="bt-h"><span>SECTOR PULSE · 1D</span><span class="to" id="heatTs">sectors →</span></div>
-      <div class="heat" id="heat"></div>
-    </a>
-
-    <!-- market breadth: committed market_breadth.json (EOD, lazy-loaded) -->
-    <a class="bt" id="tBreadth" href="./market-mood.html">
-      <div class="bt-h"><span>BREADTH · NIFTY 500</span><span class="to" id="brDate"></span></div>
-      <div class="big" id="brNums"><b class="skel">000</b></div>
-      <div class="bar" id="brBar"></div>
-    </a>
-
-    <!-- FII/DII flows: committed fii_dii.json -->
-    <a class="bt" id="tFlows" href="./fii-dii.html">
-      <div class="bt-h"><span>FII / DII · CASH</span><span class="to" id="flDate"></span></div>
-      <div class="big" id="flNums"><b class="skel">+₹000 cr</b></div>
-      <div class="foot">provisional daily net · flows page →</div>
-    </a>
-
-    <!-- overnight world markets: global.json seed + LIVE 1-day move via the quotes Worker (?quotes=) -->
-    <a class="bt" id="tGlobal" href="./global.html">
-      <div class="bt-h"><span>OVERNIGHT · WORLD MARKETS</span><span class="to" id="globalTs">global cues →</span></div>
-      <div class="gxg" id="globalGrid"></div>
-    </a>
-
-    <!-- IPO pipeline: ipos.json -->
-    <a class="bt" id="tIpo" href="./ipos.html">
-      <div class="bt-h"><span>IPO PIPELINE</span></div>
-      <div class="colv" id="ipoBody"><b class="skel">0 open</b></div>
-      <div class="foot">IPOs page →</div>
-    </a>
-
-    <!-- tools row -->
-    <div class="bt" id="tTools">
-      <div class="bt-h" style="flex:none"><span>TOOLS</span></div>
-      <div class="tools">
-        <a class="tool" href="./stock-backtest.html">Backtest</a>
-        <a class="tool" href="./strategy-mixer.html">Strategy Mixer</a>
-        <a class="tool" href="./all-picks.html">All Picks</a>
-        <a class="tool" href="./mutual-funds.html">Mutual Funds</a>
-        <a class="tool" href="./watchlist.html">Watchlist</a>
-        <a class="tool" href="./announcements.html">Announcements</a>
-        <a class="tool" href="./actions.html">Ex-Dates</a>
-        <a class="tool" href="./global.html">Global Cues</a>
+    <!-- sectors (CORS-open niftyindices live feed) + overnight world markets (global.json seed + live Worker quotes) -->
+    <section class="os-pane" id="pMk" aria-label="Sectors and world markets">
+      <div class="os-ph"><span class="ttl">Sectors <i>1 day</i></span><span class="r"><a class="to" id="heatTs" href="./markets.html?v=sectors">sectors →</a></span></div>
+      <div class="scr">
+        <div id="heat"></div>
+        <div class="subh"><span>World markets</span><a id="globalTs" href="./global.html">global cues →</a></div>
+        <div class="os-ch" id="gxHead"><span>Market</span><span>Recent</span><span>Last</span><span>1 day</span></div>
+        <div id="globalGrid"></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- TILE GRID — rendered from window.SW_NAV (single source of truth in theme.js) -->
-  <div id="tileSections"></div>
+    <!-- every page of the site, from window.SW_NAV (single source of truth in theme.js) -->
+    <section class="os-pane" id="pDir" aria-label="All pages">
+      <div class="os-ph"><span class="ttl">All pages</span><span class="r" id="dirSub"></span></div>
+      <div class="os-ps"><div class="os-sg" id="dirTabs" role="group" aria-label="Page group"></div></div>
+      <div class="os-list" id="tileSections"></div>
+    </section>
+
+  </div>
 
 </main>
 
@@ -271,26 +220,37 @@
   }
 
   function badge(el, live) {
-    if (live) return ' <span class="lv">● LIVE</span>';
-    return ' <span class="ac">AT CLOSE</span>';
+    // a dot carries the state so the name keeps its room: green = live, grey = at close (the pane header has the key)
+    if (live) return '<span class="lv" title="Live">●</span>';
+    // an end-of-day-only index says which day its close is from: once in the sub-header when all three end on the
+    // same day, otherwise on each row
+    if (el.getAttribute('data-kind') === 'eod') {
+      var day = function (c) { var ds = c._pxDates, m = ds && ds.length ? /^\d{4}-(\d{2})-(\d{2})$/.exec(ds[ds.length - 1]) : null; return m ? (+m[2]) + ' ' + MONS[(+m[1]) - 1] : ''; };
+      var all = cards.filter(function (c) { return c.getAttribute('data-kind') === 'eod'; }).map(day).filter(Boolean);
+      var same = all.length > 0 && all.every(function (d) { return d === all[0]; });
+      document.getElementById('eodDate').textContent = same ? 'close of ' + all[0] : 'no live feed';
+      [].forEach.call(document.querySelectorAll('#indices .ix[data-kind="eod"] .ac'), function (t) { t.style.display = same ? 'none' : ''; });
+      return day(el) ? '<span class="ac"' + (same ? ' style="display:none"' : '') + '>' + day(el) + '</span>' : '';
+    }
+    return '<span class="ac" title="At close">●</span>';
   }
   function paint(el, price, prevClose, series, live) {
     if (price == null || prevClose == null) return;
     var chg = ((price - prevClose) / prevClose) * 100, up = chg >= 0;
     el._painted = true;
     el.innerHTML =
-      '<div class="nm">' + el.getAttribute('data-name') + badge(el, live) + '</div>' +
-      '<div class="px">' + fmt(price) + '</div>' +
-      '<div class="chg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>' +
-      spark(series && series.length > 1 ? series : el._daily || [], up);
+      '<span class="n"><u>' + el.getAttribute('data-name') + '</u>' + badge(el, live) + '</span>' +
+      '<span>' + spark(series && series.length > 1 ? series : el._daily || [], up) + '</span>' +
+      '<span class="px">' + fmt(price) + '</span>' +
+      '<span class="chg ' + (up ? 'up' : 'down') + '">' + (up ? '+' : '−') + Math.abs(chg).toFixed(2) + '%</span>';
   }
 
   // 1) seed from the committed daily-close JSON — always available, never blank.
   //    The GIFT card has no committed JSON (live-only): skeleton now, first live
   //    fetch paints it, refreshLive shows "—" if every route fails.
   function loadStatic(el) {
-    el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
-      '<div class="px skel">00,000.00</div><div class="chg skel">0.00%</div>';
+    el.innerHTML = '<span class="n"><u>' + el.getAttribute('data-name') + '</u></span><span></span>' +
+      '<span class="px skel">00,000.00</span><span class="chg skel">0.00%</span>';
     if (!el.getAttribute('data-src')) return Promise.resolve();
     return fetch('./' + el.getAttribute('data-src'), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -303,8 +263,8 @@
         paint(el, last, prev, null, false);
       })
       .catch(function () {
-        el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
-          '<div class="px" style="font-size:14px;color:var(--text-faint)">—</div>';
+        el.innerHTML = '<span class="n"><u>' + el.getAttribute('data-name') + '</u></span><span></span>' +
+          '<span class="px" style="color:var(--text-faint)">—</span><span></span>';
       });
   }
 
@@ -417,11 +377,11 @@
       .then(function (q) { paint(el, q.price, gift ? q.prev : storePrev(el, q.at, q.prev), q.series, gift ? giftOpen() : marketOpen()); })
       .catch(function () {
         // keep last good paint; the live-only GIFT card has none to keep
-        if (!el._painted) el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +
-          '<div class="px" style="font-size:14px;color:var(--text-faint)" title="' +
+        if (!el._painted) el.innerHTML = '<span class="n"><u>' + el.getAttribute('data-name') + '</u></span><span></span>' +
+          '<span class="px" style="color:var(--text-faint)" title="' +
           (gift ? 'No route to the NSE IX feed reached us this time — tap to open the exchange page.'
                 : 'The live quote feed did not answer — the daily close above is still current.') +
-          '">—</div>';
+          '">—</span><span></span>';
       });
   }
 
@@ -445,8 +405,8 @@
     var ist = istNow(), mins = ist.getHours() * 60 + ist.getMinutes();
     var d = DAYS[ist.getDay()] + ' ' + ist.getDate() + ' ' + MONS[ist.getMonth()];
     var st;
-    if (marketOpen()) st = '<span class="on">● NSE market open</span> · closes 15:30 IST';
-    else if (giftOpen()) st = '<span class="on">● GIFT session live</span> · NSE ' + (mins < 555 ? 'opens 09:15' : 'closed 15:30') + ' IST';
+    if (marketOpen()) st = '<span class="pos"><span class="os-dot on"></span>NSE market open</span> · closes 15:30 IST';
+    else if (giftOpen()) st = '<span class="pos"><span class="os-dot on"></span>GIFT session live</span> · NSE ' + (mins < 555 ? 'opens 09:15' : 'closed 15:30') + ' IST';
     else st = 'Markets closed · NSE opens Mon–Fri 09:15 IST';
     document.getElementById('ctrStatus').innerHTML = d + ' · ' + st;
   }
@@ -484,7 +444,7 @@
   ];
   var heatEl = document.getElementById('heat');
   heatEl.innerHTML = SECTORS.map(function (s) {
-    return '<div class="hc" style="background:var(--surface-3)"><span class="n">' + s[1] + '</span><span class="v skel">0.0%</span></div>';
+    return '<a class="os-row hr" href="./markets.html?v=sectors"><span class="n">' + s[1] + '</span><span class="mb"></span><span class="v skel">0.0%</span></a>';
   }).join('');
   function loadHeat() {
     fetch('https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json', { cache: 'no-store' })
@@ -497,12 +457,13 @@
         heatEl.innerHTML = SECTORS.map(function (s) {
           var r = rows[s[0]], chg = r ? parseFloat(r.percChange) : NaN;
           if (r && r.timeVal) ts = r.timeVal;
-          if (isNaN(chg)) return '<div class="hc" style="background:var(--surface-3)"><span class="n">' + s[1] + '</span><span class="v" style="color:var(--text-faint)">—</span></div>';
-          var up = chg >= 0, a = Math.min(.22, .05 + Math.abs(chg) * .13);
-          var base = up ? '52,211,153' : '248,113,113';
-          return '<div class="hc" style="background:rgba(' + base + ',' + a.toFixed(2) + ')">' +
+          if (isNaN(chg)) return '<a class="os-row hr" href="./markets.html?v=sectors"><span class="n">' + s[1] + '</span><span class="mb"></span><span class="v" style="color:var(--text-faint)">—</span></a>';
+          // the bar is the size of the move, full at 3% (the old tile tinted its background by the same size)
+          var up = chg >= 0, w = Math.min(100, Math.abs(chg) / 3 * 100);
+          return '<a class="os-row hr" href="./markets.html?v=sectors">' +
             '<span class="n">' + s[1] + '</span>' +
-            '<span class="v ' + (up ? 'pos' : 'neg') + '">' + (up ? '+' : '−') + Math.abs(chg).toFixed(2) + '%</span></div>';
+            '<span class="mb"><i style="width:' + w.toFixed(0) + '%;background:var(--' + (up ? 'up' : 'down') + ')"></i></span>' +
+            '<span class="v ' + (up ? 'pos' : 'neg') + '">' + (up ? '+' : '−') + Math.abs(chg).toFixed(2) + '%</span></a>';
         }).join('');
         // "25-Aug-2026 13:10" -> "13:10 IST"
         var m = /(\d{2}:\d{2})\s*$/.exec(ts || '');
@@ -592,14 +553,14 @@
 
   function gTile(p, chg, up, val, sp) {
     var chgHtml = (chg == null)
-      ? '<div class="gchg" style="color:var(--text-faint)">—</div>'
-      : '<div class="gchg ' + (up ? 'up' : 'down') + '">' + (up ? '▲' : '▼') + ' ' + Math.abs(chg).toFixed(2) + '%</div>';
-    return '<div class="gx"' + (val ? ' title="' + p.lbl + ' · ' + val + '"' : '') + '>' +
-      '<div class="gnm">' + p.lbl + '</div>' + chgHtml + (sp || '') + '</div>';
+      ? '<span class="gchg" style="color:var(--text-faint)">—</span>'
+      : '<span class="gchg ' + (up ? 'up' : 'down') + '">' + (up ? '+' : '−') + Math.abs(chg).toFixed(2) + '%</span>';
+    return '<a class="os-row gx" href="./global.html"' + (val ? ' title="' + p.lbl + ' · ' + val + '"' : '') + '>' +
+      '<span class="gnm">' + p.lbl + '</span><span>' + (sp || '') + '</span><span class="gv">' + (val || '') + '</span>' + chgHtml + '</a>';
   }
   if (gGrid) {   // skeleton straight away so the card never paints empty
     gGrid.innerHTML = G_PICK.map(function (p) {
-      return '<div class="gx"><div class="gnm">' + p.lbl + '</div><div class="gchg skel">0.00%</div></div>';
+      return '<a class="os-row gx" href="./global.html"><span class="gnm">' + p.lbl + '</span><span></span><span></span><span class="gchg skel">0.00%</span></a>';
     }).join('');
   }
   function paintGlobal(liveById) {
@@ -722,21 +683,55 @@
   }
   function tile(it) {
     var href = it[0], ext = href.indexOf('http') === 0;
-    return '<a class="tile" href="' + href + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' +
-      '<div class="ic">' + it[1] + '</div><div>' +
-      '<div class="tt">' + it[2] + '<span class="arrow">↗</span></div>' +
-      '<div class="td">' + descFor(href) + '</div></div></a>';
+    return '<a class="os-row dr" href="' + href + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' +
+      '<span class="ic">' + it[1] + '</span><span>' +
+      '<span class="tt n">' + it[2] + (ext ? ' ↗' : '') + '</span>' +
+      '<div class="td">' + descFor(href) + '</div></span></a>';
   }
   var nav = window.SW_NAV;
   if (nav) {
-    var html = '';
-    nav.groups.forEach(function (g) {
-      var items = g.g === 'Tools' ? [nav.cta].concat(g.items) : g.items;
-      html += '<div class="sec-h"><h2>' + g.g + '</h2><span class="grp">' + (SUB[g.g] || '') + '</span></div>' +
-        '<section class="tiles">' + items.map(tile).join('') + '</section>';
+    var GRP = nav.groups.map(function (g) { return { g: g.g, items: g.g === 'Tools' ? [nav.cta].concat(g.items) : g.items }; });
+    var want = decodeURIComponent((location.hash || '').slice(1)).toLowerCase(), gAt = 0;
+    GRP.forEach(function (g, i) { if (g.g.toLowerCase() === want) gAt = i; });
+    var showGroup = function (i) {
+      gAt = i;
+      document.getElementById('dirTabs').innerHTML = GRP.map(function (g, k) {
+        return '<button type="button" data-g="' + k + '"' + (k === i ? ' class="on"' : '') + '>' + g.g + '<i>' + g.items.length + '</i></button>';
+      }).join('');
+      document.getElementById('dirSub').textContent = SUB[GRP[i].g] || '';
+      var box = document.getElementById('tileSections');
+      box.innerHTML = GRP[i].items.map(tile).join(''); box.scrollTop = 0;
+    };
+    document.getElementById('dirTabs').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('[data-g]') : null; if (!b) return;
+      showGroup(+b.getAttribute('data-g'));
+      try { history.replaceState(null, '', location.pathname + location.search + '#' + GRP[gAt].g.toLowerCase()); } catch (err) {}
     });
-    document.getElementById('tileSections').innerHTML = html;
+    showGroup(gAt);
   }
+
+  // ---- one-screen layout: pane height + arrow keys (up/down a row, left/right a pane, Enter opens) ----
+  function fitPanes() { if (window.OSKit) window.OSKit.fitGrid(document.getElementById('home')); }
+  window.addEventListener('resize', fitPanes); window.addEventListener('load', fitPanes);
+  fitPanes(); setTimeout(fitPanes, 600);
+  document.addEventListener('keydown', function (e) {
+    var k = e.key, tag = (e.target && e.target.tagName) || '';
+    if (e.ctrlKey || e.metaKey || e.altKey || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    if (k !== 'ArrowUp' && k !== 'ArrowDown' && k !== 'ArrowLeft' && k !== 'ArrowRight') return;
+    var panes = [].slice.call(document.querySelectorAll('#home .os-pane'));
+    var cur = document.activeElement && document.activeElement.closest ? document.activeElement.closest('#home a.os-row') : null;
+    var pi = cur ? panes.indexOf(cur.closest('.os-pane')) : 0;
+    var rowsOf = function (p) { return [].slice.call(p.querySelectorAll('a.os-row')); };
+    var rows = rowsOf(panes[pi]), at = cur ? rows.indexOf(cur) : -1, to;
+    if (k === 'ArrowUp' || k === 'ArrowDown') {
+      to = rows[at < 0 ? 0 : Math.max(0, Math.min(rows.length - 1, at + (k === 'ArrowDown' ? 1 : -1)))];
+    } else {
+      if (!cur) to = rows[0];
+      else { pi = Math.max(0, Math.min(panes.length - 1, pi + (k === 'ArrowRight' ? 1 : -1))); rows = rowsOf(panes[pi]); to = rows[Math.min(at, rows.length - 1)]; }
+    }
+    if (!to) return;
+    e.preventDefault(); to.focus(); if (to.scrollIntoView) to.scrollIntoView({ block: 'nearest' });
+  });
 
   // ---- command bar -----------------------------------------------------------
   // A REAL input, so it is always typable: focusing it hands off to theme.js's
