@@ -259,11 +259,9 @@
     { g: 'Markets', cols: [
       { sub: 'Overview', items: [
         ['./nse-bse-dashboard.html',  ic('candle'), 'Stocks'],
-        ['./movers.html',             ic('trend'), 'Top Movers'],
+        ['./markets.html',            ic('gauge'), 'Markets'],
         ['./daily-moves.html',        ic('caldays'), 'Daily Moves'],
-        ['./indices.html',            ic('gauge'), 'Indices'],
         ['./chart.html',              ic('trend'), 'Charts'],
-        ['./sectors.html',            ic('pie'), 'Sectors'],
         ['./monthly-returns.html',    ic('calendar'), 'Monthly Returns'],
         ['./market-mood.html',        ic('thermo'), 'Market Mood'],
         ['./macro.html',              ic('activity'), 'Macro'],
@@ -322,9 +320,8 @@
   // hidden from non-owners.
   var PAGE_GROUPS = [
     { g: 'Market Analytics', tabs: [
-      ['./movers.html',           ic('trend'), 'Top Movers'],
+      ['./markets.html',          ic('gauge'), 'Markets'],
       ['./daily-moves.html',      ic('caldays'), 'Daily Moves'],
-      ['./indices.html',          ic('gauge'), 'Indices'],
       ['./monthly-returns.html',  ic('calendar'), 'Monthly Returns'],
       ['./market-mood.html',      ic('thermo'), 'Market Mood']
     ] },
@@ -504,7 +501,7 @@
                  : (typeof x.prev === 'number' && x.prev > 0 ? (x.last / x.prev - 1) * 100 : null);
           var dp = Math.min(2, typeof x.dp === 'number' ? x.dp : 2);
           var val = x.last.toLocaleString(d[2] ? 'en-IN' : 'en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
-          html += '<a class="sw-tape-it" href="' + (d[2] ? './indices.html' : './global.html') + '" title="' + esc(x.name || d[1]) +
+          html += '<a class="sw-tape-it" href="' + (d[2] ? './markets.html?v=indices' : './global.html') + '" title="' + esc(x.name || d[1]) +
             (x._live ? ' · latest quote (Yahoo, can lag up to 15 min; a closed market shows its last close)'
                      : (x.last_date ? ' · close of ' + esc(x.last_date) : '')) + '">' +
             '<span class="sw-tape-n">' + esc(d[1]) + '</span><span class="sw-tape-v">' + val + '</span>' +

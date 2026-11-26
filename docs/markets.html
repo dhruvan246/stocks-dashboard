@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Markets</title>
+<meta name="description" content="Sectors, NSE indices and the day's top movers on one screen — pick a sector or an index on the left, see its stocks in the middle and the chart on the right. Live prices, eight periods, RS rating, heatmap, monthly returns and Rewind to any past date." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(230px,280px) minmax(330px,400px) minmax(0,1fr)}
+  #gHead,.gr{grid-template-columns:minmax(0,1fr) 44px 62px}
+  #pG.ix #gHead,#pG.ix .gr{grid-template-columns:minmax(0,1fr) 80px 62px}
+  #kHead,.kr{grid-template-columns:minmax(0,1fr) 70px 64px 30px 62px}
+  html[data-theme] .os-sg select{border:0;border-left:1px solid var(--border);border-radius:0;background:transparent;color:var(--text);font:inherit;font-size:12.5px;font-weight:500;padding:5px 8px;height:auto;min-height:0;cursor:pointer}
+  #pK .os-ps{flex-wrap:nowrap;gap:6px} html[data-theme] #pK .os-ps input[type="search"]{flex:1 1 0;min-width:0;width:auto}
+  #kTabs{margin:0 10px 8px;display:flex} #kTabs button{flex:1 1 0}
+  .vb{display:inline-block;min-width:22px;padding:0 4px;margin-left:5px;border-radius:4px;font-size:11px;font-weight:600;color:#fff;text-align:center}
+  .rsb{font-weight:600}
+  #hmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+  .hmtile{border-radius:6px;padding:8px 10px;color:#fff;cursor:pointer;min-height:58px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+  .hmtile:hover{outline:2px solid var(--accent);outline-offset:-2px}
+  .hmtile .hn{font-size:11.5px;font-weight:600;line-height:1.15;text-shadow:0 1px 2px rgba(0,0,0,.28)}
+  .hmtile .hv{font-size:15px;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.28)}
+  #note{white-space:normal;margin:-2px 0 10px;line-height:1.5}
+  #status{margin-bottom:10px}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  #how summary{cursor:pointer;color:var(--text-muted)}
+  /* monthly table */
+  #mBar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
+  #mBox{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:auto;max-height:calc(100vh - 215px);min-height:300px}
+  #mTbl{border-collapse:separate;border-spacing:0;font-size:12.5px;font-variant-numeric:tabular-nums;width:max-content;min-width:100%}
+  html[data-theme] #mTbl th{position:sticky;top:0;z-index:2;background:var(--surface-2);color:var(--text-muted);font-weight:500;font-size:11.5px;padding:7px 6px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;text-transform:none;letter-spacing:0}
+  html[data-theme] #mTbl th.on{color:var(--accent-text)}
+  html[data-theme] #mTbl th.nm,html[data-theme] #mTbl td.nm{position:sticky;left:0;text-align:left;min-width:210px;max-width:250px;padding-left:12px;border-right:1px solid var(--border)}
+  html[data-theme] #mTbl th.nm{z-index:3}
+  html[data-theme] #mTbl td{padding:0;border-bottom:1px solid var(--border);border-right:1px solid var(--surface);text-align:right;white-space:nowrap;height:27px}
+  html[data-theme] #mTbl td.nm{z-index:1;background:var(--surface);color:var(--text);padding:0 8px 0 12px;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+  #mTbl td.nm:hover{color:var(--accent-text)} #mTbl td.nm i{font-style:normal;color:var(--text-faint);margin-left:5px;font-size:11px}
+  #mTbl td.c{min-width:54px;padding:0 7px;font-weight:500} #mTbl td.na{color:var(--text-faint);padding:0 7px}
+  html[data-theme] #mTbl td.tot,html[data-theme] #mTbl th.tot{border-left:1px solid var(--border);padding:0 9px;font-weight:600;min-width:62px}
+  html[data-theme] #mTbl th.tot{padding:7px 9px}
+  html[data-theme] #mTbl tr.bm td{border-bottom:1px solid var(--border-strong,var(--border))} #mTbl tr.bm td.nm{cursor:default;color:var(--text-muted)}
+  #mNote{font-size:12px;color:var(--text-faint);margin-top:8px;line-height:1.5}
+  #mMsg{padding:40px 12px;text-align:center;color:var(--text-faint);font-size:13px}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(200px,240px) minmax(270px,320px) minmax(0,1fr)} #kHead,.kr{grid-template-columns:minmax(0,1fr) 70px 30px 62px} #kHead span:nth-child(3),.kr .c3{display:none} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #cBack{order:5} #pC .os-ph{flex-wrap:wrap}
+    html[data-theme] #mTbl th.nm,html[data-theme] #mTbl td.nm{min-width:132px;max-width:132px;padding-left:8px} #mTbl{font-size:12px} #mTbl td.c{min-width:48px;padding:0 5px} #mBox{max-height:70vh} }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Markets</h1>
+    <div class="os-vtabs" id="modes" role="tablist" aria-label="What the left list shows"></div>
+    <div class="os-asof" id="asof"></div>
+  </div>
+  <div id="status" class="os-empty">Loading market data…</div>
+
+  <div id="content" class="hidden">
+    <div class="os-bar">
+      <div class="os-sg" id="pers" role="group" aria-label="Period"></div>
+      <div class="os-sg" id="lvls" role="group" aria-label="Grouping level"></div>
+      <div class="os-sg" id="grps" role="group" aria-label="Index group"></div>
+      <span class="os-sg flt" title="Which stocks are counted"><span class="lbl">Universe</span><select id="fUniv" aria-label="Universe"></select></span>
+      <span class="os-sg flt" title="Market-cap band: Large ₹20,000 Cr and up, Mid ₹5,000–20,000 Cr, Small below ₹5,000 Cr"><span class="lbl">Size</span>
+        <select id="fCap" aria-label="Market-cap band"><option value="all">All</option><option value="large">Large</option><option value="mid">Mid</option><option value="small">Small</option></select></span>
+      <span class="os-sg flt" title="Hide tiny illiquid tickers by minimum market cap"><span class="lbl">Min m-cap</span>
+        <select id="fFloor" aria-label="Minimum market cap"><option value="0">None</option><option value="100">₹100 Cr</option><option value="500">₹500 Cr</option><option value="2000">₹2,000 Cr</option></select></span>
+      <span class="os-sg flt" role="group" aria-label="Also include"><span class="lbl">Include</span>
+        <button type="button" id="tBse" title="Companies listed only on BSE">BSE-only</button>
+        <button type="button" id="tSme" title="SME-platform listings (NSE Emerge, BSE SME)">SME</button></span>
+      <span class="os-sg" id="rew" role="group" aria-label="Rewind to a past date" title="Rewind: see every list, price and chart as it stood at the close of a past date">
+        <span class="lbl">Rewind</span>
+        <button type="button" id="rewPrev" title="One trading day back" aria-label="One trading day back">◀</button>
+        <input type="date" id="rewDate" aria-label="Show the page as of this date" />
+        <button type="button" id="rewNext" title="One trading day forward" aria-label="One trading day forward">▶</button>
+        <button type="button" id="rewNow" title="Back to the latest prices">Latest</button>
+      </span>
+      <span class="sp"></span>
+      <div class="os-sg" id="views" role="group" aria-label="View"></div>
+    </div>
+    <div id="note" class="os-hint hidden"></div>
+
+    <!-- TRACKER: sectors / indices → stocks → chart on one screen -->
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pG" aria-label="Groups">
+        <div class="os-ph"><span class="ttl" id="gTitle"></span><span class="r" id="gBreadth"></span></div>
+        <div class="os-ps"><input id="gSearch" type="search" autocomplete="off" aria-label="Find a group or a stock" /></div>
+        <div class="os-ch" id="gHead"></div>
+        <div class="os-list" id="gList" role="listbox" aria-label="Groups"></div>
+      </section>
+      <section class="os-pane" id="pK" aria-label="Stocks">
+        <div class="os-ph"><span class="ttl" id="kTitle"></span><span class="r" id="kCount"></span></div>
+        <div class="os-ps"><input id="kSearch" type="search" placeholder="Find a stock" autocomplete="off" aria-label="Find a stock in this list" />
+          <button type="button" class="os-btn" id="kCsv" title="Download this list as CSV">CSV</button>
+          <button type="button" class="os-btn" id="kCopy" title="Copy these symbols as a TradingView watchlist (NSE:AAA,NSE:BBB…)">Copy TV</button></div>
+        <div class="os-sg" id="kTabs" role="group" aria-label="Which stocks"></div>
+        <div class="os-ch" id="kHead"></div>
+        <div class="os-list" id="kList" role="listbox" aria-label="Stocks"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span class="sym" id="cSym"></span><span class="nm" id="cName"></span><span class="px" id="cPx"></span><span id="cChg"></span>
+          <span class="r"><button type="button" class="os-btn hidden" id="cBack" title="Back to the group's own chart (←)">← Back</button>
+            <a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a>
+            <button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
+          <button type="button" class="os-btn" id="cLog" title="Logarithmic price scale">Log</button>
+          <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>→</b> stocks · <b>←</b> back · <b>F</b> focus</span>
+          <a class="os-btn hidden" id="cFull" href="#" title="Open in the full chart page — drawing tools, indicators, compare">Full chart ↗</a></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-stats" id="cStats"></div>
+      </section>
+    </div>
+
+    <!-- HEATMAP: the left list as tiles -->
+    <div id="heatWrap" class="hidden os-pane" style="padding:12px">
+      <div id="hmgrid"></div>
+      <div class="os-hint" id="hmLegend" style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:12px">
+        <span>−3%</span><div style="height:8px;width:200px;border-radius:9999px;background:linear-gradient(90deg,#dc2626,#f8717133 46%,#64748b22 50%,#4ade8033 54%,#16a34a)"></div><span>+3%</span>
+        <span>· click a tile to open it in the Tracker</span></div>
+    </div>
+
+    <!-- MONTHLY: a row per group, a column per calendar month -->
+    <div id="mWrap" class="hidden">
+      <div id="mBar"><div class="os-sg" id="mRange" role="group" aria-label="Months shown"></div><div class="os-sg" id="mWeight" role="group" aria-label="Weighting"></div>
+        <button type="button" class="os-btn" id="mCsv" title="Download this table as CSV">CSV</button></div>
+      <div id="mBox"></div>
+      <div id="mNote"></div>
+    </div>
+
+    <details id="how"><summary>How these numbers are made</summary>
+      <p><b>One price store for the whole page.</b> Stock prices are split / bonus adjusted closes from the official NSE and BSE daily files, plus the live price in market hours (NSE's whole-market feed, BSE's a few minutes behind). <b>Today</b> = the latest price against the previous close, and only for a stock that has a price on the day shown — a stock that has not traded that day shows a dash. <b>1W / 1M / 3M / 6M / 1Y / 3Y</b> = against the close 7 / 30 / 91 / 182 / 365 / 1,095 calendar days earlier (or the last one before that, at most 10 days older); <b>YTD</b> = against the last close of the previous year. Dividends are not adjusted.</p>
+      <p><b>Sectors.</b> Four levels of the exchanges' industry classification. A group's figure is the plain average of its stocks' returns (every stock counts the same); a group needs 5 stocks with a figure to be listed. <b>All stocks</b> is every stock that passes the filters. The group chart is that same average chained day by day from a start of 100, using today's members. <b>Top movers</b> is the same list opened on All stocks → Gainers with a ₹100 Cr floor and BSE-only and SME names included. Market-cap bands: Large ₹20,000 Cr and up, Mid ₹5,000–20,000 Cr, Small below that. <b>RS</b> ranks a stock's blended return (20% 1-month + 40% 3-month + 40% 6-month) among all stocks of ₹500 Cr and up, 1 (weakest) to 99. Median P/E uses trailing-twelve-month earnings.</p>
+      <p><b>Indices.</b> Level and Today are live from NSE's index feed in market hours; indices the live feed does not carry are marked <span class="os-tag">CLOSE</span> and read from NSE's daily closing file. 1W / 1M / 1Y come from NSE's publication where it has them; 3M / 6M / YTD / 3Y, every rewound figure and the CLOSE rows are computed from closing values. PE, PB and dividend yield are NSE's own; the small number beside PE / PB is where today's figure sits in that index's own observed range (100 = dearest seen). Members are NSE's list — today's, or with Rewind the list in force on that date.</p>
+      <p><b>Rewind</b> moves the whole page to the close of a past date: prices, returns, RS, index levels and member lists are as of that date; market cap is the cap on that date (≈ = estimated from today's share count); F&amp;O, Nifty 500 and Microcap 250 are the lists in force that day; the industry classification and the SME lists are today's. Companies that have since left our price data are not shown. Educational only — not investment advice.</p>
+    </details>
+  </div>
+</main>
+
+<script>
+'use strict';
+const K=window.OSKit, $=id=>document.getElementById(id), {fmtN,fmtPct,esc,niceDate,cls}=K, DAY=86400;
+const inr=n=>n==null?'—':Number(n).toLocaleString('en-IN',{maximumFractionDigits:0});
+const PERS=[['pc','Today',1],['w1','1W',7],['m1','1M',30],['m3','3M',91],['m6','6M',182],['ytd','YTD',-1],['y1','1Y',365],['y3','3Y',1095]];
+const MODES=[['sectors','Sectors'],['indices','Indices'],['movers','Top movers']];
+const LEVELS=[['macro','Sectors'],['sector','Sub-Sectors'],['igroup','Industries'],['industry','Sub-Industries']];
+const OLD_LEVEL={sector:'macro',sub:'sector',industry:'igroup',basic:'industry'};      /* the level keys the old sectors.html links used */
+const UNIVS=[['all','All stocks'],['fno','F&O'],['n500','Nifty 500'],['mc250','Microcap 250'],['sme','SME (NSE + BSE)'],['smeipo','BSE SME IPO index'],['smeemerge','Nifty SME Emerge index']];
+const TABS=[['all','All'],['gain','Gainers'],['lose','Losers'],['active','Biggest']];
+const MIN_N=5, RS_MC=500;
+const DEF={sectors:{level:'macro',univ:'all',cap:'all',floor:500,bse:false,sme:false,g:null},
+           movers:{level:'macro',univ:'all',cap:'all',floor:100,bse:true,sme:true,g:'*'}};
+const S={mode:'sectors',view:'tracker',per:'pc',grp:'broad',ix:null,stk:null,pane:'g',q:'',kq:'',
+  gsort:{k:'v',dir:-1},ksort:{k:'r',dir:-1},tabs:{sectors:'all',indices:'all',movers:'gain'},
+  f:{sectors:Object.assign({},DEF.sectors),movers:Object.assign({},DEF.movers)},iv:'D',range:'1Y',log:false,focus:false,weight:'equal'};
+try{ const u=JSON.parse(localStorage.getItem('sw_mk_ui')||'null'); if(u){ ['mode','view','per','grp','iv','range'].forEach(k=>{ if(typeof u[k]==='string')S[k]=u[k]; }); S.log=!!u.log;
+  ['sectors','movers'].forEach(m=>{ const a=u.f&&u.f[m]; if(!a)return; ['level','univ','cap'].forEach(k=>{ if(typeof a[k]==='string')S.f[m][k]=a[k]; }); if(typeof a.floor==='number')S.f[m].floor=a.floor; S.f[m].bse=!!a.bse; S.f[m].sme=!!a.sme; }); } }catch(e){}
+const URLQ=new URLSearchParams(location.search);
+(function readUrl(){
+  let v=URLQ.get('v'), old=URLQ.get('level'), lv=URLQ.get('lv'), nm=URLQ.get('g')||URLQ.get('name'), ix=URLQ.get('ix');
+  if(old==='nse'){ v='indices'; ix=ix||nm; nm=null; }           /* `level` carries the old sectors.html keys; `lv` is this page's own */
+  if(!lv&&old&&OLD_LEVEL[old]){ lv=OLD_LEVEL[old]; if(!v) v='sectors'; }
+  if(ix&&!v) v='indices';
+  if(MODES.some(m=>m[0]===v)){ S.mode=v; if(URLQ.get('v')||ix||nm) S.view='tracker'; }
+  if(lv&&LEVELS.some(l=>l[0]===lv)&&S.mode!=='indices') S.f[S.mode].level=lv;
+  if(nm&&S.mode!=='indices') S.wantG=nm;
+  if(ix) S.wantIx=ix;
+})();
+if(!MODES.some(m=>m[0]===S.mode))S.mode='sectors'; if(!PERS.some(p=>p[0]===S.per))S.per='pc'; if(!['tracker','heat','monthly'].includes(S.view))S.view='tracker';
+['sectors','movers'].forEach(m=>{ const a=S.f[m]; if(!LEVELS.some(l=>l[0]===a.level))a.level='macro'; if(!UNIVS.some(u=>u[0]===a.univ))a.univ='all'; if(!['all','large','mid','small'].includes(a.cap))a.cap='all'; if(![0,100,500,2000].includes(a.floor))a.floor=DEF[m].floor; });
+const saveUI=()=>{ try{ const f={}; ['sectors','movers'].forEach(m=>{ const a=S.f[m]; f[m]={level:a.level,univ:a.univ,cap:a.cap,floor:a.floor,bse:a.bse,sme:a.sme}; });
+  localStorage.setItem('sw_mk_ui',JSON.stringify({mode:S.mode,view:S.view,per:S.per,grp:S.grp,iv:S.iv,range:S.range,log:S.log,f})); }catch(e){} };
+const isIx=()=>S.mode==='indices';
+const F=()=>S.f[S.mode==='movers'?'movers':'sectors'];
+const perDays=()=>PERS.find(p=>p[0]===S.per)[2];
+const perLabel=()=>S.per==='pc'?(REW!=null?'1D':'Today'):PERS.find(p=>p[0]===S.per)[1];
+const lvlLabel=()=>LEVELS.find(l=>l[0]===F().level)[1];
+const normNm=s=>String(s||'').toUpperCase().replace(/&/g,'AND').replace(/[^A-Z0-9]/g,'');
+const clean=s=>String(s==null?'':s).replace(/\s+/g,' ').trim();
+const arrow=(st,k)=>st.k===k?(st.dir<0?' ▼':' ▲'):'';
+function istNow(){ return new Date(Date.now()+19800000); }
+const todayIST=()=>istNow().toISOString().slice(0,10);
+function marketOpenIST(){ const n=istNow(), d=n.getUTCDay(), h=n.getUTCHours()+n.getUTCMinutes()/60; return d>=1&&d<=5&&h>=9&&h<=15.75; }
+
+/* ================= the one price store ================= */
+const P={ok:false,META:{},SERIES:{},START:820454400,EOD:0,NOW:0,cut:0,full:false,fullP:null,LV:new Set(),live:null,liveFail:0,partial:false,T:{},IH:{},CLS:{},
+  FNO:new Set(),N500:new Set(),MC250:new Set(),FNOH:[],N500H:[],MC250H:[],NIFTY:[],NOFFS:[]};
+let REW=null, HM=null, CH=null, RS={}, PE=null;
+const WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev';
+const BSE_LIVE_URL='https://raw.githubusercontent.com/dhruvan246/stocks-dashboard/live-bse/bse_live.json';
+const MON={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+const END=()=>REW!=null?REW:P.NOW;
+const offOf=iso=>Math.floor((Date.parse(iso+'T00:00:00Z')/1000-P.START)/DAY);
+const isoOff=off=>new Date((P.START+off*DAY)*1000).toISOString().slice(0,10);
+function idxLE(arr,off){ let lo=0,hi=arr.length-1,ans=-1; while(lo<=hi){ const m=(lo+hi)>>1; if(arr[m]<=off){ans=m;lo=m+1;}else hi=m-1; } return ans; }
+const symOf=t=>(P.META[t]&&P.META[t].symbol)||String(t).split('.')[0];
+const baseOf=t=>t.endsWith('.NS')?t.slice(0,-3):t;
+function ensureFull(){
+  if(P.full) return Promise.resolve();
+  return P.fullP||(P.fullP=(async()=>{
+    const D=await K.gunzipJSON('./stock_data.bin');
+    for(const t in D.series){ const ba=D.series[t], ov=P.SERIES[t];
+      if(!ov||!ov.d.length){ P.SERIES[t]=ba; continue; }
+      const i=idxLE(ba.d,ov.d[0]-1);                                       // the fresher (recent file / live) bars win where both have them
+      P.SERIES[t]={d:ba.d.slice(0,i+1).concat(ov.d), p:ba.p.slice(0,i+1).concat(ov.p)}; }
+    P.full=true;
+  })().catch(e=>{ P.fullP=null; throw e; }));
+}
+function baseOff(e,per){ if(per==='ytd') return offOf(isoOff(e).slice(0,4)+'-01-01')-1; return e-PERS.find(p=>p[0]===per)[2]; }
+function retOf(s,i,e,per){
+  if(per==='pc') return (s.d[i]===e&&i>0&&s.d[i]-s.d[i-1]<=10&&s.p[i-1]>0)?(s.p[i]/s.p[i-1]-1)*100:null;
+  const b=baseOff(e,per), j=idxLE(s.d,b); if(j<0||j>=i||b-s.d[j]>10||!(s.p[j]>0)) return null;
+  return (s.p[i]/s.p[j]-1)*100;
+}
+function capBand(mc){ return mc>=20000?'large':mc>=5000?'mid':'small'; }
+function listOn(hist,iso){ let best=null; for(const h of hist) if(h.effectiveDate<=iso&&(!best||h.effectiveDate>best.effectiveDate)) best=h; return best?new Set(best.symbols):null; }
+/* market cap on a rewound date: hist_mcap.json's quarter-end cap (filed shares × raw close) at or before the date, moved by the
+   adjusted price — else today's share count at that day's price, marked ≈ (same rule the Top Movers page used, runbook 233) */
+function capAt(t,ser,price,m){
+  const now=(m.mcap>0&&m.latest>0&&price>0)?m.mcap/m.latest*price:null, list=HM&&HM.rows[baseOf(t)];
+  if(list){ const want=+isoOff(REW).replace(/-/g,''); let q=null; for(const e of list){ if(e[0]<=want) q=e; else break; }
+    if(q){ const qd=String(q[0]), qo=offOf(qd.slice(0,4)+'-'+qd.slice(4,6)+'-'+qd.slice(6)), qi=idxLE(ser.d,qo);
+      if(REW-qo<=200&&qi>=0&&qo-ser.d[qi]<=7&&ser.p[qi]>0){ const v=q[1]*price/(ser.p[qi]/100), r=now?v/now:1; if(HM.chk.has(baseOf(t))||(r>=0.4&&r<=2.5)) return {v,approx:false}; } } }
+  return {v:now,approx:true};
+}
+/* one stock as of END(): null when it has no price within 7 days of that date */
+function sRow(t,per){
+  const s=P.SERIES[t]; if(!s||!s.d.length) return null;
+  const e=END(), i=idxLE(s.d,e); if(i<0||e-s.d[i]>7) return null;
+  const m=P.META[t]||{}, p=s.p[i]/100, row={t,sym:m.symbol||String(t).split('.')[0],name:m.name||'',p,r:retOf(s,i,e,per||S.per),mc:m.mcap||null,approx:false,rs:RS[t]==null?null:RS[t],g:null};
+  if(REW!=null){ const c=capAt(t,s,p,m); row.mc=c.v; row.approx=c.approx&&c.v!=null; }
+  return row;
+}
+/* RS rating: where a stock's blended return (20% 1M + 40% 3M + 40% 6M) ranks among every stock of ₹500 Cr and up, 1 to 99 */
+function buildRS(){
+  const e=END(), sc=[];
+  for(const t in P.META){ if((P.META[t].mcap||0)<RS_MC) continue; const s=P.SERIES[t]; if(!s||!s.d.length) continue;
+    const i=idxLE(s.d,e); if(i<0||e-s.d[i]>7) continue;
+    const a=retOf(s,i,e,'m1'), b=retOf(s,i,e,'m3'), c=retOf(s,i,e,'m6'); if(a==null||b==null||c==null) continue;
+    sc.push([t,.2*a+.4*b+.4*c]); }
+  sc.sort((x,y)=>x[1]-y[1]); RS={};
+  sc.forEach(([t],i)=>{ RS[t]=Math.max(1,Math.min(99,Math.round((i+1)/sc.length*99))); });
+}
+/* lazily loaded lists */
+let BSE_SME=new Set(), bseSmeP=null, SMEIPO=new Set(), smeIpoP=null, SMEEM=new Set(), smeEmP=null;
+function ensureBseSme(){ return bseSmeP||(bseSmeP=fetch('./bse_universe.json').then(r=>r.json()).then(U=>{ BSE_SME=new Set((U.rows||[]).filter(r=>r[4]==='M'||r[4]==='MT').map(r=>r[1]+'.BO')); BSE_SME.ok=1; }).catch(e=>{ bseSmeP=null; throw e; })); }
+function ensureSmeIpo(){ return smeIpoP||(smeIpoP=fetch('./bse_sme_ipo/members.json',{cache:'no-store'}).then(r=>r.json()).then(M=>{ SMEIPO=new Set((M.members||[]).flatMap(m=>[m.sym,m.code?m.code+'.BO':null]).filter(Boolean)); }).catch(e=>{ smeIpoP=null; throw e; })); }
+function ensureSmeEmerge(){ return smeEmP||(smeEmP=fetch('./nse_sme_emerge/members.json',{cache:'no-store'}).then(r=>r.json()).then(M=>{ SMEEM=new Set((M.members||[]).flatMap(m=>m.sym?[m.sym,m.sym+'.NS']:[])); }).catch(e=>{ smeEmP=null; throw e; })); }
+const isSme=t=>!!(P.META[t]&&P.META[t].sme)||BSE_SME.has(t);
+let peP=null;
+function ensurePE(){ return peP||(peP=fetch('https://dhruvan246.github.io/sf-data/pe_ttm.json').then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }).then(j=>{ PE=(j&&j.pe)||{}; }).catch(()=>{ PE={}; PE.fail=1; })); }
+const medianOf=a=>{ if(!a.length) return null; const v=a.slice().sort((x,y)=>x-y), h=v.length>>1; return v.length%2?v[h]:(v[h-1]+v[h])/2; };
+
+/* ---- live stock prices: NSE's whole-market feed through our Worker + the BSE file; appended to the store as today's bar ---- */
+async function fetchLive(tries){
+  let nse=null, bse=null;
+  for(let a=0;a<tries&&!nse;a++){                       // NSE answers 502 / 403 about 1 call in 3 through the Worker — retry with a growing pause
+    try{ const j=await fetch(WORKER+'/?nse=traded',{cache:'no-store'}).then(r=>r.json());
+      const m=/^(\d{1,2})-([A-Za-z]{3})-(\d{4}) (\d{2}):(\d{2})/.exec((j&&j.timestamp)||'');
+      if(m&&MON[m[2]]&&j.data&&Object.keys(j.data).length>=200) nse={date:m[3]+'-'+MON[m[2]]+'-'+m[1].padStart(2,'0'),time:m[4]+':'+m[5],data:j.data};
+    }catch(e){}
+    if(!nse&&a<tries-1) await new Promise(r=>setTimeout(r,2000*(a+1)));
+  }
+  if(!nse) return null;
+  try{ const b=await fetch(BSE_LIVE_URL,{cache:'no-store'}).then(r=>r.json());
+    const m=/^(\d{4}-\d{2}-\d{2})T/.exec((b&&b.timestamp)||'');
+    if(m&&m[1]===nse.date&&b.data) bse=b.data;                                // a BSE file from another day is ignored, never mixed in
+  }catch(e){}
+  return {nse,bse};
+}
+function prevWeekday(off){ for(let o=off-1;;o--){ const wd=new Date((P.START+o*DAY)*1000).getUTCDay(); if(wd>=1&&wd<=5) return o; } }
+function putLive(t,off,pv,ltp,prev){
+  const s=P.SERIES[t]; if(!s||!s.d||!s.d.length||!(ltp>0)) return 0;
+  const n=s.d.length, last=s.d[n-1], v=Math.round(ltp*100);
+  if(last>off) return 0;
+  if(last===off){ if(!P.LV.has(t)&&!(P.partial&&off===P.EOD)) return 0; s.p[n-1]=v; P.LV.add(t); return 1; }   // a real end-of-day bar is never overwritten
+  if(last<pv&&prev>0&&Math.round(prev*100)!==s.p[n-1]){ s.d.push(pv); s.p.push(Math.round(prev*100)); }       // the feed's previous close fills a session our file lacks
+  s.d.push(off); s.p.push(v); P.LV.add(t); return 1;
+}
+function applyLive(L){
+  const off=offOf(L.nse.date); if(!isFinite(off)||off<P.EOD||(off===P.EOD&&!P.partial)) return false;        // the end-of-day file already has this day
+  const pv=prevWeekday(off); let n=0;
+  for(const sym in L.nse.data){ const q=L.nse.data[sym]; n+=putLive(sym+'.NS',off,pv,+q[0],+q[1]); }
+  if(n<200) return false;
+  if(L.bse) for(const code in L.bse){ const q=L.bse[code], t=P.SERIES[q[3]+'.BO']?q[3]+'.BO':code+'.BO'; n+=putLive(t,off,pv,+q[0],+q[1]); }
+  P.NOW=Math.max(P.NOW,off); P.live={off,date:L.nse.date,time:L.nse.time,n};
+  return true;
+}
+let liveBusy=false;
+async function liveTick(tries){
+  if(!P.ok||liveBusy) return; liveBusy=true;
+  try{ const L=await fetchLive(tries||4);
+    if(!L){ P.liveFail=1; if(REW==null&&S.view==='tracker') renderStocks(true); if(marketOpenIST()) setTimeout(()=>liveTick(4),15000); return; }
+    P.liveFail=0; if(applyLive(L)&&REW==null) refresh(true); else setAsof();
+  }catch(e){} finally{ liveBusy=false; }
+}
+const liveStale=()=>REW==null&&marketOpenIST()&&isoOff(P.NOW)<todayIST();
+
+/* ================= indices: levels from indices.json + NSE's live index feed + the closes of every published series ================= */
+const HIDE_IX=/\b(TR|PR)\b|\b50:50\b|\b25\/50\b|dividend|\bg-?sec|\bnifty gs\b|bharat ?bond|\b1d rate\b|india vix|arbitrage|futures|\busd\b/i;     /* user 2026-11-26: rows not wanted */
+const FEEDK=new Set();
+let DATA=null, HIST=null, RROWS=null, XMEM=null, XHIST=null, LIVE_T='';
+const IX=()=>RROWS||DATA.indices;
+const curIx=()=>IX().find(x=>x.k===S.ix)||null;
+const LIVE_URL='https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json';
+async function liveTopUp(){
+  if(!DATA||REW!=null) return;
+  try{
+    const j=await (await fetch(LIVE_URL+'?cb='+Date.now(),{cache:'no-store'})).json();
+    const rows=(j&&j.data)||[]; if(!rows.length) return;
+    const by={}; DATA.indices.forEach(x=>{ by[x.k]=x; });
+    let hit=0, tv='';
+    rows.forEach(rr=>{ const x=by[String(rr.indexName||'').trim()]; if(!x) return;
+      const last=parseFloat(rr.last), pc=parseFloat(rr.percChange); if(!isFinite(last)||last<=0) return;
+      x.last=last; if(isFinite(pc)) x.pc=pc; x.lv=1;
+      const yl=parseFloat(rr.yearLow), yh=parseFloat(rr.yearHigh);
+      if(isFinite(yl)&&isFinite(yh)&&yh>yl){ x.yl=yl; x.yh=yh; x.pos52=Math.max(0,Math.min(100,Math.round((last-yl)/(yh-yl)*100))); }
+      if(String(rr.timeVal||'')>tv) tv=String(rr.timeVal); hit++; });
+    if(!hit) return;
+    const t=/(\d{1,2}:\d{2})/.exec(tv); LIVE_T=t?t[1]:'live';
+    if(REW==null&&isIx()){ midFill(); setAsof(); if(S.view==='tracker'){ renderLeft(true); chartHead(); if(!S.stk&&CH&&CH.data) CH.setLive(curLive()); } else if(S.view==='heat') renderHeat(); }
+  }catch(e){ /* CDN hiccup — keep the baked numbers */ }
+}
+/* 3M / 6M / YTD / 3Y for the feed's rows: from the series' closes, carried to the live level */
+function midFill(){
+  if(!HIST) return; const PL=HIST.dn.length-1, r2=v=>Math.round(v*100)/100;
+  DATA.indices.forEach(x=>{ if(!x.h||x.eod) return; const r=calcRow(x.h,PL); if(!r) return;
+    const adj=v=>(v==null||!(r.last>0)||!(x.last>0))?v:r2(((1+v/100)*x.last/r.last-1)*100);
+    x.m3=adj(r.m3); x.m6=adj(r.m6); x.ytd=adj(r.ytd); x.y3=adj(r.y3); });
+}
+const SECT_NEW=new Set(['NIFTY FINANCIAL SERVICES EX-BANK','NIFTY NBFC','NIFTY HOUSING FINANCE','NIFTY INSURANCE','NIFTY POWER','NIFTY CAPITAL GOODS','NIFTY CONSTRUCTION',
+  'NIFTY COMMERCIAL & TRANSPORT SERVICES','NIFTY CONSUMER SERVICES','NIFTY RETAIL','NIFTY TELECOMMUNICATIONS','NIFTY HOSPITALS','NIFTY SMALL FINANCE BANKS & MICROFINANCE INSTITUTIONS']);
+function grpOf(name){
+  const n=name.toUpperCase();
+  if(/BOND|G-SEC|GSEC|SDL|\bSME\b|VIX|INVERSE|LEVERAGE|FUTURES|ARBITRAGE|RATE INDEX|DIVIDEND POINTS|USD|T-BILL|LIQUID 15 TR/.test(n)) return 'other';
+  if(/^(NIFTY 1000|NIFTY NEXT 100|NIFTY FULL MIDCAP 100|NIFTY FULL SMALLCAP 100)$/.test(n)) return 'broad';
+  if(SECT_NEW.has(n)) return 'sectoral';
+  if(/ALPHA|QUALITY|VALUE|MOMENTUM|LOW VOL|EQUAL WEIGHT|SHARIAH|ESG|DIVIDEND YIELD|DIVIDEND OPP|AHIMSA|GROWTH|LIQUID|BETA/.test(n)&&!/DEFENCE/.test(n)) return 'strategy';
+  return 'thematic';
+}
+/* fixed-income rows: the live feed's short key -> the series' key (measured 2026-11-25 over 88 days) */
+const SER_ALIAS={'NIFTY GS 15YRPLUS':'NIFTY 15 YR AND ABOVE G-SEC INDEX','NIFTY GS 11 15YR':'NIFTY 11-15 YR G-SEC INDEX','NIFTY GS 4 8YR':'NIFTY 4-8 YR G-SEC INDEX',
+  'NIFTY GS COMPSITE':'NIFTY COMPOSITE G-SEC INDEX','NIFTY GS 8 13YR':'NIFTY 8-13 YR G-SEC','NIFTY GS 10YR':'NIFTY 10 YR BENCHMARK G-SEC','NIFTY GS 10YR CLN':'NIFTY 10 YR BENCHMARK G-SEC (CLEAN PRICE)',
+  'BHARATBOND-APR30':'NIFTY BHARAT BOND INDEX - APRIL 2030','BHARATBOND-APR31':'NIFTY BHARAT BOND INDEX - APRIL 2031','BHARATBOND-APR32':'NIFTY BHARAT BOND INDEX - APRIL 2032','BHARATBOND-APR33':'NIFTY BHARAT BOND INDEX - APRIL 2033'};
+const dayN=iso=>Math.round(Date.parse(iso+'T00:00:00Z')/864e5);
+function posLEn(n){ const a=HIST.dn; let lo=0,hi=a.length-1,ans=-1; while(lo<=hi){ const m=(lo+hi)>>1; if(a[m]<=n){ans=m;lo=m+1;}else hi=m-1; } return ans; }
+function hAt(h,p){ let i=Math.min(p,h.s+h.c.length-1)-h.s; for(;i>=0;i--) if(h.c[i]!=null) return [h.c[i]/100,h.s+i]; return null; }
+function calcRow(h,Pp){
+  const dn=HIST.dn, a=hAt(h,Pp); if(!a||dn[Pp]-dn[a[1]]>7) return null;
+  const r2=v=>Math.round(v*100)/100, pv=hAt(h,a[1]-1);
+  const back=d=>{ const q=posLEn(dn[Pp]-d); if(q<h.s) return null; const b=hAt(h,q); return (b&&dn[Pp]-d-dn[b[1]]<=10&&b[0]>0)?r2((a[0]/b[0]-1)*100):null; };
+  let lo=a[0],hi=a[0];
+  for(let i=a[1]-h.s;i>=0;i--){ const v=h.c[i]; if(v==null) continue; if(dn[Pp]-dn[h.s+i]>365) break; if(v/100<lo)lo=v/100; if(v/100>hi)hi=v/100; }
+  const ytdDays=dn[Pp]-(dayN(new Date(dn[Pp]*864e5).toISOString().slice(0,4)+'-01-01')-1);
+  return { last:a[0], pc:(pv&&dn[a[1]]-dn[pv[1]]<=7&&pv[0]>0)?r2((a[0]/pv[0]-1)*100):null, w1:back(7), m1:back(30), m3:back(91), m6:back(182), ytd:back(ytdDays), y1:back(365), y3:back(1095),
+    yl:hi>lo?lo:null, yh:hi>lo?hi:null, pos52:hi>lo?Math.max(0,Math.min(100,Math.round((a[0]-lo)/(hi-lo)*100))):null };
+}
+function memAt(name,iso){          // {syms,note} for one of the sector / theme indices outside the shared pipeline, as of iso (null = today)
+  const cur=XMEM&&XMEM.indices&&XMEM.byNorm[normNm(name)]; if(!cur) return null;
+  const nm=cur.name, h=XHIST&&XHIST.indices&&XHIST.indices[nm];
+  if(iso==null) return {syms:cur.symbols,note:"Members today, from NSE's own list for this index."};
+  if(!h) return {syms:cur.symbols,note:"<b>Members as of today</b> — NSE's past lists for this index could not be checked, so no list for "+iso+' is shown.'};
+  let best=null; for(const s of h.snapshots) if(s.effectiveDate<=iso&&(!best||s.effectiveDate>best.effectiveDate)) best=s;
+  return best?{syms:best.symbols.slice().sort(),note:'Members on '+iso+' (in force since '+best.effectiveDate+'), rebuilt from NSE notices and checked against NSE’s archived lists.'}:null;
+}
+async function loadHist(){
+  try{
+    const [b,xm,xh]=await Promise.all([K.gunzipJSON('./idx_ohlc/_closes.bin'),
+      fetch('./nse_extra_indices/members.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
+      fetch('./nse_extra_indices/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null)]);
+    for(const k in b.idx) if(HIDE_IX.test(k)||HIDE_IX.test(b.idx[k].cur||'')) delete b.idx[k];
+    const dn=[dayN(b.d0)]; for(const g of b.dd) dn.push(dn[dn.length-1]+g);
+    HIST={dn, iso:n=>new Date(n*864e5).toISOString().slice(0,10), idx:b.idx}; XMEM=xm; XHIST=xh;
+    if(XMEM&&XMEM.indices){ XMEM.byNorm={}; for(const n in XMEM.indices) XMEM.byNorm[normNm(n)]=Object.assign({name:n},XMEM.indices[n]); }
+    // tie series to the rows the feed already has: by key, else by value on the feed's date — never by the look of the name
+    const P0=posLEn(dayN(DATA.asof)), used=new Set();
+    DATA.indices.forEach(x=>{ x.bk={last:x.last}; const k=HIST.idx[x.k]?x.k:SER_ALIAS[x.k]; if(k&&HIST.idx[k]&&!used.has(k)){ x.h=HIST.idx[k]; if(k!==x.k) x.hk=k; used.add(k); } });
+    DATA.indices.forEach(x=>{ if(x.h||x.bk.last==null||P0<0) return;
+      const c=Object.keys(HIST.idx).filter(k=>{ if(used.has(k)) return false; const h=HIST.idx[k], i=P0-h.s; return i>=0&&i<h.c.length&&h.c[i]!=null&&Math.abs(h.c[i]/100-x.bk.last)<0.011; });
+      if(c.length===1){ x.h=HIST.idx[c[0]]; x.hk=c[0]; used.add(c[0]); } });
+    HIST.rowOf={}; DATA.indices.forEach(x=>{ if(x.h) HIST.rowOf[x.hk||x.k]=x; });
+    const PL=dn.length-1, n50=DATA.indices.find(x=>x.k==='NIFTY 50');
+    for(const k in HIST.idx){ if(used.has(k)) continue; const h=HIST.idx[k], r=calcRow(h,PL); if(!r) continue;      // indices NSE publishes but its live feed does not carry
+      const row=Object.assign({k, n:h.cur, g:grpOf(h.cur), h, eod:HIST.iso(dn[hAt(h,PL)[1]]), pe:null,pb:null,dy:null,pep:null,pbp:null}, r);
+      row.rs1m=(row.m1!=null&&n50&&n50.m1!=null)?Math.round((row.m1-n50.m1)*100)/100:null;
+      DATA.indices.push(row); }
+    DATA.indices.forEach(x=>{ if(x.members) return; const m=memAt(x.n,null)||(x.h&&memAt(x.h.cur,null)); if(m){ x.members=m.syms; x.mem=m.syms.length; x.memNote=m.note; x.xm=1; } });
+    midFill(); if(isIx()) refresh();
+  }catch(e){ console.error('index history not loaded',e); HIST=null; S.histErr=1; if(isIx()) refresh(); }
+}
+function rowsAt(Pp){
+  const out=[], n50h=HIST.idx['NIFTY 50'], n50=n50h&&calcRow(n50h,Pp), iso=HIST.iso(HIST.dn[Pp]);
+  for(const k in HIST.idx){ const h=HIST.idx[k], r=calcRow(h,Pp); if(!r) continue;
+    const base=HIST.rowOf[k];
+    const row=Object.assign({k:base?base.k:k, n:base?base.n:h.cur, g:base?base.g:grpOf(h.cur), h, pe:null,pb:null,dy:null,pep:null,pbp:null}, r);
+    if(base&&base.hk) row.hk=base.hk;
+    row.rs1m=(row.m1!=null&&n50&&n50.m1!=null)?Math.round((row.m1-n50.m1)*100)/100:null;
+    if(base&&base.members&&!base.xm){ row.members=base.members; row.mem=base.mem; }
+    else{ const m=memAt(row.n,iso)||memAt(h.cur,iso); if(m){ row.members=m.syms; row.mem=m.syms.length; row.memNote=m.note; } }
+    out.push(row); }
+  return out;
+}
+function memList(x){
+  const iso=REW==null?null:isoOff(REW), ih=P.IH[normNm(x.n)]||P.IH[normNm(x.k)];
+  if(ih&&ih.length){
+    if(iso==null) return {syms:x.members||ih[ih.length-1].symbols,note:"Members today — NSE's current list (in force since "+niceDate(ih[ih.length-1].effectiveDate)+').'};
+    let best=null; for(const s of ih){ if(s.effectiveDate<=iso) best=s; else break; }
+    return best?{syms:best.symbols,note:'Members on '+niceDate(iso)+' — the list in force since '+niceDate(best.effectiveDate)+'.'}
+               :{syms:[],note:'No member list on file for '+niceDate(iso)+' — our lists for this index start on '+niceDate(ih[0].effectiveDate)+'.'};
+  }
+  return x.members?{syms:x.members,note:x.memNote||"Members today, from NSE's own list for this index."}:null;
+}
+
+/* ================= compute: what the three panes show ================= */
+let STK=[], GMAP={}, LROWS=[], KBASE=[], KROWS=[], KALL=[], KNOTE='', INFO={noList:''};
+function compute(){
+  INFO={noList:''}; buildRS(); STK=[]; GMAP={};
+  if(isIx()){
+    RROWS=null;
+    if(REW!=null&&HIST){ const p=posLEn(dayN(isoOff(REW))); RROWS=p<0?[]:rowsAt(p); }
+    return;
+  }
+  const f=F(), iso=isoOff(END()); let uni=null;
+  if(f.univ==='fno'||f.univ==='n500'||f.univ==='mc250'){
+    if(REW==null) uni=f.univ==='fno'?P.FNO:f.univ==='n500'?P.N500:P.MC250;
+    else{ uni=listOn(f.univ==='fno'?P.FNOH:f.univ==='n500'?P.N500H:P.MC250H,iso); if(!uni){ INFO.noList=UNIVS.find(u=>u[0]===f.univ)[1]; return; } }
+  }
+  const smeU=f.univ==='sme'||f.univ==='smeipo'||f.univ==='smeemerge';
+  for(const t in P.META){
+    if(uni&&!uni.has(baseOf(t))) continue;
+    if(f.univ==='sme'&&!isSme(t)) continue; if(f.univ==='smeipo'&&!SMEIPO.has(t)) continue; if(f.univ==='smeemerge'&&!SMEEM.has(t)) continue;
+    if(!smeU&&!uni){ if(!f.sme&&isSme(t)) continue; if(!f.bse&&t.endsWith('.BO')) continue; }
+    const r=sRow(t); if(!r) continue;
+    if((r.mc||0)<f.floor) continue; if(f.cap!=='all'&&capBand(r.mc||0)!==f.cap) continue;
+    const c=P.CLS[t]; r.g=c&&c[f.level]?clean(c[f.level]):null;
+    STK.push(r); if(r.g) (GMAP[r.g]||(GMAP[r.g]=[])).push(r);
+  }
+}
+function gStat(k,name,rows){ let n=0,up=0,dn=0,sum=0; for(const r of rows){ if(r.r==null) continue; n++; sum+=r.r; if(r.r>0)up++; else if(r.r<0)dn++; } return {k,n:name,cnt:rows.length,nr:n,up,dn,v:n?sum/n:null,rows}; }
+function leftRows(){
+  if(isIx()){
+    let r=IX().filter(x=>S.grp==='all'||x.g===S.grp);
+    if(S.q){ const q=S.q.toLowerCase(), Q=S.q.toUpperCase(); r=r.filter(x=>x.n.toLowerCase().includes(q)||x.k.toLowerCase().includes(q)||(x.members&&x.members.includes(Q))); }
+    const k=S.gsort.k, dir=S.gsort.dir, f=k==='v'?S.per:k==='m'?'last':k;
+    r.sort((a,b)=>{ if(k==='n') return dir*a.n.localeCompare(b.n); const av=a[f], bv=b[f];
+      if(av==null&&bv==null) return a.n.localeCompare(b.n); if(av==null) return 1; if(bv==null) return -1; return dir*(av-bv)||a.n.localeCompare(b.n); });
+    return r.map(x=>({k:x.k,n:x.n,m:x.last,v:x[S.per],x}));
+  }
+  const g=F().g; let r=Object.keys(GMAP).map(n=>gStat(n,n,GMAP[n])).filter(x=>x.nr>=MIN_N||x.k===g);
+  if(S.q){ const q=S.q.toLowerCase(); r=r.filter(x=>x.n.toLowerCase().includes(q)||(q.length>=2&&x.rows.some(m=>m.sym.toLowerCase().startsWith(q)||m.name.toLowerCase().includes(q)))); }
+  const k=S.gsort.k, dir=S.gsort.dir;
+  r.sort((a,b)=>{ if(k==='n') return dir*a.n.localeCompare(b.n); const av=k==='m'?a.cnt:a.v, bv=k==='m'?b.cnt:b.v;
+    if(av==null&&bv==null) return a.n.localeCompare(b.n); if(av==null) return 1; if(bv==null) return -1; return dir*(av-bv)||a.n.localeCompare(b.n); });
+  const all=gStat('*','All stocks',STK); r.forEach(x=>x.m=x.cnt); all.m=all.cnt;
+  return [all].concat(r);
+}
+const selKey=()=>isIx()?S.ix:F().g;
+function setSel(k){ if(isIx()) S.ix=k; else F().g=k; }
+
+/* ================= rendering ================= */
+let BUSY=0;
+async function refresh(keep){
+  if(!P.ok||!DATA) return;
+  const tok=++BUSY;
+  // a period or date that reaches back past the recent price file needs the full history — loaded once, on demand
+  if(!P.full&&(REW!=null||baseOff(END(),S.per)-12<P.cut)){
+    $('status').textContent='Loading the full price history…'; $('status').classList.remove('hidden'); $('content').style.opacity='.5';
+    try{ await ensureFull(); }catch(e){ if(tok!==BUSY) return; $('status').textContent='The full price history did not load — showing Today instead.'; S.per='pc'; REW=null; setTimeout(()=>$('status').classList.add('hidden'),4000); $('content').style.opacity='1'; }
+    if(tok!==BUSY) return;
+    if(P.full){ $('status').classList.add('hidden'); $('content').style.opacity='1'; }
+  }
+  const f=F();
+  if(!isIx()){
+    try{ if(f.univ==='sme'||(f.bse&&!f.sme&&!BSE_SME.ok)) await ensureBseSme(); if(f.univ==='smeipo') await ensureSmeIpo(); if(f.univ==='smeemerge') await ensureSmeEmerge(); }
+    catch(e){ if(f.univ==='smeipo'||f.univ==='smeemerge'){ S.listErr=UNIVS.find(u=>u[0]===f.univ)[1]+' member list did not load.'; f.univ='all'; } }
+    if(tok!==BUSY) return;
+  }
+  const before=selKey()+'|'+S.stk;
+  compute(); bars(); setAsof(); noteLine(); rewBar();
+  const tr=S.view==='tracker', he=S.view==='heat', mo=S.view==='monthly'&&!isIx();
+  $('grid').classList.toggle('hidden',!tr&&!(S.view==='monthly'&&isIx())); $('heatWrap').classList.toggle('hidden',!he); $('mWrap').classList.toggle('hidden',!mo);
+  if(he){ LROWS=leftRows(); renderHeat(); }
+  else if(mo) mRender(keep);
+  else{ renderLeft(keep); renderStocks(keep); K.fitGrid($('grid'));
+    if(keep&&before===selKey()+'|'+S.stk){ chartHead(); if(S.stk||isIx()){ if(CH.data) CH.setLive(curLive()); } else showChart(); } else showChart(); }
+  syncURL();
+}
+function seg(id,arr,cur,fn){ $(id).innerHTML=arr.map(a=>`<button type="button" class="${a[0]===cur?'on':''}" data-v="${esc(a[0])}"${a[3]?` title="${esc(a[3])}"`:''}>${esc(a[1])}${a[2]!=null?`<i>${a[2]}</i>`:''}</button>`).join('');
+  $(id).querySelectorAll('button').forEach(b=>b.onclick=()=>fn(b.dataset.v)); }
+function bars(){
+  const f=F(), ix=isIx();
+  $('modes').innerHTML=MODES.map(m=>`<button type="button" role="tab" aria-selected="${S.mode===m[0]}" class="${S.mode===m[0]?'on':''}" data-v="${m[0]}">${m[1]}</button>`).join('');
+  $('modes').querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.v));
+  seg('pers',PERS.map(p=>[p[0],p[0]==='pc'&&REW!=null?'1D':p[1]]),S.per,v=>{ S.per=v; saveUI(); refresh(); });
+  $('lvls').classList.toggle('hidden',ix); $('grps').classList.toggle('hidden',!ix);
+  document.querySelectorAll('.os-bar .flt').forEach(el=>el.classList.toggle('hidden',ix));
+  if(ix){ const cnt={}; IX().forEach(x=>cnt[x.g]=(cnt[x.g]||0)+1);
+    if(S.grp!=='all'&&!cnt[S.grp]&&IX().length) S.grp=DATA.groups.find(g=>cnt[g])||'all';
+    seg('grps',DATA.groups.filter(g=>cnt[g]).map(g=>[g,(DATA.group_labels[g]||g).replace(' Market','').replace(' / Factor',''),cnt[g]]).concat([['all','All',IX().length]]),S.grp,v=>{ S.grp=v; S.stk=null; saveUI(); refresh(); }); }
+  else{ seg('lvls',LEVELS,f.level,v=>{ f.level=v; if(f.g!=='*') f.g=null; S.stk=null; saveUI(); refresh(); });
+    $('fUniv').innerHTML=UNIVS.map(u=>`<option value="${u[0]}">${esc(u[1])}</option>`).join(''); $('fUniv').value=f.univ; $('fCap').value=f.cap; $('fFloor').value=String(f.floor);
+    const lock=f.univ!=='all'; $('tBse').classList.toggle('on',f.bse||f.univ==='sme'||f.univ==='smeipo'); $('tSme').classList.toggle('on',f.sme||f.univ.startsWith('sme')); $('tBse').disabled=$('tSme').disabled=lock;
+    $('tBse').setAttribute('aria-pressed',f.bse); $('tSme').setAttribute('aria-pressed',f.sme); }
+  seg('views',ix?[['tracker','Tracker'],['heat','Heatmap']]:[['tracker','Tracker'],['heat','Heatmap'],['monthly','Monthly']],S.view==='monthly'&&ix?'tracker':S.view,v=>{ S.view=v; saveUI(); refresh(); });
+  const tab=S.tabs[S.mode];
+  seg('kTabs',TABS,tab,v=>{ S.tabs[S.mode]=v; if(v==='gain') S.ksort={k:'r',dir:-1}; else if(v==='lose') S.ksort={k:'r',dir:1}; renderStocks(); showChart(); });
+  $('gSearch').placeholder=ix?'Find an index, or a stock symbol':'Find a '+lvlLabel().toLowerCase().replace(/s$/,'').replace(/ie$/,'y')+', or a stock';
+  $('pG').classList.toggle('ix',ix);
+}
+function setMode(m){ if(m===S.mode) return; S.mode=m; S.stk=null; S.q=''; S.kq=''; $('gSearch').value=''; $('kSearch').value=''; S.pane=m==='movers'?'k':'g';
+  S.gsort={k:'v',dir:-1}; const tb=S.tabs[m]; S.ksort={k:'r',dir:tb==='lose'?1:-1}; saveUI(); refresh(); }
+function setAsof(){
+  const el=$('asof'); el.className='os-asof';
+  if(REW!=null){ el.classList.add('rew'); el.textContent='Rewound to the close of '+niceDate(isoOff(REW)); return; }
+  const lv=P.live&&P.live.off===P.NOW, open=marketOpenIST();
+  if(isIx()&&LIVE_T){ el.classList.add('live'); el.innerHTML='<i class="os-dot'+(open?' on':'')+'"></i>'+(open?'Live '+LIVE_T+' IST · refreshes every minute':'Last session · NSE feed '+LIVE_T+' IST'); return; }
+  if(lv){ const today=P.live.date===todayIST(); el.classList.add('live');
+    el.innerHTML='<i class="os-dot'+(open&&today?' on':'')+'"></i>'+(open&&today?'Live '+esc(P.live.time)+' IST · refreshes every minute':'Last traded prices · '+niceDate(P.live.date)+' '+esc(P.live.time)+' IST'); return; }
+  el.textContent=P.EOD?'Close of '+niceDate(isoOff(P.NOW)):'';
+}
+function noteLine(){
+  const el=$('note'), a=[];
+  if(S.listErr){ a.push('<b>'+esc(S.listErr)+'</b>'); S.listErr=''; }
+  if(REW!=null){ a.push('<b style="color:var(--accent-text,var(--accent))">Rewound to the close of '+niceDate(isoOff(REW))+'</b> — nothing later is used.'+
+    (isIx()?(HIST?' '+IX().length+' indices had a published level then; changes are from closing values; members are the list in force that day; PE, PB and dividend yield are not kept for past dates.':' '+(S.histErr?'The index history file did not load, so indices cannot be rewound.':'Loading the index history…'))
+      :' Market cap is the cap on that date (≈ = estimated from today\'s share count). F&O, Nifty 500 and Microcap 250 are the lists in force that day'+(INFO.noList?' — <b>'+esc(INFO.noList)+' has no list on this date</b>':'')+'; the classification and SME lists are today\'s.')); }
+  else if(liveStale()&&!isIx()) a.push('<b class="os-neg">Today\'s live prices have not loaded'+(P.liveFail?' (the feed did not answer)':'')+'</b> — figures are up to the close of '+niceDate(isoOff(P.NOW))+', not today\'s move. Retrying every minute.');
+  el.innerHTML=a.join(' '); el.classList.toggle('hidden',!a.length);
+}
+function renderLeft(keep){
+  LROWS=leftRows(); const ix=isIx();
+  if(ix&&S.wantIx&&(HIST||S.histErr)){ const w=normNm(S.wantIx), x=IX().find(i=>normNm(i.k)===w||normNm(i.n)===w); S.wantIx=null; if(x){ S.ix=x.k; if(S.grp!=='all'&&x.g!==S.grp){ S.grp=x.g; bars(); LROWS=leftRows(); } } }
+  else if(ix&&S.wantIx){ const w=normNm(S.wantIx), x=IX().find(i=>normNm(i.k)===w||normNm(i.n)===w); if(x){ S.wantIx=null; S.ix=x.k; if(S.grp!=='all'&&x.g!==S.grp){ S.grp=x.g; bars(); LROWS=leftRows(); } } }
+  if(!ix&&S.wantG){ const w=normNm(S.wantG); S.wantG=null; const x=LROWS.find(r=>normNm(r.n)===w); if(x) F().g=x.k; else if(GMAP[Object.keys(GMAP).find(n=>normNm(n)===w)]){ F().g=Object.keys(GMAP).find(n=>normNm(n)===w); LROWS=leftRows(); } }
+  if(!LROWS.some(r=>r.k===selKey())){ setSel(ix?(LROWS.length?LROWS[0].k:null):(S.mode==='movers'||LROWS.length<2?'*':LROWS[1].k)); S.stk=null; keep=false; S.autoG=!ix&&S.mode==='sectors'; }
+  const body=ix?LROWS:LROWS.slice(1), up=body.filter(r=>r.v>0).length, dn=body.filter(r=>r.v<0).length;
+  $('gTitle').innerHTML=esc(ix?(S.grp==='all'?'All indices':(DATA.group_labels[S.grp]||S.grp)):lvlLabel())+'<i>'+body.length+'</i>';
+  $('gBreadth').innerHTML=`<span class="os-pos">${up} up</span> · <span class="os-neg">${dn} down</span>`;
+  const st=S.gsort;
+  $('gHead').innerHTML=`<span data-k="n" class="${st.k==='n'?'on':''}">${ix?'Index':esc(lvlLabel().replace(/ies$/,'y').replace(/s$/,''))}${arrow(st,'n')}</span><span data-k="m" class="${st.k==='m'?'on':''}" title="${ix?'Index level':'Stocks in the group under the current filters'}">${ix?'Level':'N'}${arrow(st,'m')}</span><span data-k="v" class="${st.k==='v'?'on':''}" title="${ix?'':'Average return of the group\'s stocks'}">${perLabel()}${arrow(st,'v')}</span>`;
+  $('gHead').querySelectorAll('span').forEach(sp=>sp.onclick=()=>{ const k=sp.dataset.k; if(S.gsort.k===k) S.gsort.dir*=-1; else S.gsort={k,dir:k==='n'?1:-1}; renderLeft(true); });
+  const L=$('gList'), top=L.scrollTop, sel=selKey();
+  L.innerHTML=LROWS.map((r,i)=>`<div class="os-row gr${r.k===sel?' on':''}" role="option" aria-selected="${r.k===sel}" data-i="${i}"><span class="n" title="${esc(r.n)}">${r.k==='*'?'<b>All stocks</b>':esc(r.n)}${ix&&r.x.eod&&REW==null?`<span class="os-tag" title="NSE's live feed does not carry this index — level and changes are from its closing values up to ${r.x.eod}">CLOSE</span>`:''}</span>`+
+    `<span class="m">${ix?fmtN(r.m):inr(r.m)}</span><span class="v ${cls(r.v)}">${fmtPct(r.v)}</span></div>`).join('')
+    ||`<div class="os-empty">${ix&&REW!=null&&!HIST?(S.histErr?'The index history file did not load.':'Loading the index history…'):S.q?'Nothing matches “'+esc(S.q)+'”.':'Nothing to show.'}</div>`;
+  if(!ix&&LROWS.length===1&&STK.length&&S.q) L.innerHTML+=`<div class="os-empty">No ${esc(lvlLabel().toLowerCase())} or stock matches “${esc(S.q)}”.</div>`;
+  if(!ix&&LROWS.length===1&&!STK.length) L.innerHTML+=`<div class="os-empty">${INFO.noList?esc(INFO.noList)+' has no list on file for this date.':'No stocks match these filters.'}</div>`;
+  L.querySelectorAll('.gr').forEach(el=>el.onclick=()=>{ S.pane='g'; pickLeft(LROWS[+el.dataset.i].k); });
+  if(keep) L.scrollTop=top; else{ const on=L.querySelector('.on'); if(on) on.scrollIntoView({block:'nearest'}); }
+}
+function pickLeft(k,lazy){
+  if(k===selKey()&&!S.stk) return; S.autoG=false; setSel(k); S.stk=null;
+  $('gList').querySelectorAll('.gr').forEach(el=>{ const on=LROWS[+el.dataset.i].k===k; el.classList.toggle('on',on); el.setAttribute('aria-selected',on); if(on) el.scrollIntoView({block:'nearest'}); });
+  renderStocks(); showChart(lazy); syncURL();
+}
+function stockBase(){
+  KNOTE='';
+  if(isIx()){ const x=curIx(); if(!x) return null; const ml=memList(x); if(!ml) return {none:1};
+    KNOTE=ml.note; return {rows:ml.syms.map(sy=>{ const t=P.T[String(sy).toUpperCase()]; return (t&&sRow(t))||{t:null,sym:sy,name:t?((P.META[t]||{}).name||''):'',p:null,r:null,mc:null,rs:null}; }),title:x.n,empty:ml.syms.length?'':ml.note}; }
+  const g=F().g; if(g==='*') return {rows:STK,title:'All stocks'};
+  return {rows:GMAP[g]||[],title:g||''};
+}
+function renderStocks(keep){
+  const b=stockBase(), L=$('kList'), tab=S.tabs[S.mode], ks=S.ksort, act=tab==='active', on=k=>!act&&ks.k===k;
+  $('kHead').innerHTML=`<span data-k="n" class="${on('n')?'on':''}">Stock${act?'':arrow(ks,'n')}</span><span data-k="p" class="${on('p')?'on':''}">Price${act?'':arrow(ks,'p')}</span><span data-k="mc" class="${on('mc')?'on':''}" title="Market cap, ₹ crore">M-cap${act?'':arrow(ks,'mc')}</span>`+
+    `<span data-k="rs" class="${on('rs')?'on':''}" title="RS rating 1–99: the stock's blended 1M / 3M / 6M return ranked among all stocks of ₹500 Cr and up">RS${act?'':arrow(ks,'rs')}</span><span data-k="r" class="${act||on('r')?'on':''}">${perLabel()}${act?' ↕':arrow(ks,'r')}</span>`;
+  $('kHead').querySelectorAll('span').forEach(sp=>sp.onclick=()=>{ if(S.tabs[S.mode]==='active') return; const k=sp.dataset.k; if(S.ksort.k===k) S.ksort.dir*=-1; else S.ksort={k,dir:k==='n'?1:-1}; renderStocks(true); });
+  KROWS=[]; KALL=[]; $('kCopy').disabled=$('kCsv').disabled=true; $('kCount').textContent='';
+  if(!b){ $('kTitle').textContent='Stocks'; L.innerHTML=`<div class="os-empty">Pick ${isIx()?'an index':'a group'}.</div>`; S.stk=null; return; }
+  if(b.none){ $('kTitle').textContent=curIx().n; L.innerHTML=`<div class="os-empty">No member list on file for this index.<br>NSE's list is tracked for ${IX().filter(i=>i.members).length} of the ${IX().length} indices here.</div>`; S.stk=null; return; }
+  $('kTitle').innerHTML=esc(b.title);
+  let v=b.rows.slice(); const q=S.kq.toLowerCase();
+  if(q) v=v.filter(r=>r.sym.toLowerCase().includes(q)||(r.name||'').toLowerCase().includes(q));
+  const upN=v.filter(r=>r.r>0).length, dnN=v.filter(r=>r.r<0).length, nop=v.filter(r=>r.p==null).length;
+  if(tab==='gain') v=v.filter(r=>r.r>0); else if(tab==='lose') v=v.filter(r=>r.r<0); else if(act) v=v.filter(r=>r.r!=null);
+  if(act) v.sort((a,b2)=>Math.abs(b2.r)-Math.abs(a.r));
+  else{ const k=ks.k, dir=ks.dir; v.sort((a,b2)=>{ if(k==='n') return dir*a.sym.localeCompare(b2.sym); const av=a[k], bv=b2[k];
+    if(av==null&&bv==null) return a.sym.localeCompare(b2.sym); if(av==null) return 1; if(bv==null) return -1; return dir*(av-bv)||a.sym.localeCompare(b2.sym); }); }
+  KALL=v; const MAX=(!isIx()&&F().univ.startsWith('sme'))?2000:300; KROWS=v.slice(0,MAX);
+  $('kCount').innerHTML=`<span class="os-pos">${upN.toLocaleString('en-IN')} up</span> · <span class="os-neg">${dnN.toLocaleString('en-IN')} down</span>`;
+  if(S.stk&&!KROWS.some(r=>r.t===S.stk)) S.stk=null;
+  if(!S.stk&&S.mode==='movers'){ const m=KROWS.find(r=>r.t); if(m){ S.stk=m.t; S.autoK=true; } }
+  $('kCopy').disabled=$('kCsv').disabled=!KROWS.length;
+  const top=L.scrollTop, stale=liveStale();
+  L.innerHTML=(KROWS.map((m,i)=>`<div class="os-row kr${m.t&&m.t===S.stk?' on':''}" role="option" aria-selected="${!!(m.t&&m.t===S.stk)}" data-i="${i}" title="${esc((m.name||m.sym)+(m.g?' · '+m.g:''))}"><span class="n"><b>${esc(m.sym)}</b><i>${esc(m.name)}</i></span>`+
+    `<span class="m">${m.p==null?'—':fmtN(m.p)}</span><span class="m c3"${m.approx?' title="Estimated: today\'s share count at that day\'s price"':''}>${m.mc==null?'—':(m.approx?'≈ ':'')+inr(m.mc)}</span><span class="m rsb ${m.rs==null?'':m.rs>=80?'os-pos':m.rs<=20?'os-neg':''}">${m.rs==null?'—':m.rs}</span><span class="v ${cls(m.r)}">${fmtPct(m.r)}</span></div>`).join('')
+    ||`<div class="os-empty">${b.empty||(INFO.noList?esc(INFO.noList)+' has no list on file for this date.':q?'No stock here matches “'+esc(S.kq)+'”.':tab==='all'?'No stocks to show.':'No stock in this list is '+(tab==='gain'?'up':tab==='lose'?'down':'moving')+' over this period.')}</div>`)+
+    (KROWS.length?`<div class="os-note">${v.length>MAX?'Showing the first '+MAX+' of '+v.length.toLocaleString('en-IN')+' — the CSV has them all. ':''}${KNOTE?KNOTE+' ':''}${REW!=null?'':P.live&&P.live.off===P.NOW?'Prices live at '+esc(P.live.time)+' IST.':'Prices: close of '+niceDate(isoOff(P.NOW))+'.'}${stale?' <b class="os-neg">Today\'s live prices have not loaded'+(P.liveFail?' (the feed did not answer)':'')+' — these are NOT today\'s moves.</b>':''}${nop?' '+nop+' with no price on file under that ticker.':''}</div>`:'');
+  L.querySelectorAll('.kr').forEach(el=>el.onclick=()=>{ S.pane='k'; pickStock(KROWS[+el.dataset.i]); });
+  if(keep) L.scrollTop=top; else{ const o=L.querySelector('.on'); if(o) o.scrollIntoView({block:'nearest'}); else L.scrollTop=0; }
+}
+function pickStock(m,lazy){
+  if(!m||!m.t||m.t===S.stk) return; S.stk=m.t; S.autoK=false;
+  $('kList').querySelectorAll('.kr').forEach(el=>{ const on=KROWS[+el.dataset.i].t===S.stk; el.classList.toggle('on',on); el.setAttribute('aria-selected',on); if(on) el.scrollIntoView({block:'nearest'}); });
+  showChart(lazy);
+}
+function backToGroup(){ if(!S.stk) return; S.stk=null; S.pane='g'; $('kList').querySelectorAll('.kr.on').forEach(el=>{ el.classList.remove('on'); el.setAttribute('aria-selected',false); }); showChart(); }
+function syncURL(){ try{ const u=new URL(location.href), q=u.searchParams; ['v','lv','level','g','name','ix','asof'].forEach(k=>q.delete(k));
+  q.set('v',S.mode); if(isIx()){ if(S.ix) q.set('ix',S.ix); } else{ if(F().level!=='macro') q.set('lv',F().level); if(F().g&&F().g!=='*') q.set('g',F().g); }
+  if(REW!=null) q.set('asof',isoOff(REW)); history.replaceState(null,'',u); }catch(e){} }
+
+/* ---- the chart pane: the picked stock, else the index, else the group's own equal-weight line ---- */
+const cell=(l,v,c,tip)=>`<div${tip?` title="${esc(tip)}"`:''}><span>${l}</span><b class="${c||''}">${v}</b></div>`;
+function vbadge(p){ if(p==null) return ''; const hue=Math.round((1-p/100)*130); return `<i class="vb" style="font-style:normal;background:hsl(${hue} 62% 40%)" title="Valuation percentile ${p}: where today's figure sits in this index's own observed range. 100 = dearest seen, 0 = cheapest.">${p}</i>`; }
+const curG=()=>LROWS.find(r=>r.k===F().g)||null;
+function chartHead(){
+  const stk=S.stk, ix=isIx();
+  $('cBack').classList.toggle('hidden',!stk); $('cOpen').classList.toggle('hidden',!stk); $('cBack').textContent=ix?'← Index chart':'← Group chart';
+  if(stk){ const sym=symOf(stk), m=P.META[stk]||{}, d1=sRow(stk,'pc')||{};
+    $('cSym').textContent=sym; $('cName').textContent=m.name||''; $('cPx').textContent=d1.p==null?'—':'₹'+fmtN(d1.p);
+    $('cChg').textContent=fmtPct(d1.r); $('cChg').className='os-chg '+cls(d1.r);
+    $('cOpen').href='./stock.html?sym='+encodeURIComponent(baseOf(stk)); $('cFull').href='./chart.html?s='+encodeURIComponent(sym); $('cFull').classList.toggle('hidden',!stk.endsWith('.NS')); return; }
+  $('cFull').setAttribute('href','#'); $('cFull').classList.add('hidden');
+  if(ix){ const x=curIx();
+    if(!x){ $('cSym').textContent='—'; $('cName').textContent='Pick an index'; $('cPx').textContent=''; $('cChg').textContent=''; $('cChg').className=''; $('cStats').innerHTML=''; return; }
+    $('cSym').textContent=x.n; $('cName').textContent=(DATA.group_labels[x.g]||'')+(x.mem?' · '+x.mem+' stocks':'');
+    $('cPx').textContent=fmtN(x.last); $('cChg').textContent=fmtPct(x.pc); $('cChg').className='os-chg '+cls(x.pc);
+    if(FEEDK.has(normNm(x.k))||FEEDK.has(normNm(x.n))){ $('cFull').href='./chart.html?s='+encodeURIComponent(x.k.toUpperCase().replace(/[^A-Z0-9]/g,'')); $('cFull').classList.remove('hidden'); }
+    ixStats(x); return; }
+  const g=curG();
+  if(!g){ $('cSym').textContent='—'; $('cName').textContent='Pick a group'; $('cPx').textContent=''; $('cChg').textContent=''; $('cChg').className=''; $('cStats').innerHTML=''; return; }
+  $('cSym').textContent=g.n; $('cName').textContent=(g.k==='*'?'':lvlLabel().replace(/ies$/,'y').replace(/s$/,'')+' · ')+g.cnt.toLocaleString('en-IN')+' stocks · equal weight';
+  $('cPx').textContent=''; $('cChg').textContent=fmtPct(g.v)+' '+perLabel(); $('cChg').className='os-chg '+cls(g.v);
+  gStats(g);
+}
+function ixStats(x){
+  const past=REW!=null?'NSE’s PE, PB and dividend yield are not kept for past dates':'', fromHi=(x.yh>0&&x.last>0)?(x.last/x.yh-1)*100:null;
+  $('cStats').innerHTML=cell('PE',x.pe==null?'—':fmtN(x.pe,1)+vbadge(x.pep),'',past||'Price to earnings, as NSE publishes it')+
+    cell('PB',x.pb==null?'—':fmtN(x.pb,2)+vbadge(x.pbp),'',past||'Price to book, as NSE publishes it')+
+    cell('Div yield',x.dy==null?'—':fmtN(x.dy,2)+'%','',past)+
+    cell('52W range',x.yl==null?'—':fmtN(x.yl,0)+' – '+fmtN(x.yh,0)+(x.pos52==null?'':`<small>${x.pos52}%</small>`),'','Lowest and highest level of the last 52 weeks, and where the level sits between them')+
+    cell('From 52W high',fmtPct(fromHi),fromHi==null?'':fromHi>-5?'os-pos':fromHi<-20?'os-neg':'')+
+    cell('RS · 1M',x.rs1m==null?'—':(x.rs1m>0?'+':'')+x.rs1m.toFixed(2),cls(x.rs1m),'The index’s 1-month return minus Nifty 50’s. Positive = leading the market.');
+}
+function gStats(g){
+  const pes=[], rss=[]; let mc=0, mcN=0;
+  for(const r of g.rows){ if(PE&&!PE.fail){ const v=PE[r.sym]; if(v!=null&&v>0) pes.push(v); } if(r.rs!=null) rss.push(r.rs); if(r.mc>0){ mc+=r.mc; mcN++; } }
+  const pm=medianOf(pes), rm=medianOf(rss);
+  $('cStats').innerHTML=cell('Stocks',g.cnt.toLocaleString('en-IN'))+
+    cell('Up / down',`<i style="font-style:normal" class="os-pos">${g.up}</i> / <i style="font-style:normal" class="os-neg">${g.dn}</i>`,'','Stocks up and down over '+perLabel())+
+    cell('Avg '+perLabel(),fmtPct(g.v),cls(g.v),'Plain average of the stocks\' returns — every stock counts the same')+
+    cell('Median P/E',!PE?'…':PE.fail||REW!=null?'—':pm==null?'—':fmtN(pm,1)+`<small>${pes.length} of ${g.cnt}</small>`,'',REW!=null?'P/E is not kept for past dates':PE&&PE.fail?'The P/E file did not load':'Median trailing-twelve-month P/E of the stocks that have one (loss-makers have none)')+
+    cell('M-cap ₹Cr',mcN?inr(mc):'—','','Sum of the stocks\' market caps')+
+    cell('Median RS',rm==null?'—':Math.round(rm),rm==null?'':rm>=60?'os-pos':rm<=40?'os-neg':'','Median RS rating of the group\'s stocks (1–99)');
+  if(!PE) ensurePE().then(()=>{ if(!S.stk&&!isIx()&&curG()===g) gStats(g); });
+}
+function stkStats(d){
+  const t=S.stk, row=sRow(t)||{}, s=P.SERIES[t], e=END();
+  let hi=null, s50=['—',''], s200=['—',''], vr=null, last=row.p;
+  if(s){ const i=idxLE(s.d,e); for(let j=i;j>=0&&e-s.d[j]<=365;j--) if(hi==null||s.p[j]>hi) hi=s.p[j]; if(hi!=null) hi/=100; }
+  if(d&&d.bars.length&&!d.mixed){ const b=d.bars, n=b.length; last=b[n-1].c; const w=b.slice(-252); hi=Math.max(...w.map(x=>x.h!=null?x.h:x.c));
+    const sma=k=>n>=k?b.slice(-k).reduce((a,x)=>a+x.c,0)/k:null, rel=v=>{ if(v==null) return ['—','']; const p=(last/v-1)*100; return [(p>=0?'Above ':'Below ')+fmtPct(p),cls(p)]; };
+    s50=rel(sma(50)); s200=rel(sma(200));
+    const vs=b.slice(-51,-1).map(x=>x.v).filter(x=>x!=null), lv=b[n-1].v; if(lv!=null&&vs.length>=20) vr=lv/(vs.reduce((a,c)=>a+c,0)/vs.length); }
+  const fromHi=(hi>0&&last>0)?(last/hi-1)*100:null;
+  $('cStats').innerHTML=cell('From 52W high',fmtPct(fromHi),fromHi==null?'':fromHi>-5?'os-pos':fromHi<-25?'os-neg':'','Latest price against the highest of the trailing year')+
+    cell('M-cap ₹Cr',row.mc==null?'—':(row.approx?'≈ ':'')+inr(row.mc),'',row.approx?'Estimated: today\'s share count at that day\'s price':'')+
+    cell('RS',row.rs==null?'—':row.rs,row.rs==null?'':row.rs>=80?'os-pos':row.rs<=20?'os-neg':'','RS rating 1–99 among all stocks of ₹500 Cr and up')+
+    cell('Vol vs 50D avg',vr==null?'—':vr.toFixed(1)+'×',vr!=null&&vr>=1.5?'os-pos':'','Latest session’s volume ÷ the average of the 50 sessions before it')+
+    cell('vs 50 SMA',s50[0],s50[1])+cell('vs 200 SMA',s200[0],s200[1]);
+}
+function curLive(){ if(REW!=null) return null; const stk=S.stk;
+  if(stk){ if(P.live&&P.LV.has(stk)){ const s=P.SERIES[stk]; return {price:s.p[s.p.length-1]/100,date:P.live.date,title:'Live'}; } return null; }
+  if(!isIx()) return null; const x=curIx(); return x&&x.lv&&x.last>0?{price:x.last,date:todayIST(),title:'Live'}:null; }
+/* a group's own line: the plain average of its stocks' daily moves, chained from 100 (today's members) */
+function groupBars(rows){
+  const e=END(), sum=new Float64Array(e+2), cnt=new Uint16Array(e+2); let lo=e+1;
+  for(const r of rows){ const s=P.SERIES[r.t]; if(!s) continue; const d=s.d, p=s.p;
+    for(let i=1;i<d.length&&d[i]<=e;i++){ if(d[i]-d[i-1]>10||!(p[i-1]>0)||!(p[i]>0)) continue; sum[d[i]]+=p[i]/p[i-1]; cnt[d[i]]++; if(d[i]<lo) lo=d[i]; } }
+  const need=Math.min(3,rows.length), bars=[]; let lvl=100;
+  for(let o=lo;o<=e;o++){ if(cnt[o]<need||cnt[o]===0) continue; if(!bars.length) bars.push({ts:P.START+(o-1)*DAY,c:100,co:1}); lvl*=sum[o]/cnt[o]; bars.push({ts:P.START+o*DAY,c:Math.round(lvl*100)/100,co:1}); }
+  return bars;
+}
+let showTimer=null, TOK=0;
+function showChart(lazy){
+  const stk=S.stk, ix=isIx(), x=ix?curIx():null, g=ix?null:curG(), tok=++TOK; chartHead(); clearTimeout(showTimer);
+  if(!stk&&!x&&!g){ CH.clear(''); return; }
+  if(stk) stkStats(null);
+  showTimer=setTimeout(async()=>{                          // holding an arrow key walks the list; only the row you stop on is fetched
+    const lim=REW!=null?isoOff(REW):null, sym=stk?symOf(stk):null; $('cMsg').textContent='Loading chart…';
+    try{
+      let d=null, note='';
+      if(stk){ try{ d=await K.loadStockBars(sym); }catch(e){ d=null; } if(tok!==TOK) return;
+        if(!d){ const s=P.SERIES[stk]; if(s&&s.d.length>1){ d={ohlc:false,mixed:true,bars:s.d.map((o,i)=>({ts:P.START+o*DAY,c:s.p[i]/100,co:1})).filter(b=>b.c>0)}; note='closing prices only'; } } }
+      else if(x){ d=await K.loadIndexBars(x.hk||x.k); if(tok!==TOK) return; }
+      else{ if(!g.rows.length) throw new Error('none'); d={ohlc:false,mixed:true,bars:groupBars(g.rows)}; note='average of today’s '+g.cnt.toLocaleString('en-IN')+' stocks, start = 100'+(P.full?'':' · last 8 months (3Y / Max load the rest)'); }
+      if(!d) throw new Error('none');
+      const v=lim?Object.assign({},d,{bars:d.bars.filter(b=>K.tsISO(b.ts)<=lim)}):d; if(!v.bars.length) throw new Error('none');
+      CH.show(v,{name:stk?((P.META[stk]||{}).name||sym):x?x.n:g.n,tag:stk?(/\.BO$/.test(stk)?'BSE':'NSE'):x?'NSE index':'Equal-weight',note,live:curLive()});
+      if(stk) stkStats(v);
+    }catch(e){ if(tok!==TOK) return; CH.clear('No daily price history on file for '+(stk?sym:x?x.n:g.n)+(lim?' on or before '+niceDate(lim):'')+'.'); }
+  },lazy?140:0);
+}
+function chartBar(){
+  $('cIv').innerHTML=['D','W','M'].map(k=>`<button type="button" class="${k===CH.iv?'on':''}" data-v="${k}" title="${{D:'Daily',W:'Weekly',M:'Monthly'}[k]} bars">${k}</button>`).join('');
+  $('cRg').innerHTML=['3M','6M','1Y','3Y','Max'].map(k=>`<button type="button" class="${k===CH.range?'on':''}" data-v="${k}">${k}</button>`).join('');
+  $('cIv').querySelectorAll('button').forEach(b=>b.onclick=()=>{ CH.setIv(b.dataset.v); S.iv=CH.iv; S.range=CH.range; saveUI(); chartBar(); });
+  $('cRg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ const v=b.dataset.v; CH.setRange(v); S.range=CH.range; saveUI(); chartBar();
+    if((v==='3Y'||v==='Max')&&!P.full&&!S.stk&&!isIx()){ $('cMsg').textContent='Loading the full price history…'; ensureFull().then(()=>{ if(!S.stk&&!isIx()) showChart(); },()=>{ $('cMsg').textContent=''; }); } });
+  $('cLog').classList.toggle('on',CH.log); $('cLog').setAttribute('aria-pressed',CH.log);
+}
+function setFocus(on){ S.focus=on==null?!S.focus:on; $('grid').classList.toggle('focus',S.focus); $('cFocus').textContent=S.focus?'Show lists':'Focus'; $('cFocus').setAttribute('aria-pressed',S.focus); }
+
+/* ================= heatmap ================= */
+function renderHeat(){
+  const m=S.per, r=LROWS.filter(x=>x.k!=='*'&&x.v!=null).sort((a,b)=>b.v-a.v);
+  const cap=m==='pc'?3:m==='w1'?6:m==='m1'?10:m==='m3'?18:m==='m6'||m==='ytd'?25:m==='y1'?35:80;
+  const color=v=>{ const t=Math.max(-1,Math.min(1,v/cap)); return t>=0?`hsl(142 ${28+Math.round(t*44)}% ${44-Math.round(t*10)}%)`:`hsl(0 ${28+Math.round(-t*44)}% ${48-Math.round(-t*12)}%)`; };
+  $('hmgrid').innerHTML=r.map((x,i)=>`<div class="hmtile" data-i="${i}" style="background:${color(x.v)}" title="${esc(x.n)}"><div class="hn">${esc(x.n)}</div><div class="hv">${fmtPct(x.v)}</div></div>`).join('')
+    ||`<div class="os-empty">${isIx()&&REW!=null&&!HIST?'Loading the index history…':'Nothing here has a '+perLabel()+' figure.'}</div>`;
+  const lg=$('hmLegend'); lg.firstElementChild.textContent='−'+cap+'%'; lg.children[2].textContent='+'+cap+'%';
+  $('hmgrid').querySelectorAll('.hmtile').forEach(t=>t.onclick=()=>{ setSel(r[+t.dataset.i].k); S.stk=null; S.view='tracker'; saveUI(); refresh(); });
+}
+
+/* ================= monthly: a row per group, a column per calendar month =================
+ * A cell = the average (or market-cap weighted) return of the group's stocks over that month: last close of the previous month →
+ * last close of the month (the newest month runs to the date on screen). A stock counts in a month only if it traded in it and
+ * had a close within 20 days before the month began. Groups = today's stocks under the page's filters, today's classification. */
+const M={range:12,sort:{k:null,dir:-1},rows:[],months:[],bm:null,tok:0};
+const M_RANGES=[[12,'1Y'],[24,'2Y'],[36,'3Y'],[60,'5Y'],[120,'10Y']], M_CAP=15, M_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function mMonths(n){
+  const e=END(), end=isoOff(e); let y=+end.slice(0,4), m=+end.slice(5,7); const out=[];
+  for(let i=0;i<n;i++){ const key=y+'-'+String(m).padStart(2,'0'), ny=m===12?y+1:y, nm=m===12?1:m+1, last=offOf(ny+'-'+String(nm).padStart(2,'0')+'-01')-1;
+    out.unshift({key,s:offOf(key+'-01')-1,e:Math.min(e,last),part:e<last,label:M_MON[m-1]+' '+String(y).slice(2),full:M_MON[m-1]+' '+y}); if(--m===0){ m=12; y--; } }
+  return out;
+}
+function mStockRet(t,mo){ const s=P.SERIES[t]; if(!s) return null; const i0=idxLE(s.d,mo.s), i1=idxLE(s.d,mo.e); if(i0<0||i1<=i0||mo.s-s.d[i0]>20) return null; const p0=s.p[i0]; return p0>0?(s.p[i1]/p0-1)*100:null; }
+function mCell(mem,mo){ let ws=0,wr=0,n=0; for(const r of mem){ const v=mStockRet(r.t,mo); if(v==null) continue; const w=S.weight==='mcap'?((P.META[r.t]&&P.META[r.t].mcap)||0):1; if(w<=0) continue; ws+=w; wr+=w*v; n++; } return (n>=MIN_N&&ws>0)?{r:wr/ws,n}:null; }
+const nAt=off=>{ if(!P.NOFFS.length) return null; const i=idxLE(P.NOFFS,off); return i<0?null:P.NIFTY[i][1]; };
+function mCompute(){
+  const months=M.months=mMonths(M.range); M.rows=[];
+  for(const name in GMAP){ const mem=GMAP[name]; if(mem.length<MIN_N) continue; const cells=months.map(mo=>mCell(mem,mo)); if(cells.some(Boolean)) M.rows.push({name,n:mem.length,cells}); }
+  for(const r of M.rows){ let v=1,k=0; for(const c of r.cells) if(c){ v*=1+c.r/100; k++; } r.tot=k?(v-1)*100:null; r.k=k; }
+  const bc=months.map(mo=>{ if(!P.NOFFS.length||mo.s<P.NOFFS[0]) return null; const a=nAt(mo.s), b=nAt(mo.e); return (a>0&&b>0)?{r:(b/a-1)*100,n:0}:null; });
+  let v=1,k=0; for(const c of bc) if(c){ v*=1+c.r/100; k++; }
+  M.bm=k?{name:'Nifty 500',cells:bc,tot:(v-1)*100,k}:null;
+}
+function mSorted(){ const {k,dir}=M.sort, r=M.rows.slice(), last=M.months.length-1, val=x=>k==='tot'?x.tot:(x.cells[k==null?last:k]||{}).r;
+  if(k==='name') return r.sort((a,b)=>a.name.localeCompare(b.name)*-dir);
+  return r.sort((a,b)=>{ const x=val(a),y=val(b); if(x==null&&y==null) return a.name.localeCompare(b.name); if(x==null) return 1; if(y==null) return -1; return (x-y)*dir; }); }
+function surfaceRGB(){ const v=(getComputedStyle(document.documentElement).getPropertyValue('--surface')||'').trim(), m=v.match(/^rgba?\(([^)]+)\)$/);
+  if(m){ const p=m[1].split(',').map(x=>parseFloat(x)); return [p[0]||0,p[1]||0,p[2]||0]; }
+  let h=v.replace('#',''); if(h.length===3) h=h.split('').map(c=>c+c).join(''); if(h.length<6) return [255,255,255]; return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16)||0); }
+function relLum(c){ const f=v=>{ v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4); }; return .2126*f(c[0])+.7152*f(c[1])+.0722*f(c[2]); }
+function contrast(a,b){ const l1=relLum(a),l2=relLum(b); return (Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05); }
+function mTd(c,srf,tip){ if(!c) return '<td class="na">—</td>';
+  const t=Math.min(1,Math.abs(c.r)/M_CAP), alpha=.10+t*.70, rgb=c.r>=0?[22,163,74]:[220,38,38], comp=rgb.map((x,i)=>Math.round(alpha*x+(1-alpha)*srf[i])), fg=contrast(comp,[255,255,255])>=contrast(comp,[11,18,32])?'#fff':'#0b1220';
+  return `<td class="c" style="background:rgba(${rgb},${alpha.toFixed(2)});color:${fg}" title="${esc(tip)}">${(c.r>=0?'+':'')+c.r.toFixed(1)}</td>`; }
+async function mRender(keep){
+  const tok=++M.tok, box=$('mBox');
+  seg('mRange',M_RANGES,M.range,v=>{ M.range=+v; M.sort={k:null,dir:-1}; mRender(); });
+  seg('mWeight',[['equal','Equal weight'],['mcap','Market-cap weight']],S.weight,v=>{ S.weight=v; mRender(); });
+  $('mRange').querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.v===M.range));
+  if(mMonths(M.range)[0].s-25<P.cut&&!P.full){ box.innerHTML='<div id="mMsg">Loading the full price history…</div>';
+    try{ await ensureFull(); }catch(e){ if(tok===M.tok) box.innerHTML='<div id="mMsg">Could not load the full price history. Try again.</div>'; return; }
+    if(tok!==M.tok||S.view!=='monthly') return; }
+  const sx=box.scrollLeft, sy=box.scrollTop; mCompute();
+  const rows=mSorted(), mo=M.months, srf=surfaceRGB(), last=mo.length-1, sk=M.sort.k==null?last:M.sort.k, ar=M.sort.dir<0?' ▼':' ▲', f=F();
+  if(!rows.length){ box.innerHTML='<div id="mMsg">No groups to show under these filters.</div>'; $('mNote').textContent=''; return; }
+  const head=`<tr><th class="nm${sk==='name'?' on':''}" data-k="name">${esc(lvlLabel())} <span style="color:var(--text-faint)">${rows.length}</span>${sk==='name'?ar:''}</th>`+
+    mo.map((m,i)=>`<th class="${sk===i?'on':''}" data-k="${i}" title="${esc(m.full+(m.part?' — up to '+niceDate(isoOff(END())):''))}">${m.label}${m.part?'*':''}${sk===i?ar:''}</th>`).join('')+
+    `<th class="tot${sk==='tot'?' on':''}" data-k="tot" title="All the months shown, compounded">${M_RANGES.find(x=>x[0]===M.range)[1]}${sk==='tot'?ar:''}</th></tr>`;
+  const line=(r,bm)=>`<tr class="${bm?'bm':''}"><td class="nm" ${bm?'':`data-name="${esc(r.name)}"`} title="${esc(r.name)}">${esc(r.name)}${bm?'':`<i>${r.n}</i>`}</td>`+
+    r.cells.map((c,i)=>mTd(c,srf,c?`${r.name} · ${mo[i].full}${mo[i].part?' (so far)':''}: ${fmtPct(c.r)}${c.n?' · '+c.n+' stocks':''}`:'')).join('')+
+    `<td class="tot ${cls(r.tot)}" title="${esc(r.k<mo.length?r.k+' of '+mo.length+' months have a figure':'')}">${r.tot==null?'—':(r.tot>=0?'+':'')+r.tot.toFixed(1)}</td></tr>`;
+  box.innerHTML=`<table id="mTbl"><thead>${head}</thead><tbody>${M.bm?line(M.bm,true):''}${rows.map(r=>line(r,false)).join('')}</tbody></table>`;
+  box.querySelectorAll('th').forEach(th=>th.onclick=()=>{ const k=th.dataset.k==='name'||th.dataset.k==='tot'?th.dataset.k:+th.dataset.k; M.sort=(sk===k)?{k,dir:-M.sort.dir}:{k,dir:-1}; mRender(true); });
+  box.querySelectorAll('td.nm[data-name]').forEach(td=>td.onclick=()=>{ S.view='tracker'; F().g=td.dataset.name; S.stk=null; saveUI(); refresh(); });
+  if(keep){ box.scrollLeft=sx; box.scrollTop=sy; } else{ box.scrollTop=0; box.scrollLeft=box.scrollWidth; }
+  $('mNote').innerHTML='Figures are % returns for each calendar month'+(mo[last].part?'; * = month still running, up to '+esc(niceDate(isoOff(END()))):'')+'. Colour is full strength at ±'+M_CAP+'%. '+
+    'Groups are today’s companies under the filters above ('+esc(UNIVS.find(u=>u[0]===f.univ)[1])+(f.floor?', ₹'+f.floor.toLocaleString('en-IN')+' Cr and up':'')+', '+MIN_N+' or more per group) under today’s classification, so a company that has since delisted is not counted. The last column compounds the months shown.'+
+    (M.bm&&P.NOFFS.length&&P.NOFFS[P.NOFFS.length-1]<END()?' The Nifty 500 row uses closing values up to '+esc(niceDate(isoOff(P.NOFFS[P.NOFFS.length-1])))+'.':'')+' For NSE’s own indices month by month, see <a href="./monthly-returns.html" style="color:var(--accent-text)">Monthly Returns</a>.';
+}
+function mCsv(){ const mo=M.months, q=x=>'"'+String(x).replace(/"/g,'""')+'"', f=c=>c?c.r.toFixed(2):'', rows=(M.bm?[M.bm]:[]).concat(mSorted());
+  const lines=[['Group','Stocks'].concat(mo.map(m=>m.key),['Compounded_%']).join(',')].concat(rows.map(r=>[q(r.name),r.n||''].concat(r.cells.map(f),[r.tot==null?'':r.tot.toFixed(2)]).join(',')));
+  dl(lines.join('\n'),'stocksworld_monthly_'+F().level+'_'+M.range+'m.csv'); }
+function dl(text,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); }
+function kCsv(){ const q=x=>'"'+String(x==null?'':x).replace(/"/g,'""')+'"';
+  const lines=[['Symbol','Name','Price','Change%('+perLabel()+')','MktCapCr','RS','Group'].join(',')].concat(KALL.map(r=>[r.sym,q(r.name),r.p==null?'':r.p.toFixed(2),r.r==null?'':r.r.toFixed(2),r.mc==null?'':Math.round(r.mc),r.rs==null?'':r.rs,q(r.g||'')].join(',')));
+  dl(lines.join('\n'),'markets_'+S.mode+'_'+S.per+'_'+S.tabs[S.mode]+(REW!=null?'_'+isoOff(REW):'')+'.csv'); }
+
+/* ================= Rewind: END() is the only thing that moves ================= */
+function calDays(){ const s=P.SERIES['RELIANCE.NS']||P.SERIES['TCS.NS']||P.SERIES['INFY.NS']; if(!s) return []; const c=s.d.filter(o=>o<=P.EOD); if(P.NOW>P.EOD) c.push(P.NOW); return c; }
+async function setRew(off){
+  if(off!=null){
+    $('status').textContent='Loading the full price history for Rewind…'; $('status').classList.remove('hidden'); $('content').style.opacity='.5';
+    try{ await ensureFull();
+      if(!HM) HM=await fetch('./hist_mcap.json').then(r=>r.ok?r.json():null).then(j=>(j&&j.rows)?{rows:j.rows,chk:new Set(j.chk||[])}:{rows:{},chk:new Set()}).catch(()=>({rows:{},chk:new Set()}));
+    }catch(e){ $('status').textContent='Could not load the full history for Rewind. Try again.'; $('content').style.opacity='1'; return; }
+    $('status').classList.add('hidden'); $('content').style.opacity='1';
+  }
+  const cal=calDays();
+  if(off==null||!cal.length||off>=P.NOW) REW=null; else{ REW=cal[Math.max(0,idxLE(cal,off))]; if(REW>=P.NOW) REW=null; }
+  S.stk=null; refresh(); if(REW==null) liveTopUp();
+}
+function rewStep(dir){ const cal=calDays(); if(!cal.length) return; const i=idxLE(cal,END());
+  if(dir<0){ if(i>0) setRew(cal[i-1]); else if(!P.full) setRew(END()-1); } else setRew(i+1<cal.length?cal[i+1]:null); }
+function rewBar(){ const d=$('rewDate'); d.value=isoOff(END()); d.max=isoOff(P.NOW); d.min='1996-01-01';
+  $('rew').classList.toggle('on',REW!=null); $('rewNext').disabled=$('rewNow').disabled=REW==null; }
+
+function wire(){
+  chartBar();
+  $('rewPrev').onclick=()=>rewStep(-1); $('rewNext').onclick=()=>rewStep(1); $('rewNow').onclick=()=>setRew(null);
+  $('rewDate').onchange=e=>{ const v=e.target.value; if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){ rewBar(); return; } setRew(offOf(v)); };
+  $('fUniv').onchange=e=>{ const f=F(); f.univ=e.target.value; if(f.univ.startsWith('sme')&&f.floor>0) f.floor=0; S.stk=null; saveUI(); refresh(); };   // SME names are mostly below the ₹100 Cr floor
+  $('fCap').onchange=e=>{ F().cap=e.target.value; saveUI(); refresh(); };
+  $('fFloor').onchange=e=>{ F().floor=+e.target.value; saveUI(); refresh(); };
+  $('tBse').onclick=()=>{ F().bse=!F().bse; saveUI(); refresh(); }; $('tSme').onclick=()=>{ F().sme=!F().sme; saveUI(); refresh(); };
+  let t1,t2; $('gSearch').oninput=e=>{ clearTimeout(t1); t1=setTimeout(()=>{ S.q=e.target.value.trim(); renderLeft(); renderStocks(); showChart(); },120); };
+  $('kSearch').oninput=e=>{ clearTimeout(t2); t2=setTimeout(()=>{ S.kq=e.target.value.trim(); const b=S.stk; renderStocks(); if(S.stk!==b) showChart(); },120); };
+  $('kCsv').onclick=kCsv; $('mCsv').onclick=mCsv;
+  $('kCopy').onclick=()=>{ const rows=KROWS.filter(m=>m.t), txt=rows.map(m=>(/\.BO$/.test(m.t)?'BSE:':'NSE:')+m.sym).join(','), b=$('kCopy'), done=ok=>{ b.textContent=ok?'Copied '+rows.length:'Copy failed'; setTimeout(()=>b.textContent='Copy TV',1400); };
+    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>done(true),()=>done(false)); };
+  $('cLog').onclick=()=>{ CH.setLog(!CH.log); S.log=CH.log; saveUI(); chartBar(); };
+  $('cFocus').onclick=()=>setFocus(); $('cBack').onclick=backToGroup;
+  window.addEventListener('resize',()=>{ if(S.view==='tracker') K.fitGrid($('grid')); });
+  document.addEventListener('keydown',e=>{
+    if(S.view!=='tracker'||e.metaKey||e.ctrlKey||e.altKey) return;
+    const tg=e.target, typing=tg&&/^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
+    if(typing){ if(e.key==='Escape'||e.key==='Enter') tg.blur(); if(e.key!=='ArrowDown'&&e.key!=='ArrowUp') return; if(tg.type==='date'||tg.tagName==='SELECT') return; }
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){ const st=e.key==='ArrowDown'?1:-1;
+      if(S.pane==='k'&&KROWS.length){ let i=KROWS.findIndex(m=>m.t&&m.t===S.stk); for(i+=st;KROWS[i]&&!KROWS[i].t;i+=st); if(KROWS[i]) pickStock(KROWS[i],true); }
+      else{ const j=LROWS.findIndex(x=>x.k===selKey())+st; if(LROWS[j]) pickLeft(LROWS[j].k,true); }
+      e.preventDefault(); }
+    else if(e.key==='ArrowRight'){ if(KROWS.length){ S.pane='k'; if(!S.stk){ const m=KROWS.find(r=>r.t); if(m) pickStock(m); } } e.preventDefault(); }
+    else if(e.key==='ArrowLeft'||e.key==='Escape'){ if(S.pane==='k'||S.stk){ S.pane='g'; if(S.mode!=='movers') backToGroup(); e.preventDefault(); } }
+    else if(e.key==='Enter'){ const a=S.stk?$('cOpen'):$('cFull'); if(a.getAttribute('href')&&a.getAttribute('href')!=='#') location.href=a.href; }
+    else if(e.key==='f'||e.key==='F'){ setFocus(); }
+    else if(e.key==='/'){ $('gSearch').focus(); e.preventDefault(); }
+  });
+}
+
+(async function boot(){
+  const liveP=fetchLive(4).catch(()=>null);
+  try{
+    const [D,cls2,ixd,nifty]=await Promise.all([K.gunzipJSON('./dash_slim.bin'),
+      fetch('./sector_classification.json').then(r=>r.json()),
+      fetch('./indices.json?cb='+Date.now()).then(r=>r.json()),
+      fetch('./nifty500.json').then(r=>r.json()).catch(()=>({px:{}}))]);
+    P.META=D.meta||{}; P.SERIES=D.series||{}; P.START=D.startTs; P.cut=D.recentCutoffOff||0; P.CLS=cls2||{};
+    for(const t in P.META){ const sy=String(P.META[t].symbol||t.split('.')[0]).toUpperCase(); if(!P.T[sy]||/\.NS$/.test(t)) P.T[sy]=t; }
+    const endCnt={}; for(const t in P.SERIES){ if(!t.endsWith('.NS')) continue; const d=P.SERIES[t].d; if(d&&d.length) endCnt[d[d.length-1]]=(endCnt[d[d.length-1]]||0)+1; }
+    let best=0; for(const k in endCnt) if(endCnt[k]>best){ best=endCnt[k]; P.EOD=+k; }                       // the day most NSE series end on (one odd series must not decide)
+    P.NOW=P.EOD;
+    const bt=new Date(((D.endTs||D.generatedAt||0)+19800)*1000);                                              // a file built in market hours ends on a part-day bar — live prices may replace it
+    P.partial=bt.toISOString().slice(0,10)===isoOff(P.EOD)&&(bt.getUTCHours()+bt.getUTCMinutes()/60)<15.75;
+    const ih=D.indicesHistory||{}; for(const n in ih) P.IH[normNm(n)]=ih[n];
+    P.FNO=new Set(D.fnoToday||[]); P.FNOH=D.fnoHistory||[]; P.N500H=ih['Nifty 500']||[]; P.MC250H=ih['Nifty Microcap 250']||[];
+    if(P.N500H.length) P.N500=new Set(P.N500H[P.N500H.length-1].symbols); if(P.MC250H.length) P.MC250=new Set(P.MC250H[P.MC250H.length-1].symbols);
+    P.NIFTY=Object.entries(nifty.px||{}).map(([d,v])=>[offOf(d),v]).filter(x=>isFinite(x[0])&&x[1]>0).sort((a,b)=>a[0]-b[0]); P.NOFFS=P.NIFTY.map(x=>x[0]);
+    ixd.indices=ixd.indices.filter(x=>!HIDE_IX.test(x.n)&&!HIDE_IX.test(x.k)); DATA=ixd;
+    DATA.indices.forEach(x=>{ FEEDK.add(normNm(x.k)); FEEDK.add(normNm(x.n)); });
+    if(S.grp!=='all'&&!DATA.indices.some(x=>x.g===S.grp)) S.grp=DATA.groups.find(g=>DATA.indices.some(x=>x.g===g))||'all';
+    P.ok=true;
+    $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+    CH=new K.Chart({chart:$('cChart'),legend:$('cLegend'),msg:$('cMsg'),iv:S.iv,range:S.range,log:S.log});
+    const L0=await Promise.race([liveP,new Promise(r=>setTimeout(r,0,null))]);                                // live prices were asked for when boot began — if they are back they go in before the first paint
+    if(L0) applyLive(L0);
+    if(S.mode==='movers') S.pane='k';
+    if(S.tabs[S.mode]==='lose') S.ksort={k:'r',dir:1};
+    wire();
+    const a0=URLQ.get('asof');
+    if(a0&&/^\d{4}-\d{2}-\d{2}$/.test(a0)&&offOf(a0)<P.NOW) await setRew(offOf(a0)); else await refresh();
+    loadHist(); liveTopUp();
+    if(!L0) liveP.then(L=>{ if(!L){ P.liveFail=1; if(REW==null){ noteLine(); if(S.view==='tracker') renderStocks(true); } if(marketOpenIST()) setTimeout(()=>liveTick(4),15000); return; } if(applyLive(L)&&REW==null){ if(S.autoG&&S.mode==='sectors'&&!S.stk){ F().g=null; S.autoG=false; refresh(); } else if(S.autoK&&S.mode==='movers'){ S.stk=null; S.autoK=false; refresh(); } else refresh(true); } else setAsof(); });
+    setInterval(()=>{ if(!document.hidden&&(marketOpenIST()||(liveStale()&&!P.live))){ liveTopUp(); liveTick(4); } },60000);
+    document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&marketOpenIST()){ liveTopUp(); liveTick(4); } });
+  }catch(e){ $('status').textContent='Failed to load market data: '+(e&&e.message||e); console.error(e); }
+})();
+</script>
+</body>
+</html>

@@ -31244,6 +31244,17 @@ shows its last close — the tooltip says so.
 - **Checked locally 2026-11-26:** zero page errors; keyboard (↑↓ → ← Esc F /); all six periods; Rewind 2020-03-23 (132 indices, Nifty 50 7,610.25 −12.98%, chart ends that day); index with no member list; search with no match; heatmap → tracker; 375px dark and desktop light. sw v325 (`./os-kit.js` added to SHELL).
 
 - **`docs/movers.html` (2026-11-26, second page on the kit):** pane 1 = sectors (median move, count, "All sectors" first; click or ↑↓ filters — replaces the sector dropdown and the pulse tiles; breadth, Adv/Dec and near-52W-high count sit in its header — replaces the four stat cards); pane 2 = the movers list (Gainers / Losers / Biggest moves tabs, search, CSV, sort; top 300, every row for SME views); pane 3 = chart of the selected stock with 52W / m-cap / volume / SMA figures. `compute()` / `computeAt()` no longer filter by sector (the sector pane needs every sector) — the filter is in `secRows()`. Removed: the per-row sparkline and hover tip (the chart replaces them) and the separate "LIVE top 10 of all securities" strip (`?nse=gainers|loosers`). A ticker with no sf-data bar file is drawn from its closes ("closing prices only"); each such miss logs one 404 in the console (expected). Row link fixed: `stock.html?sym=` (the old rows used `?symbol=`, which stock.html does not read). Checked locally: three tabs, six windows, seven universes, cap band, sector click and keys, search with no match, Rewind 2020-03-23 (1,174 rows; F&O 124 rows, 0 gainers), 375px dark, desktop light.
+- **Markets = Sectors + Indices + Top Movers in ONE page (2026-11-26, user: "top movers and indices and sectors pages are one and the same" → "Merge into one page").**
+  `docs/markets.html` has a mode switch (Sectors / Indices / Top movers) over one price store `P` (dash_slim.bin + live bars appended by `putLive`;
+  `stock_data.bin` (20.9 MB) is loaded only when a period, Rewind date, Monthly range or 3Y/Max group chart reaches past `recentCutoffOff`). Rewind moves
+  one offset `END()`; every figure is recomputed from it. Top movers is the Sectors engine opened on the "All stocks" row + Gainers tab with floor ₹100 Cr
+  and BSE-only / SME on. One stock rule `retOf` (Today needs a bar ON the end day; period base ≤10 days stale; YTD = last close of the previous year).
+  A group figure = plain average of its stocks, groups need 5+; the group chart is that average chained from 100 with today's members.
+  `sectors.html`, `indices.html`, `movers.html` are redirect stubs that forward their query plus `v=`; old sectors `level=sector|sub|industry|basic|nse`
+  keys are still read (`OLD_LEVEL`), the page's own key is `lv=`. Nav (`theme.js` NAV_GROUPS + PAGE_GROUPS) has one entry.
+  Dropped on purpose (told to the user): Sectors' Cards view, the index-vs-Nifty-500 pop-up with peer table, watchlist stars, m-cap weighting outside
+  Monthly, the member-average "Indices" level. Check after any edit: all three modes, Heatmap, Monthly, Rewind to 2020-03-23 (Nifty 50 = 7,610.25, −12.98%),
+  the three stub URLs, and that a failed live feed shows the "not live" line instead of yesterday's moves labelled Today.
 
 ## §SECTORS-TRACKER — sectors.html: live prices, Rewind, and 53 NSE sector/theme indices outside the 28 (2026-11-25, user: "live data i want", "add all missing", "rewind button")
 

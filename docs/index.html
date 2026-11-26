@@ -162,7 +162,7 @@
     </div>
     <div class="chips">
       <a class="chip" href="./stock.html?sym=RELIANCE">RELIANCE</a>
-      <a class="chip" href="./sectors.html">Sector heatmap</a>
+      <a class="chip" href="./markets.html?v=sectors">Sector heatmap</a>
       <a class="chip" href="./saved-strategies.html">Saved strategies</a>
       <a class="chip" href="./quarterly-results.html">Results today</a>
     </div>
@@ -173,7 +173,7 @@
 
     <!-- indices: the 5 live cards (same feeds as before — committed JSON seed, Worker/proxy live top-up) -->
     <div class="bt" id="tIndices">
-      <div class="bt-h"><span>INDICES</span><a class="to" href="./indices.html">index browser →</a></div>
+      <div class="bt-h"><span>INDICES</span><a class="to" href="./markets.html?v=indices">index browser →</a></div>
       <div class="ixg" id="indices">
         <a class="ix" href="./index-chart.html?ix=nifty"     data-src="nifty.json"       data-ysym="%5ENSEI"     data-name="NIFTY 50"   data-kind="index"></a>
         <a class="ix" href="./index-chart.html?ix=nifty500"  data-src="nifty500.json"    data-ysym="%5ECRSLDX"   data-name="NIFTY 500"  data-kind="index"></a>
@@ -193,7 +193,7 @@
     </div>
 
     <!-- sector heatmap: CORS-open niftyindices live feed (same source the Indices page reads) -->
-    <a class="bt" id="tHeat" href="./sectors.html">
+    <a class="bt" id="tHeat" href="./markets.html?v=sectors">
       <div class="bt-h"><span>SECTOR PULSE · 1D</span><span class="to" id="heatTs">sectors →</span></div>
       <div class="heat" id="heat"></div>
     </a>
@@ -666,6 +666,7 @@
   // ---- tile grid from the shared nav ----------------------------------------
   var DESC = {
     'nse-bse-dashboard.html': 'NSE/BSE dashboard — prices, 52-week highs, delivery & fundamentals.',
+    'markets.html':           'Sectors, NSE indices and the day\'s top movers on one screen — live prices, stocks and chart side by side.',
     'movers.html':            'Top gainers & losers over 1 day to 1 year, with a sector pulse heatmap.',
     'daily-moves.html':       'Every stock of an index day by day in one red-green grid, with FII/DII flows and 52-week distance.',
     'indices.html':           'All ~131 NSE indices live — returns, P/E, P/B, yield & constituents.',

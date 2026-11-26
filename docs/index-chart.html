@@ -571,7 +571,7 @@ function renderSwitch() {
   $('switch').innerHTML = ORDER.map(function (k) {
     var c = REG[k];
     return '<a class="swi' + (k === KEY ? ' on' : '') + '" href="./index-chart.html?ix=' + k + '">' + esc(c.name) + '</a>';
-  }).join('') + '<a class="swi" href="./indices.html">📇 All 131 indices</a>';
+  }).join('') + '<a class="swi" href="./markets.html?v=indices">📇 All 131 indices</a>';
 }
 function renderHeader() {
   var last = P.length ? P[P.length - 1] : null, prev = P.length > 1 ? P[P.length - 2] : null;
@@ -1211,11 +1211,11 @@ function renderMembers() {
   draw();
 }
 function renderLinks() {
-  var l = [['./indices.html', '📇 All indices, live'],
+  var l = [['./markets.html?v=indices', '📇 All indices, live'],
            ['./monthly-returns.html', '🗓️ Monthly returns — every index'],
-           ['./movers.html', '📊 Today’s top movers'],
+           ['./markets.html?v=movers', '📊 Today’s top movers'],
            ['./market-mood.html', '🌡️ Market mood & breadth'],
-           ['./sectors.html', '🔥 Sector performance'],
+           ['./markets.html?v=sectors', '🔥 Sector performance'],
            ['./stock-backtest.html', '🧪 Backtest a strategy']];
   if (CFG.kind !== 'vix') l.splice(4, 0, ['./index-chart.html?ix=vix', '🌪️ India VIX — the fear gauge']);
   $('links').innerHTML = l.map(function (x) { return '<a class="chip" href="' + x[0] + '">' + x[1] + '</a>'; }).join('');

@@ -342,6 +342,16 @@ window.SW_GLOSSARY = (function () {
       note: "Every page on the site ends with a glossary like this one, covering the terms on that page. For education and research only — nothing here is investment advice."
     },
 
+    'markets.html': {
+      sub: '(sectors, indices and top movers on one screen)',
+      secs: [
+        ['Columns', ['symbol', 'chgpct', 'close', 'mcap', 'rs1m', 'ytd', 'advancing']],
+        ['Sector groups', ['eqweight', 'rebased', 'sector', 'industry', 'subind']],
+        ['Indices', ['indexlevel', 'membership', 'nifty50', 'nifty500', 'idxfamily', 'sectoral', 'thematic', 'divyield|Div %']]
+      ],
+      note: "A sector's figure is the plain average of its stocks' returns, and its chart is that average chained from 100 — it shows how the typical stock in the group moved, not its heavyweights. Index members are the list NSE had in force on the date shown."
+    },
+
     'movers.html': {
       sub: "(the columns on the movers table)",
       secs: [

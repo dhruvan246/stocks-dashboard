@@ -1726,7 +1726,7 @@ async function renderClass(){
   const show=chain.filter((x,i)=>i===0||!(x.name===chain[i-1].name&&same(sets[i],sets[i-1])));
   el.innerHTML=show.map((x,i)=>
     (i?'<span class="text-slate-300 px-0.5">›</span>':'')+
-    `<a class="clschip" href="./sectors.html?level=${encodeURIComponent(x.lvl)}&name=${encodeURIComponent(x.name)}" `+
+    `<a class="clschip" href="./markets.html?v=sectors&level=${encodeURIComponent(x.lvl)}&name=${encodeURIComponent(x.name)}" `+
     `title="${esc(x.lbl)} index — open the ${esc(x.name)} chart, constituents and returns">`+
     `<span class="clslv hidden sm:inline">${esc(x.lbl)}</span>${esc(x.name)}</a>`).join('')+
     `<span class="text-[10px] text-slate-400 ml-1 hidden sm:inline">← tap any for its index chart</span>`;
