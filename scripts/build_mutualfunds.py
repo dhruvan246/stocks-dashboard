@@ -149,33 +149,57 @@ HTML = r"""<!DOCTYPE html>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Mutual Funds</title>
+<meta name="description" content="Every growth-plan mutual fund on one screen — pick a category on the left, see its funds ranked in the middle and the selected fund's NAV chart and return calendars on the right." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  table { font-feature-settings: "tnum" 1; }
-  table thead th { position:sticky; top:0; background:#f8fafc; z-index:10; }
-  .badge { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:10px; font-weight:600; }
-  .b-equity { background:#dbeafe; color:#1e40af; }
-  .b-debt   { background:#fef3c7; color:#92400e; }
-  .b-hybrid { background:#fae8ff; color:#86198f; }
-  .b-passive{ background:#dcfce7; color:#166534; }
-  .b-fof    { background:#e0e7ff; color:#3730a3; }
-  .b-commodity { background:#ffedd5; color:#9a3412; }
-  .b-other  { background:#f1f5f9; color:#475569; }
-  .b-plan-dir { background:#dbeafe; color:#1e40af; }
-  .b-plan-reg { background:#fee2e2; color:#991b1b; }
-  #loadingOverlay{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;}
-  .pos { color:#15803d; font-weight:600; }
-  .neg { color:#b91c1c; font-weight:600; }
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(236px,270px) minmax(310px,380px) minmax(0,1fr)}
+  #grid.tbl{grid-template-columns:minmax(236px,270px) minmax(0,1fr)}
+  #grid.tbl #pF,#grid.tbl #pD,#grid:not(.tbl) #pT{display:none}
+  #gHead,.gr{grid-template-columns:minmax(0,1fr) 38px 56px}
+  #fHead,.fr{grid-template-columns:minmax(0,1fr) 38px 64px}
+  .gr.sub .n{padding-left:10px;color:var(--text-muted)} .gr.grp .n{font-weight:600} .gr.zero{opacity:.45}
+  .os-pane.kb{border-color:var(--border-strong)}
+  .tg{display:inline-block;margin-right:6px;font-size:9.5px;font-weight:600;letter-spacing:.04em;color:var(--text-faint);border:1px solid var(--border);border-radius:4px;padding:0 4px;vertical-align:1px;font-style:normal}
+  #pF .os-ps{flex-wrap:nowrap} html[data-theme] #pF .os-ps input[type="search"]{flex:1 1 0;min-width:0;width:auto}
+  #dTtl{font-size:15px;font-weight:700;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #dMeta{padding:7px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #dStats{grid-template-columns:repeat(6,minmax(0,1fr)) !important}
+  #dStats div{border-right:1px solid var(--border) !important;border-bottom:0 !important;padding:7px 9px}
+  #dStats div:nth-child(-n+6){border-bottom:1px solid var(--border) !important} #dStats div:nth-child(6n){border-right:0 !important}
+  #calBox{flex:1;min-height:0;overflow:auto;padding:10px 12px}
+  #calBox h3{font-size:13px;font-weight:600;color:var(--text);margin:0 0 6px}
+  #calBox p{font-size:11.5px;color:var(--text-faint);margin:8px 0 0;line-height:1.5}
+  .cal{border-collapse:collapse;font-size:11.5px;width:100%;font-variant-numeric:tabular-nums}
+  html[data-theme] .cal th{background:transparent;color:var(--text-faint);font-weight:500;font-size:10.5px;padding:4px 5px;text-align:right;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
+  html[data-theme] .cal th:first-child{text-align:left}
+  html[data-theme] .cal td{padding:3px 5px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+  html[data-theme] .cal td.y{text-align:left;color:var(--text-muted);font-weight:500}
+  .cal td.na{color:var(--text-faint)} .cal td.pos{color:var(--pos)} .cal td.neg{color:var(--neg)}
+  html[data-theme] .cal td.yr,html[data-theme] .cal th.yr{border-left:1px solid var(--border);font-weight:600}
+  #tBox{flex:1;min-height:0;overflow:auto}
+  #tTbl{border-collapse:separate;border-spacing:0;font-size:12.5px;font-variant-numeric:tabular-nums;width:100%}
+  html[data-theme] #tTbl th{position:sticky;top:0;z-index:2;background:var(--surface-2);color:var(--text-muted);font-weight:500;font-size:11.5px;padding:7px 8px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;text-transform:none;letter-spacing:0}
+  html[data-theme] #tTbl th.l{text-align:left} html[data-theme] #tTbl th.on{color:var(--accent-text)} html[data-theme] #tTbl th.sep,html[data-theme] #tTbl td.sep{border-left:1px solid var(--border)}
+  html[data-theme] #tTbl td{padding:5px 8px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+  html[data-theme] #tTbl td.l{text-align:left} #tTbl td.fn{white-space:normal;min-width:240px;cursor:pointer;color:var(--text)} #tTbl td.fn:hover b{color:var(--accent-text)}
+  #tTbl td.fn b{font-weight:500} #tTbl td.fn small{display:block;font-size:11px;color:var(--text-faint)} #tTbl td.mu{color:var(--text-muted)}
+  #rangeInfo{white-space:normal;margin:-2px 0 8px} #rangeInfo:empty{display:none}
+  #custWarn{margin:0 0 10px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;background:var(--warn-soft);color:var(--text);font-size:12.5px}
+  #status{margin-bottom:10px}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55} #how summary{cursor:pointer;color:var(--text-muted)}
+  .os-asof a{color:var(--accent-text)}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(190px,220px) minmax(290px,340px) minmax(0,1fr)} #grid.tbl{grid-template-columns:minmax(190px,220px) minmax(0,1fr)} }
+  @media (max-width:899px){ #grid,#grid.tbl{grid-template-columns:minmax(0,1fr)} #calBox{max-height:70vh} #tBox{max-height:70vh} #dMeta{white-space:normal}
+    #dStats div{padding:6px 6px} #dStats b{font-size:12.5px} }
+  @container (max-width:520px){ #dStats div{padding:6px 6px} #dStats b{font-size:12.5px} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
-
-<div id="loadingOverlay">
-  <div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3"></div>
-  <p class="text-sm text-slate-600" id="statusText">Loading mutual funds…</p>
-</div>
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
   <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
@@ -183,229 +207,141 @@ HTML = r"""<!DOCTYPE html>
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
     </a>
-    <div class="flex items-center gap-3 min-w-0">
-      <nav></nav>
-      <a href="./backtest.html" class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition whitespace-nowrap">📈 Backtest</a>
-      <span class="text-[11px] text-slate-400 hidden xl:block shrink-0">Snapshot &middot; __GEN__</span>
-    </div>
+    <nav></nav>
   </div>
 </header>
 
-<main class="max-w-screen-2xl mx-auto px-4 py-6">
-  <!-- Filter bar -->
-  <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4">
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Search by name / AMC</label>
-        <input type="search" id="searchBox" placeholder="e.g. Parag Parikh, Small Cap, HDFC…"
-               class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"/>
-      </div>
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Plan</label>
-        <select id="planFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
-          <option value="Direct" selected>Direct only</option>
-          <option value="Regular">Regular only</option>
-          <option value="all">Both (Direct + Regular)</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Category</label>
-        <select id="catFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
-          <option value="all">All categories</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Min. years since inception</label>
-        <select id="yrFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
-          <option value="0" selected>Any</option>
-          <option value="1">1 year+</option>
-          <option value="3">3 years+</option>
-          <option value="5">5 years+</option>
-          <option value="10">10 years+</option>
-        </select>
-      </div>
-      <div class="text-right">
-        <button id="resetBtn" class="text-sm text-slate-600 hover:text-blue-600">Reset filters</button>
-      </div>
-    </div>
-    <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-end gap-3">
-      <div class="text-xs font-semibold text-amber-700 pb-2">&#128197; Custom return window:</div>
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">From (date)</label>
-        <input type="date" id="fromDate" min="__HIST_LO__" max="__HIST_HI__" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
-      </div>
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">To (date)</label>
-        <input type="date" id="toDate" min="__HIST_LO__" max="__HIST_HI__" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500"/>
-      </div>
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Show as</label>
-        <select id="custMode" class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 bg-white">
-          <option value="abs" selected>Absolute</option>
-          <option value="cagr">Annualized (CAGR)</option>
-        </select>
-      </div>
-      <button id="clearDates" class="text-sm text-slate-600 hover:text-amber-600 pb-2">Clear</button>
-      <div id="rangeInfo" class="text-xs text-slate-500 pb-2"></div>
-      <div id="custWarn" class="hidden basis-full text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2"></div>
-    </div>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Mutual Funds</h1>
+    <div class="os-vtabs" id="views" role="tablist" aria-label="View"></div>
+    <div class="os-asof">NAV snapshot · __GEN__ · <a href="./backtest.html">MF Backtest ↗</a></div>
   </div>
+  <div id="status" class="os-empty">Loading mutual funds…</div>
 
-  <!-- Stats -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4" id="statsBar">
-    <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-200">
-      <div class="text-[11px] text-slate-500 uppercase">Showing</div>
-      <div class="text-lg font-bold" id="statShown">—</div>
+  <div id="content" class="hidden">
+    <div class="os-bar">
+      <div class="os-sg" id="pers" role="group" aria-label="Return period shown and ranked by"></div>
+      <div class="os-sg" id="plans" role="group" aria-label="Plan"></div>
+      <span class="os-sg" role="group" aria-label="Minimum years of NAV data" title="Minimum years of NAV data since inception"><span class="lbl">Min years</span><span id="yrs" style="display:contents"></span></span>
+      <span class="os-sg" id="cw" role="group" aria-label="Custom return window" title="Custom return window: the return of every fund between two dates of your choice">
+        <span class="lbl">Custom</span>
+        <input type="date" id="fromDate" min="__HIST_LO__" max="__HIST_HI__" aria-label="From date" />
+        <input type="date" id="toDate" min="__HIST_LO__" max="__HIST_HI__" aria-label="To date" />
+        <span id="cmodes" style="display:contents"></span>
+        <button type="button" id="clearDates" title="Clear the custom window">Clear</button>
+      </span>
+      <span class="sp"></span>
+      <button type="button" class="os-btn" id="resetBtn" title="Reset every filter">Reset</button>
     </div>
-    <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-200">
-      <div class="text-[11px] text-slate-500 uppercase">Categories</div>
-      <div class="text-lg font-bold" id="statCats">—</div>
-    </div>
-    <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-200">
-      <div class="text-[11px] text-slate-500 uppercase">Avg CAGR (shown)</div>
-      <div class="text-lg font-bold" id="statCagr">—</div>
-    </div>
-    <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-200">
-      <div class="text-[11px] text-slate-500 uppercase">Best returner (shown)</div>
-      <div class="text-sm font-bold truncate" id="statBest" title="">—</div>
-    </div>
-  </div>
+    <div id="rangeInfo" class="os-hint"></div>
+    <div id="custWarn" class="hidden"></div>
 
-  <!-- Results -->
-  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-    <div class="overflow-x-auto max-h-[calc(100vh-280px)] overflow-y-auto">
-      <table class="w-full text-xs">
-        <thead class="text-[10px] uppercase text-slate-600 border-b border-slate-200">
-          <tr>
-            <th class="px-2 py-2 text-left font-semibold w-10">#</th>
-            <th class="px-3 py-2 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none min-w-[260px]" data-sort="short">Mutual fund <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="aum">AUM<br><span class="normal-case text-slate-400 text-[9px] font-normal">(soon)</span></th>
-            <th class="px-2 py-2 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="s">Category <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="years">Yrs <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none border-l border-slate-200 bg-slate-50" data-sort="r1d">1D <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r1w">1W <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r1m">1M <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r3m">3M <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r6m">6M <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-slate-50" data-sort="r1y">1Y <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none border-l border-slate-200 bg-blue-50" data-sort="r3y">3Y* <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-blue-50" data-sort="r5y">5Y* <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none bg-blue-50" data-sort="r10y">10Y* <span class="sort-ind text-slate-300">&#8597;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none border-l border-slate-200 bg-blue-100" data-sort="cagrPct"><b>Since incep*</b> <span class="sort-ind text-blue-600">&#9660;</span></th>
-            <th class="px-2 py-2 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none border-l-2 border-amber-300 bg-amber-100" data-sort="cust" id="custHdr">Custom <span class="sort-ind text-slate-300">&#8597;</span></th>
-          </tr>
-          <tr class="text-[9px] normal-case text-slate-400">
-            <th class="px-2 py-1"></th>
-            <th class="px-3 py-1 text-left">name &middot; AMC</th>
-            <th class="px-2 py-1 text-right">₹ Cr</th>
-            <th class="px-2 py-1"></th>
-            <th class="px-2 py-1 text-right">since launch</th>
-            <th colspan="6" class="px-2 py-1 text-center bg-slate-50 border-l border-slate-200">absolute % returns</th>
-            <th colspan="4" class="px-2 py-1 text-center bg-blue-50 border-l border-slate-200">annualized (CAGR) %</th>
-            <th class="px-2 py-1 text-right bg-amber-50 border-l-2 border-amber-300" id="custSub">set dates</th>
-          </tr>
-        </thead>
-        <tbody id="resultsBody"></tbody>
-      </table>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pG" aria-label="Categories">
+        <div class="os-ph"><span class="ttl">Categories</span><span class="r" id="gCount"></span></div>
+        <div class="os-ch" id="gHead"></div>
+        <div class="os-list" id="gList" role="listbox" aria-label="Categories"></div>
+      </section>
+      <section class="os-pane" id="pF" aria-label="Funds">
+        <div class="os-ph"><span class="ttl" id="fTitle"></span><span class="r" id="fCount"></span></div>
+        <div class="os-ps"><input id="searchBox" type="search" placeholder="Find a fund or AMC — e.g. Parag Parikh, HDFC" autocomplete="off" aria-label="Search by fund name or AMC" /></div>
+        <div class="os-ch" id="fHead"></div>
+        <div class="os-list" id="fList" role="listbox" aria-label="Funds"></div>
+      </section>
+      <section class="os-pane os-main" id="pD" aria-label="Fund detail">
+        <div class="os-ph"><span id="dTtl"></span><span id="dTags"></span><span class="px" id="dPx"></span><span id="dChg"></span>
+          <span class="r"><button type="button" class="os-btn os-focusbtn" id="dFocus" title="Hide the lists and give the fund the whole width (F)">Focus</button></span></div>
+        <div id="dMeta"></div>
+        <div class="os-ps"><div class="os-sg" id="dTabs" role="group" aria-label="What to show"></div>
+          <div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
+          <button type="button" class="os-btn" id="cLog" title="Logarithmic NAV scale">Log</button>
+          <span class="os-sg hidden" id="dWinWrap" role="group" aria-label="Window in years"><span class="lbl">Window</span><span id="dWin" style="display:contents"></span></span>
+          <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>←→</b> list · <b>F</b> focus</span></div>
+        <div class="os-chartwrap" id="cWrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div id="calBox" class="hidden"></div>
+        <div class="os-stats" id="dStats"></div>
+      </section>
+      <section class="os-pane" id="pT" aria-label="All columns">
+        <div class="os-ph"><span class="ttl" id="tTitle"></span><span class="r" id="tCount"></span></div>
+        <div class="os-ps"><input id="searchBox2" type="search" placeholder="Find a fund or AMC" autocomplete="off" aria-label="Search by fund name or AMC" /></div>
+        <div id="tBox"><table id="tTbl"><thead><tr id="tHead"></tr></thead><tbody id="resultsBody"></tbody></table></div>
+      </section>
     </div>
+
+    <details id="how"><summary>How these numbers are made</summary>
+      <p>* Columns marked with an asterisk are annualized (CAGR). 1D–1Y are absolute returns.
+      Data sources: AMFI NAVAll daily file (scheme master + current NAV) and mfapi.in (full NAV history).
+      Growth plans only (no IDCW/dividend options), tagged <span class="tg">DIR</span> / <span class="tg">REG</span>.
+      <b>Data floor:</b> Direct-plan NAV history starts Jan 2013 (when direct plans were introduced); Regular-plan history starts Apr 2006
+      (AMFI's daily-NAV archive floor). So a fund older than 2006 shows max ~20 years even on its Regular plan — its true 1990s/2000s
+      launch isn't available in free data. "Since inception" means since that data floor, not the fund's legal launch.
+      Returns shown as "—" mean the fund hasn't existed for that lookback period (e.g. no 10Y return for a 6-year-old fund).
+      A fund tagged <span class="tg">stale</span> has an old latest NAV; its short-period returns are suppressed.
+      Side-pocket / Segregated schemes show -100% returns by design.
+      Categories follow Groww's taxonomy (parent group → subcategory). Closed-ended, fixed-maturity (FMP), infrastructure-debt and other
+      schemes Groww doesn't list are grouped under <b>Uncategorized</b>. The “Avg” beside a category is the plain average of the chosen
+      period's return over its funds that have one, under the current Plan / Min years / search filters.
+      The NAV chart, the custom window and the monthly / trailing / forward calendars read the daily NAV history (about 8 MB), which loads the first time one of them is needed.</p>
+    </details>
   </div>
-  <p class="text-[11px] text-slate-500 mt-3">
-    * Columns marked with asterisk are annualized (CAGR). 1D–1Y are absolute returns.
-    Data sources: AMFI NAVAll daily file (scheme master + current NAV) and mfapi.in (full NAV history).
-    Growth plans only (no IDCW/dividend options), tagged <span class="badge b-plan-dir">DIR</span> /
-    <span class="badge b-plan-reg">REG</span>. <b>Data floor:</b> Direct-plan NAV history starts Jan 2013
-    (when direct plans were introduced); Regular-plan history starts Apr 2006 (AMFI's daily-NAV archive
-    floor). So a fund older than 2006 shows max ~20 years even on its Regular plan — its true 1990s/2000s
-    launch isn't available in free data. "Since inception" means since that data floor, not the fund's legal launch.
-    AUM is a placeholder for now — AMFI's scheme-wise AUM is published as a monthly XLSX and will be ingested separately.
-    Returns shown as "—" mean the fund hasn't existed for that lookback period (e.g. no 10Y return for a 6-year-old fund).
-    Side-pocket / Segregated schemes show -100% returns by design.
-    Categories follow Groww's taxonomy (parent group &rarr; subcategory). Closed-ended,
-    fixed-maturity (FMP), infrastructure-debt and other schemes Groww doesn't list are grouped under <b>Uncategorized</b>.
-  </p>
 </main>
-
-<!-- Per-fund detail modal -->
-<div id="detailModal" class="hidden fixed inset-0 z-50 bg-black/40 flex items-start justify-center overflow-y-auto p-3">
-  <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full my-6" onclick="event.stopPropagation()">
-    <div class="flex items-center justify-between gap-3 px-5 py-3 border-b border-slate-200 sticky top-0 bg-white rounded-t-xl">
-      <div id="detTitle" class="font-bold text-slate-900 text-sm md:text-base truncate"></div>
-      <div class="flex items-center gap-3 shrink-0">
-        <label class="text-xs text-slate-500">Window
-          <select id="detWin" class="border border-slate-300 rounded px-2 py-1 text-sm ml-1"><option>3</option><option selected>5</option><option>7</option><option>10</option></select> yrs</label>
-        <button id="detClose" class="text-slate-400 hover:text-red-600 text-2xl leading-none">&times;</button>
-      </div>
-    </div>
-    <div id="detSummary" class="px-5 pt-3 text-xs text-slate-500"></div>
-    <div id="detTables" class="px-5 pb-5"></div>
-  </div>
-</div>
 
 <script id="compressedData" type="application/octet-stream">__B64__</script>
 <script>
 'use strict';
+const K = window.OSKit, $ = id => document.getElementById(id), esc = K.esc;
 let ALL = [];
 let BYCODE = {};
+let BASE = [];              // after plan / years / search, before the category filter
 let SHOWN = [];
 let SORT = { key: 'cagrPct', dir: -1 };
-let HIST = null;            // {months:[...], idx:{m:i}, data:{code:[startIdx, nav...]}}
-let FROM = null, TO = null; // active custom return window (YYYY-MM strings)
+let HIST = null;            // {dates:[YYYYMMDD], data:{code:[startIdx, delta-paise...]}}
+let FROM = null, TO = null; // active custom return window
+let PER = 'cagrPct', CAT = 'all', PLAN = 'Direct', MINYR = 0, QUERY = '', CUSTMODE = 'abs';
+let SEL = null, VIEW = 'funds', TAB = 'chart', WIN = 5, PANE = 'fund', CH = null, DRAWN = '';
+const PERS = [['r1d','1D'],['r1w','1W'],['r1m','1M'],['r3m','3M'],['r6m','6M'],['r1y','1Y'],['r3y','3Y*'],['r5y','5Y*'],['r10y','10Y*'],['cagrPct','Since incep.*'],['cust','Custom']];
+const PERNAME = Object.fromEntries(PERS);
+const GROUP_ORDER = ['Equity','Hybrid','Debt','Index / Other','Commodities','Solution Oriented','Uncategorized'];
+const SUB_ORDER = {
+  'Equity': ['Large Cap','Large & Mid Cap','Mid Cap','Small Cap','Multi Cap','Flexi Cap','ELSS (Tax Saver)','Sectoral / Thematic','Focused','Value','Contra','Dividend Yield'],
+  'Hybrid': ['Aggressive Hybrid','Balanced Advantage','Multi Asset Allocation','Equity Savings','Arbitrage','Conservative Hybrid'],
+  'Debt': ['Overnight','Liquid','Ultra Short Duration','Low Duration','Money Market','Short Duration','Medium Duration','Medium to Long Duration','Long Duration','Dynamic Bond','Corporate Bond','Credit Risk','Banking & PSU','Gilt','Gilt 10Y Constant','Floater'],
+  'Index / Other': ['Index Funds','ETF','Fund of Funds'],
+  'Commodities': ['Gold','Silver'],
+  'Solution Oriented': ['Retirement',"Children's"],
+  'Uncategorized': ['Uncategorized'],
+};
+let CATS = [];              // [{k,name,lv}] — every category that exists in the data, in Groww's order
+const wide = () => window.innerWidth >= 900;
 
 async function loadData() {
-  const statusEl = document.getElementById('statusText');
-  statusEl.textContent = 'Decoding…';
-  const b64 = document.getElementById('compressedData').textContent.replace(/\s+/g,'');
+  $('status').textContent = 'Decoding…';
+  const b64 = $('compressedData').textContent.replace(/\s+/g,'');
   const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
   const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
   const text = await new Response(stream).text();
   ALL = JSON.parse(text);
   ALL.forEach(r => { BYCODE[r.code] = r; });
-  document.getElementById('compressedData').remove();
+  $('compressedData').remove();
 
-  // The daily NAV history (custom-date calculator + fund-detail calendars) is a separate ~7 MB
-  // file fetched lazily by ensureHistory() on first use — NOT loaded here — so the page paints
-  // instantly. The custom column stays visible; using it (or opening a fund) triggers the fetch.
+  // The daily NAV history (chart, custom-date calculator, calendars) is a separate ~8 MB file
+  // fetched lazily by ensureHistory() on first use — NOT loaded here — so the lists paint at once.
 
-  // Build the two-level category dropdown (Groww-style: parent group -> subcategory)
-  const GROUP_ORDER = ['Equity','Hybrid','Debt','Index / Other','Commodities','Solution Oriented','Uncategorized'];
-  const SUB_ORDER = {
-    'Equity': ['Large Cap','Large & Mid Cap','Mid Cap','Small Cap','Multi Cap','Flexi Cap','ELSS (Tax Saver)','Sectoral / Thematic','Focused','Value','Contra','Dividend Yield'],
-    'Hybrid': ['Aggressive Hybrid','Balanced Advantage','Multi Asset Allocation','Equity Savings','Arbitrage','Conservative Hybrid'],
-    'Debt': ['Overnight','Liquid','Ultra Short Duration','Low Duration','Money Market','Short Duration','Medium Duration','Medium to Long Duration','Long Duration','Dynamic Bond','Corporate Bond','Credit Risk','Banking & PSU','Gilt','Gilt 10Y Constant','Floater'],
-    'Index / Other': ['Index Funds','ETF','Fund of Funds'],
-    'Commodities': ['Gold','Silver'],
-    'Solution Oriented': ['Retirement',"Children's"],
-    'Uncategorized': ['Uncategorized'],
-  };
-  const gCount = {}, sCount = {};
-  for (const r of ALL) {
-    gCount[r.g] = (gCount[r.g] || 0) + 1;
-    (sCount[r.g] = sCount[r.g] || {});
-    sCount[r.g][r.s] = (sCount[r.g][r.s] || 0) + 1;
-  }
-  const sel = document.getElementById('catFilter');
-  GROUP_ORDER.forEach(g => {
-    if (!gCount[g]) return;
-    const og = document.createElement('optgroup');
-    og.label = g + '  (' + gCount[g] + ')';
-    const allOpt = document.createElement('option');
-    allOpt.value = 'G:::' + g;
-    allOpt.textContent = 'All ' + g + '  (' + gCount[g] + ')';
-    og.appendChild(allOpt);
+  // Two-level category list (Groww-style: parent group -> subcategory)
+  const has = {};
+  for (const r of ALL) { (has[r.g] = has[r.g] || {})[r.s] = 1; }
+  CATS = [{ k: 'all', name: 'All funds', lv: 0 }];
+  GROUP_ORDER.concat(Object.keys(has).filter(g => !GROUP_ORDER.includes(g))).forEach(g => {
+    if (!has[g]) return;
+    CATS.push({ k: 'G:::' + g, name: g, lv: 0 });
     const subs = (SUB_ORDER[g] || []).slice();
-    Object.keys(sCount[g] || {}).forEach(s => { if (!subs.includes(s)) subs.push(s); });
-    subs.forEach(s => {
-      if (!sCount[g] || !sCount[g][s]) return;
-      const opt = document.createElement('option');
-      opt.value = 'S:::' + g + ':::' + s;
-      opt.textContent = ' ' + s + '  (' + sCount[g][s] + ')';
-      og.appendChild(opt);
-    });
-    sel.appendChild(og);
+    Object.keys(has[g]).forEach(s => { if (!subs.includes(s)) subs.push(s); });
+    if (subs.length === 1 && subs[0] === g) return;          // Uncategorized has one sub with the same name
+    subs.forEach(s => { if (has[g][s]) CATS.push({ k: 'S:::' + g + ':::' + s, name: s, lv: 1 }); });
   });
-
-  document.getElementById('loadingOverlay').remove();
-  render();
+  $('status').classList.add('hidden');
+  $('content').classList.remove('hidden');
 }
 
 // ---- Exact-date return helpers ---------------------------------------------
@@ -458,11 +394,10 @@ function navAtOrBefore(code, gi, back) {
 
 // ---- per-fund detail: monthly / trailing / forward return calendars ----
 function fundRange(code){ const d=decoded(code); if(!d) return null; return [HIST.dates[d.start], HIST.dates[d.start+d.nav.length-1]]; }
-function addYM(Y,M,n){ M+=n; while(M>12){M-=12;Y++;} while(M<1){M+=12;Y--;} return [Y,M]; }
 function meNavC(code,Y,M){ const idx=dateToIdx(Y*10000+M*100+31); const dd=HIST.dates[idx]; return (Math.floor(dd/10000)===Y && Math.floor(dd/100)%100===M) ? navAtIdx(code,idx) : null; }
 const MN_=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function _cell(v,b){ return v==null ? '<td class="px-1 py-0.5 text-right text-slate-300">·</td>'
-  : '<td class="px-1 py-0.5 text-right '+(b?'font-semibold border-l border-slate-200 ':'')+(v>=0?'pos':'neg')+'">'+(v>=0?'+':'')+v.toFixed(1)+'</td>'; }
+function _cell(v,b){ return v==null ? '<td class="na'+(b?' yr':'')+'">·</td>'
+  : '<td class="'+(b?'yr ':'')+(v>=0?'pos':'neg')+'">'+(v>=0?'+':'')+v.toFixed(1)+'</td>'; }
 function calMonthly(code){
   const r=fundRange(code); if(!r) return ''; const fy=Math.floor(r[0]/10000), ly=Math.floor(r[1]/10000);
   let rows='';
@@ -473,10 +408,10 @@ function calMonthly(code){
       if(cur==null||prev==null||prev<=0){cells+=_cell(null);continue;}
       const ret=(cur/prev-1)*100; yf*=(1+ret/100); any=true; cells+=_cell(ret);
     }
-    rows+='<tr class="border-t border-slate-50"><td class="px-1 py-0.5 font-medium text-slate-600">'+Y+'</td>'+cells+_cell(any?(yf-1)*100:null,true)+'</tr>';
+    rows+='<tr><td class="y">'+Y+'</td>'+cells+_cell(any?(yf-1)*100:null,true)+'</tr>';
   }
-  const head='<th class="px-1 py-1 text-left">Year</th>'+MN_.map(m=>'<th class="px-1 py-1 text-right">'+m+'</th>').join('')+'<th class="px-1 py-1 text-right border-l border-slate-200">Year</th>';
-  return '<div class="overflow-x-auto"><table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+  const head='<th>Year</th>'+MN_.map(m=>'<th>'+m+'</th>').join('')+'<th class="yr">Year</th>';
+  return '<table class="cal"><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table>';
 }
 function calRolling(code,win,fwd){
   const r=fundRange(code); if(!r) return ''; const fy=Math.floor(r[0]/10000), ly=Math.floor(r[1]/10000);
@@ -489,14 +424,14 @@ function calRolling(code,win,fwd){
       if(a==null||b==null||a<=0){cells+=_cell(null);continue;}
       cells+=_cell((Math.pow(b/a,1/win)-1)*100); rowHas=true; any=true;
     }
-    if(rowHas) rows+='<tr class="border-t border-slate-50"><td class="px-1 py-0.5 font-medium text-slate-600">'+Y+'</td>'+cells+'</tr>';
+    if(rowHas) rows+='<tr><td class="y">'+Y+'</td>'+cells+'</tr>';
   }
-  if(!any) return '<div class="text-xs text-slate-400 py-2">Not enough history for '+win+'-year windows.</div>';
-  const head='<th class="px-1 py-1 text-left">'+(fwd?'Invest in':'As of')+'</th>'+MN_.map(m=>'<th class="px-1 py-1 text-right">'+m+'</th>').join('');
-  return '<div class="overflow-x-auto"><table class="text-[11px] w-full"><thead class="text-[10px] uppercase text-slate-500"><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+  if(!any) return '<div class="os-empty">Not enough history for '+win+'-year windows.</div>';
+  const head='<th>'+(fwd?'Invest in':'As of')+'</th>'+MN_.map(m=>'<th>'+m+'</th>').join('');
+  return '<table class="cal"><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table>';
 }
-// Lazily fetch the ~7 MB daily NAV history — only when the custom-date calculator or a
-// fund-detail modal first needs it. Cached after the first fetch.
+// Lazily fetch the ~8 MB daily NAV history — only when the chart, the custom-date calculator or a
+// calendar first needs it. Cached after the first fetch.
 let __histLoading = null;
 async function ensureHistory() {
   if (HIST) return true;
@@ -505,7 +440,7 @@ async function ensureHistory() {
     const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
     HIST = JSON.parse(await new Response(stream).text());   // {dates:[YYYYMMDD], data:{code:[startIdx, delta-paise...]}}
     HIST.dec = {};
-    const fd = document.getElementById('fromDate'), td = document.getElementById('toDate');
+    const fd = $('fromDate'), td = $('toDate');
     if (fd && td && HIST.dates && HIST.dates.length) {
       const lo = intToYmd(HIST.dates[0]), hi = intToYmd(HIST.dates[HIST.dates.length - 1]);
       fd.min = td.min = lo; fd.max = td.max = hi;
@@ -514,48 +449,19 @@ async function ensureHistory() {
   await __histLoading;
   return !!HIST;
 }
-let DETAIL_CODE = null;
-async function showFundDetail(code){
-  const r=BYCODE[code]; if(!r) return; DETAIL_CODE=code;
-  const planTag = (r.plan||'Direct')==='Regular' ? '<span class="badge b-plan-reg">REG</span>' : '<span class="badge b-plan-dir">DIR</span>';
-  document.getElementById('detTitle').innerHTML = cleanName(r.short).replace(/[<>]/g,'') + ' ' + planTag;
-  document.getElementById('detSummary').innerHTML =
-    '<span class="badge '+badgeClass(r.g)+'">'+r.s+'</span> · '+(r.amc||'').replace(/[<>]/g,'')+
-    ' · since-incep CAGR <b>'+(r.cagrPct>=0?'+':'')+r.cagrPct.toFixed(1)+'%</b>'+
-    ' · 1Y '+fmtRet(r.r1y)+' · 3Y '+fmtRet(r.r3y)+' · 5Y '+fmtRet(r.r5y)+' · '+r.years.toFixed(1)+'y of data';
-  document.getElementById('detailModal').classList.remove('hidden');
-  document.body.style.overflow='hidden';
-  if (!HIST) {
-    document.getElementById('detTables').innerHTML = '<div class="text-sm text-slate-500 py-6 text-center">Loading price history…</div>';
-    if (!await ensureHistory()) { document.getElementById('detTables').innerHTML = '<div class="text-sm text-red-500 py-6 text-center">Couldn’t load price history. Check your connection and retry.</div>'; return; }
-    if (DETAIL_CODE !== code) return;   // user closed/switched while it loaded
-  }
-  renderDetail();
-}
-function renderDetail(){
-  const code=DETAIL_CODE; if(code==null) return;
-  const win=+document.getElementById('detWin').value;
-  document.getElementById('detTables').innerHTML =
-    '<div class="text-sm font-bold text-slate-800 mt-4 mb-1">📅 Monthly returns — each calendar month&apos;s gain</div>'+calMonthly(code)+
-    '<div class="text-sm font-bold text-slate-800 mt-5 mb-1">📉 Trailing '+win+'-year return — your '+win+'-year CAGR as of each month</div>'+calRolling(code,win,false)+
-    '<div class="text-sm font-bold text-slate-800 mt-5 mb-1">📈 Forward '+win+'-year return — invest at month-start &amp; hold '+win+' years</div>'+calRolling(code,win,true)+
-    '<div class="text-[10px] text-slate-400 mt-2">Monthly = each month&apos;s NAV return (right "Year" col = calendar-year return). Trailing = '+win+'-yr CAGR ending that month. Forward = '+win+'-yr CAGR if you invested that month. "·" = outside the fund&apos;s data window.</div>';
-}
-function closeFundDetail(){ document.getElementById('detailModal').classList.add('hidden'); document.body.style.overflow=''; DETAIL_CODE=null; }
 function recomputeCust() {
-  const f = document.getElementById('fromDate').value;
-  const t = document.getElementById('toDate').value;
-  const info = document.getElementById('rangeInfo');
-  const sub  = document.getElementById('custSub');
+  const f = $('fromDate').value;
+  const t = $('toDate').value;
+  const info = $('rangeInfo');
   if (!HIST || !f || !t || f >= t) {
     FROM = TO = null;
     for (const r of ALL) r.cust = null;
-    if (sub) sub.textContent = 'set dates';
+    CUSTSUB = 'set dates';
     info.textContent = (f && t && f >= t) ? 'From must be before To' : '';
     return;
   }
   FROM = f; TO = t;
-  const mode = document.getElementById('custMode').value;   // 'abs' | 'cagr'
+  const mode = CUSTMODE;   // 'abs' | 'cagr'
   const fi = dateToIdx(ymdToInt(f)), ti = dateToIdx(ymdToInt(t));
   // actual elapsed years between the matched trading days
   const yf = (ymdToDate(HIST.dates[ti]) - ymdToDate(HIST.dates[fi])) / (365.25 * 86400000);
@@ -571,29 +477,14 @@ function recomputeCust() {
   // dateToIdx clamps to the axis, so say so when the window asked for more than we hold
   const af = intToYmd(HIST.dates[fi]), at = intToYmd(HIST.dates[ti]);
   const clipped = (ymdToInt(f) < HIST.dates[0]) || (ymdToInt(t) > HIST.dates[HIST.dates.length - 1]);
-  if (sub) sub.textContent = af + ' → ' + at + (useCagr ? ' · CAGR' : ' · abs');
-  info.textContent = n.toLocaleString() + ' funds · '
+  CUSTSUB = af + ' → ' + at + (useCagr ? ' · CAGR' : ' · abs');
+  info.textContent = 'Custom window: ' + n.toLocaleString() + ' funds · '
     + (useCagr ? 'annualized CAGR over ' + yf.toFixed(1) + 'y'
                : 'absolute % over the window' + (mode === 'cagr' ? ' (<1y, not annualized)' : ''))
-    + (clipped ? ' · window clipped to available NAV data (' + af + ' → ' + at + ')' : '');
+    + ' · ' + af + ' → ' + at
+    + (clipped ? ' · window clipped to available NAV data' : '');
 }
-
-function badgeClass(g) {
-  switch (g) {
-    case 'Equity':            return 'b-equity';
-    case 'Debt':              return 'b-debt';
-    case 'Hybrid':            return 'b-hybrid';
-    case 'Index / Other':     return 'b-passive';
-    case 'Commodities':       return 'b-commodity';
-    case 'Solution Oriented': return 'b-fof';
-    default:                  return 'b-other';
-  }
-}
-
-function fmtINR(n) {
-  if (n == null || isNaN(n)) return '—';
-  return n.toLocaleString('en-IN', { maximumFractionDigits: 0 });
-}
+let CUSTSUB = 'set dates';
 
 function cleanName(s) {
   return (s || '')
@@ -602,29 +493,24 @@ function cleanName(s) {
     .replace(/\s*[-–]\s*$/, '')
     .trim();
 }
-
+function inCat(r, cat) {
+  if (cat === 'all') return true;
+  if (cat.startsWith('G:::')) return r.g === cat.slice(4);
+  const rest = cat.slice(4), i = rest.indexOf(':::');
+  return r.g === rest.slice(0, i) && r.s === rest.slice(i + 3);
+}
 function applyFilters() {
-  const q     = document.getElementById('searchBox').value.trim().toLowerCase();
-  const cat   = document.getElementById('catFilter').value;
-  const plan  = document.getElementById('planFilter').value;
-  const minYr = parseFloat(document.getElementById('yrFilter').value) || 0;
-  let s = ALL.filter(r => {
-    if (plan !== 'all' && (r.plan || 'Direct') !== plan) return false;
-    if (cat !== 'all') {
-      if (cat.startsWith('G:::')) {
-        if (r.g !== cat.slice(4)) return false;
-      } else if (cat.startsWith('S:::')) {
-        const rest = cat.slice(4), i = rest.indexOf(':::');
-        if (r.g !== rest.slice(0, i) || r.s !== rest.slice(i + 3)) return false;
-      }
-    }
-    if (r.years < minYr) return false;
+  const q = QUERY.trim().toLowerCase();
+  BASE = ALL.filter(r => {
+    if (PLAN !== 'all' && (r.plan || 'Direct') !== PLAN) return false;
+    if (r.years < MINYR) return false;
     if (q) {
       const hay = (r.short + ' ' + (r.amc || '') + ' ' + r.name).toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
   });
+  const s = BASE.filter(r => inCat(r, CAT));
   // Apply sort — push nulls to the bottom regardless of direction
   const dir = SORT.dir;
   s.sort((a, b) => {
@@ -640,77 +526,85 @@ function applyFilters() {
   SHOWN = s;
 }
 
-function fmtRet(v) {
-  if (v == null) return '<span class="text-slate-300">—</span>';
-  const cls = v >= 0 ? 'pos' : 'neg';
-  const sign = v >= 0 ? '+' : '';
-  return '<span class="' + cls + '">' + sign + v.toFixed(1) + '</span>';
+function fmtRet(v, d) {
+  if (v == null) return '<span style="color:var(--text-faint)">—</span>';
+  return '<span class="' + (v >= 0 ? 'os-pos' : 'os-neg') + '">' + (v >= 0 ? '+' : '') + v.toFixed(d == null ? 1 : d) + '</span>';
+}
+const perDp = k => k === 'cagrPct' ? 2 : 1;
+function tags(r, always) {
+  const reg = (r.plan || 'Direct') === 'Regular';
+  return ((always || PLAN === 'all') ? '<em class="tg" title="' + (reg ? 'Regular plan — older funds carry full pre-2013 history' : 'Direct plan') + '">' + (reg ? 'REG' : 'DIR') + '</em>' : '')
+    + (r.stale ? '<em class="tg" title="Latest NAV is ' + (r.staleDays || '?') + ' days old — short-period returns suppressed">stale</em>' : '');
+}
+const arrow = k => SORT.key === k ? (SORT.dir === -1 ? ' ▼' : ' ▲') : '';
+
+function renderCats() {
+  const st = {};
+  const add = (k, v) => { const o = st[k] || (st[k] = { n: 0, s: 0, c: 0 }); o.n++; if (v != null) { o.s += v; o.c++; } };
+  for (const r of BASE) { const v = r[PER]; add('all', v); add('G:::' + r.g, v); add('S:::' + r.g + ':::' + r.s, v); }
+  $('gHead').innerHTML = '<span>Category</span><span>Funds</span><span title="Plain average of the chosen period over the funds that have a figure">Avg ' + esc(PERNAME[PER].replace('Since incep.', 'SI')) + '</span>';
+  let live = 0;
+  $('gList').innerHTML = CATS.map(c => {
+    const o = st[c.k] || { n: 0, c: 0, s: 0 }; if (o.n && c.lv === 1) live++;
+    if (o.n && c.k.startsWith('G:::') && !CATS.some(x => x.lv === 1 && x.k.startsWith('S:::' + c.name + ':::'))) live++;
+    return '<div class="os-row gr ' + (c.lv ? 'sub' : 'grp') + (o.n ? '' : ' zero') + (c.k === CAT ? ' on' : '') + '" role="option" data-k="' + esc(c.k) + '"><span class="n">' + esc(c.name) + '</span><span class="m">' + o.n.toLocaleString() + '</span><span class="v">' + (o.c ? fmtRet(o.s / o.c, perDp(PER)) : fmtRet(null)) + '</span></div>';
+  }).join('');
+  $('gCount').textContent = new Set(SHOWN.map(r => r.s)).size + ' in view';
+  $('gCount').title = 'Sub-categories among the funds listed';
+}
+function catName() { const c = CATS.find(x => x.k === CAT); return c ? c.name : 'All funds'; }
+function countText() { return SHOWN.length.toLocaleString() + ' fund' + (SHOWN.length === 1 ? '' : 's') + (SHOWN.length > 1500 ? ' · first 1,500 listed' : ''); }
+function emptyText() { return 'No fund matches these filters.' + (QUERY ? ' Clear the search or pick another category.' : ''); }
+
+function renderFunds() {
+  $('fTitle').textContent = catName();
+  $('fCount').textContent = countText();
+  $('fHead').innerHTML = '<span data-k="short" class="' + (SORT.key === 'short' ? 'on' : '') + '">Fund' + arrow('short') + '</span><span data-k="years" class="' + (SORT.key === 'years' ? 'on' : '') + '" title="Years of NAV data">Yrs' + arrow('years') + '</span><span data-k="' + PER + '" class="' + (SORT.key === PER ? 'on' : '') + '">' + esc(PERNAME[PER].replace('Since incep.', 'SI')) + arrow(PER) + '</span>';
+  // Limit rendered rows to first 1500 for speed
+  const slice = SHOWN.slice(0, 1500);
+  $('fList').innerHTML = slice.length ? slice.map(r =>
+    '<div class="os-row fr' + (r.code === SEL ? ' on' : '') + '" role="option" data-c="' + esc(r.code) + '" title="' + esc(cleanName(r.short)) + (r.amc ? ' — ' + esc(r.amc) : '') + '"><span class="n">' + tags(r) + esc(cleanName(r.short)) + '</span><span class="m">' + r.years.toFixed(1) + '</span><span class="v">' + fmtRet(r[PER], perDp(PER)) + '</span></div>').join('')
+    : '<div class="os-empty">' + emptyText() + '</div>';
+}
+const TCOLS = [['r1d','1D',1],['r1w','1W'],['r1m','1M'],['r3m','3M'],['r6m','6M'],['r1y','1Y'],['r3y','3Y*',1],['r5y','5Y*'],['r10y','10Y*'],['cagrPct','Since incep*',1],['cust','Custom',1]];
+function renderTable() {
+  $('tTitle').textContent = catName() + ' — all columns';
+  $('tCount').textContent = countText();
+  const th = (k, lb, c, t) => '<th data-sort="' + k + '" class="' + (c || '') + (SORT.key === k ? ' on' : '') + '"' + (t ? ' title="' + esc(t) + '"' : '') + '>' + lb + arrow(k) + '</th>';
+  $('tHead').innerHTML = '<th class="l" style="cursor:default">#</th>' + th('short', 'Mutual fund', 'l') + th('s', 'Category', 'l') + th('years', 'Yrs', '', 'Years of NAV data since inception')
+    + TCOLS.map(c => th(c[0], c[1], c[2] ? 'sep' : '', c[0] === 'cust' ? CUSTSUB : (c[1].endsWith('*') ? 'annualized (CAGR) %' : 'absolute % return'))).join('');
+  const slice = SHOWN.slice(0, 1500);
+  $('resultsBody').innerHTML = slice.length ? slice.map((r, i) =>
+    '<tr><td class="l mu">' + (i + 1) + '</td>' +
+    '<td class="l fn" data-detail="' + esc(r.code) + '" title="Open this fund’s NAV chart and return calendars"><b>' + tags(r, true) + esc(cleanName(r.short)) + '</b>' + (r.amc ? '<small>' + esc(r.amc) + '</small>' : '') + '</td>' +
+    '<td class="l mu" title="' + esc(r.category || '') + '">' + esc(r.s) + '</td>' +
+    '<td class="mu">' + r.years.toFixed(1) + '</td>' +
+    TCOLS.map(c => '<td class="' + (c[2] ? 'sep' : '') + '">' + fmtRet(r[c[0]], perDp(c[0])) + '</td>').join('') + '</tr>').join('')
+    : '<tr><td colspan="15" class="os-empty">' + emptyText() + '</td></tr>';
 }
 
 function render() {
   applyFilters();
-  const tbody = document.getElementById('resultsBody');
-  tbody.innerHTML = '';
-  const frag = document.createDocumentFragment();
-  // Limit rendered rows to first 1500 for speed
-  const slice = SHOWN.slice(0, 1500);
-  slice.forEach((r, i) => {
-    const tr = document.createElement('tr');
-    tr.className = i % 2 ? 'bg-slate-50' : '';
-    const cagr = r.cagrPct;
-    const staleBadge = r.stale ? ' <span class="badge b-other" title="Latest NAV is ' + (r.staleDays || '?') + ' days old — short-period returns suppressed">stale</span>' : '';
-    const planBadge = ((r.plan || 'Direct') === 'Regular')
-      ? ' <span class="badge b-plan-reg" title="Regular plan — older funds carry full pre-2013 history">REG</span>'
-      : ' <span class="badge b-plan-dir" title="Direct plan">DIR</span>';
-    tr.innerHTML =
-      '<td class="px-2 py-2 text-slate-500 text-[10px]">' + (i + 1) + '</td>' +
-      '<td class="px-3 py-2"><div class="text-xs"><span class="font-medium text-slate-800 cursor-pointer hover:text-blue-600 hover:underline" data-detail="' + r.code + '" title="Click for monthly & rolling-return calendars">' + cleanName(r.short).replace(/[<>]/g, '') + '</span>' + planBadge + staleBadge + '</div>' +
-        (r.amc ? '<div class="text-[10px] text-slate-500">' + r.amc.replace(/[<>]/g, '') + '</div>' : '') + '</td>' +
-      '<td class="px-2 py-2 text-right text-slate-300 italic text-[10px]">—</td>' +
-      '<td class="px-2 py-2"><span class="badge ' + badgeClass(r.g) + '" title="' + (r.category || '').replace(/["<>]/g, '') + '">' + r.s + '</span></td>' +
-      '<td class="px-2 py-2 text-right text-slate-600">' + r.years.toFixed(1) + '</td>' +
-      '<td class="px-2 py-2 text-right border-l border-slate-200">' + fmtRet(r.r1d) + '</td>' +
-      '<td class="px-2 py-2 text-right">' + fmtRet(r.r1w) + '</td>' +
-      '<td class="px-2 py-2 text-right">' + fmtRet(r.r1m) + '</td>' +
-      '<td class="px-2 py-2 text-right">' + fmtRet(r.r3m) + '</td>' +
-      '<td class="px-2 py-2 text-right">' + fmtRet(r.r6m) + '</td>' +
-      '<td class="px-2 py-2 text-right">' + fmtRet(r.r1y) + '</td>' +
-      '<td class="px-2 py-2 text-right border-l border-slate-200">' + fmtRet(r.r3y) + '</td>' +
-      '<td class="px-2 py-2 text-right">' + fmtRet(r.r5y) + '</td>' +
-      '<td class="px-2 py-2 text-right">' + fmtRet(r.r10y) + '</td>' +
-      '<td class="px-2 py-2 text-right border-l border-slate-200 text-sm ' + (cagr >= 0 ? 'pos' : 'neg') + '">' + (cagr >= 0 ? '+' : '') + cagr.toFixed(2) + '</td>' +
-      '<td class="px-2 py-2 text-right border-l-2 border-amber-200 bg-amber-50/40">' + fmtRet(r.cust) + '</td>';
-    frag.appendChild(tr);
-  });
-  tbody.appendChild(frag);
-
-  // Stats
-  document.getElementById('statShown').textContent = SHOWN.length.toLocaleString() + (SHOWN.length > 1500 ? '  (first 1,500 rendered)' : '');
-  const cs = new Set(SHOWN.map(r => r.s));
-  document.getElementById('statCats').textContent = cs.size;
-  if (SHOWN.length) {
-    const avg = SHOWN.reduce((s, r) => s + (r.cagrPct || 0), 0) / SHOWN.length;
-    document.getElementById('statCagr').textContent = (avg >= 0 ? '+' : '') + avg.toFixed(2) + '%';
-    const top = SHOWN[0];
-    const lbl = top.short + '  (' + top.cagrPct.toFixed(1) + '% CAGR)';
-    const e = document.getElementById('statBest');
-    e.textContent = lbl;
-    e.setAttribute('title', lbl);
-  } else {
-    document.getElementById('statCagr').textContent = '—';
-    document.getElementById('statBest').textContent = '—';
-  }
+  // keep a fund selected on laptop widths; on a phone nothing is selected until it is tapped (the NAV history is 8 MB)
+  if (SEL != null && !SHOWN.some(r => r.code === SEL) && VIEW === 'funds') SEL = null;
+  if (SEL == null && VIEW === 'funds' && wide() && SHOWN.length) SEL = SHOWN[0].code;
+  $('grid').classList.toggle('tbl', VIEW === 'table');
+  renderCats();
+  if (VIEW === 'table') renderTable(); else { renderFunds(); renderDetail(); }
+  $('pG').classList.toggle('kb', PANE === 'cat'); $('pF').classList.toggle('kb', PANE === 'fund');
+  seg('pers', PER); seg('plans', PLAN); seg('yrs', String(MINYR)); seg('cmodes', CUSTMODE); seg('views', VIEW);
+  $('cw').classList.toggle('on', !!(FROM && TO));
   custHint();
+  K.fitGrid($('grid'));
 }
 
 // A window can be perfectly valid yet blank out every visible row — most often because the From
 // date predates 2013 while the plan filter is on Direct (direct plans only exist from Jan 2013),
 // or because every fund in the current filter launched later. Say which, instead of a bare "—".
 function custHint() {
-  const el = document.getElementById('custWarn');
-  if (!el) return;
+  const el = $('custWarn');
   if (!FROM || !TO || !HIST || SHOWN.some(r => r.cust != null)) { el.textContent = ''; el.classList.add('hidden'); return; }
-  const plan = document.getElementById('planFilter').value;
+  const plan = PLAN;
   const anyPlan = ALL.some(r => r.cust != null && (r.plan || 'Direct') !== plan);
   el.textContent = (plan === 'Direct' && anyPlan && FROM < '2013-01-01')
     ? '⚠ No Direct-plan fund existed on ' + FROM + ' — direct plans only start from Jan 2013. Switch Plan to Regular, or pick a later From date.'
@@ -718,71 +612,192 @@ function custHint() {
   el.classList.remove('hidden');
 }
 
-// Wire events
+// ---- the selected fund: header, figures, NAV chart or a calendar ----
+function navBars(code) {
+  const d = decoded(code); if (!d) return [];
+  const out = [];
+  for (let i = 0; i < d.nav.length; i++) {
+    const v = d.nav[i]; if (!(v > 0)) continue;
+    const s = '' + HIST.dates[d.start + i];
+    out.push({ ts: Date.UTC(+s.slice(0, 4), +s.slice(4, 6) - 1, +s.slice(6, 8)) / 1000, c: v / 100 });
+  }
+  return out;
+}
+const niceD = s => s ? K.niceDate(s) : '—';
+function renderDetail() {
+  const r = SEL == null ? null : BYCODE[SEL];
+  const on = !!r;
+  ['dMeta', 'dStats'].forEach(id => $(id).classList.toggle('hidden', !on));
+  $('dTabs').parentNode.classList.toggle('hidden', !on);
+  if (!on) {
+    $('dTtl').textContent = 'Fund'; $('dTags').innerHTML = ''; $('dPx').textContent = ''; $('dChg').innerHTML = '';
+    $('cWrap').classList.remove('hidden'); $('calBox').classList.add('hidden');
+    if (CH) CH.clear(SHOWN.length ? 'Select a fund to see its NAV chart and return calendars.' : emptyText()); else $('cMsg').textContent = SHOWN.length ? 'Select a fund to see its NAV chart and return calendars.' : emptyText();
+    DRAWN = ''; return;
+  }
+  $('dTtl').textContent = cleanName(r.short); $('dTtl').title = r.name || '';
+  $('dTags').innerHTML = tags(r, true);
+  $('dPx').textContent = r.latestNav == null ? '' : '₹' + Number(r.latestNav).toLocaleString('en-IN', { maximumFractionDigits: 4 });
+  $('dChg').innerHTML = r.r1d == null ? '' : '<span class="os-chg ' + K.cls(r.r1d) + '">' + (r.r1d >= 0 ? '+' : '') + r.r1d.toFixed(2) + '%</span>';
+  $('dMeta').innerHTML = esc(r.g) + ' › ' + esc(r.s) + (r.amc ? ' · ' + esc(r.amc) : '') + ' · NAV of ' + niceD(r.latestDate) + ' · data from ' + niceD(r.inceptionDate) + ' (' + r.years.toFixed(1) + 'y)';
+  $('dMeta').title = r.category || '';
+  const cell = (lb, v, d) => '<div><span>' + lb + '</span><b class="' + (v == null ? '' : v >= 0 ? 'os-pos' : 'os-neg') + '">' + (v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(d || 1) + '%') + '</b></div>';
+  $('dStats').innerHTML = cell('1D', r.r1d) + cell('1W', r.r1w) + cell('1M', r.r1m) + cell('3M', r.r3m) + cell('6M', r.r6m) + cell('1Y', r.r1y)
+    + cell('3Y*', r.r3y) + cell('5Y*', r.r5y) + cell('10Y*', r.r10y) + cell('Since incep.*', r.cagrPct, 2)
+    + '<div title="' + esc(CUSTSUB) + '"><span>Custom</span><b class="' + (r.cust == null ? '' : r.cust >= 0 ? 'os-pos' : 'os-neg') + '">' + (r.cust == null ? (FROM && TO ? '—' : 'set dates') : (r.cust >= 0 ? '+' : '') + r.cust.toFixed(1) + '%') + '</b></div>'
+    + '<div title="Total (not annualized) return since inception"><span>Total</span><b class="' + (r.totalReturnPct == null ? '' : r.totalReturnPct >= 0 ? 'os-pos' : 'os-neg') + '">' + (r.totalReturnPct == null ? '—' : (r.totalReturnPct >= 0 ? '+' : '') + r.totalReturnPct.toFixed(1) + '%') + '</b></div>';
+  const isChart = TAB === 'chart';
+  $('cWrap').classList.toggle('hidden', !isChart); $('calBox').classList.toggle('hidden', isChart);
+  ['cIv', 'cRg', 'cLog'].forEach(id => $(id).classList.toggle('hidden', !isChart));
+  $('dWinWrap').classList.toggle('hidden', !(TAB === 'trailing' || TAB === 'forward'));
+  seg('dTabs', TAB); seg('dWin', String(WIN));
+  const key = r.code + '|' + TAB + '|' + WIN;
+  if (key === DRAWN) return;
+  DRAWN = key;
+  if (isChart) drawChart(r.code); else drawCal(r.code);
+}
+async function drawChart(code) {
+  const still = () => SEL === code && TAB === 'chart';
+  if (!HIST) {
+    CH.clear('Loading NAV history (about 8 MB)…');
+    if (!await ensureHistory()) { if (still()) { CH.clear('Couldn’t load the NAV history. Check your connection, then pick the fund again.'); DRAWN = ''; } return; }
+    if (!still()) return;
+  }
+  const bars = navBars(code);
+  if (!bars.length) { CH.clear('No NAV history on file for this fund.'); return; }
+  CH.show({ bars: bars, ohlc: false }, { name: cleanName(BYCODE[code].short) });
+  seg('cIv', CH.iv); seg('cRg', CH.range);
+}
+async function drawCal(code) {
+  const box = $('calBox'), still = () => SEL === code && TAB !== 'chart';
+  if (!HIST) {
+    box.innerHTML = '<div class="os-empty">Loading NAV history (about 8 MB)…</div>';
+    if (!await ensureHistory()) { if (still()) { box.innerHTML = '<div class="os-empty">Couldn’t load the NAV history. Check your connection, then pick the fund again.</div>'; DRAWN = ''; } return; }
+    if (!still()) return;
+  }
+  const win = WIN;
+  box.innerHTML = TAB === 'monthly'
+    ? '<h3>Monthly returns — each calendar month’s gain</h3>' + calMonthly(code) + '<p>Each month’s NAV return, in % (right “Year” column = calendar-year return). “·” = outside the fund’s data window.</p>'
+    : TAB === 'trailing'
+    ? '<h3>Trailing ' + win + '-year return — your ' + win + '-year CAGR as of each month</h3>' + calRolling(code, win, false) + '<p>' + win + '-year CAGR ending that month, in %. “·” = outside the fund’s data window.</p>'
+    : '<h3>Forward ' + win + '-year return — invest at month-start &amp; hold ' + win + ' years</h3>' + calRolling(code, win, true) + '<p>' + win + '-year CAGR if you invested that month, in %. “·” = outside the fund’s data window.</p>';
+  box.scrollTop = 0;
+}
+
+// ---- controls ----
+function seg(id, val) { $(id).querySelectorAll('button[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === val)); }
+function mkSeg(id, opts, fn) {
+  const el = $(id);
+  el.innerHTML = opts.map(o => '<button type="button" data-v="' + esc(o[0]) + '"' + (o[2] ? ' title="' + esc(o[2]) + '"' : '') + '>' + esc(o[1]) + '</button>').join('');
+  el.addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (b && !b.disabled) fn(b.dataset.v); });
+}
+// Custom date-range window: recompute the per-fund window return, sort by it.
+async function applyDateRange() {
+  const f = $('fromDate').value, t = $('toDate').value;
+  if (f && t && !HIST) {
+    const info = $('rangeInfo'); info.textContent = 'Loading NAV history (about 8 MB)…';
+    if (!await ensureHistory()) { info.textContent = 'Couldn’t load the NAV history. Retry.'; return; }
+  }
+  recomputeCust();
+  if (FROM && TO) { SORT = { key: 'cust', dir: -1 }; PER = 'cust'; }
+  else if (SORT.key === 'cust' || PER === 'cust') { SORT = { key: 'cagrPct', dir: -1 }; PER = 'cagrPct'; }
+  render();
+}
+function setPer(k) {
+  if (k === 'cust' && !(FROM && TO)) { $('rangeInfo').textContent = 'Custom: set the From and To dates first.'; $('fromDate').focus(); return; }
+  PER = k; SORT = { key: k, dir: -1 }; render(); scrollSel(true);
+}
+function sortBy(k) {
+  if (SORT.key === k) SORT.dir = -SORT.dir;
+  else { SORT.key = k; SORT.dir = (k === 'short' || k === 's') ? 1 : -1; }
+  render();
+}
+function selectFund(code, user) {
+  SEL = code; PANE = 'fund';
+  if (VIEW !== 'funds') { VIEW = 'funds'; render(); }
+  else {
+    $('fList').querySelectorAll('.os-row.on').forEach(x => x.classList.remove('on'));
+    const row = $('fList').querySelector('.os-row[data-c="' + code + '"]'); if (row) row.classList.add('on');
+    $('pG').classList.remove('kb'); $('pF').classList.add('kb');
+    renderDetail();
+  }
+  scrollSel();
+  if (user && !wide()) $('pD').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function scrollSel(top) {
+  const row = $('fList').querySelector('.os-row.on'); if (row) row.scrollIntoView({ block: 'nearest' }); else if (top) $('fList').scrollTop = 0;
+  const g = $('gList').querySelector('.os-row.on'); if (g) g.scrollIntoView({ block: 'nearest' });
+}
+function setCat(k) { CAT = k; SEL = null; render(); $('fList').scrollTop = 0; $('tBox').scrollTop = 0; scrollSel(); }
+function move(d) {
+  if (PANE === 'cat') {
+    const i = CATS.findIndex(c => c.k === CAT), j = Math.max(0, Math.min(CATS.length - 1, (i < 0 ? 0 : i) + d));
+    if (j !== i) setCat(CATS[j].k);
+  } else {
+    const list = SHOWN.slice(0, 1500); if (!list.length) return;
+    const i = list.findIndex(r => r.code === SEL), j = i < 0 ? 0 : Math.max(0, Math.min(list.length - 1, i + d));
+    if (j !== i) selectFund(list[j].code);
+  }
+}
+function toggleFocus() { if (!wide() || VIEW !== 'funds') return; const on = $('grid').classList.toggle('focus'); $('dFocus').classList.toggle('on', on); }
+
 document.addEventListener('DOMContentLoaded', () => {
   loadData().then(() => {
-    document.getElementById('searchBox').addEventListener('input', render);
-    document.getElementById('catFilter').addEventListener('change', render);
-    document.getElementById('planFilter').addEventListener('change', render);
-    document.getElementById('yrFilter').addEventListener('change', render);
+    CH = new K.Chart({ chart: $('cChart'), legend: $('cLegend'), msg: $('cMsg'), iv: 'D', range: '3Y' });
+    const EC = ['#3b82f6', '#eab308', '#ef4444'], EN = [21, 50, 200];
+    CH.legend = function (i) {             // a NAV has no open / high / low, so the legend says NAV, not O H L C
+      const b = this.bars[i], el = this.o.legend, me = this; if (!b || !this.data) { el.innerHTML = ''; return; }
+      const prev = i > 0 ? this.bars[i - 1].c : null, pc = prev ? (b.c / prev - 1) * 100 : null;
+      el.innerHTML = '<div><b>' + esc(this.meta.name || '') + '</b> <span class="mut">· 1' + this.iv + ' · ' + K.niceDate(K.tsISO(b.ts)) + ' · NAV</span> ₹' + K.fmtN(b.c)
+        + (pc == null ? '' : ' <span class="' + (K.cls(pc) || 'os-pos') + '">' + K.fmtPct(pc) + '</span>') + '</div><div>'
+        + EN.map((n, j) => { const e = me.ema[j] && me.ema[j][i]; return '<span class="mut">EMA ' + n + '</span> <span style="color:' + EC[j] + '">' + (e == null ? '—' : K.fmtN(e)) + '</span>'; }).join(' &nbsp;') + '</div>';
+    };
+    mkSeg('views', [['funds', 'Funds'], ['table', 'All columns']], v => { VIEW = v; $('grid').classList.remove('focus'); $('dFocus').classList.remove('on'); DRAWN = ''; render(); });
+    mkSeg('pers', PERS.map(p => [p[0], p[1], p[0] === 'cust' ? 'Return over your own From → To window' : p[1].endsWith('*') ? 'Annualized (CAGR)' : 'Absolute return']), setPer);
+    mkSeg('plans', [['Direct', 'Direct'], ['Regular', 'Regular'], ['all', 'Both']], v => { PLAN = v; render(); });
+    mkSeg('yrs', [['0', 'Any'], ['1', '1+'], ['3', '3+'], ['5', '5+'], ['10', '10+']], v => { MINYR = parseFloat(v) || 0; render(); });
+    mkSeg('cmodes', [['abs', 'Abs', 'Show the custom window as an absolute return'], ['cagr', 'CAGR', 'Show the custom window annualized (windows under a year stay absolute)']], v => { CUSTMODE = v; applyDateRange(); });
+    mkSeg('dTabs', [['chart', 'NAV chart'], ['monthly', 'Monthly'], ['trailing', 'Trailing'], ['forward', 'Forward']], v => { TAB = v; renderDetail(); K.fitGrid($('grid')); });
+    mkSeg('dWin', [['3', '3y'], ['5', '5y'], ['7', '7y'], ['10', '10y']], v => { WIN = +v; renderDetail(); });
+    mkSeg('cIv', [['D', 'D'], ['W', 'W'], ['M', 'M']], v => { CH.setIv(v); seg('cIv', CH.iv); seg('cRg', CH.range); });
+    mkSeg('cRg', [['3M', '3M'], ['6M', '6M'], ['1Y', '1Y'], ['3Y', '3Y'], ['Max', 'Max']], v => { CH.setRange(v); seg('cRg', CH.range); });
+    seg('cIv', 'D'); seg('cRg', '3Y');
+    $('cLog').addEventListener('click', () => { CH.setLog(!CH.log); $('cLog').classList.toggle('on', CH.log); });
+    $('dFocus').addEventListener('click', toggleFocus);
 
-    // Custom date-range window: recompute the per-fund window return, sort by it.
-    async function applyDateRange() {
-      const f = document.getElementById('fromDate').value, t = document.getElementById('toDate').value;
-      if (f && t && !HIST) {
-        const info = document.getElementById('rangeInfo'); if (info) info.textContent = 'Loading price history…';
-        if (!await ensureHistory()) { if (info) info.textContent = 'Couldn’t load price history. Retry.'; return; }
-      }
+    const onSearch = e => { QUERY = e.target.value; $('searchBox').value = $('searchBox2').value = QUERY; render(); };
+    $('searchBox').addEventListener('input', onSearch); $('searchBox2').addEventListener('input', onSearch);
+    $('fromDate').addEventListener('change', applyDateRange);
+    $('toDate').addEventListener('change', applyDateRange);
+    $('clearDates').addEventListener('click', () => { $('fromDate').value = ''; $('toDate').value = ''; applyDateRange(); });
+    $('gList').addEventListener('click', e => { const r = e.target.closest('.os-row'); if (r) { PANE = 'cat'; setCat(r.dataset.k); } });
+    $('fList').addEventListener('click', e => { const r = e.target.closest('.os-row'); if (r) selectFund(r.dataset.c, true); });
+    $('fHead').addEventListener('click', e => { const s = e.target.closest('span[data-k]'); if (s) sortBy(s.dataset.k); });
+    $('tHead').addEventListener('click', e => { const t = e.target.closest('th[data-sort]'); if (t) sortBy(t.dataset.sort); });
+    // All-columns table — click a fund to open its NAV chart and calendars in the Funds view
+    $('resultsBody').addEventListener('click', e => { const t = e.target.closest('[data-detail]'); if (t) selectFund(t.dataset.detail, true); });
+    $('resetBtn').addEventListener('click', () => {
+      QUERY = ''; $('searchBox').value = $('searchBox2').value = '';
+      CAT = 'all'; PLAN = 'Direct'; MINYR = 0; CUSTMODE = 'abs';
+      $('fromDate').value = ''; $('toDate').value = '';
       recomputeCust();
-      if (FROM && TO) SORT = { key: 'cust', dir: -1 };
-      else if (SORT.key === 'cust') SORT = { key: 'cagrPct', dir: -1 };
-      render();
-    }
-    document.getElementById('fromDate').addEventListener('change', applyDateRange);
-    document.getElementById('toDate').addEventListener('change', applyDateRange);
-    document.getElementById('custMode').addEventListener('change', applyDateRange);
-    document.getElementById('clearDates').addEventListener('click', () => {
-      document.getElementById('fromDate').value = '';
-      document.getElementById('toDate').value = '';
-      applyDateRange();
+      SORT = { key: 'cagrPct', dir: -1 }; PER = 'cagrPct'; SEL = null;
+      render(); $('fList').scrollTop = 0;
     });
-
-    // Fund detail modal — click a fund name to see its monthly/trailing/forward calendars
-    document.getElementById('resultsBody').addEventListener('click', e => {
-      const t = e.target.closest('[data-detail]');
-      if (t) showFundDetail(+t.dataset.detail);
+    document.addEventListener('keydown', e => {
+      const t = e.target, typing = t && (t.tagName === 'INPUT' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA');
+      if (e.key === 'Escape') { if (typing) t.blur(); else if ($('grid').classList.contains('focus')) toggleFocus(); return; }
+      if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === 'f' || e.key === 'F') { toggleFocus(); return; }
+      if (VIEW !== 'funds') return;
+      const step = { ArrowDown: 1, ArrowUp: -1, PageDown: 10, PageUp: -10, Home: -1e6, End: 1e6 }[e.key];
+      if (step) { e.preventDefault(); move(step); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); PANE = 'cat'; render(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); PANE = 'fund'; if (SEL == null && SHOWN.length) selectFund(SHOWN[0].code); else render(); }
     });
-    document.getElementById('detClose').addEventListener('click', closeFundDetail);
-    document.getElementById('detWin').addEventListener('change', renderDetail);
-    document.getElementById('detailModal').addEventListener('click', closeFundDetail);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFundDetail(); });
-
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      document.getElementById('searchBox').value = '';
-      document.getElementById('catFilter').value = 'all';
-      document.getElementById('planFilter').value = 'Direct';
-      document.getElementById('yrFilter').value = '0';
-      document.getElementById('fromDate').value = '';
-      document.getElementById('toDate').value = '';
-      document.getElementById('custMode').value = 'abs';
-      recomputeCust();
-      SORT = { key: 'cagrPct', dir: -1 };
-      render();
-    });
-    // Sortable headers
-    document.querySelectorAll('th[data-sort]').forEach(th => {
-      th.addEventListener('click', () => {
-        const k = th.getAttribute('data-sort');
-        if (SORT.key === k) SORT.dir = -SORT.dir;
-        else { SORT.key = k; SORT.dir = (k === 'name' || k === 's') ? 1 : -1; }
-        document.querySelectorAll('.sort-ind').forEach(el => { el.textContent = '↕'; el.className = 'sort-ind text-slate-300'; });
-        const ind = th.querySelector('.sort-ind');
-        ind.textContent = SORT.dir === -1 ? '▼' : '▲';
-        ind.className = 'sort-ind text-blue-600';
-        render();
-      });
-    });
-  });
+    let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => K.fitGrid($('grid')), 120); });
+    render();
+  }).catch(e => { $('status').textContent = 'Couldn’t read the fund list: ' + (e && e.message || e); });
 });
 </script>
 </body>
