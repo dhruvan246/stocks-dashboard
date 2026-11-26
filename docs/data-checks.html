@@ -8,25 +8,47 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .xc-tab{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .xc-tab table{border-collapse:collapse;width:100%;font-size:12px}
-  .xc-tab th{font-size:10px;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:6px 8px;white-space:nowrap;opacity:.65}
-  .xc-tab td{padding:5px 8px;border-top:1px solid rgba(148,163,184,.25);white-space:nowrap;vertical-align:top}
-  .xc-tab td.num{text-align:right}
-  .xc-bar{height:6px;border-radius:9999px;background:rgba(148,163,184,.3);overflow:hidden}
-  .xc-bar > span{display:block;height:100%;background:var(--pos)}
-  details > summary{cursor:pointer;list-style:none}
-  details > summary::-webkit-details-marker{display:none}
-  .xc-pill{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:var(--radius-sm);border:1px solid currentColor}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(260px,330px) minmax(360px,470px) minmax(0,1fr)}
+  #cHead,.cr{grid-template-columns:minmax(0,1fr) 62px 46px}
+  .os-row.cr{height:48px}
+  .cr .n{line-height:1.3;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:12.5px}
+  #cList{flex:none;max-height:46%}
+  #cInfo{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;border-top:1px solid var(--border);padding:10px 12px;font-size:12px;line-height:1.55;color:var(--text-muted)}
+  #cInfo b{color:var(--text);font-weight:600} #cInfo .t{color:var(--text);font-weight:600;font-size:13px;margin-bottom:4px}
+  #cInfo .bar{height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden;margin:6px 0 8px} #cInfo .bar span{display:block;height:100%;background:var(--pos)}
+  #cInfo pre{white-space:pre-wrap;font-size:11px;color:var(--neg)}
+  #cInfo .dim{color:var(--text-faint);margin-top:4px}
+  .warn{color:var(--warn,#d19a1c)} .info{color:var(--info,#3b9bd6)} .bad-t{color:var(--neg)}
+  #fTabs{margin:8px 10px 0;display:flex} #fTabs button{flex:1 1 0}
+  .fr a{color:inherit;pointer-events:none;text-decoration:none}
+  .fr .n{font-weight:500}
+  .xc-pill{display:inline-block;font-size:10px;font-weight:700;padding:0 5px;border-radius:4px;border:1px solid currentColor;line-height:1.5}
+  .text-amber-600{color:var(--warn,#d19a1c)} .text-sky-600{color:var(--info,#3b9bd6)} .text-slate-500,.text-slate-400{color:var(--text-faint)}
+  #dKv{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));border-bottom:1px solid var(--border);max-height:38%;overflow-y:auto;scrollbar-width:thin;flex:none}
+  #dKv > div{padding:8px 12px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);min-width:0;margin:0 -1px -1px 0}
+  #dKv > div.w{grid-column:1/-1}
+  #dKv span{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint)}
+  #dKv b{display:block;font-size:13.5px;font-weight:600;margin-top:2px;color:var(--text);overflow-wrap:anywhere}
+  #dKv a{color:var(--accent-text)}
+  html[data-theme] .os-ps input[type="search"]{flex:1 1 0;min-width:0}
+  #status{margin:10px 0}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55} #how summary{cursor:pointer;color:var(--text-muted)}
+  #pD .os-chartwrap{min-height:220px}
+  #pD.nochart #dCtl,#pD.nochart .os-chartwrap{display:none}
+  #pD.nochart #dKv{max-height:none;flex:1;align-content:start}
+  #dNoChart{display:none} #pD.nochart #dNoChart{display:block;border-top:1px solid var(--border)}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(220px,260px) minmax(300px,380px) minmax(0,1fr)} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #cList{max-height:none} #cInfo{flex:none;max-height:none;overflow:visible} #dKv{max-height:none} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -35,21 +57,46 @@
   </div>
 </header>
 
-<main class="max-w-screen-lg mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Data checks</h1>
-    <p class="text-sm text-slate-500 mt-1">Each check reads the same number from <b>two independent sources</b> and lists where they disagree.
-      Sums and size checks cannot catch a plausible wrong number — a second reader can. Findings are reported, never auto-changed:
-      a real error is fixed through its correction ledger, and a difference that is not an error is recorded as <i>accepted</i> with the reason.</p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Data checks</h1>
+    <div class="os-asof" id="asof"></div>
   </div>
+  <div id="status" class="os-empty">Loading checks…</div>
 
-  <div id="banner" class="card p-4 mb-5 text-sm text-slate-500">Loading checks…</div>
-  <div id="checks"></div>
+  <div id="content" class="hidden">
+    <div class="os-bar">
+      <span class="os-hint" style="white-space:normal">Each check reads the same number from <b>two independent sources</b> and lists where they disagree. Findings are reported, never auto-changed.</span>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>← →</b> switch list · <b>1 2 3</b> open / explained / accepted · <b>/</b> search · <b>Enter</b> stock page</span>
+    </div>
 
-  <p class="text-[11px] text-slate-400 mt-6">Scope: Nifty 500 members on each date. Source: <code>docs/xcheck.json</code>, built by
-    <code>scripts/xcheck_run.py</code> (runbook §214). “Explained” = a known, by-design difference (e.g. Yahoo never adjusts demergers);
-    “Wrong side” is read from the prices themselves: a correctly adjusted series is continuous across a split, so the file whose own price
-    jumps by the gap is the one that failed to adjust.</p>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pC" aria-label="Checks">
+        <div class="os-ph"><span class="ttl">Checks</span><span class="r" id="cCount"></span></div>
+        <div class="os-ch" id="cHead"><span>Check</span><span>Agree</span><span>Open</span></div>
+        <div class="os-list" id="cList" role="listbox" aria-label="Checks"></div>
+        <div id="cInfo"></div>
+      </section>
+      <section class="os-pane" id="pF" aria-label="Findings">
+        <div class="os-ph"><span class="ttl" id="fTitle"></span><span class="r" id="fCount"></span></div>
+        <div class="os-sg" id="fTabs" role="group" aria-label="Which findings"></div>
+        <div class="os-ps"><input id="fSearch" type="search" placeholder="Find a stock, quarter or field" autocomplete="off" aria-label="Find a finding" /></div>
+        <div class="os-ch" id="fHead"></div>
+        <div class="os-list" id="fList" role="listbox" aria-label="Findings"></div>
+      </section>
+      <section class="os-pane os-main nochart" id="pD" aria-label="Finding detail">
+        <div class="os-ph"><span class="sym" id="dSym"></span><span class="nm" id="dSub"></span>
+          <span class="r"><a class="os-btn hidden" id="dOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a></span></div>
+        <div id="dKv"></div>
+        <div class="os-ps" id="dCtl"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
+          <span class="os-hint" id="cTag" style="white-space:normal"></span></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-note" id="dNoChart"></div>
+      </section>
+    </div>
+    <details id="how"><summary>How to read this page</summary>Scope: Nifty 500 members on each date. Source: <code>docs/xcheck.json</code>, built by <code>scripts/xcheck_run.py</code> (runbook §214). “Explained” = a known, by-design difference (e.g. Yahoo never adjusts demergers); “Wrong side” is read from the prices themselves: a correctly adjusted series is continuous across a split, so the file whose own price jumps by the gap is the one that failed to adjust. A real error is fixed through its correction ledger; a difference that is not an error is recorded as <i>accepted</i> with the reason.</details>
+  </div>
 </main>
 
 <script>
@@ -60,7 +107,9 @@
     '<p class="text-sm text-slate-500">It\'s a personal tool of the site owner. The rest of the site is open — head back to the <a class="text-indigo-600 font-semibold hover:underline" href="./index.html">home page</a>.</p></div>'; }
   var SW_OWNER = (function(){ try { return !!localStorage.getItem('bt_owner_key'); } catch(e){ return false; } })();
   if (!SW_OWNER) { swLock(); return; }
+  var K = window.OSKit, $ = function (id) { return document.getElementById(id); };
 
+  // ---- formatters and per-check columns: unchanged from the old page ----
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function num(v, dp) {
     if (v == null || v === '') return '—';
@@ -153,68 +202,174 @@
     return [['Finding', function (f) { return esc(Object.keys(f).filter(function (k) { return k !== 'weight'; }).map(function (k) {
       var v = f[k]; return k + '=' + (typeof v === 'object' ? JSON.stringify(v) : v); }).join(' · ')); }]];
   }
-  function table(c, list) {
-    var cols = COLS[c.id] || generic();
-    if (!list || !list.length) return '<div class="text-xs text-slate-400 px-4 py-3">None.</div>';
-    return '<div class="xc-tab"><table><thead><tr>' + cols.map(function (x) { return '<th' + (x[2] ? ' style="text-align:right"' : '') + '>' + esc(x[0]) + '</th>'; }).join('') +
-      '</tr></thead><tbody>' + list.map(function (f) {
-        return '<tr>' + cols.map(function (x) { return '<td' + (x[2] ? ' class="num"' : '') + '>' + x[1](f) + '</td>'; }).join('') + '</tr>';
-      }).join('') + '</tbody></table></div>';
+
+  // which of a check's columns the middle list shows (indices into COLS[id]); the detail pane shows all of them
+  var LIST = { px_nse_yahoo: [0, 4, 5, 6], fund_vision_xbrl: [0, 1, 3, 6], fund_pbt_tax: [0, 1, 3, 7], fund_new_results: [0, 1, 4, 5],
+    fund_pat_mirror: [0, 1, 4, 5], fund_eps_shares: [0, 1, 3, 7], mcap_shares: [0, 1, 2, 3], idx_levels: [0, 2, 6], shp_neighbours: [0, 1, 2, 4], flows_month: [0, 1, 2, 3] };
+  var TABS = [['open', 'Open'], ['explained', 'Explained'], ['accepted', 'Accepted']];
+  var CHECKS = [], ROWS = [], CH = null, TOK = 0;
+  var S = { c: null, tab: 'open', f: null, q: '', pane: 2 };
+  function failed(c) { return c.error && c.compared == null; }
+  function colsOf(c) { return COLS[c.id] || generic(); }
+  function listCols(c) {
+    var cols = colsOf(c), ix = LIST[c.id] || cols.map(function (_, i) { return i; }).slice(0, 4);
+    return ix.map(function (i) { return cols[i]; }).filter(Boolean);
   }
-  function card(c) {
-    if (c.error && c.compared == null) {
-      return '<div class="card p-4 mb-4"><div class="font-bold text-red-600">' + esc(c.title || c.id) + ' — did not run</div>' +
-        '<pre class="text-[11px] text-slate-500 whitespace-pre-wrap mt-2">' + esc(c.error) + '</pre></div>';
-    }
+  function plain(html) { var d = document.createElement('div'); d.innerHTML = html; return d.textContent || ''; }
+
+  function renderChecks() {
+    $('cCount').textContent = CHECKS.length + ' checks';
+    $('cList').innerHTML = CHECKS.map(function (c, i) {
+      var f = failed(c);
+      return '<div class="os-row cr' + (c === S.c ? ' on' : '') + '" role="option" data-i="' + i + '" title="' + esc(c.title || c.id) + '">' +
+        '<span class="n">' + esc(c.title || c.id) + '</span>' +
+        '<span class="' + (f ? 'bad-t' : c.n_open ? 'warn' : 'os-pos') + '">' + (f ? 'did not run' : c.agree_pct == null ? '—' : num(c.agree_pct, 2) + '%') + '</span>' +
+        '<span class="' + (c.n_open ? 'warn' : 'm') + '">' + (f ? '—' : num(c.n_open, 0)) + '</span></div>';
+    }).join('');
+  }
+  function renderInfo() {
+    var c = S.c; if (!c) { $('cInfo').innerHTML = ''; return; }
+    if (failed(c)) { $('cInfo').innerHTML = '<div class="t bad-t">' + esc(c.title || c.id) + ' — did not run</div><pre>' + esc(c.error) + '</pre>'; return; }
     var pct = c.agree_pct == null ? null : c.agree_pct;
-    var shown = (c.open || []).length;
-    var head =
-      '<div class="flex flex-wrap items-baseline justify-between gap-2">' +
-        '<div class="min-w-0"><div class="text-[11px] uppercase tracking-wide text-slate-500 font-bold">' + esc(c.domain) + '</div>' +
-        '<div class="text-base font-bold text-slate-900">' + esc(c.title) + '</div></div>' +
-        '<div class="text-right"><div class="text-lg font-extrabold ' + (c.n_open ? 'text-amber-600' : 'text-emerald-600') + '">' +
-          (pct == null ? '—' : num(pct, 2) + '%') + '</div><div class="text-[11px] text-slate-400">agree</div></div>' +
-      '</div>' +
-      '<div class="xc-bar mt-2"><span style="width:' + (pct == null ? 0 : Math.max(0, Math.min(100, pct))) + '%"></span></div>' +
-      '<div class="text-xs text-slate-500 mt-2 leading-relaxed">' +
-        '<div><b>A</b> · ' + esc(c.reader_a) + '</div><div><b>B</b> · ' + esc(c.reader_b) + '</div>' +
-        '<div>Scope · ' + esc(c.scope) + ' · tolerance ' + esc(c.tolerance) + '</div></div>' +
-      '<div class="flex flex-wrap gap-x-4 gap-y-1 text-xs mt-2">' +
-        '<span><b>' + num(c.compared, 0) + '</b> compared</span>' +
-        '<span class="text-amber-600"><b>' + num(c.n_open, 0) + '</b> open</span>' +
-        '<span class="text-sky-600"><b>' + num(c.n_explained, 0) + '</b> explained</span>' +
-        '<span class="text-slate-500"><b>' + num(c.n_accepted, 0) + '</b> accepted</span>' +
-        '<span class="text-slate-400">ran ' + esc(c.ran || '—') + '</span></div>' +
-      (c.notes && c.notes.length ? '<div class="text-[11px] text-slate-400 mt-1">' + c.notes.map(esc).join(' · ') + '</div>' : '') +
-      (c.calibration ? '<div class="text-[11px] text-slate-400 mt-1"><b>Calibration</b> · ' + esc(c.calibration) + '</div>' : '') +
-      (c.error ? '<div class="text-[11px] text-red-500 mt-1">Last run failed (' + esc(c.error_ran) + ') — showing the previous result.</div>' : '');
-    var body =
-      '<details class="mt-3"' + (c.n_open && c.n_open <= 25 ? ' open' : '') + '><summary class="text-xs font-semibold text-indigo-600">Open disagreements' +
-        (c.n_open > shown ? ' (largest ' + shown + ' of ' + num(c.n_open, 0) + ')' : ' (' + num(c.n_open, 0) + ')') + '</summary>' +
-        '<div class="mt-2 -mx-4 border-t border-slate-100">' + table(c, c.open) + '</div></details>' +
-      (c.n_explained ? '<details class="mt-2"><summary class="text-xs font-semibold text-sky-600">Explained (' + num(c.n_explained, 0) + ')</summary>' +
-        '<div class="mt-2 -mx-4 border-t border-slate-100">' + table(c, c.explained) + '</div></details>' : '') +
-      (c.n_accepted ? '<details class="mt-2"><summary class="text-xs font-semibold text-slate-500">Accepted (' + num(c.n_accepted, 0) + ')</summary>' +
-        '<div class="mt-2 -mx-4 border-t border-slate-100">' + table(c, c.accepted) + '</div></details>' : '');
-    return '<div class="card p-4 mb-4">' + head + body + '</div>';
+    $('cInfo').innerHTML =
+      '<div class="dim" style="margin:0 0 2px">' + esc(c.domain || '') + '</div><div class="t">' + esc(c.title) + '</div>' +
+      '<div><b class="' + (c.n_open ? 'warn' : 'os-pos') + '">' + (pct == null ? '—' : num(pct, 2) + '%') + '</b> agree · <b>' + num(c.compared, 0) + '</b> compared · <span class="warn"><b class="warn">' + num(c.n_open, 0) + '</b> open</span> · <span class="info"><b class="info">' + num(c.n_explained, 0) + '</b> explained</span> · <b>' + num(c.n_accepted, 0) + '</b> accepted</div>' +
+      '<div class="bar"><span style="width:' + (pct == null ? 0 : Math.max(0, Math.min(100, pct))) + '%"></span></div>' +
+      '<div><b>A</b> · ' + esc(c.reader_a) + '</div><div><b>B</b> · ' + esc(c.reader_b) + '</div>' +
+      '<div>Scope · ' + esc(c.scope) + ' · tolerance ' + esc(c.tolerance) + '</div>' +
+      '<div class="dim">ran ' + esc(c.ran || '—') + '</div>' +
+      (c.notes && c.notes.length ? '<div class="dim">' + c.notes.map(esc).join(' · ') + '</div>' : '') +
+      (c.calibration ? '<div class="dim"><b>Calibration</b> · ' + esc(c.calibration) + '</div>' : '') +
+      (c.error ? '<div class="bad-t" style="margin-top:4px">Last run failed (' + esc(c.error_ran) + ') — showing the previous result.</div>' : '');
+  }
+  function nOf(c, t) { return c['n_' + t] || 0; }
+  function renderTabs() {
+    var c = S.c;
+    $('fTabs').innerHTML = TABS.map(function (t) { return '<button type="button" data-v="' + t[0] + '"' + (t[0] === S.tab ? ' class="on"' : '') + '>' + t[1] + '<i>' + (c && !failed(c) ? num(nOf(c, t[0]), 0) : '—') + '</i></button>'; }).join('');
+  }
+  function renderFindings(keep) {
+    var c = S.c; renderTabs();
+    if (!c) return;
+    $('fTitle').textContent = c.title || c.id; $('fTitle').title = c.title || c.id;
+    var all = failed(c) ? [] : (c[S.tab] || []), q = S.q.trim().toLowerCase();
+    ROWS = q ? all.filter(function (f) { return JSON.stringify(f).toLowerCase().indexOf(q) >= 0; }) : all.slice();
+    var total = failed(c) ? 0 : nOf(c, S.tab);
+    $('fCount').textContent = failed(c) ? '' : (q ? ROWS.length + ' of ' + all.length + ' listed' : total > all.length ? 'largest ' + all.length + ' of ' + num(total, 0) : num(total, 0));
+    var cols = listCols(c), tpl = 'minmax(0,1fr)' + cols.slice(1).map(function (x) { return x[2] ? ' 70px' : ' 66px'; }).join('');
+    $('fHead').style.gridTemplateColumns = tpl;
+    $('fHead').innerHTML = cols.map(function (x) { return '<span>' + esc(x[0]) + '</span>'; }).join('');
+    if (!keep || ROWS.indexOf(S.f) < 0) S.f = ROWS[0] || null;
+    $('fList').innerHTML = ROWS.length ? ROWS.map(function (f, i) {
+      return '<div class="os-row fr' + (f === S.f ? ' on' : '') + '" role="option" data-i="' + i + '" style="grid-template-columns:' + tpl + '">' +
+        cols.map(function (x, j) { return '<span class="' + (j ? 'm' : 'n') + '">' + x[1](f) + '</span>'; }).join('') + '</div>';
+    }).join('') : '<div class="os-empty">' + (failed(c) ? 'This check did not run — the error is on the left.' : q ? 'No finding matches “' + esc(S.q.trim()) + '”.' : 'None.') + '</div>';
+    renderDetail();
+  }
+  var IVS = [['D', 'D'], ['W', 'W'], ['M', 'M']], RGS = [['Near', 'Near'], ['1Y', '1Y'], ['3Y', '3Y'], ['Max', 'Max']];
+  var CS = { iv: 'D', rg: 'Near' };
+  function segC() {
+    $('cIv').innerHTML = IVS.map(function (x) { return '<button type="button" data-v="' + x[0] + '"' + (x[0] === CS.iv ? ' class="on"' : '') + '>' + x[1] + '</button>'; }).join('');
+    $('cRg').innerHTML = RGS.map(function (x) { return '<button type="button" data-v="' + x[0] + '"' + (x[0] === CS.rg ? ' class="on"' : '') + ' title="' + (x[0] === 'Near' ? 'Zoom to the dates of this finding' : '') + '">' + x[1] + '</button>'; }).join('');
+  }
+  // the dates a finding is about: a price run (date_from → date_to) or a quarter end
+  function spanOf(f) {
+    if (f.date_from && f.date_to) return [f.date_from, f.date_to];
+    if (f.qe) return [f.qe, f.qe];
+    if (f.date) return [f.date, f.date];
+    return null;
+  }
+  function applyNear() {
+    if (!CH || !CH.ch || !CH.bars.length) return;
+    var sp = S.f && spanOf(S.f);
+    if (CS.rg !== 'Near' || !sp) { CH.setRange(CS.rg === 'Near' ? '1Y' : CS.rg); return; }
+    var pad = 120 * 86400, a = Date.parse(sp[0] + 'T00:00:00Z') / 1000 - pad, b = Date.parse(sp[1] + 'T00:00:00Z') / 1000 + pad;
+    var first = CH.bars[0].ts, last = CH.bars[CH.bars.length - 1].ts;
+    a = Math.max(a, first); b = Math.min(b, last);
+    if (!(b > a)) { CH.setRange('Max'); return; }
+    CH.ch.chart.timeScale().setVisibleRange({ from: K.tsISO(a), to: K.tsISO(b) });
+  }
+  function renderDetail() {
+    var c = S.c, f = S.f, tok = ++TOK, pd = $('pD');
+    $('dOpen').classList.add('hidden');
+    if (!c || !f) {
+      $('dSym').textContent = c ? (failed(c) ? 'Check did not run' : 'No finding selected') : ''; $('dSub').textContent = '';
+      $('dKv').innerHTML = ''; pd.classList.add('nochart');
+      $('dNoChart').textContent = c && !failed(c) && !ROWS.length ? 'Nothing in this list for this check.' : '';
+      return;
+    }
+    var cols = colsOf(c), sym = (f.sym && f.sym !== '*') ? f.sym : null;
+    $('dSym').textContent = sym || f.index || f.month || (f.sym === '*' ? 'All members' : 'Finding');
+    $('dSub').textContent = (c.title || c.id) + ' · ' + S.tab;
+    $('dKv').innerHTML = cols.map(function (x) { var h = x[1](f); return '<div' + (plain(h).length > 26 ? ' class="w"' : '') + '><span>' + esc(x[0]) + '</span><b>' + h + '</b></div>'; }).join('') +
+      (f.key ? '<div' + (String(f.key).length > 26 ? ' class="w"' : '') + '><span>Key</span><b>' + esc(f.key) + '</b></div>' : '');
+    if (!sym) { pd.classList.add('nochart'); $('dNoChart').textContent = 'No chart for this finding: it is not about one stock.'; return; }
+    $('dOpen').href = './stock.html?sym=' + encodeURIComponent(sym); $('dOpen').classList.remove('hidden');
+    pd.classList.remove('nochart');
+    var sp = spanOf(f);
+    $('cTag').textContent = 'Our stored closing prices (sf-data). ' + (c.id === 'px_nse_yahoo' ? 'Yahoo’s series is not kept on file, so only reader A is drawn.' : 'Shown for context' + (sp ? ' around ' + sp[0] : '') + '.');
+    if (!CH) CH = new K.Chart({ chart: $('cChart'), legend: $('cLegend'), msg: $('cMsg'), iv: CS.iv, range: 'Max' });
+    CH.clear('Loading ' + sym + '…');
+    K.loadStockBars(sym).then(function (d) {
+      if (tok !== TOK) return;
+      CH.iv = CS.iv; if (CH.show(d, { name: sym, tag: d.ohlc ? '' : 'closes' })) applyNear();
+    }).catch(function () { if (tok !== TOK) return; CH.clear('No price file for ' + sym + ' in the chart store.'); });
+  }
+  function markOn(listId, i) {
+    var el = $(listId), cur = el.querySelector('.os-row.on'); if (cur) cur.classList.remove('on');
+    var n = el.querySelector('.os-row[data-i="' + i + '"]'); if (n) { n.classList.add('on'); n.scrollIntoView({ block: 'nearest' }); }
+  }
+  function pickCheck(i) {
+    if (!CHECKS[i]) return; S.c = CHECKS[i]; markOn('cList', i); renderInfo();
+    // open the first list that has something in it, as the old page opened "Open disagreements"
+    if (!failed(S.c) && !(S.c[S.tab] || []).length) { var t = TABS.filter(function (t) { return (S.c[t[0]] || []).length; })[0]; S.tab = t ? t[0] : 'open'; }
+    renderFindings(false);
+  }
+  function pickFinding(i) { if (!ROWS[i]) return; S.f = ROWS[i]; markOn('fList', i); renderDetail(); }
+  function setTab(t) { S.tab = t; renderFindings(false); }
+
+  function wire() {
+    segC();
+    $('cList').onclick = function (e) { var r = e.target.closest('.os-row'); if (r) { S.pane = 1; pickCheck(+r.dataset.i); } };
+    $('fList').onclick = function (e) { var r = e.target.closest('.os-row'); if (r) { S.pane = 2; pickFinding(+r.dataset.i); } };
+    $('fTabs').onclick = function (e) { var b = e.target.closest('button'); if (b) setTab(b.dataset.v); };
+    $('fSearch').oninput = function () { S.q = this.value; renderFindings(true); };
+    $('cIv').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; CS.iv = b.dataset.v; segC(); if (CH && CH.data) { CH.setIv(CS.iv); applyNear(); } };
+    $('cRg').onclick = function (e) { var b = e.target.closest('button'); if (!b) return; CS.rg = b.dataset.v; segC(); applyNear(); };
+    window.addEventListener('resize', function () { K.fitGrid($('grid')); });
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      var inField = /^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''));
+      if (e.key === 'Escape' && inField) { e.target.blur(); return; }
+      if (inField) return;
+      if (e.key === '/') { e.preventDefault(); $('fSearch').focus(); return; }
+      if (e.key === '1' || e.key === '2' || e.key === '3') { setTab(TABS[+e.key - 1][0]); return; }
+      if (e.key === 'ArrowLeft') { S.pane = 1; e.preventDefault(); return; }
+      if (e.key === 'ArrowRight') { S.pane = 2; e.preventDefault(); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault(); var d = e.key === 'ArrowDown' ? 1 : -1;
+        if (S.pane === 1) { var ci = CHECKS.indexOf(S.c), ni = Math.max(0, Math.min(CHECKS.length - 1, ci + d)); if (ni !== ci) pickCheck(ni); }
+        else { var fi = ROWS.indexOf(S.f), nf = Math.max(0, Math.min(ROWS.length - 1, fi + d)); if (nf !== fi) pickFinding(nf); }
+        return;
+      }
+      if (e.key === 'Enter' && !$('dOpen').classList.contains('hidden')) location.href = $('dOpen').href;
+    });
   }
 
   fetch('./xcheck.json', { cache: 'no-store' })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (rep) {
-      var checks = (rep.order || Object.keys(rep.checks || {})).map(function (k) { return (rep.checks || {})[k]; }).filter(Boolean);
+      var checks = (rep.order || Object.keys(rep.checks || {})).map(function (k) { var c = (rep.checks || {})[k]; if (c && !c.id) c.id = k; return c; }).filter(Boolean);
       if (!checks.length) throw new Error('empty');
       var comp = 0, agr = 0, open = 0;
       checks.forEach(function (c) { comp += c.compared || 0; agr += c.agree || 0; open += c.n_open || 0; });
-      document.getElementById('banner').innerHTML =
-        '<div class="flex flex-wrap items-center gap-x-6 gap-y-1">' +
-        '<div><div class="text-lg font-extrabold text-slate-900">' + checks.length + ' checks · ' + num(comp, 0) + ' values compared</div>' +
-        '<div class="text-xs text-slate-400">Built ' + esc(rep.generated || '—') + '</div></div>' +
-        '<div class="text-sm"><b class="text-emerald-600">' + (comp ? num(100 * agr / comp, 2) : '—') + '%</b> agree · <b class="text-amber-600">' + num(open, 0) + '</b> open disagreements</div></div>';
-      document.getElementById('checks').innerHTML = checks.map(card).join('');
+      $('asof').className = 'os-asof live';
+      $('asof').innerHTML = checks.length + ' checks · ' + num(comp, 0) + ' values compared · <span class="os-pos">' + (comp ? num(100 * agr / comp, 2) : '—') + '% agree</span> · <span class="warn">' + num(open, 0) + ' open</span> · built ' + esc(rep.generated || '—');
+      CHECKS = checks;
+      $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+      wire(); S.c = CHECKS[0]; renderChecks(); K.fitGrid($('grid')); pickCheck(0);
     })
     .catch(function () {
-      document.getElementById('banner').innerHTML = '<div class="text-sm text-slate-500">No check results yet — the audit runs nightly (workflow <code>xcheck</code>).</div>';
+      $('status').innerHTML = 'No check results yet — the audit runs nightly (workflow <code>xcheck</code>).';
     });
 })();
 </script>
