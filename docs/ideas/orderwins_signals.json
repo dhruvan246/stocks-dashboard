@@ -1,7 +1,7 @@
 {
- "built": "2026-11-26 19:27 IST",
+ "built": "2026-11-27 19:24 IST",
  "rule": "Order wins filed after the last stated order book (and within 183 days of it), added up; flagged at >= 0.5x that book. Values read from each order letter; a letter with no readable value adds 0 (the sum is a floor). Script-read: confirm against the letters before acting.",
- "n_flagged": 19,
+ "n_flagged": 20,
  "rows": [
   {
    "isin": "INE389H01022",
@@ -689,6 +689,35 @@
      "src": "NSE",
      "doc": "https://nsearchives.nseindia.com/corporate/skipper_15052026140626_Intimationforreceiptoforder.pdf",
      "subject": "Bagging/Receiving of orders/contracts Skipper Limited has informed the Exchange about Bagging/Receiving of orders/contracts"
+    }
+   ]
+  },
+  {
+   "isin": "INE0P4701011",
+   "key": "NSE:SAHAJSOLAR",
+   "name": "SAHAJSOLAR",
+   "nse": "SAHAJSOLAR",
+   "base_cr": 300.0,
+   "base_as_on": "2026-09-30",
+   "base_filed": "2026-11-05",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/SahajSolar_05112026102209_051126SSLInvestorPresentation.pdf",
+   "n_wins": 1,
+   "n_no_value": 0,
+   "sum_cr": 388.23,
+   "ratio": 1.294,
+   "largest_ratio": 1.294,
+   "cross_date": "2026-11-27",
+   "flagged": true,
+   "wins": [
+    {
+     "filed": "2026-11-27",
+     "value_cr": 388.23,
+     "display": "US$ 42 mn",
+     "currency": "USD",
+     "fx": "USD/INR 92.435 (2026-11-26, Yahoo INR=X)",
+     "src": "NSE",
+     "doc": "https://nsearchives.nseindia.in/corporate/SahajSolar_27112026175316_271126SSLPressRelease.pdf",
+     "subject": "Press Release Sahaj Solar Limited has informed the Exchange regarding a press release dated November 27, 2026, titled \"Sahaj Solar received Letter of Intent for Two 10 MWac Solar PV + BESS Hybrid Proj"
     }
    ]
   },
@@ -1855,6 +1884,55 @@
    ]
   },
   {
+   "isin": "INE1FPN01026",
+   "key": "NSE:LCCPROJECT",
+   "name": "LCC Projects Ltd",
+   "nse": "LCCPROJECT",
+   "base_cr": 6000.0,
+   "base_as_on": "2026-09-30",
+   "base_filed": "2026-11-05",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/LCCPROJECTS_05112026133906_Transcriptsofconcall_05112026_SIGNED.pdf",
+   "n_wins": 3,
+   "n_no_value": 0,
+   "sum_cr": 1999.52,
+   "ratio": 0.333,
+   "largest_ratio": 0.121,
+   "cross_date": null,
+   "flagged": false,
+   "wins": [
+    {
+     "filed": "2026-11-06",
+     "value_cr": 717.46,
+     "display": "₹ 717.46 cr",
+     "currency": "INR",
+     "fx": null,
+     "src": "BSE",
+     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/67cfb926-513f-4dde-8b01-3f0730dd7a23.pdf",
+     "subject": "LCC Projects Ltd - 544918 - Announcement under Regulation 30 (LODR) - Bagging/receiving of order(s) or contract(s) Intimation of receipt of Letter of Acceptance for Rs. 717.46 crore from Office of the"
+    },
+    {
+     "filed": "2026-11-26",
+     "value_cr": 728.51,
+     "display": "₹ 728.51 cr",
+     "currency": "INR",
+     "fx": null,
+     "src": "BSE",
+     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ad0285a5-0e14-44b4-ae9b-34bb54a52b13.pdf",
+     "subject": "LCC Projects Ltd - 544918 - Announcement under Regulation 30 (LODR) - Bagging/receiving of order(s) or contract(s) Intimation of receipt of Letter of Acceptance for Construction of Dam and Development"
+    },
+    {
+     "filed": "2026-11-27",
+     "value_cr": 553.55,
+     "display": "₹ 553.55 cr",
+     "currency": "INR",
+     "fx": null,
+     "src": "NSE",
+     "doc": "https://nsearchives.nseindia.in/corporate/LCCPROJECTS_27112026100222_Regulation_30_Intimation.pdf",
+     "subject": "Bagging/Receiving of orders/contracts LCC Projects Limited has informed the Exchange about Bagging/Receiving of orders/contracts"
+    }
+   ]
+  },
+  {
    "isin": "INE0OWZ01020",
    "key": "544851",
    "name": "MV Electrosystems Ltd",
@@ -2574,45 +2652,6 @@
      "src": "BSE",
      "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ca727492-8811-41e9-abb4-69dc020e14c3.pdf",
      "subject": "SRM Contractors Ltd - 544158 - Announcement under Regulation 30 (LODR)-Press Release / Media Release Bagging of Contract - Intimation under Regulation 30 of SEBI (Listing Obligations and Disclosure Re"
-    }
-   ]
-  },
-  {
-   "isin": "INE1FPN01026",
-   "key": "NSE:LCCPROJECT",
-   "name": "LCC Projects Ltd",
-   "nse": "LCCPROJECT",
-   "base_cr": 6000.0,
-   "base_as_on": "2026-09-30",
-   "base_filed": "2026-11-05",
-   "base_doc": "https://nsearchives.nseindia.com/corporate/LCCPROJECTS_05112026133906_Transcriptsofconcall_05112026_SIGNED.pdf",
-   "n_wins": 2,
-   "n_no_value": 0,
-   "sum_cr": 1445.97,
-   "ratio": 0.241,
-   "largest_ratio": 0.121,
-   "cross_date": null,
-   "flagged": false,
-   "wins": [
-    {
-     "filed": "2026-11-06",
-     "value_cr": 717.46,
-     "display": "₹ 717.46 cr",
-     "currency": "INR",
-     "fx": null,
-     "src": "BSE",
-     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/67cfb926-513f-4dde-8b01-3f0730dd7a23.pdf",
-     "subject": "LCC Projects Ltd - 544918 - Announcement under Regulation 30 (LODR) - Bagging/receiving of order(s) or contract(s) Intimation of receipt of Letter of Acceptance for Rs. 717.46 crore from Office of the"
-    },
-    {
-     "filed": "2026-11-26",
-     "value_cr": 728.51,
-     "display": "₹ 728.51 cr",
-     "currency": "INR",
-     "fx": null,
-     "src": "BSE",
-     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ad0285a5-0e14-44b4-ae9b-34bb54a52b13.pdf",
-     "subject": "LCC Projects Ltd - 544918 - Announcement under Regulation 30 (LODR) - Bagging/receiving of order(s) or contract(s) Intimation of receipt of Letter of Acceptance for Construction of Dam and Development"
     }
    ]
   },
@@ -5814,6 +5853,35 @@
      "src": "NSE",
      "doc": "https://nsearchives.nseindia.com/corporate/ASIANENE_07092026181359_AESL_Disclosureunderregulation30_07092026.pdf",
      "subject": "General Updates Asian Energy Services Limited has informed the Exchange about Receipt of Letter of Intent by Oilmax Energy Private Limited (\"OEPL\"- Holding/Amalgamating Company) for the Pakro Vanadium"
+    }
+   ]
+  },
+  {
+   "isin": "INE0UYG01015",
+   "key": "NSE:ABHAPOWER",
+   "name": "ABHAPOWER",
+   "nse": "ABHAPOWER",
+   "base_cr": 21.0,
+   "base_as_on": "2026-11-04",
+   "base_filed": "2026-11-04",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/ABHA_04112026161127_ABHA_POWER_PRESS_RELEASE_SIGNED.pdf",
+   "n_wins": 1,
+   "n_no_value": 1,
+   "sum_cr": 0.0,
+   "ratio": 0.0,
+   "largest_ratio": null,
+   "cross_date": null,
+   "flagged": false,
+   "wins": [
+    {
+     "filed": "2026-11-18",
+     "value_cr": null,
+     "display": null,
+     "currency": null,
+     "fx": null,
+     "src": "NSE",
+     "doc": "https://nsearchives.nseindia.in/corporate/ABHA_18112026173524_ABHA_PRESS_RELEASE.pdf",
+     "subject": "Bagging/Receiving of orders/contracts Abha Power and Steel Limited (NSE Emerge: ABHAPOWER) is pleased to announce that the Company has secured new order worth approximately Rs. 1.16 Crore from a reput"
     }
    ]
   },

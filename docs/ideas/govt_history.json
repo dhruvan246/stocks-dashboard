@@ -280,12 +280,20 @@
    "read_at": "2026-11-26 18:56 IST",
    "final": true
   },
-  "2026-11-26": {
-   "scanned": 47,
+  "2026-11-25": {
+   "scanned": 69,
+   "kept": 2,
+   "unmapped": 5,
+   "opened": 14,
+   "read_at": "2026-11-27 18:57 IST",
+   "final": true
+  },
+  "2026-11-27": {
+   "scanned": 38,
    "kept": 0,
    "unmapped": 0,
-   "opened": 4,
-   "read_at": "2026-11-26 18:56 IST",
+   "opened": 5,
+   "read_at": "2026-11-27 18:57 IST",
    "final": false
   }
  },
@@ -2701,6 +2709,15 @@
    "ministry": "Cabinet",
    "title": "Cabinet approves Rs.11,000 crore Scheme for Enhancement of Construction and Infrastructure Equipment (CIE) Manufacturing Ecosystem",
    "url": "https://pib.gov.in/PressReleasePage.aspx?PRID=2341171",
+   "themes": [
+    "construction_equipment"
+   ],
+   "theme_names": [
+    "Construction and infrastructure equipment manufacturing (CIE scheme)"
+   ],
+   "history": [
+    "New theme added 2026-11-25 from the Cabinet's Rs 11,000 cr CIE manufacturing scheme (PIB PRID 2341171). NO measured basket history exists for this programme - it was announced today, so the runbook 144c base-to-peak table does not cover it. Read the PM Surya Ghar line in that table before treating a big outlay as an idea: a sales-linked manufacturing incentive is not an order book."
+   ],
    "outlay_cr": 11000.0,
    "mandate": false,
    "why": {
@@ -2708,14 +2725,38 @@
     "amount_text": "Rs.11,000 crore",
     "amount_in": "title",
     "mandate": null,
-    "theme_in": null
+    "theme_in": "title"
    },
-   "body_mentions": [
-    "Shipbuilding, shipyards and ports",
-    "Roads and highways"
+   "small_caps": [
+    {
+     "symbol": "INDOFARM",
+     "name": "Indo Farm Equipment Ltd",
+     "mcap_cr": 547.8,
+     "n_order_filings": 0,
+     "why": "Manufactures hydraulic pick & carry cranes 9-30 t (Indo Power brand) plus tractors at Baddi, Himachal Pradesh. Crane segment was Rs 21,809.19 lakh of Rs 44,002.05 lakh FY26 consolidated revenue = 49.6% (Integrated Annual Report 2025-26, Business Segment Review, read 2026-11-25). Its own 17-Nov-2026 investor presentation labels the crane line 'CONSTRUCTION AND INFRASTRUCTURE' under Industries We Serve, and Q2 FY27 crane revenue was Rs 5,111.11 lakh of Rs 11,459.46 lakh (44.6%). Adding 3,600 cranes p.a. of capacity at Bhud, Baddi for Rs 71.13 cr of project cost, commissioning H2 FY27 (Infomerics rating press release 18-Sep-2026). NOT verified: that pick & carry cranes are on the CIE scheme's eligible-product list - the scheme guidelines are not published and the PIB release body was unreadable from the routine's sandbox.",
+     "theme": "construction_equipment"
+    }
+   ],
+   "companies": [
+    {
+     "symbol": "INDOFARM",
+     "name": "Indo Farm Equipment Ltd",
+     "mcap_cr": 547.8,
+     "n_order_filings": 0,
+     "why": "Manufactures hydraulic pick & carry cranes 9-30 t (Indo Power brand) plus tractors at Baddi, Himachal Pradesh. Crane segment was Rs 21,809.19 lakh of Rs 44,002.05 lakh FY26 consolidated revenue = 49.6% (Integrated Annual Report 2025-26, Business Segment Review, read 2026-11-25). Its own 17-Nov-2026 investor presentation labels the crane line 'CONSTRUCTION AND INFRASTRUCTURE' under Industries We Serve, and Q2 FY27 crane revenue was Rs 5,111.11 lakh of Rs 11,459.46 lakh (44.6%). Adding 3,600 cranes p.a. of capacity at Bhud, Baddi for Rs 71.13 cr of project cost, commissioning H2 FY27 (Infomerics rating press release 18-Sep-2026). NOT verified: that pick & carry cranes are on the CIE scheme's eligible-product list - the scheme guidelines are not published and the PIB release body was unreadable from the routine's sandbox.",
+     "theme": "construction_equipment"
+    },
+    {
+     "symbol": "ACE",
+     "name": "Action Construction Equipment Ltd",
+     "mcap_cr": null,
+     "n_order_filings": 0,
+     "why": "Reference producer, ABOVE the 200-7,500 cr band - context only, not an idea. Its own Q2/H1 FY27 earnings presentation (filed BSE 12-Nov-2026) states 'World's largest Pick & Carry crane manufacturer with over 63% market share in Mobile cranes segment and market share of around 60% in Tower Cranes segment domestically', and lists crawler cranes, truck cranes, backhoe loaders, vibratory rollers, motor graders, telehandlers, piling rigs. Q2 FY27 cranes/CE/MHE volume 2,812 units vs 2,348 in Q2 FY26; normalised EBITDA margin 19.31%. On share alone it is the most likely single beneficiary of any incentive on construction-equipment sales.",
+     "theme": "construction_equipment"
+    }
    ],
    "date": "2026-11-25",
-   "unmapped": true
+   "unmapped": false
   },
   "2341174": {
    "prid": "2341174",
@@ -3022,7 +3063,7 @@
    "unmapped": true
   }
  },
- "built": "2026-11-26 18:56 IST",
+ "built": "2026-11-27 18:57 IST",
  "source": "Press Information Bureau, English releases, one listing per day (allRel.aspx date picker)",
  "unread_days": [],
  "keep_days": 120
