@@ -145,17 +145,106 @@
 "why": null
 },
 "ANNAPURNA": {
-"annual": 8,
-"annual_gaps": null,
+"annual": 10,
+"annual_gaps": [
+2023,
+2024,
+2025,
+2026
+],
 "annual_reads": 1,
-"doc": null,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/AnnapurnaSwadisht_PROSP.pdf",
 "fills": 0,
-"held": 0,
-"held_detail": [],
-"last": "2026-11-19",
-"periods": 15,
+"held": 9,
+"held_detail": [
+{
+"basis": "std",
+"kind": "pl",
+"p": 147,
+"period": "20220630|3",
+"why": [
+"no pat row"
+]
+},
+{
+"basis": "con",
+"p": 5,
+"period": "20240930|6",
+"src_q": 20240930,
+"why": [
+"no pat row"
+]
+},
+{
+"basis": "con",
+"p": 14,
+"period": "20260331|6",
+"src_q": 20260331,
+"why": [
+"rev+oi!=ti"
+]
+},
+{
+"basis": "std",
+"p": 2,
+"period": "20250630|3",
+"src_q": 20260630,
+"why": [
+"no revenue row"
+]
+},
+{
+"basis": "con",
+"p": 7,
+"period": "20250630|3",
+"src_q": 20260630,
+"why": [
+"rev+oi!=ti",
+"pbt-tax!=pat"
+]
+},
+{
+"basis": "std",
+"p": 3,
+"period": "20260930|3",
+"src_q": 20260930,
+"why": [
+"rev+oi!=ti"
+]
+},
+{
+"basis": "std",
+"p": 3,
+"period": "20260630|3",
+"src_q": 20260930,
+"why": [
+"pbt-tax!=pat",
+"ti-exp!=pbt"
+]
+},
+{
+"basis": "std",
+"p": 3,
+"period": "20250930|6",
+"src_q": 20260930,
+"why": [
+"no provable profit before tax"
+]
+},
+{
+"basis": "std",
+"p": 3,
+"period": "20260331|12",
+"src_q": 20260930,
+"why": [
+"rev+oi!=ti"
+]
+}
+],
+"last": "2026-11-27",
+"periods": 27,
 "status": "done",
-"tries": 7,
+"tries": 8,
 "why": null
 },
 "ANNU": {
@@ -252,17 +341,22 @@
 "why": null
 },
 "ARHAM": {
-"annual": 6,
-"annual_gaps": null,
+"annual": 9,
+"annual_gaps": [
+2023,
+2024,
+2025,
+2026
+],
 "annual_reads": 0,
-"doc": null,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/ArhamTechnologies_PROSP.pdf",
 "fills": 0,
 "held": 0,
 "held_detail": [],
-"last": "2026-11-19",
-"periods": 9,
+"last": "2026-11-27",
+"periods": 13,
 "status": "done",
-"tries": 5,
+"tries": 6,
 "why": null
 },
 "ARMEE": {
@@ -432,14 +526,69 @@
 "annual": 3,
 "annual_gaps": null,
 "annual_reads": 0,
-"doc": "https://www.sebi.gov.in/filings/public-issues/oct-2026/bls-polymers-limited-prospectus_105357.html",
+"doc": "https://nsearchives.nseindia.in/corporate/FP_INE0ZCQ01019_30OCT2026.pdf",
 "fills": 0,
-"held": 0,
-"held_detail": [],
-"last": "2026-11-19",
+"held": 6,
+"held_detail": [
+{
+"basis": "std",
+"p": 2,
+"period": "20260930|3",
+"src_q": 20260930,
+"why": [
+"no pat row"
+]
+},
+{
+"basis": "std",
+"p": 2,
+"period": "20260630|3",
+"src_q": 20260930,
+"why": [
+"no pat row"
+]
+},
+{
+"basis": "std",
+"p": 2,
+"period": "20250930|6",
+"src_q": 20260930,
+"why": [
+"no pat row"
+]
+},
+{
+"basis": "std",
+"p": 2,
+"period": "20260331|12",
+"src_q": 20260930,
+"why": [
+"no pat row"
+]
+},
+{
+"basis": "std",
+"p": 3,
+"period": "20260930|3",
+"src_q": 20260930,
+"why": [
+"no pat row"
+]
+},
+{
+"basis": "std",
+"p": 3,
+"period": "20250930|6",
+"src_q": 20260930,
+"why": [
+"no pat row"
+]
+}
+],
+"last": "2026-11-27",
 "periods": 8,
 "status": "done",
-"tries": 3,
+"tries": 4,
 "why": null
 },
 "BMISL": {
@@ -570,6 +719,39 @@
 "tries": 4,
 "why": null
 },
+"CRYSTALCP": {
+"annual": 3,
+"annual_gaps": null,
+"annual_reads": 0,
+"doc": "https://nsearchives.nseindia.in/corporate/FP_INE101P01016_23NOV2026.pdf",
+"fills": 1,
+"held": 2,
+"held_detail": [
+{
+"basis": "con",
+"kind": "bs",
+"p": 465,
+"period": "*",
+"why": [
+"away from the issuer's P&L pages"
+]
+},
+{
+"basis": "con",
+"kind": "cf",
+"p": 606,
+"period": "*",
+"why": [
+"away from the issuer's P&L pages"
+]
+}
+],
+"last": "2026-11-27",
+"periods": 8,
+"status": "done",
+"tries": 1,
+"why": null
+},
 "CSM": {
 "annual": 5,
 "annual_gaps": null,
@@ -613,17 +795,22 @@
 "why": null
 },
 "DOLLEX": {
-"annual": 5,
-"annual_gaps": null,
+"annual": 7,
+"annual_gaps": [
+2023,
+2024,
+2025,
+2026
+],
 "annual_reads": 0,
-"doc": null,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/DollexAgrotechLtd_PROSP.pdf",
 "fills": 0,
 "held": 0,
 "held_detail": [],
-"last": "2026-11-19",
-"periods": 9,
+"last": "2026-11-27",
+"periods": 12,
 "status": "done",
-"tries": 5,
+"tries": 6,
 "why": null
 },
 "EDELALTS": {
@@ -864,28 +1051,28 @@
 "annual": 3,
 "annual_gaps": null,
 "annual_reads": 0,
-"doc": null,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/Eventions_DRHP.zip",
 "fills": 0,
 "held": 0,
 "held_detail": [],
-"last": "2026-11-19",
+"last": "2026-11-27",
 "periods": 8,
 "status": "done",
-"tries": 5,
+"tries": 6,
 "why": null
 },
 "FASCINATE": {
 "annual": 3,
 "annual_gaps": null,
 "annual_reads": 0,
-"doc": null,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/AD_IPO_6347_31122025181005.zip",
 "fills": 0,
 "held": 0,
 "held_detail": [],
-"last": "2026-11-19",
+"last": "2026-11-27",
 "periods": 6,
 "status": "done",
-"tries": 5,
+"tries": 6,
 "why": null
 },
 "FUSIONCX": {
@@ -1563,14 +1750,14 @@
 "annual": 4,
 "annual_gaps": null,
 "annual_reads": 0,
-"doc": "https://www.sebi.gov.in/filings/public-issues/jul-2026/lohia-corp-limited-prospectus_103075.html",
+"doc": "https://nsearchives.nseindia.in/corporate/FP_INE0QJW01029_28JUL2026.pdf",
 "fills": 0,
 "held": 0,
 "held_detail": [],
-"last": "2026-11-19",
-"periods": 6,
+"last": "2026-11-27",
+"periods": 14,
 "status": "done",
-"tries": 4,
+"tries": 5,
 "why": null
 },
 "LEAP": {
@@ -2056,6 +2243,39 @@
 "tries": 3,
 "why": null
 },
+"OLIL": {
+"annual": 8,
+"annual_gaps": null,
+"annual_reads": 7,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/Oneclick_PROSP.pdf",
+"fills": 0,
+"held": 2,
+"held_detail": [
+{
+"basis": "con",
+"p": 14,
+"period": "20260331|6",
+"src_q": 20260331,
+"why": [
+"no pat row"
+]
+},
+{
+"basis": "con",
+"p": 14,
+"period": "20250331|6",
+"src_q": 20260331,
+"why": [
+"no pat row"
+]
+}
+],
+"last": "2026-11-27",
+"periods": 10,
+"status": "done",
+"tries": 1,
+"why": null
+},
 "OPTIMYSTIX": {
 "annual": 3,
 "annual_gaps": null,
@@ -2114,16 +2334,20 @@
 },
 "PARTYPP": {
 "annual": 12,
-"annual_gaps": null,
+"annual_gaps": [
+2024,
+2025,
+2026
+],
 "annual_reads": 0,
-"doc": "https://www.sebi.gov.in/filings/public-issues/feb-2021/party-cruisers-limited_49192.html",
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/PCL_PROSP.pdf",
 "fills": 0,
 "held": 0,
 "held_detail": [],
-"last": "2026-11-19",
+"last": "2026-11-27",
 "periods": 21,
 "status": "done",
-"tries": 7,
+"tries": 8,
 "why": null
 },
 "PERNIASPOP": {
@@ -2260,17 +2484,32 @@
 "why": null
 },
 "QMSMEDI": {
-"annual": 5,
-"annual_gaps": null,
+"annual": 8,
+"annual_gaps": [
+2023,
+2024,
+2025,
+2026
+],
 "annual_reads": 0,
-"doc": null,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/QMSMedical_PROSP.pdf",
 "fills": 0,
-"held": 0,
-"held_detail": [],
-"last": "2026-11-19",
-"periods": 5,
+"held": 1,
+"held_detail": [
+{
+"basis": "std",
+"kind": "cf",
+"p": 132,
+"period": "*",
+"why": [
+"away from the issuer's P&L pages"
+]
+}
+],
+"last": "2026-11-27",
+"periods": 11,
 "status": "done",
-"tries": 5,
+"tries": 6,
 "why": null
 },
 "QUALIANCE": {
@@ -2379,14 +2618,14 @@
 "annual": 3,
 "annual_gaps": null,
 "annual_reads": 0,
-"doc": null,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/R.K_Fashion_DRHP.zip",
 "fills": 0,
 "held": 0,
 "held_detail": [],
-"last": "2026-11-19",
+"last": "2026-11-27",
 "periods": 6,
 "status": "done",
-"tries": 4,
+"tries": 5,
 "why": null
 },
 "RUNWALENTR": {
@@ -2548,14 +2787,14 @@
 "annual": 3,
 "annual_gaps": null,
 "annual_reads": 0,
-"doc": null,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/ShantiInorganicsLimited_RHP.zip",
 "fills": 0,
 "held": 0,
 "held_detail": [],
-"last": "2026-11-19",
+"last": "2026-11-27",
 "periods": 6,
 "status": "done",
-"tries": 5,
+"tries": 6,
 "why": null
 },
 "SHIPROCKET": {
@@ -2826,7 +3065,7 @@
 "annual": 3,
 "annual_gaps": null,
 "annual_reads": 0,
-"doc": "https://www.sebi.gov.in/filings/public-issues/sep-2026/steamhouse-india-limited-prospectus_104485.html",
+"doc": "https://nsearchives.nseindia.in/corporate/FP_INE0FRO01022_16SEP2026.pdf",
 "fills": 0,
 "held": 3,
 "held_detail": [
@@ -2840,7 +3079,7 @@
 ]
 },
 {
-"basis": "std",
+"basis": "con",
 "kind": "bs",
 "p": 402,
 "period": "*",
@@ -2849,7 +3088,7 @@
 ]
 },
 {
-"basis": "con",
+"basis": "std",
 "kind": "bs",
 "p": 402,
 "period": "*",
@@ -2858,28 +3097,29 @@
 ]
 }
 ],
-"last": "2026-11-19",
+"last": "2026-11-27",
 "periods": 6,
 "status": "done",
-"tries": 4,
+"tries": 5,
 "why": null
 },
 "SUDARSHAN": {
 "annual": 13,
 "annual_gaps": [
+2023,
 2024,
 2025,
 2026
 ],
 "annual_reads": 0,
-"doc": null,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/Sudarshan_Pharma_Prosp.pdf",
 "fills": 0,
 "held": 0,
 "held_detail": [],
-"last": "2026-11-19",
+"last": "2026-11-27",
 "periods": 25,
 "status": "done",
-"tries": 8,
+"tries": 9,
 "why": null
 },
 "SUMAX": {
@@ -2933,15 +3173,52 @@
 "SWARAJ": {
 "annual": 14,
 "annual_gaps": null,
-"annual_reads": 13,
-"doc": null,
+"annual_reads": 11,
+"doc": "https://nsearchives.nseindia.in/emerge/corporates/content/SwarajSuiting_PROSP.pdf",
 "fills": 0,
-"held": 0,
-"held_detail": [],
-"last": "2026-11-19",
-"periods": 17,
+"held": 4,
+"held_detail": [
+{
+"basis": "con",
+"kind": "cf",
+"p": 35,
+"period": "20210331|12",
+"why": [
+"cfo+cfi+cff!=net"
+]
+},
+{
+"basis": "con",
+"kind": "cf",
+"p": 130,
+"period": "20210331|12",
+"why": [
+"cfo+cfi+cff!=net"
+]
+},
+{
+"basis": "con",
+"p": 6,
+"period": "20260630|3",
+"src_q": 20260630,
+"why": [
+"rev+oi!=ti"
+]
+},
+{
+"basis": "con",
+"p": 6,
+"period": "20250630|3",
+"src_q": 20260630,
+"why": [
+"no provable profit before tax"
+]
+}
+],
+"last": "2026-11-27",
+"periods": 29,
 "status": "done",
-"tries": 4,
+"tries": 5,
 "why": null
 },
 "SWASTIKAIN": {
@@ -3294,9 +3571,9 @@
 "annual_reads": 0,
 "doc": "https://nsearchives.nseindia.in/emerge/corporates/content/AD_IPO_7147_01102026190531.zip",
 "held": 0,
-"last": "2026-11-26",
+"last": "2026-11-27",
 "status": "pending",
-"tries": 15,
+"tries": 16,
 "why": "no statement read"
 },
 "XTRANET": {
