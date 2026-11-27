@@ -760,7 +760,7 @@ function buyAllAgg(list){
     if (!cp && o && !o.excl && CPD.acct && CPD.acct.slotP > 0){   // zba55: its screen changed since the plan — preview every new slot at the plan's slot size until Re-plan (the engine's old proceeds sizing read #8 at ₹47 L next to ₹2.5 Cr slots)
       nPrev++; const held = heldFor(it.cfg), hs = (CPD.mode === 'all' || o.sellAll) ? new Set() : new Set(((held && held.rows) || []).map(h => h.sym));
       p.rows.slice(0, it.cfg.topN || 3).forEach(r => { if (hs.has(r.sym)) return; const L = liveQ(r.sym), px = (L && L.ltp != null) ? L.ltp : r.px;
-        const a = agg[r.sym] = agg[r.sym] || { sym: r.sym, px: px, amt: 0, from: [], capped: false, back: false }; a.px = px; a.amt += CPD.acct.slotP; a.from.push(NUM.get(it.id)); });
+        const a = agg[r.sym] = agg[r.sym] || { sym: r.sym, px: px, amt: 0, from: [], capped: false, back: false }; a.px = px; a.amt += (CPD.size === 'eng' && Object.keys(o.tgt || {}).length ? o.tgt[Object.keys(o.tgt)[0]] : CPD.acct.slotP); a.from.push(NUM.get(it.id)); });
       return; }
     if (cp){ nPlan++; cp.picks.forEach(sym => { const q = cp.buyQ[sym] || 0; if (!q) return; const L = liveQ(sym), px = (L && L.ltp != null) ? L.ltp : cp.px[sym];
         const N = planNeed(it, cp, sym, px); if (!N || !N.need) return;   // zba47: moved-in / already-bought shares are not bought again
@@ -829,7 +829,10 @@ function solveUp(f, y, hi){   // the largest x in [0, hi] with f(x) <= y, for f 
    The synced copy wins; localStorage is just the offline fallback (and mirrors the last synced value). */
 function cpNorm(o){ o = o || {}; const pct = +o.pct;
   return { pct: (o.pct != null && o.pct !== '' && pct >= 0 && pct <= 90) ? pct : 10, mode: o.mode === 'all' ? 'all' : 'swap', set: String(o.set || ''),
-           size: (o.size === 'exit' && +o.szv >= 76) ? 'exit' : 'slot', szv: +o.szv || 0 }; }
+           size: (o.size === 'exit' && +o.szv >= 76) ? 'exit' : (o.size === 'slot' && +o.szv >= 83) ? 'slot' : 'eng', szv: +o.szv || 0 }; }
+   // zba83 (user 27-Nov, after the engine+10% backtest: "I want this live engine plus 10% for autopilot as well as in the terminal"): 'eng' = Rule E,
+   // each strategy's new slots share what ITS OWN exits sell (the backtest engine's sizing), all scaled by one number so Cash % of the shares stays cash.
+   // It is the default: a stored 'slot' counts only if it was picked in the Sizing menu after zba83 (szv >= 83).
    // zba74 (user 13-Nov): 'exit' = Rule A, each strategy re-buys only the share value it sold, the rest stays cash; 'slot' = Rule B, equal slots + Cash %.
    // zba76 (user 13-Nov, after the 2020-21 / 2023-24 backtests: "ok Rule B then … terminal me bhi add kar do"): Rule B is the default again.
    // A stored 'exit' counts only if it was picked in the Sizing menu after zba76 (szv >= 76) — the zba74/75 default had written 'exit' into every saved doc.
@@ -837,26 +840,26 @@ function cpOpts(){ let o = null;
   try { const d = zbaDoc().cpo; if (d && typeof d === 'object' && (d.pct != null || d.mode || d.set != null || d.size)) o = d; } catch (e){}
   if (!o) try { o = JSON.parse(localStorage.getItem('sw_cp_opts') || 'null'); } catch (e){}
   return cpNorm(o); }
-function cpSetOpts(ch){ const o = cpNorm(Object.assign(cpOpts(), ch, (ch && ch.size) ? { szv: 76 } : {}));
+function cpSetOpts(ch){ const o = cpNorm(Object.assign(cpOpts(), ch, (ch && ch.size) ? { szv: 83 } : {}));
   try { const d = zbaDoc(); d.cpo = Object.assign({}, o, { ts: Date.now() }); d.ts = Date.now(); localStorage.setItem(ZBA_LS, JSON.stringify(d)); } catch (e){}
   try { localStorage.setItem('sw_cp_opts', JSON.stringify(o)); } catch (e){}
   try { zbaPush(); } catch (e){}
   return o; }
 /* the plan doc vs the controls now: '' when they agree, else what differs (shown in the Cash plan header) */
-const planSize = P => (P && P.size === 'exit') ? 'exit' : 'slot';   // plans saved before zba74 were equal-slot plans
-const sizeLab = z => z === 'exit' ? 'Rule A · Replace exits only' : 'Rule B · Equal slots + Cash %';
+const planSize = P => (P && P.size === 'exit') ? 'exit' : (P && P.size === 'eng') ? 'eng' : 'slot';   // plans saved before zba74 were equal-slot plans
+const sizeLab = z => z === 'exit' ? 'Rule A · Replace exits only' : z === 'eng' ? 'Rule E · Engine slots + Cash %' : 'Rule B · Equal slots + Cash %';
 function cpMismatch(P){ if (!P) return ''; const o = cpOpts(), d = [];
   if (P.mode !== o.mode) d.push('mode now ' + (o.mode === 'all' ? 'Sell all & re-enter' : 'Swap exits only') + ' (plan: ' + (P.mode === 'all' ? 'Sell all & re-enter' : 'Swap exits only') + ')');
   if (String(P.set || '') !== o.set) d.push('plan for now ' + (o.set || 'All strategies') + ' (plan: ' + (P.set || 'All strategies') + ')');
   const ps = planSize(P); if (ps !== o.size) d.push('sizing now ' + sizeLab(o.size) + ' (plan: ' + sizeLab(ps) + ')');
-  const pp = Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10; if (ps === 'slot' && o.size === 'slot' && pp !== o.pct) d.push('cash now ' + o.pct + '% (plan: ' + pp + '%)');
+  const pp = Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10; if (ps !== 'exit' && o.size !== 'exit' && pp !== o.pct) d.push('cash now ' + o.pct + '% (plan: ' + pp + '%)');
   return d.join(' · '); }
 function cpExclIds(books, opt){   // strategies with a book that are OUTSIDE the chosen saved mix → sell all, buy nothing
   if (!opt.set) return []; const m = subMixes().find(x => x.label === opt.set); if (!m) return [];
   return books.filter(it => !mixMarks(it.cfg, [m]).length).map(it => it.id); }
 function planCompute(inp){
   const H = inp.hraw || {}, PX = inp.px || {}, LV = inp.lev || {}, warn = [], gone = [];
-  const byExit = inp.size === 'exit', c = byExit ? 0 : Math.max(0, inp.cashPct != null ? +inp.cashPct : 0.10), sellAllMode = inp.mode === 'all', EX = new Set(inp.excl || []);
+  const byExit = inp.size === 'exit', byEng = inp.size === 'eng', c = byExit ? 0 : Math.max(0, inp.cashPct != null ? +inp.cashPct : 0.10), sellAllMode = inp.mode === 'all', EX = new Set(inp.excl || []);
   const price = s => +(PX[s] || (H[s] && H[s].ltp) || 0);
   const mtfOk = s => LV[s] != null && LV[s] > 1.05;
   const pos = s => { const h = H[s]; if (!h) return null;
@@ -895,16 +898,31 @@ function planCompute(inp){
   const k = ids.reduce((a, id) => a + S[id].picks.length, 0), staysV = ids.reduce((a, id) => a + S[id].staysV, 0);
   const costAll = P => ids.reduce((a, id) => a + S[id].picks.reduce((b, s) => b + W[id].cost(s, P), 0), 0);
   const total = P => costAll(P) + c * (P * k + staysV);
-  const P = (!k || byExit) ? 0 : (inp.fixP > 0 ? +inp.fixP : solveUp(total, E, Math.max(1, E) * 10));
+  const P = (!k || byExit || byEng) ? 0 : (inp.fixP > 0 ? +inp.fixP : solveUp(total, E, Math.max(1, E) * 10));
+  /* zba83 'eng' sizing (user 27-Nov): the backtest engine's sizing with the Cash % rule on top. Each strategy's new slots share
+     the SHARE VALUE its own exits sell (a reset strategy: its whole book, kept re-picks included), so a strategy that grew stays
+     bigger and one that fell stays smaller; then every slot is multiplied by ONE number K, solved so that the own money left as
+     cash = Cash % of all shares. A strategy with picks but nothing to give up (an empty book) takes the average slot. */
+  const BASE = {}; let engK = 0;
+  if (byEng && k){
+    ids.forEach(id => { const o = S[id], n = o.picks.length; if (!n) return;
+      const v = sumV(o.xv) + Object.keys(o.keep).reduce((a, s) => a + o.keep[s] * price(s), 0); BASE[id] = v > 0 ? v / n : 0; });
+    const have = ids.filter(id => BASE[id] > 0), nHave = have.reduce((a, id) => a + S[id].picks.length, 0);
+    const mean = nHave ? have.reduce((a, id) => a + BASE[id] * S[id].picks.length, 0) / nHave : (inp.fixBase > 0 ? +inp.fixBase : 1);
+    ids.forEach(id => { if (S[id].picks.length && !(BASE[id] > 0)) BASE[id] = mean; });
+    const sumB = ids.reduce((a, id) => a + (BASE[id] || 0) * S[id].picks.length, 0), minB = Math.min.apply(null, ids.filter(id => BASE[id] > 0).map(id => BASE[id]));
+    const totK = x => ids.reduce((a, id) => a + S[id].picks.reduce((b, s) => b + W[id].cost(s, x * BASE[id]), 0), 0) + c * (x * sumB + staysV);
+    engK = inp.fixK > 0 ? +inp.fixK : solveUp(totK, E, Math.max(1, E) * 10 / minB);
+  }
   /* zba74 'exit' sizing (user 13-Nov: "whatever amount is exited should only be replaced, rest entire go to cash"): each
      strategy splits the SHARE VALUE its exits sell (live price × qty) equally over its new picks — same value, whatever the
      new pick's MTF; a kept re-pick stays as it is (no top-up, no trim). Free cash and every rupee the buys don't use stay cash. */
-  const slotOf = (o, s) => { if (!byExit) return P; if (o.keep[s]) return o.keep[s] * price(s);
+  const slotOf = (o, s, id) => { if (byEng) return engK * (BASE[id] || 0); if (!byExit) return P; if (o.keep[s]) return o.keep[s] * price(s);
     const nNew = o.picks.filter(x => !o.keep[x]).length; return nNew ? sumV(o.xv) / nNew : 0; };
   if (gone.length) warn.push((inp.mode === 'all' ? 'Not in the demat any more (sold — the money is in the free cash): ' : 'Not in the Zerodha holdings — counted as ₹0 freed: ') + gone.join(', '));
   let freedT = 0, keptT = 0, spentT = 0, slotsV = 0;
   ids.forEach(id => { const o = S[id], w = W[id];
-    o.picks.forEach(s => { const p = o.px[s], kq = o.keep[s] || 0, sl = slotOf(o, s), q = p > 0 ? (byExit && kq ? kq : Math.floor(sl / p)) : 0;
+    o.picks.forEach(s => { const p = o.px[s], kq = o.keep[s] || 0, sl = slotOf(o, s, id), q = p > 0 ? (byExit && kq ? kq : Math.floor(sl / p)) : 0;
       if (kq > q){ const t = kq - q; o.trim[s] = t; o.fx[s] = freed(s, t); o.xv[s] = t * price(s); o.keep[s] = q; }   // a kept re-pick above its slot sells only the extra
       o.holdQ[s] = Math.max(o.keep[s] || 0, q); o.buyQ[s] = Math.max(0, q - (o.keep[s] || 0)); o.tgt[s] = Math.round(sl); o.normal[s] = Math.round(sl); });
     o.freed = sumV(o.fx); o.keptEq = Object.keys(o.keep).reduce((a, s) => a + o.keep[s] * eqPs(s), 0);
@@ -947,7 +965,7 @@ function planCompute(inp){
   const moves = xf.filter(x => x.q > 0).map(x => { const d = Math.round(x.q * x.dps); delete x.dps; x.d = d; return x; });
   const netD = moves.reduce((a, x) => a + x.d, 0), spare = gross + netD, sharesV = slotsV + staysV;
   const net = moves.length ? { n: moves.length, sh: moves.reduce((a, x) => a + x.q, 0), d: netD, chg: Math.round(moves.reduce((a, x) => a + 0.0023 * x.q * x.px, 0)) } : undefined;
-  return { S: S, acct: { free: Math.round(inp.free || 0), freed: Math.round(freedT), own: Math.round(E), slotP: Math.round(P), slots: k, shares: Math.round(sharesV), loan: Math.round(slotsV - spentT), cashPct: c, size: byExit ? 'exit' : 'slot',
+  return { S: S, acct: { free: Math.round(inp.free || 0), freed: Math.round(freedT), own: Math.round(E), slotP: Math.round(byEng ? (k ? slotsV / k : 0) : P), engK: byEng ? engK : undefined, slots: k, shares: Math.round(sharesV), loan: Math.round(slotsV - spentT), cashPct: c, size: byExit ? 'exit' : byEng ? 'eng' : 'slot',
                          need: Math.round(freedT + (inp.free || 0) - gross), spare: Math.round(spare), short: spare < 0 ? Math.round(-spare) : 0, trims: [], net: net }, warn: warn, xf: moves };
 }
 /* the plan for THIS rebalance (synced basket doc), and its reading for one strategy */
@@ -1106,7 +1124,7 @@ async function cashPlanRun(auto){
     let P;
     if (frozen){
       const pool = (P0.acct.spare || 0) - strats.reduce((a, st) => a + ((P0.S[st.id] || {}).left || 0) - ((P0.S[st.id] || {}).carry || 0), 0);   // planCompute takes each strategy's carry back out of `free`
-      const R = planCompute({ strats: strats, hraw: Z.hraw || {}, px: px, lev: lev, free: pool, buf: CP_BUF, fixP: (P0.acct || {}).slotP, cashPct: P0.cashPct, size: planSize(P0), mode: P0.mode, excl: P0.exclIds || [] });   // zba53: at the frozen slot size
+      const R = planCompute({ strats: strats, hraw: Z.hraw || {}, px: px, lev: lev, free: pool, buf: CP_BUF, fixP: (P0.acct || {}).slotP, fixK: (P0.acct || {}).engK, fixBase: ((P0.acct || {}).engK > 0 ? (P0.acct.slotP || 0) / P0.acct.engK : 0), cashPct: P0.cashPct, size: planSize(P0), mode: P0.mode, excl: P0.exclIds || [] });   // zba53: at the frozen slot size
       P = replanMerge(P0, R, strats); P.lev = lev; P.warn = (P0.warn || []).concat(R.warn).slice(-6);
     } else {
       const f = await zFetch('/margins'), eq = f && f.st === 200 && f.j && f.j.data && f.j.data.equity;
@@ -1125,7 +1143,7 @@ async function cashPlanRun(auto){
       (doc.sval[id] = doc.sval[id] || {})[P.k] = Math.max(0, Math.round((o.sharesV || 0) - Object.keys(o.buyQ || {}).reduce((a, s) => a + (o.buyQ[s] || 0) * (+(o.px || {})[s] || 0), 0))); });
     try { localStorage.setItem(ZBA_LS, JSON.stringify(doc)); } catch (e){}
     zbaPush(); CPL.at = Date.now();
-    say(P.acct.short ? '⚠ Cash plan: short ' + zinr(P.acct.short) : (frozen ? 'Re-planned on the final list' : 'Cash plan ready') + ' — ' + (planSize(P) === 'exit' ? 'exits replaced with ' + zinr(P.acct.shares || 0) + ' of shares · cash ' + zinr(P.acct.spare) : (P.acct.slots || 0) + ' slots × ' + zinr(P.acct.slotP || 0) + ' · cash ' + zinr(P.acct.spare) + ' (' + Math.round((P.cashPct != null ? P.cashPct : 0.1) * 100) + '% of shares)'));
+    say(P.acct.short ? '⚠ Cash plan: short ' + zinr(P.acct.short) : (frozen ? 'Re-planned on the final list' : 'Cash plan ready') + ' — ' + (planSize(P) === 'exit' ? 'exits replaced with ' + zinr(P.acct.shares || 0) + ' of shares · cash ' + zinr(P.acct.spare) : (P.acct.slots || 0) + ' slots ' + (planSize(P) === 'eng' ? 'averaging ' : '× ') + zinr(P.acct.slotP || 0) + ' · cash ' + zinr(P.acct.spare) + ' (' + Math.round((P.cashPct != null ? P.cashPct : 0.1) * 100) + '% of shares)'));
     renderCards();
   } catch (e){ say('Cash plan failed: ' + (e && e.message || e)); }
   finally { CPL.busy = false; }
@@ -1137,7 +1155,7 @@ function cashPlanHTML(list){
   if (frozen && changed.length && Z.connected && !CPL.busy && Date.now() - CPL.at > 60000) setTimeout(() => cashPlanRun(true), 50);   // the final list changed after the sells → same rules, on its own
   let h = '<div class="bal"><div class="bal-h"><b>Cash plan</b><span class="sub">' +
     (P ? 'worked out ' + when + ' on ' + (P.live ? 'live' : 'rebalance') + ' picks' + (P.re ? ' · re-planned ' + hhmm(new Date(P.re.at + 330 * 60000)) + ' on the final list' : '') + (frozen ? ' · <b>frozen</b> — sell baskets have gone out' + (changed.length ? '; the final list changed for ' + changed.map(it => '#' + (favNumOf(it.cfg) || '?')).join(' ') + ' — re-planning on the same rules' : '') : ' · refreshes itself on sell day until the first sell basket')
-       : (cpOpts().size === 'exit' ? 'each strategy re-buys the share value its exits sell — the rest stays cash' : 'every slot the same size — Cash % of the shares stays back as cash')) + '</span>' +
+       : (cpOpts().size === 'exit' ? 'each strategy re-buys the share value its exits sell — the rest stays cash' : cpOpts().size === 'eng' ? 'each strategy re-buys what its own exits sell, all scaled so Cash % of the shares stays back as cash' : 'every slot the same size — Cash % of the shares stays back as cash')) + '</span>' +
     cpControlsHTML(P, frozen) +
     '<span class="go"><button class="btn" id="cpGo"' + (frozen && !changed.length ? ' disabled title="Frozen: the sells have started and every strategy still matches its plan"' : '') + '>' + (P ? (frozen ? 'Re-plan changed' : 'Re-plan') : 'Plan cash') + '</button></span></div>';
   if (!P) return h + '<div class="khelp">Needs Zerodha connected and every strategy’s picks loaded. ' + cpRuleText() + '</div></div>';
@@ -1145,7 +1163,7 @@ function cashPlanHTML(list){
   if (mm) h += '<div class="khelp" style="margin-top:0"><b class="down">\u26a0 Controls differ from the plan</b> \u2014 ' + esc(mm) + (frozen ? ' \u00b7 frozen: the plan keeps its own settings' : ' \u00b7 press Re-plan to redo the plan with the controls as set') + '</div>';
   h += '<div class="khelp" style="margin-top:0"><b>' + (P.mode === 'all' ? 'Sell all &amp; re-enter' : 'Swap exits only') + '</b>' + (P.set ? ' · plan for <b>' + esc(P.set) + '</b>' : '') +
     (planSize(P) === 'exit' ? ' · <b>Replace exits only</b>: each strategy re-buys the share value it sells → <b>' + zinr(A.shares || 0) + '</b> in shares after (Zerodha funds ' + zinr(A.loan || 0) + ') · own money ' + zinr(A.own || 0) + ' (sells free ' + zinr(A.freed) + ' + free cash ' + zinr(A.free) + ')'
-    : ' · own money <b>' + zinr(A.own || 0) + '</b> (sells free ' + zinr(A.freed) + ' + free cash ' + zinr(A.free) + (A.own - A.freed - A.free > 0 ? ' + kept re-picks' : '') + ') → <b>' + (A.slots || 0) + ' slots × ' + zinr(A.slotP || 0) + '</b> = ' + zinr(A.shares || 0) + ' in shares (Zerodha funds ' + zinr(A.loan || 0) + ')') +
+    : ' · own money <b>' + zinr(A.own || 0) + '</b> (sells free ' + zinr(A.freed) + ' + free cash ' + zinr(A.free) + (A.own - A.freed - A.free > 0 ? ' + kept re-picks' : '') + ') → <b>' + (A.slots || 0) + ' slots ' + (planSize(P) === 'eng' ? 'averaging ' + zinr(A.slotP || 0) + '</b> (each strategy re-buys what its exits sell × ' + (+A.engK || 0).toFixed(3) + ') = ' : '× ' + zinr(A.slotP || 0) + '</b> = ') + zinr(A.shares || 0) + ' in shares (Zerodha funds ' + zinr(A.loan || 0) + ')') +
     (N && N.d ? ' → moves ' + (N.d > 0 ? '+' : '−') + zinr(Math.abs(N.d)) : '') + ' → ' +
     (A.short > 0 ? '<b class="down">short ' + zinr(A.short) + '</b>' : 'cash <b class="up">' + zinr(A.spare) + '</b> = ' + (A.shares > 0 ? (Math.round(1000 * A.spare / A.shares) / 10) + '%' : pc + '%') + ' of the shares' + (planSize(P) === 'exit' ? ' (everything the buys don’t use)' : ' (target ' + pc + '%)')) + '</div>';
   /* zba47 netting: the sell-day plan's moves; each strategy card shows what is still pending (the official close can stop one) */
@@ -1155,7 +1173,7 @@ function cashPlanHTML(list){
   const rowsH = list.map(it => { const o = P.S[it.id]; if (!o) return ''; const cur = planFor(it), n = o.num || favNumOf(it.cfg);
     const rule = o.rule === 'excl' ? '<span class="tag exit" title="Outside the chosen mix — sells everything, buys nothing; its money joins the plan">not in the plan · sells all</span>'
       : o.sellAll ? '<span class="tag warn" title="Sell all &amp; re-enter: every holding sells, every slot is bought fresh">sells all · ' + o.picks.length + ' slot' + (o.picks.length === 1 ? '' : 's') + '</span>'
-      : o.picks.length ? '<span class="tag off">' + o.picks.length + ' slot' + (o.picks.length === 1 ? '' : 's') + ' × ' + zinr(planSize(P) === 'exit' ? (o.tgt[o.picks.find(x => !(o.keep || {})[x]) || o.picks[0]] || 0) : (P.acct.slotP || 0)) + '</span>' : '<span class="tag off">no new pick</span>';
+      : o.picks.length ? '<span class="tag off">' + o.picks.length + ' slot' + (o.picks.length === 1 ? '' : 's') + ' × ' + zinr(planSize(P) !== 'slot' ? (o.tgt[o.picks.find(x => !(o.keep || {})[x]) || o.picks[0]] || 0) : (P.acct.slotP || 0)) + '</span>' : '<span class="tag off">no new pick</span>';
     const cells = o.picks.map(s => { const kq = (o.keep || {})[s] || 0, L = (P.lev || {})[s];
       const mi = (P.xf || []).filter(x => x.to === it.id && x.sym === s).reduce((a, x) => a + x.q, 0);   // zba47: arrives by a move
       return '<b>' + esc(s) + '</b> ' + zinr(o.holdQ[s] * o.px[s]) + ' <span class="sym">' + (o.holdQ[s] || 0).toLocaleString('en-IN') + ' sh' +
@@ -1170,14 +1188,15 @@ function cashPlanHTML(list){
 }
 function cpRuleText(){
   if (planSize(cpDoc()) === 'exit' && cpOpts().size === 'exit') return 'Rule (13 Nov, <b>Replace exits only</b>): each strategy sells its exits and re-buys <b>the same share value</b> (live price × shares sold), split equally over its new picks — each bought at its full Zerodha MTF leverage, or in full cash when Zerodha won’t fund it (that extra own money comes from the free cash). A strategy with no exits buys nothing; a reset strategy’s kept re-pick stays as it is. <b>Free cash and everything the buys don’t use stay as cash</b> — no Cash % target. <b>Sell all &amp; re-enter</b>: every holding is an exit, so each strategy re-buys its whole book value. <b>Sizing</b> → Rule B (Equal slots + Cash %) brings back the default.';
-  return 'Rule B (29 Oct; the default again from 13 Nov): <b>every slot of every strategy gets the same value</b>, each pick bought at its full Zerodha MTF leverage (1x when Zerodha won’t fund it), and the slot size is set so that the own money left as <b>cash = Cash % of everything held in shares</b> (10% → a 10% fall is covered). Own money = free cash in Zerodha (incl. unsettled sale proceeds) + what the exits free after the loan + the equity in re-picks a reset strategy keeps; ACTIVE / GPECO and anything outside the strategy books stay out. An empty slot takes nothing — the picks that exist share all of it. <b>Swap exits only</b> sells just the exits (a hold strategy’s stays ride, a reset strategy’s re-pick is topped up or trimmed to the slot); <b>Sell all &amp; re-enter</b> sells every holding and buys every slot fresh on the buy day from the actual cash. <b>Plan for</b> a saved mix: a strategy outside it sells everything and buys nothing.';
+  if (cpOpts().size === 'eng') return 'Rule E (27 Nov, the default): <b>the backtest engine’s sizing with the Cash % rule</b>. Each strategy’s new picks share <b>the share value its own exits sell</b> (live price × shares sold), so a strategy that grew stays bigger and one that fell stays smaller; then every slot is multiplied by one number so that the own money left as <b>cash = Cash % of everything held in shares</b> (10% → a 10% fall is covered). Each pick is bought at its full Zerodha MTF leverage (1x when Zerodha won’t fund it). Stocks that stay are not resized. A strategy with an empty book takes the average slot. <b>Sell all &amp; re-enter</b>: every holding is an exit, so each strategy re-buys its whole book value × the same number. <b>Sizing</b> → Rule B makes every slot equal across the strategies instead.';
+  return 'Rule B (29 Oct): <b>every slot of every strategy gets the same value</b>, each pick bought at its full Zerodha MTF leverage (1x when Zerodha won’t fund it), and the slot size is set so that the own money left as <b>cash = Cash % of everything held in shares</b> (10% → a 10% fall is covered). Own money = free cash in Zerodha (incl. unsettled sale proceeds) + what the exits free after the loan + the equity in re-picks a reset strategy keeps; ACTIVE / GPECO and anything outside the strategy books stay out. An empty slot takes nothing — the picks that exist share all of it. <b>Swap exits only</b> sells just the exits (a hold strategy’s stays ride, a reset strategy’s re-pick is topped up or trimmed to the slot); <b>Sell all &amp; re-enter</b> sells every holding and buys every slot fresh on the buy day from the actual cash. <b>Plan for</b> a saved mix: a strategy outside it sells everything and buys nothing.';
 }
 function cpControlsHTML(P, frozen){
   const o = cpOpts(), mixes = subMixes(), dis = frozen ? ' disabled' : '';
   const opt = (v, l, cur) => '<option value="' + esc(v) + '"' + (v === cur ? ' selected' : '') + '>' + esc(l) + '</option>';
   return '<span class="cpctl" title="' + (frozen ? 'Frozen — the sells have started' : 'Changing a control re-plans at once') + '">' +
-    '<label>Sizing <select id="cpSize"' + dis + ' title="Replace exits only = each strategy re-buys just the share value its exits sell, split equally over its new picks; free cash and anything left over stay cash. Equal slots + Cash % = every slot the same size, sized so Cash % of the shares stays as cash">' + opt('slot', 'Rule B · Equal slots + Cash %', o.size) + opt('exit', 'Rule A · Replace exits only', o.size) + '</select></label>' +
-    (o.size === 'slot' ? '<label>Cash % <input type="number" id="cpPct" min="0" max="90" step="0.5" value="' + o.pct + '"' + dis + ' title="Own money kept back as cash, as a % of everything held in shares (10 = a 10% fall is covered)"></label>' : '') +
+    '<label>Sizing <select id="cpSize"' + dis + ' title="Replace exits only = each strategy re-buys just the share value its exits sell, split equally over its new picks; free cash and anything left over stay cash. Equal slots + Cash % = every slot the same size, sized so Cash % of the shares stays as cash. Engine slots + Cash % = each strategy re-buys what its own exits sell (as the backtest engine does), all scaled so Cash % of the shares stays as cash">' + opt('eng', 'Rule E · Engine slots + Cash %', o.size) + opt('slot', 'Rule B · Equal slots + Cash %', o.size) + opt('exit', 'Rule A · Replace exits only', o.size) + '</select></label>' +
+    (o.size !== 'exit' ? '<label>Cash % <input type="number" id="cpPct" min="0" max="90" step="0.5" value="' + o.pct + '"' + dis + ' title="Own money kept back as cash, as a % of everything held in shares (10 = a 10% fall is covered)"></label>' : '') +
     '<label>Plan for <select id="cpSet"' + dis + ' title="Strategies that get slots — the rest sell everything and buy nothing">' + opt('', 'All strategies', o.set) + mixes.map(m => opt(m.label, m.label, o.set)).join('') + '</select></label>' +
     '<label><select id="cpMode"' + dis + ' title="Swap exits only = the normal rebalance. Sell all &amp; re-enter = every holding sells, every slot is bought fresh">' + opt('swap', 'Swap exits only', o.mode) + opt('all', 'Sell all & re-enter', o.mode) + '</select></label></span>';
 }
@@ -1745,7 +1764,7 @@ function zbVerApply(){
   const m = !!ZB.mtfRows && $('zbVer').value === 'mtf';
   ZB.rows = m ? ZB.mtfRows : ZB.planRows;
   $('zbAmt').value = m ? Math.round(ZB.rows.reduce((a, r) => a + (r.on && r.planQ ? r.planQ * r.px : 0), 0)) : ZB.planAmt;
-  $('zbSub').textContent = ZB.sub0 + (m ? ' · ALL MTF version: ' + ZB.rows.filter(r => r.forS).map(r => r.sym + ' for ' + r.forS).join(', ') + (ZB.mtfSlot ? ', every slot re-worked to ' + zinr(ZB.mtfSlot) + ' (instead of the plan’s slot above)' : ', same value as the pick it replaces') + ' — the saved plan still lists the old pick (press Swap on it and Re-plan to make this the plan).' : '');
+  $('zbSub').textContent = ZB.sub0 + (m ? ' · ALL MTF version: ' + ZB.rows.filter(r => r.forS).map(r => r.sym + ' for ' + r.forS).join(', ') + (ZB.mtfSlot ? (planSize(cpDoc()) === 'eng' ? ', slots re-worked, averaging ' : ', every slot re-worked to ') + zinr(ZB.mtfSlot) + ' (instead of the plan’s slot above)' : ', same value as the pick it replaces') + ' — the saved plan still lists the old pick (press Swap on it and Re-plan to make this the plan).' : '');
 }
 function zBasketOpen(id){
   const it = strategies().find(x => x.id === id), p = PICKS[id];
@@ -1778,7 +1797,7 @@ function zBasketOpen(id){
         r.mvIn = N.mvIn; r.mvFrom = N.mvFrom; r.got = N.got;   // zba47: moved in from another strategy / already bought this rebalance — never bought twice
         r.planQ = N.need; r.on = r.planQ > 0; });
       $('zbAmt').value = Math.round(ZB.rows.reduce((a, r) => a + (r.on && r.planQ ? r.planQ * r.px : 0), 0));
-      $('zbSub').textContent += ' \u00b7 sized by the cash plan (' + (planSize(cpDoc()) === 'exit' ? 'replaces the value its exits sell' : 'every slot ' + zinr(((cpDoc() || {}).acct || {}).slotP || 0)) + (cp.sellAll ? ', sell all & re-enter' : '') + ') \u2014 edit any quantity if needed.';
+      $('zbSub').textContent += ' \u00b7 sized by the cash plan (' + (planSize(cpDoc()) === 'exit' ? 'replaces the value its exits sell' : planSize(cpDoc()) === 'eng' ? 'engine slots, cash % kept' : 'every slot ' + zinr(((cpDoc() || {}).acct || {}).slotP || 0)) + (cp.sellAll ? ', sell all & re-enter' : '') + ') \u2014 edit any quantity if needed.';
       return;
     }
     if (!held.rows.length) return;
