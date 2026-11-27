@@ -830,7 +830,8 @@ function solveUp(f, y, hi){   // the largest x in [0, hi] with f(x) <= y, for f 
 function cpNorm(o){ o = o || {}; const pct = +o.pct;
   return { pct: (o.pct != null && o.pct !== '' && pct >= 0 && pct <= 90) ? pct : 10, mode: 'swap', set: String(o.set || ''),   // zba85 (user 27-Nov: remove the Mode choice that is not the default): always Swap exits only; a stored 'all' reads as 'swap'. planCompute keeps 'all' only for a plan saved under it.
           
-           size: (o.size === 'exit' && +o.szv >= 76) ? 'exit' : 'eng', szv: +o.szv || 0 }; }
+           size: 'eng', szv: +o.szv || 0 }; }
+   // zba86 (user 27-Nov, "Yes" to removing Replace exits only too): the Sizing menu is gone, sizing is always Rule E; a stored 'exit' reads as 'eng'.
    // zba83 (user 27-Nov, after the engine+10% backtest: "I want this live engine plus 10% for autopilot as well as in the terminal"): 'eng' = Rule E,
    // each strategy's new slots share what ITS OWN exits sell (the backtest engine's sizing), all scaled by one number so Cash % of the shares stays cash.
    // It is the default. zba84 (user 27-Nov: "Remove that equal slot settings from terminal"): Rule B is out of the Sizing menu and a stored 'slot'
@@ -1197,7 +1198,6 @@ function cpControlsHTML(P, frozen){
   const o = cpOpts(), mixes = subMixes(), dis = frozen ? ' disabled' : '';
   const opt = (v, l, cur) => '<option value="' + esc(v) + '"' + (v === cur ? ' selected' : '') + '>' + esc(l) + '</option>';
   return '<span class="cpctl" title="' + (frozen ? 'Frozen — the sells have started' : 'Changing a control re-plans at once') + '">' +
-    '<label>Sizing <select id="cpSize"' + dis + ' title="Replace exits only = each strategy re-buys just the share value its exits sell, split equally over its new picks; free cash and anything left over stay cash. Engine slots + Cash % = each strategy re-buys what its own exits sell (as the backtest engine does), all scaled so Cash % of the shares stays as cash">' + opt('eng', 'Rule E · Engine slots + Cash %', o.size) + opt('exit', 'Rule A · Replace exits only', o.size) + '</select></label>' +
     (o.size !== 'exit' ? '<label>Cash % <input type="number" id="cpPct" min="0" max="90" step="0.5" value="' + o.pct + '"' + dis + ' title="Own money kept back as cash, as a % of everything held in shares (10 = a 10% fall is covered)"></label>' : '') +
     '<label>Plan for <select id="cpSet"' + dis + ' title="Strategies that get slots — the rest sell everything and buy nothing">' + opt('', 'All strategies', o.set) + mixes.map(m => opt(m.label, m.label, o.set)).join('') + '</select></label>' +
     '</span>';
