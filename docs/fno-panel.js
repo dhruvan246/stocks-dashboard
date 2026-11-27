@@ -29,7 +29,7 @@
   const DEF = { syms: ['CDSL', 'CANBK', 'POWERINDIA', 'GODREJPROP', 'BHEL'], trig: 15, buyTo: 3.5, maxLev: 4, bb: 5,
                 maxLots: 10, rollDays: 7, gapMs: 1200 };
   let AUTOARM = false, AUTOT = 0, READY = false;
-  let API = null, EL = null, POS = null, POSERR = '', CON = null, PREVIEW = null, ARMED = false, ARMT = 0, RUN = null, TIMER = 0;
+  let API = null, EL = null, POS = null, OTHER = {}, POSERR = '', CON = null, PREVIEW = null, ARMED = false, ARMT = 0, RUN = null, TIMER = 0;
 
   /* ---------- small helpers ---------- */
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -109,24 +109,48 @@
   function contracts(sym) { const f = (CON && CON.f && CON.f[sym]) || []; return f.map(c => ({ ts: c[0], exp: c[1], lot: c[2], settle: c[3], close: c[4] })); }
   function conOf(ts) { for (const s in (CON && CON.f) || {}) for (const c of CON.f[s]) if (c[0] === ts) return { sym: s, ts, exp: c[1], lot: c[2], settle: c[3] }; return null; }
   function symOf(ts, syms) { const m = /^([A-Z0-9&-]+?)(\d{2}[A-Z]{3})FUT$/.exec(ts || ''); return m && syms.includes(m[1]) ? m[1] : null; }
+  /* the stock list can change (user 2026-11-27: sold CANBK futures, bought VEDL — the tab kept showing CANBK and ignored VEDL).
+     undOf = the stock behind a futures symbol, only when NSE lists futures on it; swapHint = a listed stock that is no longer
+     held next to a held stock future that is not in the list — the tab then offers the swap, and the auto-pilot waits for it. */
+  function undOf(ts) { const m = /^([A-Z0-9&-]+?)(\d{2}[A-Z]{3})FUT$/.exec(ts || ''); return m && CON && CON.f && CON.f[m[1]] ? m[1] : null; }
+  function swapHint(d, P, oth) {
+    if (!P) return [];
+    const gone = d.cfg.syms.filter(s => !Object.keys(P).some(ts => P[ts].sym === s && P[ts].q > 0)), add = Object.keys(oth || {}).sort((a, b) => oth[b] - oth[a]);
+    const out = []; for (let i = 0; i < Math.min(gone.length, add.length); i++) out.push({ from: gone[i], to: add[i], q: oth[add[i]] });
+    return out;
+  }
+  /* put a new stock list in force. The pot keeps today's truth: the old list's pot (it still counts today's result on the stock
+     that left) + today's mark-to-market on the stocks that came in, re-recorded on the new positions. */
+  async function applySyms(next, why) {
+    const d = docGet(), old = d.cfg.syms.slice(), calc = POS && d.rec ? potCalc(d, POS) : null, potOld = calc && calc.ok ? calc.pot : null;
+    d.cfg.syms = next.slice(); d.cfg.ts = Date.now(); save(d);
+    const P2 = await loadPositions();
+    if (!P2) { d.cfg.syms = old; save(d, true); return { ok: false, why: 'Zerodha not reachable — nothing changed' }; }
+    const added = next.filter(x => !old.includes(x)); let m = 0; for (const ts in P2) if (added.includes(P2[ts].sym)) m += P2[ts].m2m;
+    if (potOld != null) d.rec = recordFrom(P2, potOld + m);
+    logAdd(d, 'syms', why + ': ' + old.join(', ') + ' → ' + next.join(', ') + (potOld != null ? ' · pot ' + money(potOld + m) : ''));
+    PREVIEW = null; ARMED = false; save(d, true);
+    return { ok: true, pot: potOld != null ? potOld + m : null };
+  }
   async function loadPositions() {
     const r = await API.acctFetch('/positions');
     if (!r || r.st !== 200 || !r.j || r.j.status !== 'success') {
       POS = null; POSERR = r && r.st === 403 ? 'login' : (r && r.st === -1 ? 'worker' : (r && r.st === 401 ? 'token' : 'down'));
       return null;
     }
-    const syms = docGet().cfg.syms, P = {}, FP = window.foPrevClose;
+    const syms = docGet().cfg.syms, P = {}, FP = window.foPrevClose, oth = {};
     /* m2m + close through foPrevClose: after the market shuts Zerodha swaps close_price to today's close, which
        wiped today's move from the pot on 23-Nov (pot read 3.45 Cr for a real ~3.25 Cr) — see fo-prevclose.js */
     if (FP) await FP.load(); const mp = FP ? FP.map() : null;
     (r.j.data.net || []).forEach(p => {
-      if (p.exchange !== 'NFO') return; const s = symOf(p.tradingsymbol, syms); if (!s) return;
+      if (p.exchange !== 'NFO') return; const s = symOf(p.tradingsymbol, syms);
+      if (!s) { const u = undOf(p.tradingsymbol); if (u && (+p.quantity || 0) > 0) oth[u] = (oth[u] || 0) + (+p.quantity || 0); return; }   // a long stock future outside the plan's list
       const fx = FP ? FP.fix(p, mp) : { m2m: +p.m2m || 0, close: +p.close_price || 0 };
       const o = P[p.tradingsymbol] || (P[p.tradingsymbol] = { sym: s, ts: p.tradingsymbol, q: 0, oq: 0, ltp: +p.last_price || 0, close: fx.close || 0, m2m: 0, pnl: 0 });
       o.q += +p.quantity || 0; o.oq += +p.overnight_quantity || 0; o.m2m += +fx.m2m || 0; o.pnl += +p.pnl || 0;
       if (+p.last_price) o.ltp = +p.last_price; if (+fx.close) o.close = +fx.close;
     });
-    POS = P; POSERR = ''; return P;
+    POS = P; OTHER = oth; POSERR = ''; return P;
   }
 
   /* ---------- the pot ---------- */
@@ -166,7 +190,7 @@
   function heldBySym(P, syms) {     // the nearest-expiry held contract per stock (+ every held one)
     const out = {}; syms.forEach(s => out[s] = { all: [] });
     for (const ts in P) { const p = P[ts]; if (!p.q) continue; const c = conOf(ts) || { exp: '', lot: 0 };
-      out[p.sym].all.push(Object.assign({ exp: c.exp, lot: c.lot }, p)); }
+      if (out[p.sym]) out[p.sym].all.push(Object.assign({ exp: c.exp, lot: c.lot }, p)); }
     syms.forEach(s => { out[s].all.sort((x, y) => (x.exp || '').localeCompare(y.exp || '')); out[s].near = out[s].all[0] || null; });
     return out;
   }
@@ -324,6 +348,8 @@
       EL.innerHTML = h + posTable(d, P, null) + '</div>'; return;
     }
     const a = calc.pot, st = d.st, H = Math.max(st.H || a, a), dd = 1 - a / H, lev = a > 0 ? pos / a : null;
+    swapHint(d, P, OTHER).forEach(x => { h += '<div class="box warn"><div class="bt">Your positions differ from the plan\'s stock list</div>You hold <b>' + esc(x.to) + '</b> futures (' + x.q.toLocaleString('en-IN') + ' shares) and no <b>' + esc(x.from) + '</b> futures any more. Until the list is changed, ' + esc(x.to) + ' is not counted in the pot or the positions here, and the auto-pilot does nothing.' +
+      '<div class="row"><button class="fb pri" data-f="swap" data-a="' + esc(x.from) + '" data-b="' + esc(x.to) + '"' + (RUN ? ' disabled' : '') + '>Replace ' + esc(x.from) + ' with ' + esc(x.to) + ' in the plan</button></div></div>'; });
     h += '<div class="kp">' +
       '<div class="k"><div class="l">Pot value (live)</div><div class="v secret">' + money(a) + '</div><div class="s secret ' + (calc.m2m >= 0 ? 'up' : 'dn') + '">today ' + signed(calc.m2m) + '</div><div class="s secret ' + (pnlSum(P) >= 0 ? 'up' : 'dn') + '">P&amp;L since buy ' + signed(pnlSum(P)) + '</div></div>' +
       '<div class="k"><div class="l">High</div><div class="v secret">' + money(H) + '</div><div class="s">' + (st.Hd ? 'set ' + esc(st.Hd) : 'from setup') + '</div></div>' +
@@ -349,7 +375,8 @@
     h += '<details><summary>Add money · reset pot · settings</summary><div class="box">' +
       '<div class="row"><input id="fnAdd" placeholder="Added, e.g. 25 L"><button class="fb" data-f="add">Add money to pot</button><span class="sub" style="margin:0">raises the pot, its high and its low by the same amount, so the fall % is unchanged</span></div>' +
       '<div class="row"><input id="fnPot" placeholder="Pot now"><button class="fb" data-f="start">Set pot value</button><span class="sub" style="margin:0">overrides today\'s value (keeps the high)</span></div>' +
-      '<div class="row">Max lots per order <input id="fnML" value="' + c.maxLots + '" style="width:70px"> Roll window (days) <input id="fnRD" value="' + c.rollDays + '" style="width:70px"><button class="fb" data-f="cfg">Save</button></div></div></details>';
+      '<div class="row">Max lots per order <input id="fnML" value="' + c.maxLots + '" style="width:70px"> Roll window (days) <input id="fnRD" value="' + c.rollDays + '" style="width:70px"><button class="fb" data-f="cfg">Save</button></div>' +
+      '<div class="row">Stocks <input id="fnSy" value="' + esc(c.syms.join(', ')) + '" style="width:min(360px,100%)"><button class="fb" data-f="syms">Save stocks</button><span class="sub" style="margin:0">NSE symbols with futures, comma separated — the plan, the pot and the auto-pilot follow this list</span></div></div></details>';
     h += '<details><summary>History</summary><div class="box log">' + (d.log.slice().reverse().map(e => '<div>' + new Date(e.t + 330 * 60000).toISOString().slice(0, 16).replace('T', ' ') + ' · ' + esc(e.msg) + '</div>').join('') || 'Nothing yet.') + '</div></details>';
     h += '<div class="sub">Pot carried by Zerodha\'s daily mark-to-market; charges and leverage cost are not deducted here. Contract list ' + esc((CON && CON.asof) || '—') + ' (NSE bhavcopy).</div></div>';
     const fo = document.activeElement && EL.contains(document.activeElement) && document.activeElement.tagName === 'INPUT' ? document.activeElement.id : '';
@@ -408,6 +435,8 @@
     if (!dry && !o.anyTime && (m < win[0] || m > win[1])) { res.note = 'outside the ' + leg + ' window'; return res; }
     let P = await loadPositions(); if (!P) { res.errors.push('Zerodha: ' + ({ login: 'not logged in today', worker: 'no worker', token: 'token refused', down: 'not reachable' }[POSERR] || POSERR)); return res; }
     let calc = potCalc(d, P);
+    const hint = swapHint(d, P, OTHER);
+    if (hint.length) { res.errors.push('positions differ from the plan\'s stock list (' + hint.map(x => 'hold ' + x.to + ', no ' + x.from).join('; ') + ') — confirm the swap in the F&O tab; nothing was done'); return res; }
     if (!calc || !calc.ok) { res.errors.push('the pot needs today\'s value (quantities changed: ' + ((calc && calc.bad) || []).join(', ') + ') — set it in the F&O tab'); return res; }
     if (calc.ok && !dry && (!sameQty(d.rec, P) || d.rec.date !== today())) { d.rec = recordFrom(P, calc.pot); save(d, true); }
     const go = async (k, plan) => {
@@ -465,6 +494,18 @@
       logAdd(d, 'add', 'Added ' + money(v) + ' to the pot'); save(d, true); render(); return; }
     if (f === 'cfg') { const ml = Math.floor(+EL.querySelector('#fnML').value), rd = Math.floor(+EL.querySelector('#fnRD').value);
       if (ml >= 1) d.cfg.maxLots = ml; if (rd >= 0) d.cfg.rollDays = rd; d.cfg.ts = Date.now(); save(d, true); toast('Saved'); render(); return; }
+    if (f === 'swap' || f === 'syms') {
+      if (RUN) return;
+      let next, why;
+      if (f === 'swap') { const A = b.dataset.a, B = b.dataset.b; if (!d.cfg.syms.includes(A) || d.cfg.syms.includes(B)) return; next = d.cfg.syms.map(x => x === A ? B : x); why = 'Replaced ' + A + ' with ' + B; }
+      else { next = String((EL.querySelector('#fnSy') || {}).value || '').toUpperCase().split(/[\s,]+/).filter(Boolean); next = next.filter((x, i) => next.indexOf(x) === i); why = 'Stock list changed';
+        const bad = next.filter(x => !(CON && CON.f && CON.f[x])); if (bad.length) { toast('No NSE futures found for: ' + bad.join(', ')); return; }
+        if (next.length < 2 || next.length > 10) { toast('Type 2 to 10 stocks'); return; }
+        if (next.join() === d.cfg.syms.join()) { toast('Same list — nothing changed'); return; } }
+      b.disabled = true;
+      applySyms(next, why).then(R => { toast(R.ok ? why + (R.pot != null ? ' — pot now ' + money(R.pot) + ' (use Set pot value if it should differ)' : '') : R.why, 7000); render(); }).catch(() => { toast('Could not change the list — try again'); render(); });
+      return;
+    }
     if (f === 'dismiss') { d.st.due = (d.st.due || []).filter(x => x.k !== b.dataset.k); d.st.ts = Date.now(); logAdd(d, 'dismiss', 'Dismissed ' + b.dataset.k); save(d, true); render(); return; }
     if (f === 'plan') {
       const calc = potCalc(d, P); if (!calc || !calc.ok) return; const k = b.dataset.k, a = calc.pot;
@@ -494,5 +535,5 @@
   }
   window.mountFno = mount;
   window.fnoAuto = { status: autoStatus, run: autoRun, log: autoLog, flush: () => push() };
-  window.__fnoTest = { tdTo, setHol: h => { HOL = new Set(h); }, potCalc, evalClose, planBuyUpTo, planSell4x, planRoll, planEqual, merge, parseRs, slices, blank, setCon: c => { CON = c; } };
+  window.__fnoTest = { swapHint, undOf, applySyms, heldBySym, recordFrom, tdTo, setHol: h => { HOL = new Set(h); }, potCalc, evalClose, planBuyUpTo, planSell4x, planRoll, planEqual, merge, parseRs, slices, blank, setCon: c => { CON = c; } };
 })();
