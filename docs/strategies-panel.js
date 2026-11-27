@@ -2980,6 +2980,41 @@ function renderAuto(){
     try { AUTO_PV = await autoPreview(RW.buyIn ? 'buy' : 'sell'); } catch(e){ ktoast('Preview failed: ' + (e && e.message || e), 5000); }
     renderAuto(); };
 }
+/* zba82 (user 27-Nov: "whenever I open the terminal it should replan on its own, instead of me clicking Re-plan"):
+   once per panel open — wait for Zerodha, the strategy list and the books, load the picks, then run the cash plan
+   silently. It only WRITES THE PLAN (no order leaves). It stands back where a silent re-plan could move a plan in use:
+   · buy baskets of this rebalance have gone out  → the slots still to buy keep their size
+   · buy leg, picks are not the final T-close list → the plan stays on the final list (press Re-plan to override)
+   · sell day before the first sell, Rebalance picks selected → yesterday's screen never plans the sells
+   · the auto-pilot's own headless page             → it loads and plans for itself
+   The sell-day freeze stays cashPlanRun's own. window.__spOpenReplan = what it did, for checks. */
+async function openReplan(){
+  const R = window.__spOpenReplan = { at: Date.now(), did: '', why: '' }, stop = (why, msg) => { R.why = why; if (msg) ktoast(msg, 6000); renderCards(); };
+  const hasBook = it => { const h = heldFor(it.cfg); return h && Array.isArray(h.rows); };
+  const until = Date.now() + 90000;
+  try { if (navigator.webdriver) return stop('robot'); } catch (e){}   // the auto-pilot's headless page plans for itself (autoRun)
+  while (Date.now() < until && !(Z.connected && uniqStrategies().some(hasBook))) await new Promise(r => setTimeout(r, 1500));
+  if (!Z.connected) return stop('zerodha-not-connected');
+  await zbaPull();
+  const books = uniqStrategies().filter(hasBook);
+  if (!books.length) return stop('no-books');
+  if (zbBoughtSet().size) return stop('buys-started');
+  const RW = rebalWindow();
+  if (RW.sellIn && !cpSellsStarted() && PICKMODE !== 'live') return stop('sell-day-not-live');
+  if (CPL.busy) return stop('busy');
+  const before = (cpDoc() || {}).at || 0, re0 = ((cpDoc() || {}).re || {}).at || 0;
+  try {
+    await loadAllPicks();
+    const excl = new Set(cpExclIds(books, cpOpts()));
+    for (const it of books){ if (!excl.has(it.id) && !(PICKS[it.id] && PICKS[it.id].rows)){ if (!await ensureEngine()) return stop('no-market-data'); await screenPick(it); } }   // zba80: Load picks covers the listed strategies only
+    if (RW.buyIn && books.some(it => !excl.has(it.id) && !finalPicks(it))) return stop('buy-leg-not-final', 'Buy days: the plan was not redone on its own — the loaded picks are not the final ' + RW.tlab + ' close list');
+    await cashPlanRun(true);
+  } catch (e){ return stop('error: ' + (e && e.message || e)); }
+  const P = cpDoc(), done = !!P && (P.at > before || ((P.re || {}).at || 0) > re0);
+  R.did = done ? 'planned' : ''; R.why = done ? '' : 'plan-unchanged';
+  if (done) ktoast(P.acct.short ? '\u26a0 Cash plan redone on opening: short ' + zinr(P.acct.short) : 'Cash plan redone on opening \u2014 cash ' + zinr(P.acct.spare), 5000);
+  renderCards();
+}
 /* ---------- boot ---------- */
 (async function boot(){
   const ch = $('spChips');
@@ -3014,6 +3049,7 @@ function renderAuto(){
   zbaPull();   // synced \u20b9 amounts (token-gated row) \u2014 lands before any basket dialog opens
   feedPull();  // per-strategy held quantities \u2014 the sell view + engine-sized buys read these
   if (window.btSync){ try { await btSync.pullStrategies(); renderCards(); } catch(e){} }
+  openReplan();   // zba82
 })();
   };
 })();
