@@ -2984,7 +2984,8 @@ function renderAuto(){
    once per panel open — wait for Zerodha, the strategy list and the books, load the picks, then run the cash plan
    silently. It only WRITES THE PLAN (no order leaves). It stands back where a silent re-plan could move a plan in use:
    · buy baskets of this rebalance have gone out  → the slots still to buy keep their size
-   · buy leg, picks are not the final T-close list → the plan stays on the final list (press Re-plan to override)
+   · buy leg, Swap exits only, sells done          → the buys go out on the sell day's plan (Re-plan stays a button)
+   · buy leg (Sell all & re-enter), picks not the final T-close list → no silent plan on a live screen
    · sell day before the first sell, Rebalance picks selected → yesterday's screen never plans the sells
    · the auto-pilot's own headless page             → it loads and plans for itself
    The sell-day freeze stays cashPlanRun's own. window.__spOpenReplan = what it did, for checks. */
@@ -3001,6 +3002,7 @@ async function openReplan(){
   if (zbBoughtSet().size) return stop('buys-started');
   const RW = rebalWindow();
   if (RW.sellIn && !cpSellsStarted() && PICKMODE !== 'live') return stop('sell-day-not-live');
+  { const P0 = cpDoc(); if (RW.buyIn && P0 && cpSellsStarted() && P0.mode !== 'all') return stop('buy-leg-plan-kept'); }   // Swap exits only: the buys go out on the sell day's plan
   if (CPL.busy) return stop('busy');
   const before = (cpDoc() || {}).at || 0, re0 = ((cpDoc() || {}).re || {}).at || 0;
   try {
