@@ -15,13 +15,14 @@ from xcheck.px_nse_yahoo import PxNseYahoo
 from xcheck.fund import FundVisionXbrl, FundPbtTax, FundEpsShares, FundCellShape, FundNewResults, FundPatMirror
 from xcheck.market import IdxLevels, FlowsMonth, McapShares
 from xcheck.shp import ShpNeighbours
+from xcheck.fill import FillMissing, FillVision
 
 def ist(fmt="%Y-%m-%d %H:%M"):
     """IST wall time from UTC — a CI runner's local clock is UTC (the first run stamped 04:28 'IST' at 09:58 IST)."""
     return (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=5, minutes=30)).strftime(fmt)
 
 
-CHECKS = [FundNewResults, FundPatMirror, PxNseYahoo, FundVisionXbrl, FundPbtTax, FundEpsShares, FundCellShape, McapShares, ShpNeighbours, IdxLevels, FlowsMonth]
+CHECKS = [FillMissing, FillVision, FundNewResults, FundPatMirror, PxNseYahoo, FundVisionXbrl, FundPbtTax, FundEpsShares, FundCellShape, McapShares, ShpNeighbours, IdxLevels, FlowsMonth]
 
 
 def main(argv):

@@ -31399,3 +31399,81 @@ User: "add chile from another source".
 - **Not found:** open/high/low for any date. Yahoo holds one bar for `MXIPSAGC.SN`/`MXIPSAPC.SN`, 404 for `^IPSA`;
   spglobal.com answers 403; Banco Central de Chile's API needs an account.
 - A failed or empty year fails the whole pull (the existing file is kept); today's value is kept only from 20:00 Santiago.
+
+## §251 — Results-season fill check: every morning, was the newest quarter filled, and filled correctly? (2026-11-28, user: "i need a night job which checks if we hv filled correctly or not during result times. i cannot stand wrong data")
+
+**Why.** A hand check of Sep-26 on 2026-11-28 (origin `0b0a7d3a4`) found errors that the nightly checks either missed or
+only printed in a log nobody reads: BALKRISIND consolidated profit stored as 234.97 (total comprehensive income; the
+filing's profit is 292.62), CLEANMAX consolidated 65.82 against a PDF read of 47.05, COALINDIA with no Sep-26 row a
+month after it filed (`check_season_coverage.py` printed MISSING every night, exit 0).
+
+**What runs.** Three checks at the head of `scripts/xcheck_run.py` (workflow `xcheck.yml`, 07:10 IST daily, lands
+`docs/xcheck.json`), every stock, both bases, the two newest calendar quarter-ends. Report-only — nothing is changed.
+
+| check | lists |
+|---|---|
+| `fill_missing` (`scripts/xcheck/fill.py`) | `declared_no_numbers` — the feed shows a result filed 3+ days ago and no profit anywhere · `declared_pdf_only` — filed, the PDF read holds figures (the site shows that overlay) but the main store is empty · `period_unread` — a result filing whose period was not read (feed qe 0) · `one_basis` — one basis stored, the previous period had both · `no_revenue` / `no_op` — profit stored without revenue / without operating profit the previous period had · `prev_not_this` — one of the previous two periods is held, this one is not, deadline + 3 days passed, no filing in the feed |
+| `fill_vision` (same file) | stored profit, revenue and operating profit vs the PDF read (`vision_fills.json`), same basis, 1 % or Rs 0.05 cr. Profit rows also show the filing's PBT − tax and which reading it supports (a hint, not a verdict) |
+| `fund_new_results` (`scripts/xcheck/fund.py`, §239) | profit that fails the filing's own PBT − tax, with one new way in (below) |
+
+Main store = `sf_fundamentals.json` + `sf_revop.json`; for a BSE-only name `bse_fundamentals.json`. A half-yearly filer
+(stored rows only for March / September over two years) is expected only for those two periods. An old ticker whose
+renamed key holds the quarter is skipped (`_rename_map.json`).
+
+**The BALKRISIND gap, and what each rule change would list (measured on origin `0b0a7d3a4`, Sep-26 / Jun-26).**
+`fund_new_results` needed BOTH a PBT − tax failure and an EPS-implied share count outside 0.8–1.25× the stock's median.
+BALKRISIND failed the first and sat at 0.803 on the second. 115 / 117 cells fail PBT − tax; 14 / 7 were listed.
+- adopted — `pbt_tax+reader`: fails PBT − tax AND another reading of the same filing disagrees (the PDF read on the
+  same basis, or the reading kept by `sync_pat_mirror.py`): **+8 / +9** cells. In 7 / 8 of them the PDF read itself
+  fits PBT − tax.
+- adopted — `other_basis`: consolidated profit = the same filing's standalone PBT − tax: +0 / +0 today.
+- NOT adopted — EPS band tightened to 0.9–1.1: +12 / +6, mostly cells whose EPS agrees with the stored figure
+  (discontinued operations, exceptional gains).
+- NOT adopted — PBT − tax failure alone: +101 / +110 (minority, associates and discontinued operations dominate).
+A total-comprehensive-income figure has no stored line to compare with; it is caught only as a PBT − tax failure with
+a disagreeing reading, or as a `fill_vision` profit difference.
+
+**Noise is listed apart, never cleared by category.** In `fill_vision` two classes go to the "Likely definition / units
+(unread)" list instead of the open list: `fin_definition` (revenue / operating profit of a bank, NBFC or insurer —
+`quarterly_results.json` `f` flag or sector Financial Services) and `unit` (stored ÷ PDF read within 1.5 % of a power of
+ten AND the stored figure within 0.2–5× of the stock's previous period, so the PDF read is the likelier unit slip —
+DJML and TEXINFRA read in lakh, VIKRAMSOLR in million). A power-of-ten gap where the STORED figure is out of line stays
+open as `unit_store`. Both lists count towards the alert. Each cell leaves only by a heal or by its own entry in
+`scripts/xcheck_accept.json` after its filing is read (§0 first rule).
+
+**First run (local, 2026-11-28, origin `0b0a7d3a4`), newest quarter Sep-26:** declared_no_numbers 42 (29 BSE-only) ·
+declared_pdf_only 595 (470 half-yearly SME filers, 125 quarterly incl. COALINDIA, DEEPAKFERT, MTARTECH, VEDPOWER) ·
+period_unread 14 · one_basis 77 (CLEANMAX standalone) · no_revenue 9 · no_op 1 · prev_not_this 104 · profit differs 33
+(BALKRISIND, CLEANMAX) · revenue differs 9 · operating profit differs 95 · fin_definition 56 · unit 7 ·
+pbt_tax+reader 8 · pbt_tax+eps 2. PDF read vs store, Sep-26: profit 1,297 agree / 35 differ, revenue 1,276 / 58,
+operating profit 1,210 / 107. Jun-26: prev_not_this 310 (162 of them hold a later period — a hole), one_basis 30,
+profit differs 51. None of these cells has been read; they are candidates.
+
+**The alert.** `scripts/fill_check_alert.py` (last step of `xcheck.yml`) keeps ONE GitHub issue titled "Results fill
+check": opened or commented while the newest quarter has any listed cell, closed the morning the list is empty. Body =
+index members from `docs/_season_coverage.json` first (the gaps `check_season_coverage.py` only printed), then each
+class with its first 25 names. Cadence follows `season_state.py`: IN season a comment every morning; OFF season only
+when the list changed (fingerprint `<!-- fill-fp:… -->` in the comment). `--dry-run` prints the text without calling
+GitHub. Both designs of the Data Checks page show "Results season <quarter>: N listed" at the top and the three checks
+first, newest quarter first.
+
+**Triage (binding, every morning in season; one cell at a time).**
+1. Open Data Checks. Work the newest quarter first, in this order: index members → `declared_no_numbers` →
+   `declared_pdf_only` (quarterly) → profit differs / `pbt_tax+reader` → `one_basis`, `no_revenue`, `no_op` → revenue
+   and operating profit differences → `prev_not_this` → the definition / units list.
+2. Identity first: renamed ticker (both ways), right exchange code, the filing is for THIS quarter and THIS basis.
+3. Read that cell's own filing — the results PDF linked on the row, three-month column, the basis named — or its BSE
+   results XBRL (§196). Write down the row and the arithmetic. The PDF read, PBT − tax and "supports" are hints.
+4. Verdict per cell: store wrong → heal through the ledger (`fund_cell_fix.json`, `revop_cell_fix.json`,
+   `manual_result_reads.json`, the SME half-year job §213 for half-yearly filers, the vision queue for `no numbers`),
+   rebuild, and re-check LIVE; the cell leaves the list by itself. Store right (the PDF read was in lakh, a bank
+   definition, a company that really files one basis, a delisted / merged name with nothing to file) → an entry in
+   `scripts/xcheck_accept.json` under the check's id with the page read as `why`. Not read → it stays listed.
+5. Never accept a class in bulk, and never heal from the PDF read's number without opening the filing.
+
+**Not done.** (1) BSE-only names have no second reader here: their store IS the PDF read. (2) Operating profit
+differences are many (95 Sep-26) because the two readers treat other income differently on some filings; not
+classified, each is open. (3) The 470 half-yearly SME rows are one cause — the PDF read exists, the main-store rows
+wait for the §213 half-year job; listed per stock all the same. (4) `prev_not_this` includes delisted and merged names
+(JBCHEPHARM, PEL, ISEC); each needs its own accept entry once checked. (5) No push notification; the alert is the
+GitHub issue (GitHub mails it).

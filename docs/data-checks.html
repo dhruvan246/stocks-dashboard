@@ -95,7 +95,7 @@
         <div class="os-note" id="dNoChart"></div>
       </section>
     </div>
-    <details id="how"><summary>How to read this page</summary>Scope: Nifty 500 members on each date. Source: <code>docs/xcheck.json</code>, built by <code>scripts/xcheck_run.py</code> (runbook §214). “Explained” = a known, by-design difference (e.g. Yahoo never adjusts demergers); “Wrong side” is read from the prices themselves: a correctly adjusted series is continuous across a split, so the file whose own price jumps by the gap is the one that failed to adjust. A real error is fixed through its correction ledger; a difference that is not an error is recorded as <i>accepted</i> with the reason.</details>
+    <details id="how"><summary>How to read this page</summary><b>Results season (first three checks, runbook §251):</b> the two newest quarters of every stock — results filed but not in the store, cells with a basis, revenue or operating profit missing, and stored figures that differ from the PDF read or fail the filing's own PBT − tax. Listed newest quarter first. The “Definition / units” list holds differences that look like a bank / NBFC / insurer definition or a unit slip in the PDF read; they are still unread, not cleared. Every listed cell is a candidate until its own filing is read. <b>Other checks:</b> scope: Nifty 500 members on each date. Source: <code>docs/xcheck.json</code>, built by <code>scripts/xcheck_run.py</code> (runbook §214). “Explained” = a known, by-design difference (e.g. Yahoo never adjusts demergers); “Wrong side” is read from the prices themselves: a correctly adjusted series is continuous across a split, so the file whose own price jumps by the gap is the one that failed to adjust. A real error is fixed through its correction ledger; a difference that is not an error is recorded as <i>accepted</i> with the reason.</details>
   </div>
 </main>
 
@@ -128,7 +128,40 @@
     return esc(e.to) + ' A×' + num(e.a_jump, 3) + ' B×' + num(e.b_jump, 3) + l;
   }
   // per-check columns: [header, fn(finding) -> html, numeric?]
+  function stk(f) { return '<a class="text-indigo-600 hover:underline" href="./stock.html?sym=' + encodeURIComponent(f.sym) + '">' + esc(f.sym) + '</a>'; }
+  function bas(f) { return f.basis === 's' ? 'standalone' : f.basis === 'c' ? 'consolidated' : '—'; }
+  // §251 results-season fill checks: plain-word names for each class
+  var FILL = { declared_no_numbers: 'Filed, no numbers anywhere', declared_pdf_only: 'Filed, main store empty (PDF read only)',
+    period_unread: 'Filed, period not read', one_basis: 'One basis only', no_revenue: 'Revenue missing', no_op: 'Operating profit missing',
+    prev_not_this: 'Previous period held, this one empty', pat: 'Profit differs', rev: 'Revenue differs', op: 'Operating profit differs',
+    unit_store: 'Power-of-ten gap, stored figure out of line', unit: 'Power-of-ten gap (likely units)', fin_definition: 'Bank / NBFC / insurer definition' };
+  var FOOT = { ytd_copy: 'year-to-date stored as quarter', 'pbt_tax+eps': 'fails PBT − tax and EPS', 'pbt_tax+reader': 'fails PBT − tax, another reading disagrees', other_basis: 'consolidated = standalone arithmetic' };
   var COLS = {
+    fill_missing: [
+      ['Stock', stk], ['Quarter', function (f) { return esc(f.qe); }],
+      ['What is missing', function (f) { return esc(FILL[f.field] || f.field); }],
+      ['Index', function (f) { return esc(f.index || '—'); }],
+      ['Basis', function (f) { return f.basis ? bas(f) : '—'; }],
+      ['Company', function (f) { return esc(f.name || '—'); }], ['Exchange', function (f) { return esc(f.exch || '—'); }],
+      ['Filed on', function (f) { return esc(f.declared || '—'); }],
+      ['Files', function (f) { return esc(f.filer || '—'); }],
+      ['PDF read holds', function (f) { return esc(f.pdf_read || '—'); }],
+      ['Previous period', function (f) { return f.prev_qe ? esc(f.prev_qe) + ' = ' + num(f.prev) : '—'; }],
+      ['After it', function (f) { return esc(f.after || '—'); }],
+      ['Filing', function (f) { return f.pdf && /^https:/.test(f.pdf) ? '<a class="text-indigo-600 hover:underline" style="pointer-events:auto" target="_blank" rel="noopener" href="' + esc(f.pdf) + '">open PDF ↗</a>' : '—'; }]
+    ],
+    fill_vision: [
+      ['Stock', stk], ['Quarter', function (f) { return esc(f.qe); }],
+      ['What differs', function (f) { return esc(FILL[f.cls] || f.cls); }],
+      ['Stored', function (f) { return num(f.a); }, 1], ['PDF read', function (f) { return num(f.b); }, 1],
+      ['Basis', bas], ['Field', function (f) { return esc({ pat: 'net profit', rev: 'revenue', op: 'operating profit' }[f.field] || f.field); }],
+      ['Stored ÷ PDF', function (f) { return num(f.ratio, 4); }, 1],
+      ['Stored, previous period', function (f) { return num(f.prev); }, 1],
+      ['Filing PBT − tax', function (f) { return f.pbt_less_tax == null ? '—' : num(f.pbt_less_tax); }, 1],
+      ['PBT − tax supports', function (f) { return esc(f.supports || '—'); }],
+      ['Half-year read', function (f) { return f.half_year ? 'yes' : '—'; }],
+      ['Note', function (f) { return esc(f.explained || f.accepted || ''); }]
+    ],
     px_nse_yahoo: [
       ['Stock', function (f) { return f.sym === '*' ? '<b>all members</b>' : '<a class="text-indigo-600 hover:underline" href="./stock.html?sym=' + encodeURIComponent(f.sym) + '">' + esc(f.sym) + '</a>'; }],
       ['Shape', function (f) { return esc(f.shape); }],
@@ -158,9 +191,10 @@
     fund_new_results: [
       ['Stock', function (f) { return '<a class="text-indigo-600 hover:underline" href="./stock.html?sym=' + encodeURIComponent(f.sym) + '">' + esc(f.sym) + '</a>'; }],
       ['Quarter', function (f) { return esc(f.qe); }], ['Basis', function (f) { return esc(f.basis); }],
-      ['Footprint', function (f) { return esc(f.field === 'ytd_copy' ? 'year-to-date stored as quarter' : 'fails PBT − tax and EPS'); }],
+      ['Footprint', function (f) { return esc(FOOT[f.field] || f.field); }],
       ['Stored PAT', function (f) { return num(f.pat); }, 1], ['PBT − tax', function (f) { return num(f.pbt_less_tax); }, 1],
-      ['EPS implies', function (f) { return f.eps_implies == null ? '—' : num(f.eps_implies); }, 1]
+      ['EPS implies', function (f) { return f.eps_implies == null ? '—' : num(f.eps_implies); }, 1],
+      ['Other reading', function (f) { return f.other_reading == null ? '—' : num(f.other_reading); }, 1]
     ],
     fund_pat_mirror: [
       ['Stock', function (f) { return '<a class="text-indigo-600 hover:underline" href="./stock.html?sym=' + encodeURIComponent(f.sym) + '">' + esc(f.sym) + '</a>'; }],
@@ -204,7 +238,7 @@
   }
 
   // which of a check's columns the middle list shows (indices into COLS[id]); the detail pane shows all of them
-  var LIST = { px_nse_yahoo: [0, 4, 5, 6], fund_vision_xbrl: [0, 1, 3, 6], fund_pbt_tax: [0, 1, 3, 7], fund_new_results: [0, 1, 4, 5],
+  var LIST = { fill_missing: [0, 1, 2, 3], fill_vision: [0, 2, 3, 4], px_nse_yahoo: [0, 4, 5, 6], fund_vision_xbrl: [0, 1, 3, 6], fund_pbt_tax: [0, 1, 3, 7], fund_new_results: [0, 1, 4, 5],
     fund_pat_mirror: [0, 1, 4, 5], fund_eps_shares: [0, 1, 3, 7], mcap_shares: [0, 1, 2, 3], idx_levels: [0, 2, 6], shp_neighbours: [0, 1, 2, 4], flows_month: [0, 1, 2, 3] };
   var TABS = [['open', 'Open'], ['explained', 'Explained'], ['accepted', 'Accepted']];
   var CHECKS = [], ROWS = [], CH = null, TOK = 0;
@@ -243,9 +277,10 @@
       (c.error ? '<div class="bad-t" style="margin-top:4px">Last run failed (' + esc(c.error_ran) + ') — showing the previous result.</div>' : '');
   }
   function nOf(c, t) { return c['n_' + t] || 0; }
+  function fill0(c) { return /^fill_|^fund_new_results$/.test(c.id); }
   function renderTabs() {
     var c = S.c;
-    $('fTabs').innerHTML = TABS.map(function (t) { return '<button type="button" data-v="' + t[0] + '"' + (t[0] === S.tab ? ' class="on"' : '') + '>' + t[1] + '<i>' + (c && !failed(c) ? num(nOf(c, t[0]), 0) : '—') + '</i></button>'; }).join('');
+    $('fTabs').innerHTML = TABS.map(function (t) { return '<button type="button" data-v="' + t[0] + '"' + (t[0] === S.tab ? ' class="on"' : '') + (t[0] === 'explained' && c && c.explained_label ? ' title="' + esc(c.explained_label) + '"' : '') + '>' + (t[0] === 'explained' && c && c.explained_label ? 'Definition / units' : t[1]) + '<i>' + (c && !failed(c) ? num(nOf(c, t[0]), 0) : '—') + '</i></button>'; }).join('');
   }
   function renderFindings(keep) {
     var c = S.c; renderTabs();
@@ -254,8 +289,8 @@
     var all = failed(c) ? [] : (c[S.tab] || []), q = S.q.trim().toLowerCase();
     ROWS = q ? all.filter(function (f) { return JSON.stringify(f).toLowerCase().indexOf(q) >= 0; }) : all.slice();
     var total = failed(c) ? 0 : nOf(c, S.tab);
-    $('fCount').textContent = failed(c) ? '' : (q ? ROWS.length + ' of ' + all.length + ' listed' : total > all.length ? 'largest ' + all.length + ' of ' + num(total, 0) : num(total, 0));
-    var cols = listCols(c), tpl = 'minmax(0,1fr)' + cols.slice(1).map(function (x) { return x[2] ? ' 70px' : ' 66px'; }).join('');
+    $('fCount').textContent = failed(c) ? '' : (q ? ROWS.length + ' of ' + all.length + ' listed' : total > all.length ? (fill0(c) ? 'first ' : 'largest ') + all.length + ' of ' + num(total, 0) : num(total, 0)) + (fill0(c) ? ' · newest quarter first' : '');
+    var fill = /^fill_/.test(c.id), cols = listCols(c), tpl = (fill ? '92px' : 'minmax(0,1fr)') + cols.slice(1).map(function (x, j) { return fill && /^What/.test(x[0]) ? ' minmax(0,1fr)' : x[2] ? ' 70px' : fill && x[0] === 'Index' ? ' 76px' : ' 66px'; }).join('');
     $('fHead').style.gridTemplateColumns = tpl;
     $('fHead').innerHTML = cols.map(function (x) { return '<span>' + esc(x[0]) + '</span>'; }).join('');
     if (!keep || ROWS.indexOf(S.f) < 0) S.f = ROWS[0] || null;
@@ -364,6 +399,13 @@
       checks.forEach(function (c) { comp += c.compared || 0; agr += c.agree || 0; open += c.n_open || 0; });
       $('asof').className = 'os-asof live';
       $('asof').innerHTML = checks.length + ' checks · ' + num(comp, 0) + ' values compared · <span class="os-pos">' + (comp ? num(100 * agr / comp, 2) : '—') + '% agree</span> · <span class="warn">' + num(open, 0) + ' open</span> · built ' + esc(rep.generated || '—');
+      // §251: newest quarter's listed count from the three results-season checks, first in the header line
+      var nq = null, nn = 0, seen = false;
+      ['fill_missing', 'fill_vision', 'fund_new_results'].forEach(function (id) { var c = (rep.checks || {})[id]; if (!c) return; seen = true;
+        (c.open || []).concat(c.explained || []).forEach(function (f) { if (f.qe && (!nq || f.qe > nq)) nq = f.qe; }); });
+      ['fill_missing', 'fill_vision', 'fund_new_results'].forEach(function (id) { var c = (rep.checks || {})[id]; if (!c) return;
+        (c.open || []).concat(c.explained || []).forEach(function (f) { if (f.qe === nq) nn++; }); });
+      if (seen) $('asof').innerHTML = (nq ? '<b class="bad-t">Results season ' + esc(nq) + ': ' + num(nn, 0) + ' listed</b>' : '<b class="os-pos">Results season: nothing listed</b>') + ' · ' + $('asof').innerHTML;
       CHECKS = checks;
       $('status').classList.add('hidden'); $('content').classList.remove('hidden');
       wire(); S.c = CHECKS[0]; renderChecks(); K.fitGrid($('grid')); pickCheck(0);

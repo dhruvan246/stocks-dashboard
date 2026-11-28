@@ -3,7 +3,9 @@ name: Data checks (second-reader audit)
 # Re-runs scripts/xcheck_run.py — every served number read against a second, independent source
 # (NSE bin vs Yahoo bin prices, XBRL vs PDF results, PBT−tax and EPS×shares identities, BSE market cap
 # vs shares×close, index feeds vs the niftyindices archive, daily vs monthly flows) — and publishes
-# docs/xcheck.json for docs/data-checks.html (runbook §214). Report-only: it never edits data; a real
+# docs/xcheck.json for docs/data-checks.html (runbook §214). The first three checks are the results-season fill checks
+# (runbook §251: newest two quarters, every stock — missing rows and wrong figures); their newest-quarter count drives
+# the "Results fill check" alert issue at the end of this job. Report-only: it never edits data; a real
 # defect is healed through its own ledger, a non-defect is recorded in scripts/xcheck_accept.json.
 on:
   # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
@@ -17,6 +19,7 @@ on:
 permissions:
   contents: write
   actions: write
+  issues: write              # the results-season alert issue (runbook §251)
 
 concurrency:
   group: xcheck
@@ -91,6 +94,16 @@ jobs:
             sleep 15
           done
           echo "::warning::pages dispatch failed 3x — report is committed; next push or ci-janitor publishes it"
+
+      # Runbook §251. Keeps ONE issue "Results fill check" in step with the newest quarter's lists (checks fill_missing,
+      # fill_vision, fund_new_results + the index gaps of docs/_season_coverage.json): opens / comments while anything is
+      # listed, closes itself when the list is empty. Cadence by scripts/season_state.py — IN season a comment every
+      # morning, OFF season only when the list changed. Report-only; it never touches a stored value.
+      - name: Results-season alert issue (open while the newest quarter has listed cells)
+        if: always() && hashFiles('docs/xcheck.json') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -X utf8 scripts/fill_check_alert.py || echo "::warning::fill-check alert step failed — the lists are still on the Data Checks page"
 
       - name: Fail the run if a check crashed (the page shows the previous result for it)
         if: steps.run.outputs.rc != '0'

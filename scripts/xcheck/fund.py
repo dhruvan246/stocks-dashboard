@@ -241,7 +241,12 @@ class FundNewResults(C.Check):
       pbt_tax+eps  stored profit matches no PBT - tax presentation AND, divided by the filing's own basic EPS,
                    implies a share count >25 % away from the same stock's median over its previous quarters
                    (minority interest, regulatory deferrals and discontinued operations move the first test but
-                   not the second, so the pair is what separates a wrong cell from a presentation difference).
+                   not the second, so the pair is what separates a wrong cell from a presentation difference);
+      pbt_tax+reader  stored profit matches no PBT - tax presentation AND another reading of the same filing (the PDF
+                   read on the same basis, or the second reading kept by sync_pat_mirror.py) disagrees with it (§251);
+      other_basis  stored consolidated profit = the same filing's STANDALONE PBT - tax.
+    Not detectable here: a total-comprehensive-income figure has no stored line to compare with — it surfaces as a
+    PBT - tax failure (the three kinds above), never by name.
     A listed cell is a CANDIDATE: read its filing, then heal through fund_cell_fix.json or accept it."""
     id = "fund_new_results"
     title = "Newest two quarters, every stock: profit cells that fail the filing's own arithmetic"
@@ -250,12 +255,15 @@ class FundNewResults(C.Check):
     reader_a = "sf_fundamentals profit cell (newest two quarter-ends)"
     reader_b = "the same filing's PBT, tax and basic EPS (fin x) + the stock's own earlier quarters"
     scope = "every stock with a results-detail row, standalone and consolidated, the two newest quarter-ends in the store"
-    tolerance = "PBT - tax within 2 % or Rs 0.1 cr; EPS-implied shares within -20 % / +25 % of the stock's median"
+    tolerance = "PBT - tax within 2 % or Rs 0.1 cr; EPS-implied shares within -20 % / +25 % of the stock's median; another reading within 1 % or Rs 0.05 cr"
 
     def run(self):
         import glob, statistics
         fund = _fund()
         qs = sorted({q for d in fund.values() for q in d})[-2:]
+        vis = C.jload(os.path.join(C.DOCS, "vision_fills.json"))
+        sp = os.path.join(C.HERE, "pat_mirror_disagree.json")
+        side = (C.jload(sp).get("cells") or {}) if os.path.exists(sp) else {}
         self.note("quarters checked: " + ", ".join(C.iso(q) for q in qs))
         for p in sorted(glob.glob(os.path.join(C.DOCS, "fin", "*.json"))):
             try: d = json.load(open(p, encoding="utf-8"))
@@ -293,7 +301,24 @@ class FundNewResults(C.Check):
                         if len(hist) >= 3:
                             m = statistics.median(hist); eps_pat = round(eps * m, 2)
                             if not kind and not (0.8 <= (pat / eps) / m <= 1.25): kind = "pbt_tax+eps"
+                    other = None
+                    if not kind:
+                        # §251: the EPS test alone let BALKRISIND Sep-26 con through (stored 234.97 = total comprehensive
+                        # income, EPS ratio 0.803 against a 0.8 floor). A cell that fails PBT - tax is also listed when
+                        # ANOTHER READING of the same filing disagrees with it: the PDF read on the same basis, or the
+                        # second reading sync_pat_mirror.py kept. Measured 2026-11-28: +8 cells Sep-26, +9 Jun-26.
+                        vc = (vis.get(sym) or {}).get(str(qe)) or {}
+                        if (vc.get("basis") or "").lower() == bk and vc.get("pat") is not None and not _near(pat, vc["pat"], 0.01, 0.05):
+                            other = vc["pat"]; kind = "pbt_tax+reader"
+                        else:
+                            sd = side.get("%s|%d|%s" % (sym, qe, bk))
+                            if sd and abs(pat - sd["reader"]) > 0.011: other = sd["reader"]; kind = "pbt_tax+reader"
+                    if not kind and bk == "c" and fr[1] is not None and abs(pat - fr[1]) > 0.1:
+                        # stored consolidated = the STANDALONE arithmetic of the same filing (other-basis figure)
+                        ds = (x.get(str(qe)) or {}).get("s") or {}
+                        if ds.get("pbt") is not None and ds.get("tax") is not None and _near(pat, ds["pbt"] - ds["tax"], 0.001, 0.02):
+                            kind = "other_basis"; other = round(ds["pbt"] - ds["tax"], 2)
                     if not kind: self.agree += 1; continue
                     self.add("%s|%d|%s" % (sym, qe, bk), sym=sym, qe=C.iso(qe), basis=bk, field=kind, pat=pat,
-                             pbt=pbt, tax=tax, pbt_less_tax=round(best, 2), eps=eps, eps_implies=eps_pat,
-                             weight=round(abs(pat - best), 2))
+                             pbt=pbt, tax=tax, pbt_less_tax=round(best, 2), eps=eps, eps_implies=eps_pat, other_reading=other,
+                             weight=(2 if qe == qs[-1] else 1) * 1e9 + min(abs(pat - best), 9.9e8))

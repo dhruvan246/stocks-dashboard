@@ -169,7 +169,8 @@ class Check:
                 "agree_pct": round(100.0 * self.agree / self.compared, 3) if self.compared else None,
                 "n_open": len(open_), "n_explained": len(explained), "n_accepted": len(accepted),
                 "open": open_[:self.max_listed], "explained": explained[:self.max_listed // 4],
-                "accepted": accepted[:50], "notes": self.notes, "calibration": self.calibration}
+                "accepted": accepted[:50], "notes": self.notes, "calibration": self.calibration,
+                "explained_label": getattr(self, "explained_label", None)}
 
 
 def top_values(path, keys):
