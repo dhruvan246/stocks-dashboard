@@ -37031,6 +37031,24 @@
    "fixed": 1.1,
    "found": "all-stock audit 2026-11-22 (every-cell pass, non-N500 BSE-route profit vs own BSE XBRL)",
    "why": "OUR ERROR (all-stock audit 2026-11-22): the consolidated slot held the same wrong figure as the standalone slot (a copy; BSE's results listing for 540252 shows no consolidated filing for this quarter). It follows the standalone correction read from Main_Ind_As_540252_2112022182644.xml (see the std entry of this cell); it is still a copy of standalone, not a consolidated reading."
+  },
+  {
+   "sym": "BALKRISIND",
+   "qe": "20260930",
+   "basis": "con",
+   "was": 234.97,
+   "fixed": 292.62,
+   "found": "Sep-26 results check 2026-11-28 (\u00a7239 family: total comprehensive income stored as profit)",
+   "why": "OUR ERROR. Own results PDF BALKRISIND_04112026185711_Outcome_uploaded_signed.pdf (NSE, filed 2026-11-04) p2, side-by-side STAND ALONE | CONSOLIDATED statement, Rs crore, CONSOLIDATED 'QUARTER ENDED 30-09-2026' column (page image read 2026-11-28): 'IX. Profit for the period (VII-VIII)' 292.62 = profit before tax 389.36 - current tax 86.25 - deferred tax 10.49. Stored 234.97 = row 'XI. Total comprehensive income after tax (IX+X)' (292.62 + OCI (57.65)) and its 'Owners of the Company' line; that attribution is printed only for total comprehensive income, Non Controlling Interest '-', so profit for the period is all owners'. EPS 15.13 x 19.33 cr shares (capital 38.66 cr, FV Rs 2) = 292.5. Second check, same page: comparative columns 30-06-2026 450.77 and 30-09-2025 273.19 equal the stored con cells of those quarters, and the standalone column's 291.13 equals the stored std cell."
+  },
+  {
+   "sym": "CLEANMAX",
+   "qe": "20260930",
+   "basis": "con",
+   "was": 65.82,
+   "fixed": 47.05,
+   "found": "Sep-26 results check 2026-11-28 (\u00a7239 family: filer XBRL profit tag is not the printed profit, and carries no owners split)",
+   "why": "OUR ERROR. Own results PDF CLEANMAX_03112026213525_Outcome031126.pdf (NSE, filed 2026-11-03 21:39) p24, Statement of the unaudited Consolidated Financial Results, Rs million, column 'Quarter Ended 30th September, 2026' (page image read 2026-11-28): X Profit after tax 649.49 (= VIII profit before tax 1,199.79 - IX tax 550.30); XIII 'Profit/(loss) for the period/year attributable to: Owners of the Company' 470.46, Non-controlling interests 179.03 (470.46 + 179.03 = 649.49). Owners' profit 470.46 mn = 47.05 cr (store basis = owners). Stored 65.82 is not on the page: it is the filer's NSE XBRL INTEGRATED_FILING_INDAS_1752370_04112026120356_WEB.xml (consolidated, broadcast 2026-11-04 00:02), tag ProfitLossForPeriod 658,170,000 = 649.49 + 8.68 (VII share of net profit of joint ventures, already inside profit before tax, counted a second time); that file has no owners / non-controlling tags. Second check, same page: the 30th June 2026 column's owners line 485.17 = stored Jun-26 con 48.52."
   }
  ],
  "retracted": [

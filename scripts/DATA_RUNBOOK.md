@@ -31477,3 +31477,43 @@ classified, each is open. (3) The 470 half-yearly SME rows are one cause — the
 wait for the §213 half-year job; listed per stock all the same. (4) `prev_not_this` includes delisted and merged names
 (JBCHEPHARM, PEL, ISEC); each needs its own accept entry once checked. (5) No push notification; the alert is the
 GitHub issue (GitHub mails it).
+
+## §252 — Sep-2026 results check: three cells healed from their own filings; why COALINDIA sat unfilled (2026-11-28)
+
+User asked whether the Sep-2026 quarter is 100% correct; a two-reader comparison listed disagreeing cells. Three were
+read from their own filing pages (images) and healed; the rest of that list
+(`~/stocks-cache/sep26-check-1128/two_reader_diff.json`) is UNKNOWN - not read.
+
+| cell (qe 20260930) | was | now | filing page read |
+|---|---|---|---|
+| BALKRISIND con profit | 234.97 | 292.62 | NSE `BALKRISIND_04112026185711_Outcome_uploaded_signed.pdf` p2, consolidated quarter column: IX Profit for the period 292.62; 234.97 = XI Total comprehensive income (and its owners line; NCI "-") |
+| CLEANMAX con profit | 65.82 | 47.05 | NSE `CLEANMAX_03112026213525_Outcome031126.pdf` p24 (Rs mn): owners 470.46, NCI 179.03, profit after tax 649.49 |
+| COALINDIA std / con profit | no row | 8,967.72 / 6,516.09 | BSE `a6a090c4-0891-4548-bed5-66b7d95c1004.pdf` = NSE `COALINDIA_29102026181236_Result.pdf`, p16 (std) and p7 (con owners; NCI 31.34) |
+| COALINDIA revenue, op, ebit | no row | std 304.60 / 43.69 / 9.70; con 44,178.74 / 8,498.58 / 6,119.29 | same pages; op = profit before JV share and tax + finance + depreciation - other income |
+
+- **Where CLEANMAX's 65.82 came from:** the filer's NSE XBRL (`INTEGRATED_FILING_INDAS_1752370_04112026120356_WEB.xml`)
+  tags `ProfitLossForPeriod` 658.17 mn = printed profit 649.49 + 8.68 share of joint ventures counted a second time, and
+  has no owners / non-controlling tags at all. Same family as §239: the tag is not the page. CLEANMAX standalone Sep-26
+  is still empty (NSE lists a standalone XBRL whose URL answers 404) - not read here.
+- **Ledgers:** `fund_cell_fix.json` (2), `manual_result_reads.json` -> applied by `reconcile_missing_quarters.py
+  --only COALINDIA --quarter 20260930` (double anchor held: Jun-26 exact on both bases, Sep-25 std exact, Sep-25 con
+  4,258.82 vs stored 4,354.28 = restated comparative, 2.2%, inside the 3% anchor; stored Sep-25 left as first filed) ->
+  `bse_result_fills.json`; revenue row through `named_rev_cell_fills.json` (fill-only into `sf_revop.json` +
+  `revop_fundamentals.json`). Profit mirror of the two healed cells set by `sync_pat_mirror.py`.
+  ⚠️ Run locally, `sync_pat_mirror.py --apply` also rewrites ~800 mirror cells of `scripts/revop_fundamentals.json`
+  that are not yours - restore that file and write only your own rows before committing.
+- **Why COALINDIA was "not yet filed" for a month (two independent causes):**
+  1. NSE route: the company's Sep-26 XBRL (both bases) carries ONLY the half-year context (2026-04-01..2026-09-30,
+     owners 15,368.20 = 8,852.11 + 6,516.09). The reader rightly refuses a six-month period, so no quarter was stored.
+  2. BSE guard: `fetch_insurers.is_result_filing` vetoes any headline containing "dividend"; Coal India's is "Board
+     Meeting Outcome for Unaudited Financial Results ... And Declaration Of 2Nd Interim Dividend", so the guard saw no
+     filing and wrote a skip every night. **Fixed** in `reconcile_missing_quarters.outcome_with_results()`: an
+     "Outcome of Board Meeting" row whose headline names the financial results counts (this guard only - its reads are
+     double-anchored; the shared `is_result_filing` is unchanged). Checked live: COALINDIA's filing is now listed;
+     DEEPAKFERT, MTARTECH, JSWENERGY, CLEANMAX lists unchanged.
+- **Found, NOT fixed (workflow file):** the commit step of `refresh-fundamentals.yml` merges the two guard queues with a
+  union (`{**snap, **cur}`), so an entry the run deleted comes back from origin with its old date: last night
+  `_missing_quarter_skips.json` 514 after the run -> 518 committed, `_missing_quarter_pending.json` 18 -> 40. That is
+  why 518 skip entries still say 2026-10-05/06 and filled names (HCLTECH, ICICIBANK...) still sit in pending. Harmless
+  to the data (a stored cell is skipped before the queue is read) but both files lie about what is open.
+- Also seen, not touched: DEEPAKFERT / JSWENERGY Sep-26 std pending on a year-ago mismatch, MTARTECH unrenderable.

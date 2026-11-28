@@ -139,6 +139,17 @@ def _http(url, binary=False):
         raise RuntimeError("bse fetch failed: %s" % str(e)[:120])
     return body if binary else body.decode("utf-8", "replace")
 
+_OUTCOME_RESULTS = re.compile(r"financial\s+result|(?:un)?audited.{0,80}result", re.I)
+
+def outcome_with_results(r):
+    """An "Outcome of Board Meeting" row whose headline names the financial results IS a results filing even
+    when the same headline also declares a dividend. fetch_insurers.is_result_filing vetoes any headline with
+    "dividend", so COALINDIA Sep-2026 ("Board Meeting Outcome for Unaudited Financial Results ... And
+    Declaration Of 2Nd Interim Dividend", filed 2026-10-29) was counted "not yet filed" every night for a
+    month (runbook 252). Only this guard widens: its reads are double-anchored, so a wrong document cannot fill."""
+    return (r.get("SUBCATNAME", "") or "").strip().lower() == "outcome of board meeting" \
+        and bool(_OUTCOME_RESULTS.search(r.get("NEWSSUB", "") or ""))
+
 def bse_result_filings(code, lo, hi):
     """[(DT_TM iso, attachment, NEWSSUB)] result filings for scrip `code` between lo..hi (YYYYMMDD)."""
     out = []
@@ -147,7 +158,7 @@ def bse_result_filings(code, lo, hi):
                "&strPrevDate=%s&strScrip=%s&strSearch=P&strToDate=%s&strType=C&subcategory=-1" % (page, lo, code, hi))
         rows = json.loads(_http(url)).get("Table") or []
         for r in rows:
-            if FI.is_result_filing(r) and r.get("ATTACHMENTNAME"):
+            if (FI.is_result_filing(r) or outcome_with_results(r)) and r.get("ATTACHMENTNAME"):
                 out.append((r.get("DT_TM") or r.get("NEWS_DT") or "", r["ATTACHMENTNAME"], r.get("NEWSSUB") or ""))
         if len(rows) < 50:
             break

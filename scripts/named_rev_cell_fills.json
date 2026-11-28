@@ -3488,5 +3488,18 @@
   "patC": 1.86,
   "src": "BSE results PDFs (own filing per quarter + later filings' comparative / YTD columns; scanned pages read as images; d2/pdf/cgfl); BSE raw announcement listing (all categories) for dates",
   "evidence": "Credent Global Finance Ltd, formerly Oracle Credit Ltd, renamed AMPL Capital Ltd (MCA certificate 20-Jun-2026) (BSE 539598; name on each own filing; CIN L65910DL1991PLC043281 until the Mar-23 filing, L65910MH1991PLC404531 from Jun-23 after the registered office moved to Maharashtra; statements in Rs lakh, /100 = crore, half-up 2 dp). Primary: 2026-09 results (BSE, ann 2026-11-05, d2/pdf/cgfl/CGFL_20261105_2029.pdf p4): standalone revenue from operations 399.69, other income 3.97, finance 189.09, depreciation 18.64, profit before tax 109.46 lakh -> op 313.22 = 3.13 cr; consolidated (p9) revenue from operations 487.07, other income 58.88, finance 193.85, depreciation 32.14, profit before tax 149.56 lakh -> op 316.67 = 3.17 cr. op = profit before associate share and tax + finance + depreciation - other income; Ind AS NBFC statement (InterestEarned XBRL): fin 1, ebit not reproduced for NBFCs (build_revop.metrics_for). Second: H1 FY27 std 158.08 vs 82.04 + 76.06 = 158.10 (filer rounding 0.02 lakh), con 68.70 = -117.71 + 186.40 (0.01); a later filing's comparative is UNKNOWN (latest quarter). The quarter's revop row was missing (no CGFL key in docs/sf_revop.json)."
+ },
+ "COALINDIA|20260930": {
+  "applied": "2026-11-28 COALINDIA Sep-26 missing quarter (runbook §252)",
+  "revS": 304.6,
+  "revC": 44178.74,
+  "opS": 43.69,
+  "opC": 8498.58,
+  "ebitS": 9.7,
+  "ebitC": 6119.29,
+  "patS": 8967.72,
+  "patC": 6516.09,
+  "src": "own results PDF, scanned, read from page images: BSE a6a090c4-0891-4548-bed5-66b7d95c1004.pdf (filed 2026-10-29 18:05) = NSE COALINDIA_29102026181236_Result.pdf (same 16,608,102 bytes)",
+  "evidence": "Coal India Ltd (BSE 533278, CIN L23109WB1973GOI028844 on the page), Rs crore, quarter column 30.09.2026, read 2026-11-28. STD p16: Revenue from Operations 304.60, Other Income 9,000.32, Total Income 9,304.92, Finance costs 14.49, Depreciation/amortisation/impairment 33.99, Total expenses 309.39, Profit before Tax 8,995.53, Profit for the period 8,967.72 -> op = 8,995.53 + 14.49 + 33.99 - 9,000.32 = 43.69; ebit = op - depreciation = 9.70. CON p7: Revenue from Operations 44,178.74, Other Income 2,653.99, Total Income 46,832.73, Finance Costs 338.99, Depreciation/Amortization/Impairment 2,379.29, Total Expenses 38,398.44, Profit before Share of Joint Venture Profit 8,434.29, Profit for the Period 6,547.43, owners 6,516.09 + NCI 31.34 -> op = 8,434.29 + 338.99 + 2,379.29 - 2,653.99 = 8,498.58; ebit = 6,119.29. op formula = build_revop's (profit before JV share and tax + finance + depreciation - other income). ANCHORS, same pages: the 30.06.2026 columns reproduce the stored Jun-26 row on every slot (std rev 345.18, op 211.20 + 6.79 + 15.23 - 98.88 = 134.34, PAT 153.18; con rev 46,254.80, op 11,479.04 + 327.28 + 2,302.66 - 2,040.47 = 12,068.51, owners 8,852.11); the 30.09.2025 standalone column reproduces stored Sep-25 PAT 8,342.12 and op 81.29. Half-year identity: std PAT 153.18 + 8,967.72 = 9,120.90 printed; con owners 8,852.11 + 6,516.09 = 15,368.20 printed, and both equal the filer's NSE XBRL half-year tags. NOT matching, left alone: the 30.09.2025 comparatives are regrouped/restated against our first-filed Sep-25 row (std rev 300.71 vs stored 296.09; con rev 36,553.07 vs 30,186.70, con owners 4,258.82 vs 4,354.28). The quarter's row was missing from our stores (NSE XBRL carries the half-year only; BSE guard vetoed the headline on 'Dividend')."
  }
 }
