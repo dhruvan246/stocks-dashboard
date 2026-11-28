@@ -106,9 +106,69 @@
    "title": "Jaiprakash Power Ventures Ltd 29th Annual Report 2023-24",
    "read": "2026-10-22",
    "by": "gemini:gemini-3.8-flash"
+  },
+  "c24de012-41fb-4097-b334-f8b5ccebacad.pdf": {
+   "kind": "res",
+   "date": "2023-11-10",
+   "title": "Unaudited Standalone and Consolidated Results for the quarter and half year ended 30th September, 2023",
+   "read": "2026-11-28",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "c9732979-9da2-4dd8-9ec7-de1567406487.pdf": {
+   "kind": "res",
+   "date": "2024-01-29",
+   "title": "Unaudited Standalone and Consolidated Financial Results for the Quarter and Nine Months Ended 31st December, 2023",
+   "read": "2026-11-28",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "d008ba44-68e3-4b3a-96a1-784e7bc3bf10.pdf": {
+   "kind": "res",
+   "date": "2023-07-28",
+   "title": "Unaudited Standalone and Consolidated Financial Results for the quarter ended 30th June 2023",
+   "read": "2026-11-28",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
+  {
+   "name": "Cement Grinding Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20240331": 2.0,
+    "20250331": 2.0,
+    "20260331": 2.0
+   },
+   "q": {
+    "20230630": 2.0
+   },
+   "src": {
+    "y:20260331": [
+     "6e2234a2-e55f-4e7f-99c3-7d804e7e7f58.pdf",
+     28,
+     "Jaypee Nigrie Cement Grinding Unit with an installed capacity of 2 MTPA (doc per",
+     "2"
+    ],
+    "y:20250331": [
+     "6c0e83bc-33ed-4b28-970b-67baa3f9c181.pdf",
+     20,
+     "Cement Grinding facility at Nigrie with an installed capacity of 2 MTPA (doc per",
+     "2"
+    ],
+    "y:20240331": [
+     "d87749b6-cbd4-4c54-aff3-35c88bba7ff8.pdf",
+     13,
+     "Cement Grinding Unit (doc period)",
+     "2"
+    ],
+    "q:20230630": [
+     "d008ba44-68e3-4b3a-96a1-784e7bc3bf10.pdf",
+     7,
+     "divest it's 2 MTPA Jaypee Nigire Cement Griding Unit (JNCGU) (doc period)",
+     "2"
+    ]
+   }
+  },
   {
    "name": "Coal Mine Capacity",
    "unit": "MTPA",
@@ -275,37 +335,6 @@
    },
    "latest": {
     "y:20240331": "2025-06-11"
-   }
-  },
-  {
-   "name": "Cement Grinding Capacity",
-   "unit": "MTPA",
-   "kind": "level",
-   "y": {
-    "20240331": 2.0,
-    "20250331": 2.0,
-    "20260331": 2.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "6e2234a2-e55f-4e7f-99c3-7d804e7e7f58.pdf",
-     28,
-     "Jaypee Nigrie Cement Grinding Unit with an installed capacity of 2 MTPA (doc per",
-     "2"
-    ],
-    "y:20250331": [
-     "6c0e83bc-33ed-4b28-970b-67baa3f9c181.pdf",
-     20,
-     "Cement Grinding facility at Nigrie with an installed capacity of 2 MTPA (doc per",
-     "2"
-    ],
-    "y:20240331": [
-     "d87749b6-cbd4-4c54-aff3-35c88bba7ff8.pdf",
-     13,
-     "Cement Grinding Unit (doc period)",
-     "2"
-    ]
    }
   },
   {
@@ -582,6 +611,30 @@
      20,
      "500 MW Jaypee Bina Thermal Power Plant (doc period)",
      "500"
+    ]
+   }
+  },
+  {
+   "name": "Karchana STPP Project Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230630": 1320.0,
+    "20230930": 1320.0
+   },
+   "src": {
+    "q:20230930": [
+     "c24de012-41fb-4097-b334-f8b5ccebacad.pdf",
+     4,
+     "implementation of 1320 MW Power Project (Karchana STPP) (doc period)",
+     "1320"
+    ],
+    "q:20230630": [
+     "d008ba44-68e3-4b3a-96a1-784e7bc3bf10.pdf",
+     4,
+     "implementation of 1320 MW Power Project (Karchana STPP) (doc period)",
+     "1320"
     ]
    }
   },
@@ -1060,5 +1113,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-22"
+ "updated": "2026-11-28"
 }
