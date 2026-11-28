@@ -13,11 +13,16 @@ Cadence follows scripts/season_state.py: IN season a comment is added every morn
 changed since the last comment (a fingerprint of the listed keys is kept in the comment), so a quiet list does not
 mail the same text daily. The issue stays open until the list is empty either way.
 
+Phone push (user, 2026-11-28): every time the issue is opened, commented on or closed, a short summary also goes to the
+user's ntfy topic (secret NTFY_TOPIC — the same topic as the MTF watch and the auto-pilots). Same cadence as the issue,
+so off season with an unchanged list sends nothing. No secret -> the push is skipped and the log says so. This repo's
+logs are public: the topic is never printed.
+
 Report-only: it never edits a stored value.
 
   python3 scripts/fill_check_alert.py --dry-run        # print what it would do and the issue text; no GitHub call
   python3 scripts/fill_check_alert.py                  # CI (needs GH_TOKEN and `gh`)"""
-import argparse, hashlib, json, os, re, subprocess, sys
+import argparse, hashlib, json, os, re, subprocess, sys, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
@@ -116,6 +121,36 @@ def build(rep, cov, season):
     return n_new, fp, md, {"newest": newest, "counts": counts}
 
 
+MISSING = ("declared_no_numbers", "declared_pdf_only", "period_unread", "one_basis", "no_revenue", "no_op", "prev_not_this")
+SEPARATE = ("fin_definition", "unit")
+
+
+def push_text(n, summ):
+    """(title, message) for the phone — plain words, newest quarter only."""
+    q = summ["newest"]; c = {k.split("|")[0]: v for k, v in summ["counts"].items() if k.endswith("|%s" % q)}
+    if n == 0:
+        return "Results check: all clear for %s" % q, "Nothing is listed for the newest quarter any more. The issue is closed."
+    miss = sum(c.get(k, 0) for k in MISSING); sep = sum(c.get(k, 0) for k in SEPARATE)
+    diff = sum(v for k, v in c.items() if k not in MISSING and k not in SEPARATE and k != "index_gap")
+    lines = ["%d not filled or only partly filled" % miss, "%d where a stored figure differs from another reading" % diff]
+    if sep: lines.append("%d likely bank-definition or units (shown separately)" % sep)
+    if c.get("index_gap"): lines.insert(0, "%d index members filed but not in the main store" % c["index_gap"])
+    if c.get("pat"): lines.append("Profit differs from the PDF read: %d" % c["pat"])
+    lines.append("Each is a candidate until its filing is read. Nothing was changed.")
+    return "Results check: %d to look at for %s" % (n, q), "\n".join(lines)
+
+
+def push(title, msg, click, prio=4):
+    topic = (os.environ.get("NTFY_TOPIC") or "").strip()
+    if not topic: print("phone push skipped (no NTFY_TOPIC secret)"); return
+    body = json.dumps({"topic": topic, "title": title, "message": msg, "priority": prio, "tags": ["mag"], "click": click}).encode()
+    try:
+        r = urllib.request.urlopen(urllib.request.Request("https://ntfy.sh/", data=body, headers={"Content-Type": "application/json"}), timeout=20)
+        print("phone push sent (HTTP %s)" % r.status)
+    except Exception as e:                        # never fail the run, never print the topic
+        print("::warning::phone push failed (%s %s)" % (type(e).__name__, getattr(e, "code", "")))
+
+
 def gh(*a, check=True):
     r = subprocess.run(["gh"] + list(a), capture_output=True, text=True)
     if check and r.returncode: raise SystemExit("gh %s failed: %s" % (" ".join(a[:2]), r.stderr.strip()[:300]))
@@ -142,22 +177,29 @@ def main():
     print("newest quarter %s: %d listed · fingerprint %s · season %s" % (summ["newest"], n, fp, season["state"]))
     for k, v in sorted(summ["counts"].items(), key=lambda kv: (kv[0].split("|")[1], kv[0]), reverse=True): print("   %-36s %d" % (k, v))
     title = "⚠️ %s — %d open for %s" % (TITLE, n, summ["newest"])
+    pt, pm = push_text(n, summ)
+    link = lambda num: "https://github.com/%s/issues/%s" % (os.environ["GITHUB_REPOSITORY"], num) if os.environ.get("GITHUB_REPOSITORY") and num else PAGE
     if a.dry_run:
         print("DRY RUN: would %s (title: %s); text in %s" % ("open or comment on the issue" if n else "close the issue if one is open", title, a.out))
+        print("DRY RUN: phone push would read:\n  %s\n  %s" % (pt, pm.replace("\n", "\n  ")))
         return
     num = gh("issue", "list", "--state", "open", "--search", TITLE + " in:title", "--json", "number", "--jq", ".[0].number", check=False).strip()
     if n == 0:
-        if num: gh("issue", "close", num, "--comment", "Newest quarter's list is empty — closing. ✅"); print("closed #" + num)
+        if num: gh("issue", "close", num, "--comment", "Newest quarter's list is empty — closing. ✅"); print("closed #" + num); push(pt, pm, link(num), prio=3)
         else: print("clean — no issue to manage")
         return
     if not num:
-        print(gh("issue", "create", "--title", title, "--body-file", a.out).strip()); return
+        url = gh("issue", "create", "--title", title, "--body-file", a.out).strip(); print(url)
+        push(pt, pm, url if url.startswith("https://") else PAGE); return
     last = gh("issue", "view", num, "--json", "body,comments", "--jq", '[.body] + [.comments[].body] | join("\\n")', check=False)
     seen = re.findall(r"<!-- fill-fp:([0-9a-f]+) -->", last)
     if season["state"] == "off" and seen and seen[-1] == fp:
-        print("off season and the list is unchanged since the last comment — issue #%s left as is" % num); return
+        print("off season and the list is unchanged since the last comment — issue #%s left as is" % num)
+        if os.environ.get("FILL_FORCE_PUSH") == "1": push(pt, pm, link(num))     # manual run asked for the push anyway
+        return
     gh("issue", "edit", num, "--title", title)
     gh("issue", "comment", num, "--body-file", a.out); print("commented on #" + num)
+    push(pt, pm, link(num))
 
 
 if __name__ == "__main__":

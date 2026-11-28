@@ -14,7 +14,12 @@ on:
   # dispatch-cron: "40 1 * * *"  # 07:10 IST, after the overnight price / fundamentals / shareholding refreshes
   repository_dispatch:
     types: [tick-xcheck]   # sent by scripts/cron_dispatch.py
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      push_test:
+        description: "Send the phone push even if the list is unchanged off season"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -99,10 +104,12 @@ jobs:
       # fill_vision, fund_new_results + the index gaps of docs/_season_coverage.json): opens / comments while anything is
       # listed, closes itself when the list is empty. Cadence by scripts/season_state.py — IN season a comment every
       # morning, OFF season only when the list changed. Report-only; it never touches a stored value.
-      - name: Results-season alert issue (open while the newest quarter has listed cells)
+      - name: Results-season alert, issue + phone push (while the newest quarter has listed cells)
         if: always() && hashFiles('docs/xcheck.json') != ''
         env:
           GH_TOKEN: ${{ github.token }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}      # phone push, same cadence as the issue; skipped while unset
+          FILL_FORCE_PUSH: ${{ inputs.push_test && '1' || '0' }}
         run: python3 -X utf8 scripts/fill_check_alert.py || echo "::warning::fill-check alert step failed — the lists are still on the Data Checks page"
 
       - name: Fail the run if a check crashed (the page shows the previous result for it)

@@ -31517,3 +31517,13 @@ read from their own filing pages (images) and healed; the rest of that list
   why 518 skip entries still say 2026-10-05/06 and filled names (HCLTECH, ICICIBANK...) still sit in pending. Harmless
   to the data (a stored cell is skipped before the queue is read) but both files lie about what is open.
 - Also seen, not touched: DEEPAKFERT / JSWENERGY Sep-26 std pending on a year-ago mismatch, MTARTECH unrenderable.
+
+### §251a — phone push for the results fill check (user, 2026-11-28)
+
+The user chose "issue + phone push". `scripts/fill_check_alert.py` now also posts a short summary to the ntfy topic in
+secret `NTFY_TOPIC` (the same topic as the MTF watch and the auto-pilots) every time it opens, comments on or closes the
+"Results fill check" issue — so the cadence is the issue's: daily in season, only on a changed list off season. The push
+reads: index members missing, cells not filled, cells that differ from another reading, the likely definition/units count,
+and "nothing was changed"; tapping it opens the issue. No secret → skipped with a log line; a failed push is a warning and
+never fails the run; the topic is never printed (public logs). To send it on demand: run the workflow by hand with
+`push_test` ticked (`gh workflow run xcheck.yml -f push_test=true`). Local preview: `--dry-run` prints the push text.
